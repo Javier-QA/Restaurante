@@ -56,37 +56,12 @@ class ChatbotController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | 2. VENTAS DE HOY
+        | 2. VENTAS DE ESTA SEMANA
         |--------------------------------------------------------------------------
-        | El dato viene directamente de MySQL.
-        */
-
-        if (
-            str_contains($mensaje, 'vendimos hoy') ||
-            str_contains($mensaje, 'ventas de hoy') ||
-            str_contains($mensaje, 'venta de hoy') ||
-            str_contains($mensaje, 'ingresos de hoy') ||
-            str_contains($mensaje, 'ingreso de hoy') ||
-            str_contains($mensaje, 'dinero de hoy') ||
-            str_contains($mensaje, 'ventas del dia') ||
-            str_contains($mensaje, 'cuanto vendimos') ||
-            str_contains($mensaje, 'cuanto hemos vendido')
-        ) {
-            $totalVentas = DB::table('orders')
-                ->whereDate('created_at', Carbon::today())
-                ->sum('total');
-
-            return response()->json([
-                'response' =>
-                    'Hoy el restaurante ha vendido S/ ' .
-                    number_format($totalVentas, 2)
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 3. VENTAS DE ESTA SEMANA
-        |--------------------------------------------------------------------------
+        | IMPORTANTE:
+        | Este bloque va ANTES de ventas de hoy para evitar
+        | que "cuanto vendimos esta semana" sea interpretado
+        | como una consulta de ventas de hoy.
         */
 
         if (
@@ -94,8 +69,14 @@ class ChatbotController extends Controller
             str_contains($mensaje, 'ventas de esta semana') ||
             str_contains($mensaje, 'ventas esta semana') ||
             str_contains($mensaje, 'ingresos de esta semana') ||
+            str_contains($mensaje, 'ingresos esta semana') ||
             str_contains($mensaje, 'venta semanal') ||
-            str_contains($mensaje, 'cuanto vendimos esta semana')
+            str_contains($mensaje, 'cuanto vendimos esta semana') ||
+            str_contains($mensaje, 'cuanto hemos vendido esta semana') ||
+            str_contains($mensaje, 'cuanto se vendio esta semana') ||
+            str_contains($mensaje, 'cuanto hemos vendido en la semana') ||
+            str_contains($mensaje, 'cuanto vendimos en la semana') ||
+            str_contains($mensaje, 'cuanto se vendio en la semana')
         ) {
             $inicioSemana = Carbon::now()->startOfWeek();
             $finSemana = Carbon::now()->endOfWeek();
@@ -116,12 +97,44 @@ class ChatbotController extends Controller
 
         /*
         |--------------------------------------------------------------------------
+        | 3. VENTAS DE HOY
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            str_contains($mensaje, 'vendimos hoy') ||
+            str_contains($mensaje, 'ventas de hoy') ||
+            str_contains($mensaje, 'venta de hoy') ||
+            str_contains($mensaje, 'ingresos de hoy') ||
+            str_contains($mensaje, 'ingreso de hoy') ||
+            str_contains($mensaje, 'dinero de hoy') ||
+            str_contains($mensaje, 'ventas del dia') ||
+            str_contains($mensaje, 'ventas del día') ||
+            str_contains($mensaje, 'cuanto vendimos hoy') ||
+            str_contains($mensaje, 'cuanto hemos vendido hoy') ||
+            str_contains($mensaje, 'cuanto se vendio hoy') ||
+            str_contains($mensaje, 'cuanto se vendio el dia de hoy')
+        ) {
+            $totalVentas = DB::table('orders')
+                ->whereDate('created_at', Carbon::today())
+                ->sum('total');
+
+            return response()->json([
+                'response' =>
+                    'Hoy el restaurante ha vendido S/ ' .
+                    number_format($totalVentas, 2)
+            ]);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
         | 4. PEDIDOS DE HOY
         |--------------------------------------------------------------------------
         */
 
         if (
             str_contains($mensaje, 'cuantos pedidos') ||
+            str_contains($mensaje, 'cuantos pedidos tenemos') ||
             str_contains($mensaje, 'pedidos tenemos') ||
             str_contains($mensaje, 'pedidos de hoy') ||
             str_contains($mensaje, 'pedidos hoy')
@@ -310,7 +323,6 @@ class ChatbotController extends Controller
         */
 
         try {
-
             $ollamaUrl = env(
                 'OLLAMA_URL',
                 'http://localhost:11434'
@@ -347,9 +359,7 @@ Da respuestas claras, naturales, profesionales y prácticas.
 
 No inventes datos específicos del restaurante.
 
-Si el administrador pregunta por cifras, ventas, pedidos,
-stock o productos específicos y no se te proporcionó ese dato,
-indica claramente que ese dato no está disponible.
+Si el administrador pregunta por cifras, ventas, pedidos, stock o productos específicos y no se te proporcionó ese dato, indica claramente que ese dato no está disponible.
 
 No inventes precios ni cantidades.
 
@@ -358,13 +368,11 @@ No menciones Ollama.
 No menciones que eres una inteligencia artificial.
 
 Habla como un asistente interno del restaurante.
-
 PROMPT;
 
             $ollamaResponse = Http::timeout(120)
                 ->post($ollamaUrl . '/api/chat', [
                     'model' => $ollamaModel,
-
                     'messages' => [
                         [
                             'role' => 'system',
@@ -375,7 +383,6 @@ PROMPT;
                             'content' => $message
                         ]
                     ],
-
                     'stream' => false
                 ]);
 
@@ -401,7 +408,6 @@ PROMPT;
             ]);
 
         } catch (\Throwable $e) {
-
             return response()->json([
                 'response' =>
                     'Ocurrió un error al procesar la consulta. Verifica que Ollama esté ejecutándose.'
