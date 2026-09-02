@@ -24,21 +24,16 @@
             <div>
 
                 <h5 class="fw-bold mb-0 text-primary">
-
                     Mesa: {{ $table->name }}
-
                 </h5>
 
                 <small class="text-muted">
-
                     Zona: {{ $table->area->name }}
-
                 </small>
 
             </div>
 
         </div>
-
 
         <div class="d-flex align-items-center gap-2">
 
@@ -50,21 +45,17 @@
                         data-bs-target="#moveTableModal">
 
                     <i class="bi bi-arrow-left-right me-1"></i>
-
                     Mover Mesa
 
                 </button>
 
             @endif
 
-
             <div class="vr mx-2"></div>
-
 
             <span class="badge bg-light text-dark border p-2">
 
                 <i class="bi bi-person-fill me-1"></i>
-
                 {{ auth()->user()->name }}
 
             </span>
@@ -94,11 +85,9 @@
                         id="cat-btn-all">
 
                     <i class="bi bi-grid-fill d-block fs-4 mb-1"></i>
-
                     Todo
 
                 </button>
-
 
                 @foreach($categories as $category)
 
@@ -121,9 +110,7 @@
                         @endif
 
                         <span class="d-block small fw-bold lh-sm">
-
                             {{ $category->name }}
-
                         </span>
 
                     </button>
@@ -142,26 +129,19 @@
         <div class="col-md-7 bg-white overflow-auto h-100 px-3 pb-5"
              id="products-container">
 
-
-            {{-- BUSCADOR --}}
-
             <div class="position-relative mb-3 pt-2">
 
                 <div class="input-group input-group-lg shadow-sm">
 
                     <span class="input-group-text bg-white">
-
                         <i class="bi bi-search text-primary"></i>
-
                     </span>
-
 
                     <input type="text"
                            id="productSearchInput"
                            class="form-control"
                            placeholder="Buscar producto por nombre o categoría..."
                            autocomplete="off">
-
 
                     <button type="button"
                             id="clearProductSearch"
@@ -174,11 +154,9 @@
 
                 </div>
 
-
                 <div id="productSearchResults"
                      class="position-absolute bg-white border rounded shadow-lg w-100 mt-1"
                      style="display: none; z-index: 1050; max-height: 400px; overflow-y: auto;">
-
                 </div>
 
             </div>
@@ -201,11 +179,9 @@
                              data-product-category="{{ $category->name }}"
                              data-product-image="{{ $product->image ? asset('storage/'.$product->image) : '' }}">
 
-
                             <div class="card h-100 border-0 shadow-sm product-card"
                                  onclick="addToOrder({{ $product->id }})"
                                  style="cursor: pointer; transition: transform 0.1s;">
-
 
                                 <div class="position-relative">
 
@@ -283,15 +259,11 @@
                 <i class="bi bi-search fs-1 d-block mb-2 opacity-50"></i>
 
                 <h6 class="fw-bold">
-
                     No se encontraron productos
-
                 </h6>
 
                 <small>
-
                     Intenta buscar con otro nombre o categoría.
-
                 </small>
 
             </div>
@@ -310,13 +282,11 @@
                 <h6 class="fw-bold mb-0">
 
                     <i class="bi bi-cart"></i>
-
                     Cuenta Actual
 
                 </h6>
 
             </div>
-
 
             <div id="cart-container"
                  class="flex-grow-1 d-flex flex-column overflow-hidden">
@@ -351,19 +321,15 @@
             <div class="modal-header py-2 bg-warning">
 
                 <h6 class="modal-title fw-bold text-dark">
-
                     Nota Cocina
-
                 </h6>
 
                 <button type="button"
                         class="btn-close"
                         data-bs-dismiss="modal">
-
                 </button>
 
             </div>
-
 
             <div class="modal-body">
 
@@ -375,7 +341,6 @@
                           rows="3"></textarea>
 
             </div>
-
 
             <div class="modal-footer p-1">
 
@@ -412,19 +377,15 @@
             <div class="modal-header py-2 bg-info text-white">
 
                 <h6 class="modal-title fw-bold">
-
                     Mover Mesa
-
                 </h6>
 
                 <button type="button"
                         class="btn-close btn-close-white"
                         data-bs-dismiss="modal">
-
                 </button>
 
             </div>
-
 
             @if($order)
 
@@ -436,11 +397,8 @@
                     <div class="modal-body">
 
                         <label class="form-label small text-muted">
-
                             Destino:
-
                         </label>
-
 
                         <select name="target_table_id"
                                 class="form-select"
@@ -453,7 +411,6 @@
                                 -- Elegir Mesa --
 
                             </option>
-
 
                             @foreach($freeTables as $ft)
 
@@ -469,7 +426,6 @@
                         </select>
 
                     </div>
-
 
                     <div class="modal-footer p-1">
 
@@ -509,28 +465,22 @@
             <div class="modal-header bg-light py-2">
 
                 <h6 class="modal-title fw-bold">
-
                     Ajustes
-
                 </h6>
 
                 <button type="button"
                         class="btn-close"
                         data-bs-dismiss="modal">
-
                 </button>
 
             </div>
-
 
             <div class="modal-body">
 
                 <div class="mb-3">
 
                     <label class="form-label small fw-bold text-muted">
-
                         Descuento Global
-
                     </label>
 
                     <input type="number"
@@ -542,13 +492,10 @@
 
                 </div>
 
-
                 <div class="mb-3">
 
                     <label class="form-label small fw-bold text-muted">
-
                         Propina
-
                     </label>
 
                     <input type="number"
@@ -561,7 +508,6 @@
                 </div>
 
             </div>
-
 
             <div class="modal-footer p-1">
 
@@ -593,11 +539,12 @@
      tabindex="-1"
      aria-hidden="true">
 
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
 
         <form action="{{ route('pos.checkout', $order->id) }}"
               method="POST"
-              class="modal-content border-0 shadow-lg">
+              class="modal-content border-0 shadow-lg"
+              id="checkoutForm">
 
             @csrf
 
@@ -605,15 +552,13 @@
             <div class="modal-header bg-success text-white py-2">
 
                 <h6 class="modal-title fw-bold">
-
+                    <i class="bi bi-cash-coin me-1"></i>
                     Cobrar Venta
-
                 </h6>
 
                 <button type="button"
                         class="btn-close btn-close-white"
                         data-bs-dismiss="modal">
-
                 </button>
 
             </div>
@@ -622,38 +567,37 @@
             <div class="modal-body p-4">
 
 
-                {{-- CLIENTE --}}
+                {{-- =================================================
+                     CLIENTE
+                ================================================== --}}
 
                 <div class="mb-3">
 
                     <label class="form-label fw-bold small text-muted">
-
                         CLIENTE
-
                     </label>
-
 
                     <div class="input-group">
 
                         <span class="input-group-text bg-light">
 
-                            <i class="bi bi-search"></i>
+                            <i class="bi bi-person"></i>
 
                         </span>
 
 
                         <input type="text"
+                               name="client_name"
                                class="form-control"
                                list="clientsList"
                                id="clientSearchInput"
-                               placeholder="Buscar..."
-                               oninput="searchClient(this)"
+                               placeholder="Nombre del cliente o Público General"
                                autocomplete="off">
 
 
                         <button class="btn btn-light border"
                                 type="button"
-                                onclick="document.getElementById('clientSearchInput').value=''; searchClient({value:''})">
+                                onclick="clearClient()">
 
                             <i class="bi bi-x"></i>
 
@@ -669,7 +613,6 @@
                             <option value="{{ $client->name }}"
                                     data-id="{{ $client->id }}"
                                     data-document="{{ $client->document_number }}">
-
                             </option>
 
                         @endforeach
@@ -681,59 +624,156 @@
                            name="client_id"
                            id="clientId">
 
+                    <small class="text-muted">
+                        Puedes seleccionar un cliente registrado o escribir uno nuevo.
+                    </small>
+
                 </div>
 
 
-                {{-- DOCUMENTO --}}
+                {{-- =================================================
+                     TIPO DE COMPROBANTE
+                ================================================== --}}
 
-                <div class="row g-2 mb-3">
+                <div class="mb-3">
 
-                    <div class="col-8">
+                    <label class="form-label fw-bold small text-muted">
+                        COMPROBANTE
+                    </label>
 
-                        <input type="text"
-                               name="client_document"
-                               id="clientDoc"
-                               class="form-control bg-light"
-                               placeholder="RUC/DNI"
-                               readonly>
+                    <div class="row g-2">
 
-                    </div>
+                        <div class="col-md-4">
 
+                            <input type="radio"
+                                   class="btn-check"
+                                   name="document_type"
+                                   id="documentTicket"
+                                   value="Ticket"
+                                   checked>
 
-                    <div class="col-4">
+                            <label class="btn btn-outline-secondary w-100 fw-bold"
+                                   for="documentTicket">
 
-                        <select name="document_type"
-                                class="form-select fw-bold">
-
-                            <option value="Ticket">
+                                <i class="bi bi-receipt me-1"></i>
                                 Ticket
-                            </option>
 
-                            <option value="Boleta">
+                            </label>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <input type="radio"
+                                   class="btn-check"
+                                   name="document_type"
+                                   id="documentBoleta"
+                                   value="Boleta">
+
+                            <label class="btn btn-outline-primary w-100 fw-bold"
+                                   for="documentBoleta">
+
+                                <i class="bi bi-file-earmark-text me-1"></i>
                                 Boleta
-                            </option>
 
-                            <option value="Factura">
+                            </label>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <input type="radio"
+                                   class="btn-check"
+                                   name="document_type"
+                                   id="documentFactura"
+                                   value="Factura">
+
+                            <label class="btn btn-outline-success w-100 fw-bold"
+                                   for="documentFactura">
+
+                                <i class="bi bi-file-earmark-spreadsheet me-1"></i>
                                 Factura
-                            </option>
 
-                        </select>
+                            </label>
+
+                        </div>
 
                     </div>
 
                 </div>
 
 
-                {{-- MÉTODOS DE PAGO --}}
+                {{-- =================================================
+                     DNI / RUC
+                ================================================== --}}
+
+                <div id="documentGroup"
+                     class="mb-3"
+                     style="display: none;">
+
+                    <label id="clientDocumentLabel"
+                           class="form-label fw-bold small text-muted">
+
+                        DNI
+
+                    </label>
+
+
+                    <input type="text"
+                           name="client_document"
+                           id="clientDoc"
+                           class="form-control form-control-lg"
+                           placeholder="Ingrese DNI"
+                           maxlength="8"
+                           inputmode="numeric"
+                           autocomplete="off">
+
+
+                    <div id="documentHelp"
+                         class="form-text">
+
+                        Ingrese el DNI de 8 dígitos.
+
+                    </div>
+
+                </div>
+
+
+                {{-- =================================================
+                     RAZÓN SOCIAL
+                ================================================== --}}
+
+                <div id="businessNameGroup"
+                     class="mb-3"
+                     style="display: none;">
+
+                    <label class="form-label fw-bold small text-muted">
+
+                        RAZÓN SOCIAL
+
+                    </label>
+
+                    <input type="text"
+                           name="business_name"
+                           id="businessName"
+                           class="form-control form-control-lg"
+                           placeholder="Ingrese la Razón Social"
+                           autocomplete="off">
+
+                </div>
+
+
+                {{-- =================================================
+                     MÉTODOS DE PAGO
+                ================================================== --}}
 
                 <div class="mb-3 text-center">
 
                     <label class="form-label fw-bold small text-muted d-block">
-
                         MÉTODO DE PAGO
-
                     </label>
-
 
                     <div class="btn-group w-100"
                          role="group">
@@ -746,12 +786,12 @@
                                name="payment_method"
                                id="payCash"
                                value="cash"
-                               checked
-                               onclick="togglePaymentMethod('cash')">
+                               checked>
 
                         <label class="btn btn-outline-success fw-bold"
                                for="payCash">
 
+                            <i class="bi bi-cash me-1"></i>
                             Efectivo
 
                         </label>
@@ -763,12 +803,12 @@
                                class="btn-check"
                                name="payment_method"
                                id="payCard"
-                               value="card"
-                               onclick="togglePaymentMethod('card')">
+                               value="card">
 
                         <label class="btn btn-outline-primary fw-bold"
                                for="payCard">
 
+                            <i class="bi bi-credit-card me-1"></i>
                             Tarjeta
 
                         </label>
@@ -780,12 +820,12 @@
                                class="btn-check"
                                name="payment_method"
                                id="payYape"
-                               value="yape"
-                               onclick="togglePaymentMethod('yape')">
+                               value="yape">
 
                         <label class="btn btn-outline-secondary fw-bold"
                                for="payYape">
 
+                            <i class="bi bi-phone me-1"></i>
                             Yape
 
                         </label>
@@ -797,12 +837,12 @@
                                class="btn-check"
                                name="payment_method"
                                id="payPlin"
-                               value="plin"
-                               onclick="togglePaymentMethod('plin')">
+                               value="plin">
 
                         <label class="btn btn-outline-info fw-bold"
                                for="payPlin">
 
+                            <i class="bi bi-phone me-1"></i>
                             Plin
 
                         </label>
@@ -820,38 +860,36 @@
                      class="text-center mb-3"
                      style="display: none;">
 
-
                     <div class="card border-0 shadow-sm bg-light">
 
                         <div class="card-body p-3">
 
-
                             <div id="digitalPaymentTitle"
                                  class="fw-bold fs-5 mb-2">
-
                             </div>
-
 
                             <div id="digitalPaymentQr"
                                  class="d-flex justify-content-center align-items-center">
-
                             </div>
 
-
                             <div class="mt-2 fw-bold">
+
                                 Total a pagar:
+
                                 <span class="text-success">
+
                                     {{ $currency ?? 'S/' }}
+
                                     <span class="digital-payment-total">
                                         {{ number_format($order->total, 2) }}
                                     </span>
-                                </span>
-                            </div>
 
+                                </span>
+
+                            </div>
 
                             <div id="digitalPaymentMessage"
                                  class="small text-muted mt-2">
-
                             </div>
 
                         </div>
@@ -870,14 +908,12 @@
                     <div class="mb-3">
 
                         <label class="form-label fw-bold small">
-
                             Recibido
-
                         </label>
-
 
                         <input type="number"
                                step="0.01"
+                               min="0"
                                name="received_amount"
                                id="receivedAmount"
                                class="form-control text-center fw-bold fs-4 text-success"
@@ -888,14 +924,11 @@
                     </div>
 
 
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between align-items-center">
 
                         <small>
-
                             Cambio:
-
                         </small>
-
 
                         <h4 class="fw-bold mb-0 text-secondary"
                             id="changeAmount">
@@ -921,6 +954,7 @@
                 <button type="submit"
                         class="btn btn-success w-100 btn-lg fw-bold">
 
+                    <i class="bi bi-check-circle me-1"></i>
                     CONFIRMAR PAGO
 
                 </button>
@@ -940,9 +974,11 @@
 
     const tableId = {{ $table->id }};
 
-    const csrfToken = document
-        .querySelector('meta[name="csrf-token"]')
-        .getAttribute('content');
+    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+
+    const csrfToken = csrfMeta
+        ? csrfMeta.getAttribute('content')
+        : '';
 
 
     // =========================================================
@@ -973,16 +1009,27 @@
     }
 
 
+    function escapeHtml(text) {
+
+        const div =
+            document.createElement('div');
+
+        div.textContent =
+            text ?? '';
+
+        return div.innerHTML;
+
+    }
+
+
     function searchProducts() {
 
         if (!productSearchInput) return;
-
 
         const search =
             normalizeText(
                 productSearchInput.value.trim()
             );
-
 
         const items =
             Array.from(
@@ -1016,8 +1063,8 @@
 
             });
 
-
             return;
+
         }
 
 
@@ -1056,9 +1103,7 @@
 
 
                 if (!belongsToCategory) {
-
                     return false;
-
                 }
 
 
@@ -1194,15 +1239,11 @@
                     <div class="flex-grow-1">
 
                         <div class="fw-bold text-dark">
-
                             ${escapeHtml(name)}
-
                         </div>
 
                         <small class="text-muted">
-
                             ${escapeHtml(category)}
-
                         </small>
 
                     </div>
@@ -1210,15 +1251,11 @@
                     <div class="text-end">
 
                         <div class="fw-bold text-primary">
-
                             S/ ${price.toFixed(2)}
-
                         </div>
 
                         <small class="text-muted">
-
                             Stock: ${escapeHtml(stock)}
-
                         </small>
 
                     </div>
@@ -1295,21 +1332,6 @@
     }
 
 
-    function escapeHtml(text) {
-
-        const div =
-            document.createElement('div');
-
-
-        div.textContent =
-            text ?? '';
-
-
-        return div.innerHTML;
-
-    }
-
-
     if (productSearchInput) {
 
         productSearchInput.addEventListener(
@@ -1329,9 +1351,7 @@
 
 
                 if (!results.length) {
-
                     return;
-
                 }
 
 
@@ -1355,7 +1375,6 @@
 
                     currentIndex++;
 
-
                     if (
                         currentIndex >=
                         results.length
@@ -1374,7 +1393,6 @@
 
                     currentIndex--;
 
-
                     if (currentIndex < 0) {
 
                         currentIndex =
@@ -1389,11 +1407,8 @@
 
                     event.preventDefault();
 
-
                     if (active) {
-
                         active.click();
-
                     }
 
                     return;
@@ -1468,9 +1483,7 @@
                 !productSearchResults ||
                 !productSearchInput
             ) {
-
                 return;
-
             }
 
 
@@ -1527,7 +1540,6 @@
                 .getElementById('cart-container')
                 .innerHTML = html;
 
-
             updateCheckoutTotal();
 
         });
@@ -1545,9 +1557,7 @@
             qty < 1 &&
             !confirm('¿Eliminar producto?')
         ) {
-
             return;
-
         }
 
 
@@ -1576,7 +1586,6 @@
             document
                 .getElementById('cart-container')
                 .innerHTML = html;
-
 
             updateCheckoutTotal();
 
@@ -1608,7 +1617,6 @@
             document
                 .getElementById('cart-container')
                 .innerHTML = html;
-
 
             updateCheckoutTotal();
 
@@ -1647,7 +1655,9 @@
             );
 
 
-        modal.hide();
+        if (modal) {
+            modal.hide();
+        }
 
 
         fetch(
@@ -1680,7 +1690,6 @@
                     'cart-container'
                 )
                 .innerHTML = html;
-
 
             updateCheckoutTotal();
 
@@ -1756,14 +1765,16 @@
 
         setTimeout(() => {
 
-            var newTotal =
+            var cartTotalElement =
                 document.getElementById(
                     'cartTotalValue'
-                )
-                ? document.getElementById(
-                    'cartTotalValue'
-                ).value
-                : 0;
+                );
+
+
+            var newTotal =
+                cartTotalElement
+                    ? cartTotalElement.value
+                    : 0;
 
 
             var hiddenInput =
@@ -1785,9 +1796,16 @@
 
             }
 
-            // Actualizar el total mostrado en Yape/Plin
-            if (typeof updateDigitalPaymentTotal === 'function') {
-                updateDigitalPaymentTotal(newTotal);
+
+            if (
+                typeof updateDigitalPaymentTotal ===
+                'function'
+            ) {
+
+                updateDigitalPaymentTotal(
+                    newTotal
+                );
+
             }
 
 
@@ -1831,6 +1849,11 @@
 
                 var button =
                     event.relatedTarget;
+
+
+                if (!button) {
+                    return;
+                }
 
 
                 document.getElementById(
@@ -1885,7 +1908,9 @@
             );
 
 
-        modal.hide();
+        if (modal) {
+            modal.hide();
+        }
 
 
         fetch(
@@ -1922,7 +1947,7 @@
 
 
     // =========================================================
-    // COBRO - YAPE / PLIN / EFECTIVO
+    // YAPE / PLIN
     // =========================================================
 
     window.updateDigitalPaymentTotal = function(total) {
@@ -1930,8 +1955,11 @@
         document
             .querySelectorAll('.digital-payment-total')
             .forEach(function(element) {
+
                 element.innerText =
-                    parseFloat(total || 0).toFixed(2);
+                    parseFloat(total || 0)
+                    .toFixed(2);
+
             });
 
     };
@@ -1944,25 +1972,30 @@
                 'cashInputGroup'
             );
 
+
         var digitalGroup =
             document.getElementById(
                 'digitalPaymentGroup'
             );
+
 
         var digitalTitle =
             document.getElementById(
                 'digitalPaymentTitle'
             );
 
+
         var digitalQr =
             document.getElementById(
                 'digitalPaymentQr'
             );
 
+
         var digitalMessage =
             document.getElementById(
                 'digitalPaymentMessage'
             );
+
 
         if (
             !cashGroup ||
@@ -1975,10 +2008,6 @@
         }
 
 
-        // -----------------------------------------------------
-        // EFECTIVO
-        // -----------------------------------------------------
-
         if (method === 'cash') {
 
             cashGroup.style.display =
@@ -1987,13 +2016,12 @@
             digitalGroup.style.display =
                 'none';
 
+            calculateChange();
+
             return;
+
         }
 
-
-        // -----------------------------------------------------
-        // TARJETA
-        // -----------------------------------------------------
 
         if (method === 'card') {
 
@@ -2004,12 +2032,9 @@
                 'none';
 
             return;
+
         }
 
-
-        // -----------------------------------------------------
-        // YAPE
-        // -----------------------------------------------------
 
         if (method === 'yape') {
 
@@ -2019,8 +2044,10 @@
             digitalGroup.style.display =
                 'block';
 
+
             digitalTitle.innerHTML =
                 '<i class="bi bi-phone me-1"></i> Pago con Yape';
+
 
             @if(!empty($settings['yape_qr']))
 
@@ -2039,8 +2066,11 @@
 
                 digitalQr.innerHTML = `
                     <div class="alert alert-warning mb-0">
+
                         <i class="bi bi-exclamation-triangle me-1"></i>
+
                         No hay un QR de Yape configurado.
+
                     </div>
                 `;
 
@@ -2049,17 +2079,18 @@
 
             @endif
 
+
             updateDigitalPaymentTotal(
-                document.getElementById('hiddenTotal')?.value || 0
+                document.getElementById(
+                    'hiddenTotal'
+                )?.value || 0
             );
 
+
             return;
+
         }
 
-
-        // -----------------------------------------------------
-        // PLIN
-        // -----------------------------------------------------
 
         if (method === 'plin') {
 
@@ -2069,8 +2100,10 @@
             digitalGroup.style.display =
                 'block';
 
+
             digitalTitle.innerHTML =
                 '<i class="bi bi-phone me-1"></i> Pago con Plin';
+
 
             @if(!empty($settings['plin_qr']))
 
@@ -2089,8 +2122,11 @@
 
                 digitalQr.innerHTML = `
                     <div class="alert alert-warning mb-0">
+
                         <i class="bi bi-exclamation-triangle me-1"></i>
+
                         No hay un QR de Plin configurado.
+
                     </div>
                 `;
 
@@ -2099,17 +2135,25 @@
 
             @endif
 
+
             updateDigitalPaymentTotal(
-                document.getElementById('hiddenTotal')?.value || 0
+                document.getElementById(
+                    'hiddenTotal'
+                )?.value || 0
             );
 
+
             return;
+
         }
 
     };
 
 
-    // Mantener compatibilidad con la función anterior
+    // =========================================================
+    // COMPATIBILIDAD
+    // =========================================================
+
     window.toggleCashInput = function(show) {
 
         var cashGroup =
@@ -2157,9 +2201,7 @@
             !receivedAmount ||
             !changeAmount
         ) {
-
             return;
-
         }
 
 
@@ -2175,16 +2217,41 @@
             ) || 0;
 
 
+        var change =
+            received - total;
+
+
         changeAmount.innerText =
-            (
-                received - total
-            ).toFixed(2);
+            change.toFixed(2);
+
+
+        if (change < 0) {
+
+            changeAmount.classList.remove(
+                'text-secondary'
+            );
+
+            changeAmount.classList.add(
+                'text-danger'
+            );
+
+        } else {
+
+            changeAmount.classList.remove(
+                'text-danger'
+            );
+
+            changeAmount.classList.add(
+                'text-success'
+            );
+
+        }
 
     };
 
 
     // =========================================================
-    // BUSCAR CLIENTE
+    // BUSCAR CLIENTE REGISTRADO
     // =========================================================
 
     window.searchClient = function(input) {
@@ -2195,20 +2262,34 @@
             );
 
 
-        if (
-            !list ||
-            input.value === ''
-        ) {
-
+        var clientId =
             document.getElementById(
                 'clientId'
-            ).value = '';
+            );
 
 
+        var clientDoc =
             document.getElementById(
                 'clientDoc'
-            ).value = '';
+            );
 
+
+        if (
+            !list ||
+            !clientId ||
+            !clientDoc
+        ) {
+            return;
+        }
+
+
+        var value =
+            (input.value || '').trim();
+
+
+        if (value === '') {
+
+            clientId.value = '';
 
             return;
 
@@ -2223,28 +2304,290 @@
 
             if (
                 list.options[i].value ===
-                input.value
+                value
             ) {
 
-                document.getElementById(
-                    'clientId'
-                ).value =
+                clientId.value =
                     list.options[i]
                         .getAttribute(
                             'data-id'
-                        );
+                        ) || '';
 
 
-                document.getElementById(
-                    'clientDoc'
-                ).value =
+                var registeredDocument =
                     list.options[i]
                         .getAttribute(
                             'data-document'
-                        );
+                        ) || '';
 
 
-                break;
+                if (registeredDocument) {
+
+                    clientDoc.value =
+                        registeredDocument;
+
+                }
+
+
+                return;
+
+            }
+
+        }
+
+
+        // Cliente nuevo escrito manualmente.
+        // No borramos el DNI/RUC.
+
+        clientId.value = '';
+
+    };
+
+
+    // =========================================================
+    // LIMPIAR CLIENTE
+    // =========================================================
+
+    window.clearClient = function() {
+
+        var input =
+            document.getElementById(
+                'clientSearchInput'
+            );
+
+
+        var clientId =
+            document.getElementById(
+                'clientId'
+            );
+
+
+        var clientDoc =
+            document.getElementById(
+                'clientDoc'
+            );
+
+
+        if (input) {
+            input.value = '';
+        }
+
+
+        if (clientId) {
+            clientId.value = '';
+        }
+
+
+        if (clientDoc) {
+            clientDoc.value = '';
+        }
+
+
+        if (input) {
+            input.focus();
+        }
+
+    };
+
+
+    // =========================================================
+    // TIPO DE COMPROBANTE
+    // =========================================================
+
+    window.updateDocumentFields = function() {
+
+        var documentType =
+            document.querySelector(
+                'input[name="document_type"]:checked'
+            );
+
+
+        var documentGroup =
+            document.getElementById(
+                'documentGroup'
+            );
+
+
+        var documentLabel =
+            document.getElementById(
+                'clientDocumentLabel'
+            );
+
+
+        var documentInput =
+            document.getElementById(
+                'clientDoc'
+            );
+
+
+        var documentHelp =
+            document.getElementById(
+                'documentHelp'
+            );
+
+
+        var businessGroup =
+            document.getElementById(
+                'businessNameGroup'
+            );
+
+
+        var businessInput =
+            document.getElementById(
+                'businessName'
+            );
+
+
+        if (
+            !documentType ||
+            !documentGroup ||
+            !documentInput
+        ) {
+            return;
+        }
+
+
+        var type =
+            documentType.value;
+
+
+        // TICKET
+
+        if (type === 'Ticket') {
+
+            documentGroup.style.display =
+                'none';
+
+            businessGroup.style.display =
+                'none';
+
+
+            documentInput.value =
+                '';
+
+            documentInput.removeAttribute(
+                'required'
+            );
+
+
+            if (businessInput) {
+
+                businessInput.value =
+                    '';
+
+                businessInput.removeAttribute(
+                    'required'
+                );
+
+            }
+
+
+            return;
+
+        }
+
+
+        // BOLETA
+
+        if (type === 'Boleta') {
+
+            documentGroup.style.display =
+                'block';
+
+            businessGroup.style.display =
+                'none';
+
+
+            documentLabel.innerText =
+                'DNI';
+
+
+            documentInput.placeholder =
+                'Ingrese DNI de 8 dígitos';
+
+
+            documentInput.maxLength =
+                8;
+
+
+            documentInput.setAttribute(
+                'maxlength',
+                '8'
+            );
+
+
+            documentInput.setAttribute(
+                'required',
+                'required'
+            );
+
+
+            documentHelp.innerText =
+                'El DNI debe tener exactamente 8 dígitos.';
+
+
+            if (businessInput) {
+
+                businessInput.value =
+                    '';
+
+                businessInput.removeAttribute(
+                    'required'
+                );
+
+            }
+
+
+            return;
+
+        }
+
+
+        // FACTURA
+
+        if (type === 'Factura') {
+
+            documentGroup.style.display =
+                'block';
+
+            businessGroup.style.display =
+                'block';
+
+
+            documentLabel.innerText =
+                'RUC';
+
+
+            documentInput.placeholder =
+                'Ingrese RUC de 11 dígitos';
+
+
+            documentInput.maxLength =
+                11;
+
+
+            documentInput.setAttribute(
+                'maxlength',
+                '11'
+            );
+
+
+            documentInput.setAttribute(
+                'required',
+                'required'
+            );
+
+
+            documentHelp.innerText =
+                'El RUC debe tener exactamente 11 dígitos.';
+
+
+            if (businessInput) {
+
+                businessInput.setAttribute(
+                    'required',
+                    'required'
+                );
 
             }
 
@@ -2254,7 +2597,309 @@
 
 
     // =========================================================
-    // CALCULAR CAMBIO AL CARGAR
+    // SOLO NÚMEROS EN DNI / RUC
+    // =========================================================
+
+    document.addEventListener(
+        'input',
+        function(event) {
+
+            if (
+                event.target &&
+                event.target.id === 'clientDoc'
+            ) {
+
+                event.target.value =
+                    event.target.value
+                        .replace(/\D/g, '');
+
+            }
+
+        }
+    );
+
+
+    // =========================================================
+    // VALIDAR COBRO
+    // =========================================================
+
+    var checkoutForm =
+        document.getElementById(
+            'checkoutForm'
+        );
+
+
+    if (checkoutForm) {
+
+        checkoutForm.addEventListener(
+            'submit',
+            function(event) {
+
+                var documentType =
+                    document.querySelector(
+                        'input[name="document_type"]:checked'
+                    );
+
+
+                var clientName =
+                    document.getElementById(
+                        'clientSearchInput'
+                    );
+
+
+                var clientDocument =
+                    document.getElementById(
+                        'clientDoc'
+                    );
+
+
+                var businessName =
+                    document.getElementById(
+                        'businessName'
+                    );
+
+
+                var paymentMethod =
+                    document.querySelector(
+                        'input[name="payment_method"]:checked'
+                    );
+
+
+                if (!documentType) {
+                    return;
+                }
+
+
+                var type =
+                    documentType.value;
+
+
+                var name =
+                    clientName
+                        ? clientName.value.trim()
+                        : '';
+
+
+                var documentNumber =
+                    clientDocument
+                        ? clientDocument.value.trim()
+                        : '';
+
+
+                var business =
+                    businessName
+                        ? businessName.value.trim()
+                        : '';
+
+
+                // BOLETA
+
+                if (type === 'Boleta') {
+
+                    if (name === '') {
+
+                        event.preventDefault();
+
+                        alert(
+                            'Para emitir una Boleta debe ingresar el nombre del cliente.'
+                        );
+
+                        clientName.focus();
+
+                        return;
+
+                    }
+
+
+                    if (!/^\d{8}$/.test(documentNumber)) {
+
+                        event.preventDefault();
+
+                        alert(
+                            'El DNI debe tener exactamente 8 dígitos.'
+                        );
+
+                        clientDocument.focus();
+
+                        return;
+
+                    }
+
+                }
+
+
+                // FACTURA
+
+                if (type === 'Factura') {
+
+                    if (name === '') {
+
+                        event.preventDefault();
+
+                        alert(
+                            'Para emitir una Factura debe ingresar el nombre del cliente.'
+                        );
+
+                        clientName.focus();
+
+                        return;
+
+                    }
+
+
+                    if (!/^\d{11}$/.test(documentNumber)) {
+
+                        event.preventDefault();
+
+                        alert(
+                            'El RUC debe tener exactamente 11 dígitos.'
+                        );
+
+                        clientDocument.focus();
+
+                        return;
+
+                    }
+
+
+                    if (business === '') {
+
+                        event.preventDefault();
+
+                        alert(
+                            'Para emitir una Factura debe ingresar la Razón Social.'
+                        );
+
+                        businessName.focus();
+
+                        return;
+
+                    }
+
+                }
+
+
+                // EFECTIVO
+
+                if (
+                    paymentMethod &&
+                    paymentMethod.value === 'cash'
+                ) {
+
+                    var total =
+                        parseFloat(
+                            document.getElementById(
+                                'hiddenTotal'
+                            )?.value || 0
+                        );
+
+
+                    var received =
+                        parseFloat(
+                            document.getElementById(
+                                'receivedAmount'
+                            )?.value || 0
+                        );
+
+
+                    if (received < total) {
+
+                        event.preventDefault();
+
+                        alert(
+                            'El monto recibido es menor que el total de la venta.'
+                        );
+
+                        document.getElementById(
+                            'receivedAmount'
+                        ).focus();
+
+                        return;
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+
+    // =========================================================
+    // EVENTOS DEL COMPROBANTE
+    // =========================================================
+
+    document.querySelectorAll(
+        'input[name="document_type"]'
+    ).forEach(function(radio) {
+
+        radio.addEventListener(
+            'change',
+            updateDocumentFields
+        );
+
+    });
+
+
+    // =========================================================
+    // EVENTOS MÉTODO DE PAGO
+    // =========================================================
+
+    document.querySelectorAll(
+        'input[name="payment_method"]'
+    ).forEach(function(radio) {
+
+        radio.addEventListener(
+            'change',
+            function() {
+
+                togglePaymentMethod(
+                    this.value
+                );
+
+            }
+        );
+
+    });
+
+
+    // =========================================================
+    // CLIENTE
+    // =========================================================
+
+    var clientSearchInput =
+        document.getElementById(
+            'clientSearchInput'
+        );
+
+
+    if (clientSearchInput) {
+
+        clientSearchInput.addEventListener(
+            'input',
+            function() {
+
+                searchClient(this);
+
+            }
+        );
+
+
+        clientSearchInput.addEventListener(
+            'change',
+            function() {
+
+                searchClient(this);
+
+            }
+        );
+
+    }
+
+
+    // =========================================================
+    // INICIALIZACIÓN
     // =========================================================
 
     document.addEventListener(
@@ -2271,13 +2916,29 @@
 
             }
 
+
             if (
-                document.getElementById(
-                    'payCash'
+                document.querySelector(
+                    'input[name="document_type"]'
                 )
             ) {
 
-                togglePaymentMethod('cash');
+                updateDocumentFields();
+
+            }
+
+
+            var checkedPayment =
+                document.querySelector(
+                    'input[name="payment_method"]:checked'
+                );
+
+
+            if (checkedPayment) {
+
+                togglePaymentMethod(
+                    checkedPayment.value
+                );
 
             }
 
@@ -2292,7 +2953,6 @@
     .product-card:active {
 
         transform: scale(0.95);
-
         background-color: #f8f9fa;
 
     }
@@ -2319,6 +2979,28 @@
         box-shadow:
             0 0 0 0.2rem
             rgba(13, 110, 253, 0.15);
+
+    }
+
+
+    #clientDoc {
+
+        letter-spacing: 1px;
+
+    }
+
+
+    #businessName {
+
+        text-transform: uppercase;
+
+    }
+
+
+    #checkoutModal .btn-check:checked + label {
+
+        box-shadow:
+            0 0 0 2px rgba(0, 0, 0, 0.15);
 
     }
 

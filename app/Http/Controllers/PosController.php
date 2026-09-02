@@ -11,13 +11,16 @@ use App\Models\OrderDetail;
 use App\Models\InventoryLog;
 use App\Models\Client;
 use App\Models\Setting;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PosController extends Controller
 {
+    /**
+     * Pantalla principal del POS.
+     */
     public function index()
     {
         $areas = Area::with([
@@ -26,22 +29,15 @@ class PosController extends Controller
                     'orders' => function ($q) {
                         $q->where('status', 'pending');
                     },
-
                     'reservations' => function ($q) {
                         $q->where('status', 'confirmed')
-                            ->whereDate(
-                                'reservation_time',
-                                Carbon::today()
-                            )
+                            ->whereDate('reservation_time', Carbon::today())
                             ->where(
                                 'reservation_time',
                                 '>=',
                                 Carbon::now()->subHours(2)
                             )
-                            ->orderBy(
-                                'reservation_time',
-                                'asc'
-                            );
+                            ->orderBy('reservation_time', 'asc');
                     }
                 ]);
             }
@@ -54,115 +50,54 @@ class PosController extends Controller
 
         return view(
             'pos.index',
-            compact(
-                'areas',
-                'currency'
-            )
+            compact('areas', 'currency')
         );
     }
 
-
+    /**
+     * Abrir una mesa en el POS.
+     */
     public function order(Table $table)
     {
-        // =========================================================
-        // PRODUCTOS
-        // =========================================================
-
         $categories = Category::with([
             'products' => function ($q) {
-                $q->where(
-                    'is_active',
-                    true
-                )->where(
-                    'is_saleable',
-                    true
-                );
+                $q->where('is_active', true)
+                    ->where('is_saleable', true);
             }
-        ])->where(
-            'is_active',
-            true
-        )->get();
+        ])
+            ->where('is_active', true)
+            ->get();
 
-
-        // =========================================================
-        // ORDEN ACTUAL
-        // =========================================================
-
-        $order = Order::where(
-            'table_id',
-            $table->id
-        )
-            ->where(
-                'status',
-                'pending'
-            )
-            ->with(
-                'details.product'
-            )
+        $order = Order::where('table_id', $table->id)
+            ->where('status', 'pending')
+            ->with('details.product')
             ->first();
 
-
-        // =========================================================
-        // MESAS LIBRES
-        // =========================================================
-
-        $occupiedTableIds = Order::where(
-            'status',
-            'pending'
-        )->pluck(
-            'table_id'
-        );
+        $occupiedTableIds = Order::where('status', 'pending')
+            ->pluck('table_id');
 
         $freeTables = Table::whereNotIn(
             'id',
             $occupiedTableIds
         )
-            ->where(
-                'id',
-                '!=',
-                $table->id
-            )
-            ->with(
-                'area'
-            )
+            ->where('id', '!=', $table->id)
+            ->with('area')
             ->get();
-
-
-        // =========================================================
-        // CLIENTES
-        // =========================================================
 
         $clients = Client::select(
             'id',
             'name',
             'document_number'
         )
-            ->orderBy(
-                'name'
-            )
+            ->orderBy('name')
             ->get();
-
-
-        // =========================================================
-        // CONFIGURACIÓN
-        // =========================================================
 
         $settings = Setting::pluck(
             'value',
             'key'
         )->toArray();
 
-
-        // =========================================================
-        // MONEDA
-        // =========================================================
-
         $currency = $settings['currency_symbol'] ?? 'S/';
-
-
-        // =========================================================
-        // POS
-        // =========================================================
 
         return view(
             'pos.order',
@@ -178,135 +113,117 @@ class PosController extends Controller
         );
     }
 
-
-    // =============================================================
-    // AGREGAR PRODUCTO
-    // =============================================================
-
+    /**
+     * Agregar producto a la orden.
+     */
     public function addToOrder(
         Request $request,
         Table $table
     ) {
+        $request->validate([
+            'product_id' => 'required|exists:products,id'
+        ]);
+
         $product = Product::findOrFail(
             $request->product_id
         );
+
+        if (!$product->is_active || !$product->is_saleable) {
+            return response()->json([
+                'success' => false,
+                'message' => 'El producto no está disponible para la venta.'
+            ], 422);
+        }
 
         $this->addItemToTable(
             $table,
             $product
         );
 
-        return $this->getCartHtml(
-            $table
-        );
+        return $this->getCartHtml($table);
     }
 
-
-    // =============================================================
-    // LÓGICA PARA AGREGAR PRODUCTO
-    // =============================================================
-
+    /**
+     * Lógica para agregar producto.
+     */
     private function addItemToTable(
         Table $table,
         Product $product
     ) {
-        DB::transaction(
-            function () use (
-                $table,
-                $product
-            ) {
+        DB::transaction(function () use (
+            $table,
+            $product
+        ) {
+            $order = Order::firstOrCreate(
+                [
+                    'table_id' => $table->id,
+                    'status' => 'pending'
+                ],
+                [
+                    'user_id' => Auth::id() ?? 1,
+                    'total' => 0,
+                    'discount' => 0,
+                    'tip' => 0
+                ]
+            );
 
-                $order = Order::firstOrCreate(
-                    [
-                        'table_id' => $table->id,
-                        'status' => 'pending'
-                    ],
-                    [
-                        'user_id' => auth()->id() ?? 1,
-                        'total' => 0
-                    ]
-                );
+            $detail = $order->details()
+                ->where('product_id', $product->id)
+                ->first();
 
-
-                $detail = $order->details()
-                    ->where(
-                        'product_id',
-                        $product->id
-                    )
-                    ->first();
-
-
-                if ($detail) {
-
-                    $detail->increment(
-                        'quantity'
-                    );
-
-                } else {
-
-                    $order->details()->create([
-                        'product_id' => $product->id,
-                        'quantity' => 1,
-                        'price' => $product->price,
-                        'status' => 'pending'
-                    ]);
-                }
-
-
-                $this->recalculateTotal(
-                    $order
-                );
+            if ($detail) {
+                $detail->increment('quantity');
+            } else {
+                $order->details()->create([
+                    'product_id' => $product->id,
+                    'quantity' => 1,
+                    'price' => $product->price,
+                    'status' => 'pending'
+                ]);
             }
-        );
+
+            $this->recalculateTotal($order);
+        });
     }
 
-
-    // =============================================================
-    // ACTUALIZAR CANTIDAD
-    // =============================================================
-
+    /**
+     * Actualizar cantidad.
+     */
     public function updateQuantity(
         Request $request,
         OrderDetail $detail
     ) {
-        $newQty = $request->quantity;
+        $request->validate([
+            'quantity' => 'required|integer|min:0'
+        ]);
 
+        $newQty = (int) $request->quantity;
         $order = $detail->order;
 
-
         if ($newQty < 1) {
-
             $detail->delete();
-
         } else {
-
             $detail->update([
                 'quantity' => $newQty
             ]);
         }
 
-
-        $this->recalculateTotal(
-            $order
-        );
-
+        $this->recalculateTotal($order);
 
         return $this->getCartHtml(
             $order->table
         );
     }
 
-
-    // =============================================================
-    // ACTUALIZAR NOTA
-    // =============================================================
-
+    /**
+     * Actualizar nota.
+     */
     public function updateNote(
         Request $request,
         OrderDetail $detail
     ) {
         $detail->update([
-            'note' => $request->note
+            'note' => $request->input('note')
         ]);
 
         return $this->getCartHtml(
@@ -314,11 +231,9 @@ class PosController extends Controller
         );
     }
 
-
-    // =============================================================
-    // ELIMINAR ITEM
-    // =============================================================
-
+    /**
+     * Eliminar producto.
+     */
     public function removeItem(
         OrderDetail $detail
     ) {
@@ -326,74 +241,61 @@ class PosController extends Controller
 
         $detail->delete();
 
-        $this->recalculateTotal(
-            $order
-        );
+        $this->recalculateTotal($order);
 
         return $this->getCartHtml(
             $order->table
         );
     }
 
-
-    // =============================================================
-    // DESCUENTO Y PROPINA
-    // =============================================================
-
+    /**
+     * Aplicar descuento y propina.
+     */
     public function applyDiscount(
         Request $request,
         Order $order
     ) {
-        $order->discount =
-            $request->input(
-                'discount',
-                0
-            );
-
-        $order->tip =
-            $request->input(
-                'tip',
-                0
-            );
-
-        $order->save();
-
-        $this->recalculateTotal(
-            $order
+        $discount = max(
+            0,
+            (float) $request->input('discount', 0)
         );
+
+        $tip = max(
+            0,
+            (float) $request->input('tip', 0)
+        );
+
+        $order->update([
+            'discount' => $discount,
+            'tip' => $tip
+        ]);
+
+        $this->recalculateTotal($order);
 
         return $this->getCartHtml(
             $order->table
         );
     }
 
-
-    // =============================================================
-    // MOVER MESA
-    // =============================================================
-
+    /**
+     * Mover mesa.
+     */
     public function moveTable(
         Request $request,
         Order $order
     ) {
         $request->validate([
-            'target_table_id' =>
-                'required|exists:tables,id'
+            'target_table_id' => 'required|exists:tables,id'
         ]);
 
+        $occupied = Order::where(
+            'table_id',
+            $request->target_table_id
+        )
+            ->where('status', 'pending')
+            ->exists();
 
-        if (
-            Order::where(
-                'table_id',
-                $request->target_table_id
-            )
-            ->where(
-                'status',
-                'pending'
-            )
-            ->exists()
-        ) {
-
+        if ($occupied) {
             return redirect()
                 ->back()
                 ->with(
@@ -402,12 +304,9 @@ class PosController extends Controller
                 );
         }
 
-
-        $order->table_id =
-            $request->target_table_id;
-
-        $order->save();
-
+        $order->update([
+            'table_id' => $request->target_table_id
+        ]);
 
         return redirect()->route(
             'pos.order',
@@ -415,11 +314,9 @@ class PosController extends Controller
         );
     }
 
-
-    // =============================================================
-    // DIVIDIR CUENTA
-    // =============================================================
-
+    /**
+     * Contenido para dividir cuenta.
+     */
     public function getSplitContent(
         Order $order
     ) {
@@ -429,7 +326,9 @@ class PosController extends Controller
         );
     }
 
-
+    /**
+     * Procesar división de cuenta.
+     */
     public function processSplit(
         Request $request,
         Order $order
@@ -437,11 +336,9 @@ class PosController extends Controller
         return redirect()->back();
     }
 
-
-    // =============================================================
-    // PRECHECK
-    // =============================================================
-
+    /**
+     * Previsualización de venta.
+     */
     public function precheck(
         Order $order
     ) {
@@ -459,11 +356,9 @@ class PosController extends Controller
         );
     }
 
-
-    // =============================================================
-    // TICKET COCINA
-    // =============================================================
-
+    /**
+     * Ticket para cocina.
+     */
     public function kitchenTicket(
         Order $order
     ) {
@@ -473,24 +368,31 @@ class PosController extends Controller
         );
     }
 
-
-    // =============================================================
-    // COBRAR ORDEN
-    // =============================================================
-
+    /**
+     * COBRAR ORDEN.
+     *
+     * Soporta:
+     * - Ticket
+     * - Boleta + DNI
+     * - Factura + RUC + Razón Social
+     * - Efectivo
+     * - Yape
+     * - Plin
+     * - Tarjeta
+     * - Transferencia
+     * - QR
+     */
     public function checkout(
         Request $request,
         Order $order
     ) {
+        /*
+        |--------------------------------------------------------------------------
+        | 1. VERIFICAR ESTADO
+        |--------------------------------------------------------------------------
+        */
 
-        // ---------------------------------------------------------
-        // VERIFICAR QUE LA ORDEN SIGA PENDIENTE
-        // ---------------------------------------------------------
-
-        if (
-            $order->status !== 'pending'
-        ) {
-
+        if ($order->status !== 'pending') {
             return redirect()
                 ->route('pos.index')
                 ->with(
@@ -499,351 +401,580 @@ class PosController extends Controller
                 );
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | 2. TIPO DE COMPROBANTE
+        |--------------------------------------------------------------------------
+        */
 
-        // ---------------------------------------------------------
-        // MÉTODO DE PAGO
-        // ---------------------------------------------------------
-
-        $method = $request->input(
-            'payment_method',
-            'cash'
+        $documentType = trim(
+            $request->input(
+                'document_type',
+                'Ticket'
+            )
         );
 
+        $validDocumentTypes = [
+            'Ticket',
+            'Boleta',
+            'Factura'
+        ];
 
-        // ---------------------------------------------------------
-        // MONTO RECIBIDO
-        // ---------------------------------------------------------
+        if (!in_array(
+            $documentType,
+            $validDocumentTypes,
+            true
+        )) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'El tipo de comprobante no es válido.'
+                );
+        }
 
-        $received =
-            $method === 'cash'
-                ? $request->input(
-                    'received_amount'
+        /*
+        |--------------------------------------------------------------------------
+        | 3. MÉTODO DE PAGO
+        |--------------------------------------------------------------------------
+        */
+
+        $method = strtolower(
+            trim(
+                $request->input(
+                    'payment_method',
+                    'cash'
                 )
-                : $order->total;
+            )
+        );
 
+        $validPaymentMethods = [
+            'cash',
+            'yape',
+            'plin',
+            'card',
+            'transfer',
+            'qr'
+        ];
 
-        // ---------------------------------------------------------
-        // VALIDAR MONTO RECIBIDO
-        // ---------------------------------------------------------
+        if (!in_array(
+            $method,
+            $validPaymentMethods,
+            true
+        )) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'El método de pago no es válido.'
+                );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | 4. DATOS DEL CLIENTE
+        |--------------------------------------------------------------------------
+        */
+
+        $clientId = $request->input('client_id');
+
+        $client = null;
+
+        if ($clientId) {
+            $client = Client::find($clientId);
+
+            if (!$client) {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'El cliente seleccionado no existe.'
+                    );
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | NOMBRE DEL CLIENTE
+        |--------------------------------------------------------------------------
+        */
+
+        $clientName = $client
+            ? trim($client->name)
+            : trim(
+                $request->input(
+                    'client_name',
+                    ''
+                )
+            );
+
+        /*
+        |--------------------------------------------------------------------------
+        | DNI / RUC
+        |--------------------------------------------------------------------------
+        */
+
+        $clientDocument = trim(
+            (string) $request->input(
+                'client_document',
+                ''
+            )
+        );
+
+        /*
+        | Si se seleccionó un cliente registrado y
+        | el campo está vacío, utilizar su documento.
+        */
+        if (
+            $clientDocument === '' &&
+            $client &&
+            !empty($client->document_number)
+        ) {
+            $clientDocument = trim(
+                (string) $client->document_number
+            );
+        }
+
+        /*
+        | Solo permitir números.
+        */
+        $clientDocument = preg_replace(
+            '/\D/',
+            '',
+            $clientDocument
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | RAZÓN SOCIAL
+        |--------------------------------------------------------------------------
+        */
+
+        $businessName = trim(
+            $request->input(
+                'business_name',
+                ''
+            )
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | 5. TICKET
+        |--------------------------------------------------------------------------
+        */
+
+        if ($documentType === 'Ticket') {
+            $clientDocument = null;
+            $businessName = null;
+
+            if ($clientName === '') {
+                $clientName = 'Público General';
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | 6. BOLETA
+        |--------------------------------------------------------------------------
+        */
+
+        if ($documentType === 'Boleta') {
+            if ($clientName === '') {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Para una Boleta debe ingresar el nombre del cliente.'
+                    );
+            }
+
+            if (!preg_match(
+                '/^\d{8}$/',
+                $clientDocument
+            )) {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'El DNI debe tener exactamente 8 dígitos.'
+                    );
+            }
+
+            $businessName = null;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | 7. FACTURA
+        |--------------------------------------------------------------------------
+        */
+
+        if ($documentType === 'Factura') {
+            if ($clientName === '') {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Para una Factura debe ingresar el nombre del cliente.'
+                    );
+            }
+
+            if (!preg_match(
+                '/^\d{11}$/',
+                $clientDocument
+            )) {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'El RUC debe tener exactamente 11 dígitos.'
+                    );
+            }
+
+            if ($businessName === '') {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Para una Factura debe ingresar la Razón Social.'
+                    );
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | 8. MONTO RECIBIDO
+        |--------------------------------------------------------------------------
+        */
+
+        $total = (float) $order->total;
+
+        if ($method === 'cash') {
+            $received = (float) $request->input(
+                'received_amount',
+                0
+            );
+        } else {
+            $received = $total;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | 9. VALIDAR EFECTIVO
+        |--------------------------------------------------------------------------
+        */
 
         if (
             $method === 'cash' &&
-            (
-                is_null($received) ||
-                $received < $order->total
-            )
+            $received < $total
         ) {
-
             return redirect()
                 ->back()
+                ->withInput()
                 ->with(
                     'error',
                     'El monto recibido es insuficiente para completar el pago.'
                 );
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | 10. CALCULAR CAMBIO
+        |--------------------------------------------------------------------------
+        */
 
-        // ---------------------------------------------------------
-        // CALCULAR CAMBIO
-        // ---------------------------------------------------------
+        $change = $method === 'cash'
+            ? max(
+                0,
+                $received - $total
+            )
+            : 0;
 
-        $change = max(
-            0,
-            $received - $order->total
-        );
+        /*
+        |--------------------------------------------------------------------------
+        | 11. GUARDAR VENTA
+        |--------------------------------------------------------------------------
+        */
 
+        DB::transaction(function () use (
+            $order,
+            $method,
+            $received,
+            $change,
+            $clientId,
+            $clientName,
+            $clientDocument,
+            $documentType,
+            $businessName
+        ) {
+            /*
+            | Guardar información de la venta.
+            */
+            $order->update([
+                'status' => 'completed',
+                'payment_method' => $method,
+                'received_amount' => $received,
+                'change_amount' => $change,
+                'document_type' => $documentType,
+                'client_id' => $clientId,
+                'client_name' => $clientName,
+                'client_document' => $clientDocument,
+                'business_name' => $businessName
+            ]);
 
-        // ---------------------------------------------------------
-        // CLIENTE
-        // ---------------------------------------------------------
-
-        $clientId =
-            $request->input(
-                'client_id'
-            );
-
-
-        $client = $clientId
-            ? Client::find($clientId)
-            : null;
-
-
-        $clientName = $client
-            ? $client->name
-            : (
-                $request->input(
-                    'client_name'
-                ) ?? 'Público'
-            );
-
-
-        // ---------------------------------------------------------
-        // GUARDAR VENTA
-        // ---------------------------------------------------------
-
-        DB::transaction(
-            function () use (
-                $order,
-                $method,
-                $received,
-                $change,
-                $request,
-                $clientId,
-                $clientName
+            /*
+            | Actualizar documento del cliente registrado.
+            */
+            if (
+                $clientId &&
+                $clientDocument
             ) {
+                $client = Client::find($clientId);
 
-                $order->update([
+                if ($client) {
+                    $client->update([
+                        'document_number' => $clientDocument
+                    ]);
+                }
+            }
 
-                    'status' =>
-                        'completed',
+            /*
+            |--------------------------------------------------------------------------
+            | DESCONTAR STOCK
+            |--------------------------------------------------------------------------
+            */
 
-                    'payment_method' =>
-                        $method,
+            $order->load([
+                'details.product.ingredients'
+            ]);
 
-                    'received_amount' =>
-                        $received,
+            foreach (
+                $order->details as $detail
+            ) {
+                $product = $detail->product;
 
-                    'change_amount' =>
-                        $change,
+                if (!$product) {
+                    continue;
+                }
 
-                    'document_type' =>
-                        $request->input(
-                            'document_type',
-                            'Ticket'
-                        ),
+                $ingredients = $product->ingredients;
 
-                    'client_id' =>
-                        $clientId,
+                /*
+                |--------------------------------------------------------------------------
+                | PRODUCTO CON INGREDIENTES
+                |--------------------------------------------------------------------------
+                */
 
-                    'client_name' =>
-                        $clientName,
+                if ($ingredients->count() > 0) {
+                    foreach (
+                        $ingredients as $ingredient
+                    ) {
+                        $ingredientQuantity = (float) (
+                            $ingredient->pivot->quantity
+                        );
 
-                    'client_document' =>
-                        $request->input(
-                            'client_document'
-                        )
-                ]);
+                        $qtyToDeduct =
+                            $ingredientQuantity *
+                            (float) $detail->quantity;
 
+                        $oldStock =
+                            (float) $ingredient->stock;
 
-                // -------------------------------------------------
-                // DESCONTAR STOCK
-                // -------------------------------------------------
+                        $ingredient->decrement(
+                            'stock',
+                            $qtyToDeduct
+                        );
 
-                foreach (
-                    $order->details as $detail
-                ) {
+                        InventoryLog::create([
+                            'product_id' =>
+                                $ingredient->id,
 
-                    $product =
-                        $detail->product;
+                            'user_id' =>
+                                Auth::id(),
 
-                    $ingredients =
-                        $product->ingredients;
+                            'type' =>
+                                'sale',
 
+                            'quantity' =>
+                                -$qtyToDeduct,
 
-                    // -------------------------------------------------
-                    // PRODUCTO CON INGREDIENTES
-                    // -------------------------------------------------
+                            'old_stock' =>
+                                $oldStock,
+
+                            'new_stock' =>
+                                $oldStock -
+                                $qtyToDeduct,
+
+                            'note' =>
+                                'Venta: ' .
+                                $product->name .
+                                ' (Orden #' .
+                                $order->id .
+                                ')'
+                        ]);
+                    }
+                } else {
+                    /*
+                    |--------------------------------------------------------------------------
+                    | PRODUCTO SIN INGREDIENTES
+                    |--------------------------------------------------------------------------
+                    */
 
                     if (
-                        $ingredients->count() > 0
+                        !is_null(
+                            $product->stock
+                        )
                     ) {
+                        $oldStock =
+                            (float) $product->stock;
 
-                        foreach (
-                            $ingredients
-                            as $ingredient
-                        ) {
+                        $qtyToDeduct =
+                            (float) $detail->quantity;
 
-                            $qtyToDeduct =
-                                $ingredient
-                                    ->pivot
-                                    ->quantity
-                                *
-                                $detail->quantity;
+                        $product->decrement(
+                            'stock',
+                            $qtyToDeduct
+                        );
 
+                        InventoryLog::create([
+                            'product_id' =>
+                                $product->id,
 
-                            $oldStock =
-                                $ingredient->stock;
+                            'user_id' =>
+                                Auth::id(),
 
+                            'type' =>
+                                'sale',
 
-                            $ingredient->decrement(
-                                'stock',
-                                $qtyToDeduct
-                            );
+                            'quantity' =>
+                                -$qtyToDeduct,
 
+                            'old_stock' =>
+                                $oldStock,
 
-                            InventoryLog::create([
+                            'new_stock' =>
+                                $oldStock -
+                                $qtyToDeduct,
 
-                                'product_id' =>
-                                    $ingredient->id,
-
-                                'user_id' =>
-                                    Auth::id(),
-
-                                'type' =>
-                                    'sale',
-
-                                'quantity' =>
-                                    -$qtyToDeduct,
-
-                                'old_stock' =>
-                                    $oldStock,
-
-                                'new_stock' =>
-                                    $oldStock -
-                                    $qtyToDeduct,
-
-                                'note' =>
-                                    'Venta: '
-                                    .
-                                    $product->name
-                                    .
-                                    ' (Orden #'
-                                    .
-                                    $order->id
-                                    .
-                                    ')'
-                            ]);
-                        }
-
-
-                    // -------------------------------------------------
-                    // PRODUCTO SIN INGREDIENTES
-                    // -------------------------------------------------
-
-                    } else {
-
-                        if (
-                            !is_null(
-                                $product->stock
-                            )
-                        ) {
-
-                            $oldStock =
-                                $product->stock;
-
-
-                            $product->decrement(
-                                'stock',
-                                $detail->quantity
-                            );
-
-
-                            InventoryLog::create([
-
-                                'product_id' =>
-                                    $product->id,
-
-                                'user_id' =>
-                                    Auth::id(),
-
-                                'type' =>
-                                    'sale',
-
-                                'quantity' =>
-                                    -$detail->quantity,
-
-                                'old_stock' =>
-                                    $oldStock,
-
-                                'new_stock' =>
-                                    $oldStock -
-                                    $detail->quantity,
-
-                                'note' =>
-                                    'Venta POS #'
-                                    .
-                                    $order->id
-                            ]);
-                        }
+                            'note' =>
+                                'Venta POS #' .
+                                $order->id
+                        ]);
                     }
                 }
             }
-        );
+        });
 
-
-        // ---------------------------------------------------------
-        // NOMBRE DEL MÉTODO DE PAGO
-        // ---------------------------------------------------------
+        /*
+        |--------------------------------------------------------------------------
+        | 12. NOMBRE DEL MÉTODO DE PAGO
+        |--------------------------------------------------------------------------
+        */
 
         $paymentNames = [
-
-            'cash' =>
-                'Efectivo',
-
-            'yape' =>
-                'Yape',
-
-            'plin' =>
-                'Plin',
-
-            'card' =>
-                'Tarjeta',
-
-            'transfer' =>
-                'Transferencia',
-
-            'qr' =>
-                'QR'
+            'cash' => 'Efectivo',
+            'yape' => 'Yape',
+            'plin' => 'Plin',
+            'card' => 'Tarjeta',
+            'transfer' => 'Transferencia',
+            'qr' => 'QR'
         ];
-
 
         $paymentName =
             $paymentNames[$method]
             ?? ucfirst($method);
 
-
-        // ---------------------------------------------------------
-        // DATOS DE LA MESA
-        // ---------------------------------------------------------
+        /*
+        |--------------------------------------------------------------------------
+        | 13. DATOS DE MESA
+        |--------------------------------------------------------------------------
+        */
 
         $tableNumber = null;
 
-        if (
-            $order->table
-        ) {
-
+        if ($order->table) {
             $tableNumber =
                 $order->table->number
                 ?? $order->table->name
                 ?? $order->table->id;
         }
 
-
-        // ---------------------------------------------------------
-        // MENSAJE PARA EL USUARIO QUE COBRÓ
-        // ---------------------------------------------------------
+        /*
+        |--------------------------------------------------------------------------
+        | 14. MENSAJE
+        |--------------------------------------------------------------------------
+        */
 
         $successMessage =
             '✓ PAGO REALIZADO CORRECTAMENTE. ';
 
         if ($tableNumber) {
-
             $successMessage .=
-                'Mesa '
-                .
-                $tableNumber
-                .
+                'Mesa ' .
+                $tableNumber .
                 ' cobrada. ';
         }
 
         $successMessage .=
-            'Total: S/ '
-            .
-            number_format(
-                $order->total,
-                2
-            )
-            .
-            ' | Método: '
-            .
-            $paymentName
-            .
+            'Total: S/ ' .
+            number_format($total, 2) .
+            ' | Comprobante: ' .
+            $documentType .
+            ' | Método: ' .
+            $paymentName .
             '.';
 
+        /*
+        |--------------------------------------------------------------------------
+        | 15. INFORMACIÓN DEL CLIENTE
+        |--------------------------------------------------------------------------
+        */
 
-        // ---------------------------------------------------------
-        // REGRESAR AL POS
-        // ---------------------------------------------------------
+        if ($documentType === 'Boleta') {
+            $successMessage .=
+                ' DNI: ' .
+                $clientDocument .
+                '.';
+        }
+
+        if ($documentType === 'Factura') {
+            $successMessage .=
+                ' RUC: ' .
+                $clientDocument .
+                ' | Razón Social: ' .
+                $businessName .
+                '.';
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | 16. CAMBIO
+        |--------------------------------------------------------------------------
+        */
+
+        if ($method === 'cash') {
+            $successMessage .=
+                ' Cambio: S/ ' .
+                number_format(
+                    $change,
+                    2
+                ) .
+                '.';
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | 17. REGRESAR AL POS
+        |--------------------------------------------------------------------------
+        */
 
         return redirect()
             ->route('pos.index')
@@ -853,31 +984,31 @@ class PosController extends Controller
             );
     }
 
-
-    // =============================================================
-    // RECALCULAR TOTAL
-    // =============================================================
-
+    /**
+     * Recalcular total.
+     */
     private function recalculateTotal(
         Order $order
     ) {
+        $order->loadMissing('details');
 
-        $subtotal =
-            $order->details->sum(
-                fn ($d) =>
-                    $d->price *
-                    $d->quantity
-            );
+        $subtotal = $order->details->sum(
+            function ($detail) {
+                return
+                    (float) $detail->price *
+                    (int) $detail->quantity;
+            }
+        );
 
+        $discount =
+            (float) ($order->discount ?? 0);
+
+        $tip =
+            (float) ($order->tip ?? 0);
 
         $total =
-            (
-                $subtotal -
-                ($order->discount ?? 0)
-            )
-            +
-            ($order->tip ?? 0);
-
+            ($subtotal - $discount) +
+            $tip;
 
         $order->update([
             'total' => max(
@@ -887,15 +1018,12 @@ class PosController extends Controller
         ]);
     }
 
-
-    // =============================================================
-    // HTML DEL CARRITO
-    // =============================================================
-
+    /**
+     * HTML del carrito.
+     */
     private function getCartHtml(
         Table $table
     ) {
-
         $order = Order::where(
             'table_id',
             $table->id
@@ -909,25 +1037,18 @@ class PosController extends Controller
             )
             ->first();
 
-
         $clients = Client::select(
             'id',
             'name',
             'document_number'
         )
-            ->orderBy(
-                'name'
-            )
+            ->orderBy('name')
             ->get();
-
 
         $currency = Setting::where(
             'key',
             'currency_symbol'
-        )->value(
-            'value'
-        ) ?? 'S/';
-
+        )->value('value') ?? 'S/';
 
         return view(
             'pos.partials.cart',
