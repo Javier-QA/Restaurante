@@ -16,6 +16,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SystemController;
+use App\Http\Controllers\ChatbotController;
 
 /*
 |--------------------------------------------------------------------------
@@ -93,6 +94,9 @@ Route::middleware(['auth'])->group(function () {
         // Dashboard y BI
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+	
+	//CHATBOT
+	Route::post('/chatbot', [ChatbotController::class, 'chat'])->name('chatbot.chat');
         
         // Gestión
         Route::resource('clients', ClientController::class);
