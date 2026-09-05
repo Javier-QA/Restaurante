@@ -18,7 +18,8 @@ class ExpenseController extends Controller
         Expense::create([
             'description' => $request->description,
             'amount' => $request->amount,
-            'user_id' => Auth::id()
+            'user_id' => Auth::id(),
+            'cash_register_id' => Auth::user()->activeCashRegister->id ?? null
         ]);
 
         return redirect()->back()->with('success', 'Gasto registrado correctamente.');

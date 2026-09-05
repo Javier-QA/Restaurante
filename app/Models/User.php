@@ -42,4 +42,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function cashRegisters()
+    {
+        return $this->hasMany(CashRegister::class);
+    }
+
+    public function activeCashRegister()
+    {
+        return $this->hasOne(CashRegister::class)->where('status', 'open')->latestOfMany();
+    }
 }

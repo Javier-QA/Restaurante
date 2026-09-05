@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Config;
 
 class SettingController extends Controller
 {
     public function index()
     {
         $settings = Setting::pluck('value', 'key')->toArray();
-
+        
         // Lista de zonas horarias comunes en Latinoamérica para el select
         $timezones = [
             'America/Lima' => '(UTC-05:00) Lima, Bogotá, Quito',
@@ -27,134 +28,57 @@ class SettingController extends Controller
             'UTC' => '(UTC+00:00) Tiempo Universal Coordinado'
         ];
 
-        return view(
-            'settings.index',
-            compact('settings', 'timezones')
-        );
+        return view('settings.index', compact('settings', 'timezones'));
     }
 
     public function update(Request $request)
     {
-        // Validación de las imágenes
-        $request->validate([
-            'company_logo' => 'nullable|image|max:2048',
-            'yape_qr' => 'nullable|image|max:2048',
-            'plin_qr' => 'nullable|image|max:2048',
-        ]);
+        $data = $request->except(['_token', 'company_logo', 'sunat_cert_file']);
 
-        // Datos de configuración que no son archivos
-        $data = $request->except([
-            '_token',
-            'company_logo',
-            'yape_qr',
-            'plin_qr',
-        ]);
-
-        // =========================================================
-        // GUARDAR CONFIGURACIONES DE TEXTO
-        // =========================================================
-
+        // 1. Guardar textos (Nombre, Timezone, Moneda, config SUNAT, etc.)
         foreach ($data as $key => $value) {
-
-            Setting::updateOrCreate(
-                ['key' => $key],
-                ['value' => $value]
-            );
+            if (is_null($value)) continue;
+            Setting::updateOrCreate(['key' => $key], ['value' => $value]);
         }
 
-
-        // =========================================================
-        // GUARDAR LOGO
-        // =========================================================
-
+        // 2. Guardar Logo
         if ($request->hasFile('company_logo')) {
+            $request->validate(['company_logo' => 'image|max:2048']);
+            $oldLogo = Setting::where('key', 'company_logo')->value('value');
+            if ($oldLogo) Storage::disk('public')->delete($oldLogo);
+            $path = $request->file('company_logo')->store('settings', 'public');
+            Setting::updateOrCreate(['key' => 'company_logo'], ['value' => $path]);
+        }
 
-            $oldLogo = Setting::where(
-                'key',
-                'company_logo'
-            )->value('value');
+        // 3. Guardar certificado SUNAT (.pfx)
+        if ($request->hasFile('sunat_cert_file')) {
+            $request->validate([
+                'sunat_cert_file' => 'file|max:512',
+            ]);
 
-            if ($oldLogo) {
-
-                Storage::disk('public')->delete(
-                    $oldLogo
-                );
+            $ext = strtolower($request->file('sunat_cert_file')->getClientOriginalExtension());
+            if (!in_array($ext, ['pfx', 'p12'])) {
+                return redirect()->back()->with('error', 'El certificado debe ser un archivo .pfx o .p12');
             }
 
-            $path = $request
-                ->file('company_logo')
-                ->store('settings', 'public');
+            // Borrar cert anterior si existía y NO es el demo
+            $oldCert = Setting::where('key', 'sunat_cert_path')->value('value');
+            if ($oldCert
+                && !str_contains($oldCert, 'demo')
+                && Storage::disk('local')->exists($oldCert)) {
+                Storage::disk('local')->delete($oldCert);
+            }
+
+            // Guardar el nuevo en storage/app/sunat/certs/
+            $filename = 'cert_' . date('Ymd_His') . '.' . $ext;
+            $request->file('sunat_cert_file')->storeAs('sunat/certs', $filename, 'local');
 
             Setting::updateOrCreate(
-                ['key' => 'company_logo'],
-                ['value' => $path]
+                ['key' => 'sunat_cert_path'],
+                ['value' => 'sunat/certs/' . $filename]
             );
         }
 
-
-        // =========================================================
-        // GUARDAR QR DE YAPE
-        // =========================================================
-
-        if ($request->hasFile('yape_qr')) {
-
-            $oldYapeQr = Setting::where(
-                'key',
-                'yape_qr'
-            )->value('value');
-
-            if ($oldYapeQr) {
-
-                Storage::disk('public')->delete(
-                    $oldYapeQr
-                );
-            }
-
-            $path = $request
-                ->file('yape_qr')
-                ->store('settings/qr', 'public');
-
-            Setting::updateOrCreate(
-                ['key' => 'yape_qr'],
-                ['value' => $path]
-            );
-        }
-
-
-        // =========================================================
-        // GUARDAR QR DE PLIN
-        // =========================================================
-
-        if ($request->hasFile('plin_qr')) {
-
-            $oldPlinQr = Setting::where(
-                'key',
-                'plin_qr'
-            )->value('value');
-
-            if ($oldPlinQr) {
-
-                Storage::disk('public')->delete(
-                    $oldPlinQr
-                );
-            }
-
-            $path = $request
-                ->file('plin_qr')
-                ->store('settings/qr', 'public');
-
-            Setting::updateOrCreate(
-                ['key' => 'plin_qr'],
-                ['value' => $path]
-            );
-        }
-
-
-        return redirect()
-            ->back()
-            ->with(
-                'success',
-                'Configuración actualizada correctamente.'
-            );
+        return redirect()->back()->with('success', 'Configuración actualizada correctamente.');
     }
 }

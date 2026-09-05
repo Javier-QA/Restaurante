@@ -20,7 +20,7 @@
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-header text-white d-flex justify-content-between align-items-center py-3 {{ $order->details->contains('status', 'cooking') ? 'bg-warning text-dark' : 'bg-danger' }}">
                         <div>
-                            <h5 class="fw-bold mb-0">Mesa: {{ $order->table->name }}</h5>
+                            <h5 class="fw-bold mb-0">{{ $order->table ? 'Mesa: ' . $order->table->name : 'Para Llevar' }}</h5>
                             <small>Folio #{{ $order->id }}</small>
                         </div>
                         <div class="text-end">

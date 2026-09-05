@@ -11,713 +11,204 @@ use App\Models\OrderDetail;
 use App\Models\InventoryLog;
 use App\Models\Client;
 use App\Models\Setting;
-use Carbon\Carbon;
+use App\Models\DocumentSeries;
+use App\Services\Sunat\SunatConfig;
+use App\Services\Sunat\SunatService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class PosController extends Controller
 {
-    /**
-     * Pantalla principal del POS.
-     */
     public function index()
     {
-        $areas = Area::with([
-            'tables' => function ($q) {
-                $q->with([
-                    'orders' => function ($q) {
-                        $q->where('status', 'pending');
-                    },
-                    'reservations' => function ($q) {
-                        $q->where('status', 'confirmed')
-                            ->whereDate('reservation_time', Carbon::today())
-                            ->where(
-                                'reservation_time',
-                                '>=',
-                                Carbon::now()->subHours(2)
-                            )
-                            ->orderBy('reservation_time', 'asc');
-                    }
-                ]);
-            }
-        ])->get();
-
-        $currency = Setting::where(
-            'key',
-            'currency_symbol'
-        )->value('value') ?? 'S/';
-
-        return view(
-            'pos.index',
-            compact('areas', 'currency')
-        );
+        $areas = Area::with(['tables' => function($q) {
+            $q->with(['orders' => function($q) {
+                $q->where('status', 'pending');
+            }, 'reservations' => function($q) {
+                $q->where('status', 'confirmed')
+                  ->whereDate('reservation_time', Carbon::today())
+                  ->where('reservation_time', '>=', Carbon::now()->subHours(2)) 
+                  ->orderBy('reservation_time', 'asc');
+            }]);
+        }])->get();
+        
+        $currency = Setting::where('key', 'currency_symbol')->value('value') ?? 'S/';
+        return view('pos.index', compact('areas', 'currency'));
     }
 
-    /**
-     * Abrir una mesa en el POS.
-     */
     public function order(Table $table)
     {
-        $categories = Category::with([
-            'products' => function ($q) {
-                $q->where('is_active', true)
-                    ->where('is_saleable', true);
-            }
-        ])
-            ->where('is_active', true)
-            ->get();
+        // Filtro: Solo productos activos y vendibles
+        $categories = Category::with(['products' => function($q) {
+            $q->where('is_active', true)
+              ->where('is_saleable', true);
+        }])->where('is_active', true)->get();
 
-        $order = Order::where('table_id', $table->id)
-            ->where('status', 'pending')
-            ->with('details.product')
-            ->first();
+        $order = Order::where('table_id', $table->id)->where('status', 'pending')->with('details.product')->first();
+        $occupiedTableIds = Order::where('status', 'pending')->pluck('table_id');
+        $freeTables = Table::whereNotIn('id', $occupiedTableIds)->where('id', '!=', $table->id)->with('area')->get();
+        $clients = Client::select('id', 'name', 'document_number')->orderBy('name')->get();
+        $currency = Setting::where('key', 'currency_symbol')->value('value') ?? 'S/';
 
-        $occupiedTableIds = Order::where('status', 'pending')
-            ->pluck('table_id');
-
-        $freeTables = Table::whereNotIn(
-            'id',
-            $occupiedTableIds
-        )
-            ->where('id', '!=', $table->id)
-            ->with('area')
-            ->get();
-
-        $clients = Client::select(
-            'id',
-            'name',
-            'document_number'
-        )
-            ->orderBy('name')
-            ->get();
-
-        $settings = Setting::pluck(
-            'value',
-            'key'
-        )->toArray();
-
-        $currency = $settings['currency_symbol'] ?? 'S/';
-
-        return view(
-            'pos.order',
-            compact(
-                'table',
-                'categories',
-                'order',
-                'freeTables',
-                'clients',
-                'currency',
-                'settings'
-            )
-        );
+        return view('pos.order', compact('table', 'categories', 'order', 'freeTables', 'clients', 'currency'));
     }
 
-    /**
-     * Agregar producto a la orden.
-     */
-    public function addToOrder(
-        Request $request,
-        Table $table
-    ) {
-        $request->validate([
-            'product_id' => 'required|exists:products,id'
-        ]);
-
-        $product = Product::findOrFail(
-            $request->product_id
-        );
-
-        if (!$product->is_active || !$product->is_saleable) {
-            return response()->json([
-                'success' => false,
-                'message' => 'El producto no está disponible para la venta.'
-            ], 422);
-        }
-
-        $this->addItemToTable(
-            $table,
-            $product
-        );
-
+    // --- AGREGAR POR CLIC (Normal) ---
+    public function addToOrder(Request $request, Table $table)
+    {
+        $product = Product::findOrFail($request->product_id);
+        $this->addItemToTable($table, $product);
         return $this->getCartHtml($table);
     }
 
-    /**
-     * Lógica para agregar producto.
-     */
-    private function addItemToTable(
-        Table $table,
-        Product $product
-    ) {
-        DB::transaction(function () use (
-            $table,
-            $product
-        ) {
+    // --- AGREGAR POR CÓDIGO DE BARRAS (Nuevo) ---
+    public function addByBarcode(Request $request, Table $table)
+    {
+        $request->validate(['barcode' => 'required']);
+
+        $product = Product::where('barcode', $request->barcode)
+                          ->where('is_active', true)
+                          ->where('is_saleable', true)
+                          ->first();
+
+        if (!$product) {
+            return response()->json(['error' => 'Producto no encontrado'], 404);
+        }
+
+        $this->addItemToTable($table, $product);
+        
+        // Devolvemos el HTML actualizado
+        return $this->getCartHtml($table);
+    }
+
+    // Lógica auxiliar para no repetir código al agregar
+    private function addItemToTable(Table $table, Product $product)
+    {
+        DB::transaction(function() use ($table, $product) {
             $order = Order::firstOrCreate(
-                [
-                    'table_id' => $table->id,
-                    'status' => 'pending'
-                ],
-                [
-                    'user_id' => Auth::id() ?? 1,
-                    'total' => 0,
-                    'discount' => 0,
-                    'tip' => 0
-                ]
+                ['table_id' => $table->id, 'status' => 'pending'], 
+                ['user_id' => auth()->id() ?? 1, 'total' => 0]
             );
 
-            $detail = $order->details()
-                ->where('product_id', $product->id)
-                ->first();
+            $detail = $order->details()->where('product_id', $product->id)->first();
 
             if ($detail) {
                 $detail->increment('quantity');
             } else {
                 $order->details()->create([
-                    'product_id' => $product->id,
-                    'quantity' => 1,
-                    'price' => $product->price,
+                    'product_id' => $product->id, 
+                    'quantity' => 1, 
+                    'price' => $product->price, 
                     'status' => 'pending'
                 ]);
             }
-
             $this->recalculateTotal($order);
         });
     }
 
-    /**
-     * Actualizar cantidad.
-     */
-    public function updateQuantity(
-        Request $request,
-        OrderDetail $detail
-    ) {
-        $request->validate([
-            'quantity' => 'required|integer|min:0'
-        ]);
-
-        $newQty = (int) $request->quantity;
+    // --- ACTUALIZAR CANTIDAD (Corregido para devolver HTML) ---
+    public function updateQuantity(Request $request, OrderDetail $detail)
+    {
+        $newQty = $request->quantity;
         $order = $detail->order;
-
-        if ($newQty < 1) {
-            $detail->delete();
-        } else {
-            $detail->update([
-                'quantity' => $newQty
-            ]);
+        
+        if ($newQty < 1) { 
+            $detail->delete(); 
+        } else { 
+            $detail->update(['quantity' => $newQty]); 
         }
-
+        
         $this->recalculateTotal($order);
-
-        return $this->getCartHtml(
-            $order->table
-        );
+        return $this->getCartHtml($order->table);
     }
 
-    /**
-     * Actualizar nota.
-     */
-    public function updateNote(
-        Request $request,
-        OrderDetail $detail
-    ) {
-        $detail->update([
-            'note' => $request->input('note')
-        ]);
-
-        return $this->getCartHtml(
-            $detail->order->table
-        );
+    // --- ACTUALIZAR NOTA (Corregido para devolver HTML) ---
+    public function updateNote(Request $request, OrderDetail $detail) 
+    { 
+        $detail->update(['note' => $request->note]); 
+        return $this->getCartHtml($detail->order->table); 
     }
 
-    /**
-     * Eliminar producto.
-     */
-    public function removeItem(
-        OrderDetail $detail
-    ) {
-        $order = $detail->order;
-
-        $detail->delete();
-
-        $this->recalculateTotal($order);
-
-        return $this->getCartHtml(
-            $order->table
-        );
+    // --- ELIMINAR ITEM (Corregido para devolver HTML) ---
+    public function removeItem(OrderDetail $detail) 
+    { 
+        $order = $detail->order; 
+        $detail->delete(); 
+        $this->recalculateTotal($order); 
+        return $this->getCartHtml($order->table); 
     }
 
-    /**
-     * Aplicar descuento y propina.
-     */
-    public function applyDiscount(
-        Request $request,
-        Order $order
-    ) {
-        $discount = max(
-            0,
-            (float) $request->input('discount', 0)
-        );
-
-        $tip = max(
-            0,
-            (float) $request->input('tip', 0)
-        );
-
-        $order->update([
-            'discount' => $discount,
-            'tip' => $tip
-        ]);
-
-        $this->recalculateTotal($order);
-
-        return $this->getCartHtml(
-            $order->table
-        );
+    // --- APLICAR DESCUENTO (Corregido para devolver HTML) ---
+    public function applyDiscount(Request $request, Order $order) 
+    { 
+        $order->discount = $request->input('discount', 0); 
+        $order->tip = $request->input('tip', 0); 
+        $order->save(); 
+        $this->recalculateTotal($order); 
+        return $this->getCartHtml($order->table); 
+    }
+    
+    public function moveTable(Request $request, Order $order) {
+        $request->validate(['target_table_id' => 'required|exists:tables,id']);
+        if (Order::where('table_id', $request->target_table_id)->where('status', 'pending')->exists()) return redirect()->back()->with('error', 'Ocupada.');
+        $order->table_id = $request->target_table_id; $order->save();
+        return redirect()->route('pos.order', $request->target_table_id);
     }
 
-    /**
-     * Mover mesa.
-     */
-    public function moveTable(
-        Request $request,
-        Order $order
-    ) {
-        $request->validate([
-            'target_table_id' => 'required|exists:tables,id'
-        ]);
+    public function getSplitContent(Order $order) { return view('pos.partials.split_content', compact('order')); }
+    public function processSplit(Request $request, Order $order) { return redirect()->back(); }
+    public function precheck(Order $order) { $settings = Setting::pluck('value', 'key')->toArray(); return view('sales.ticket', compact('order', 'settings')); }
+    public function kitchenTicket(Order $order) { return view('sales.kitchen_ticket', compact('order')); }
 
-        $occupied = Order::where(
-            'table_id',
-            $request->target_table_id
-        )
-            ->where('status', 'pending')
-            ->exists();
+    public function checkout(Request $request, Order $order)
+    {
+        if($order->status !== 'pending') return redirect()->route('pos.index')->with('error', 'Orden cerrada.');
 
-        if ($occupied) {
-            return redirect()
-                ->back()
-                ->with(
-                    'error',
-                    'La mesa seleccionada está ocupada.'
-                );
-        }
-
-        $order->update([
-            'table_id' => $request->target_table_id
-        ]);
-
-        return redirect()->route(
-            'pos.order',
-            $request->target_table_id
-        );
-    }
-
-    /**
-     * Contenido para dividir cuenta.
-     */
-    public function getSplitContent(
-        Order $order
-    ) {
-        return view(
-            'pos.partials.split_content',
-            compact('order')
-        );
-    }
-
-    /**
-     * Procesar división de cuenta.
-     */
-    public function processSplit(
-        Request $request,
-        Order $order
-    ) {
-        return redirect()->back();
-    }
-
-    /**
-     * Previsualización de venta.
-     */
-    public function precheck(
-        Order $order
-    ) {
-        $settings = Setting::pluck(
-            'value',
-            'key'
-        )->toArray();
-
-        return view(
-            'sales.ticket',
-            compact(
-                'order',
-                'settings'
-            )
-        );
-    }
-
-    /**
-     * Ticket para cocina.
-     */
-    public function kitchenTicket(
-        Order $order
-    ) {
-        return view(
-            'sales.kitchen_ticket',
-            compact('order')
-        );
-    }
-
-    /**
-     * COBRAR ORDEN.
-     *
-     * Soporta:
-     * - Ticket
-     * - Boleta + DNI
-     * - Factura + RUC + Razón Social
-     * - Efectivo
-     * - Yape
-     * - Plin
-     * - Tarjeta
-     * - Transferencia
-     * - QR
-     */
-    public function checkout(
-        Request $request,
-        Order $order
-    ) {
-        /*
-        |--------------------------------------------------------------------------
-        | 1. VERIFICAR ESTADO
-        |--------------------------------------------------------------------------
-        */
-
-        if ($order->status !== 'pending') {
-            return redirect()
-                ->route('pos.index')
-                ->with(
-                    'error',
-                    'La orden ya fue cerrada.'
-                );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 2. TIPO DE COMPROBANTE
-        |--------------------------------------------------------------------------
-        */
-
-        $documentType = trim(
-            $request->input(
-                'document_type',
-                'Ticket'
-            )
-        );
-
-        $validDocumentTypes = [
-            'Ticket',
-            'Boleta',
-            'Factura'
-        ];
-
-        if (!in_array(
-            $documentType,
-            $validDocumentTypes,
-            true
-        )) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'El tipo de comprobante no es válido.'
-                );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 3. MÉTODO DE PAGO
-        |--------------------------------------------------------------------------
-        */
-
-        $method = strtolower(
-            trim(
-                $request->input(
-                    'payment_method',
-                    'cash'
-                )
-            )
-        );
-
-        $validPaymentMethods = [
-            'cash',
-            'yape',
-            'plin',
-            'card',
-            'transfer',
-            'qr'
-        ];
-
-        if (!in_array(
-            $method,
-            $validPaymentMethods,
-            true
-        )) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'El método de pago no es válido.'
-                );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 4. DATOS DEL CLIENTE
-        |--------------------------------------------------------------------------
-        */
-
+        $method = $request->input('payment_method', 'cash');
+        $received = $method === 'cash' ? $request->input('received_amount') : $order->total;
+        $change = max(0, $received - $order->total);
         $clientId = $request->input('client_id');
+        $clientName = $clientId ? Client::find($clientId)->name : ($request->input('client_name') ?? 'Público');
+        $documentType = $request->input('document_type', 'Ticket');
+        $clientDocument = $request->input('client_document');
 
-        $client = null;
-
-        if ($clientId) {
-            $client = Client::find($clientId);
-
-            if (!$client) {
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->with(
-                        'error',
-                        'El cliente seleccionado no existe.'
-                    );
-            }
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | NOMBRE DEL CLIENTE
-        |--------------------------------------------------------------------------
-        */
-
-        $clientName = $client
-            ? trim($client->name)
-            : trim(
-                $request->input(
-                    'client_name',
-                    ''
-                )
-            );
-
-        /*
-        |--------------------------------------------------------------------------
-        | DNI / RUC
-        |--------------------------------------------------------------------------
-        */
-
-        $clientDocument = trim(
-            (string) $request->input(
-                'client_document',
-                ''
-            )
-        );
-
-        /*
-        | Si se seleccionó un cliente registrado y
-        | el campo está vacío, utilizar su documento.
-        */
-        if (
-            $clientDocument === '' &&
-            $client &&
-            !empty($client->document_number)
-        ) {
-            $clientDocument = trim(
-                (string) $client->document_number
-            );
-        }
-
-        /*
-        | Solo permitir números.
-        */
-        $clientDocument = preg_replace(
-            '/\D/',
-            '',
-            $clientDocument
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | RAZÓN SOCIAL
-        |--------------------------------------------------------------------------
-        */
-
-        $businessName = trim(
-            $request->input(
-                'business_name',
-                ''
-            )
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | 5. TICKET
-        |--------------------------------------------------------------------------
-        */
-
-        if ($documentType === 'Ticket') {
-            $clientDocument = null;
-            $businessName = null;
-
-            if ($clientName === '') {
-                $clientName = 'Público General';
-            }
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 6. BOLETA
-        |--------------------------------------------------------------------------
-        */
-
-        if ($documentType === 'Boleta') {
-            if ($clientName === '') {
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->with(
-                        'error',
-                        'Para una Boleta debe ingresar el nombre del cliente.'
-                    );
-            }
-
-            if (!preg_match(
-                '/^\d{8}$/',
-                $clientDocument
-            )) {
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->with(
-                        'error',
-                        'El DNI debe tener exactamente 8 dígitos.'
-                    );
-            }
-
-            $businessName = null;
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 7. FACTURA
-        |--------------------------------------------------------------------------
-        */
-
+        // Validación específica para Factura (Perú): requiere RUC (11 dígitos) y razón social
         if ($documentType === 'Factura') {
-            if ($clientName === '') {
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->with(
-                        'error',
-                        'Para una Factura debe ingresar el nombre del cliente.'
-                    );
+            $doc = preg_replace('/\D/', '', (string) $clientDocument);
+            if (strlen($doc) !== 11) {
+                return redirect()->back()->with('error', 'Para emitir Factura el cliente debe tener RUC de 11 dígitos.');
             }
-
-            if (!preg_match(
-                '/^\d{11}$/',
-                $clientDocument
-            )) {
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->with(
-                        'error',
-                        'El RUC debe tener exactamente 11 dígitos.'
-                    );
-            }
-
-            if ($businessName === '') {
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->with(
-                        'error',
-                        'Para una Factura debe ingresar la Razón Social.'
-                    );
+            if (empty(trim((string) $clientName)) || $clientName === 'Público') {
+                return redirect()->back()->with('error', 'Para emitir Factura debe indicar la razón social del cliente.');
             }
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | 8. MONTO RECIBIDO
-        |--------------------------------------------------------------------------
-        */
+        DB::transaction(function() use ($order, $method, $received, $change, $request, $clientId, $clientName, $documentType, $clientDocument) {
+            // 1. Calcular IGV (Perú 18%) si es comprobante electrónico
+            $config = new SunatConfig();
+            $igvFactor = $config->igvFactor();
+            $isElectronic = in_array($documentType, ['Boleta', 'Factura'], true);
 
-        $total = (float) $order->total;
+            $totalGravada = 0;
+            $igv = 0;
+            if ($isElectronic) {
+                $totalGravada = round((float) $order->total / (1 + $igvFactor), 2);
+                $igv = round((float) $order->total - $totalGravada, 2);
+            }
 
-        if ($method === 'cash') {
-            $received = (float) $request->input(
-                'received_amount',
-                0
-            );
-        } else {
-            $received = $total;
-        }
+            // 2. Asignar serie y correlativo si es electrónico
+            $serie = null;
+            $correlativo = null;
+            if ($isElectronic) {
+                $tipo = $documentType === 'Factura' ? 'factura' : 'boleta';
+                $next = DocumentSeries::next($tipo);
+                $serie = $next['serie'];
+                $correlativo = $next['correlativo'];
+            }
 
-        /*
-        |--------------------------------------------------------------------------
-        | 9. VALIDAR EFECTIVO
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            $method === 'cash' &&
-            $received < $total
-        ) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'El monto recibido es insuficiente para completar el pago.'
-                );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 10. CALCULAR CAMBIO
-        |--------------------------------------------------------------------------
-        */
-
-        $change = $method === 'cash'
-            ? max(
-                0,
-                $received - $total
-            )
-            : 0;
-
-        /*
-        |--------------------------------------------------------------------------
-        | 11. GUARDAR VENTA
-        |--------------------------------------------------------------------------
-        */
-
-        DB::transaction(function () use (
-            $order,
-            $method,
-            $received,
-            $change,
-            $clientId,
-            $clientName,
-            $clientDocument,
-            $documentType,
-            $businessName
-        ) {
-            /*
-            | Guardar información de la venta.
-            */
             $order->update([
                 'status' => 'completed',
                 'payment_method' => $method,
@@ -727,336 +218,88 @@ class PosController extends Controller
                 'client_id' => $clientId,
                 'client_name' => $clientName,
                 'client_document' => $clientDocument,
-                'business_name' => $businessName
+                'cash_register_id' => Auth::user()->activeCashRegister->id ?? null,
+
+                // SUNAT
+                'serie' => $serie,
+                'correlativo' => $correlativo,
+                'subtotal' => $totalGravada,
+                'igv' => $igv,
+                'total_gravada' => $totalGravada,
+                'sunat_status' => $isElectronic ? 'PENDING' : null,
             ]);
 
-            /*
-            | Actualizar documento del cliente registrado.
-            */
-            if (
-                $clientId &&
-                $clientDocument
-            ) {
-                $client = Client::find($clientId);
-
-                if ($client) {
-                    $client->update([
-                        'document_number' => $clientDocument
-                    ]);
-                }
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | DESCONTAR STOCK
-            |--------------------------------------------------------------------------
-            */
-
-            $order->load([
-                'details.product.ingredients'
-            ]);
-
-            foreach (
-                $order->details as $detail
-            ) {
+            foreach($order->details as $detail) {
                 $product = $detail->product;
-
-                if (!$product) {
-                    continue;
-                }
-
                 $ingredients = $product->ingredients;
 
-                /*
-                |--------------------------------------------------------------------------
-                | PRODUCTO CON INGREDIENTES
-                |--------------------------------------------------------------------------
-                */
-
                 if ($ingredients->count() > 0) {
-                    foreach (
-                        $ingredients as $ingredient
-                    ) {
-                        $ingredientQuantity = (float) (
-                            $ingredient->pivot->quantity
-                        );
-
-                        $qtyToDeduct =
-                            $ingredientQuantity *
-                            (float) $detail->quantity;
-
-                        $oldStock =
-                            (float) $ingredient->stock;
-
-                        $ingredient->decrement(
-                            'stock',
-                            $qtyToDeduct
-                        );
-
+                    foreach ($ingredients as $ingredient) {
+                        $qtyToDeduct = $ingredient->pivot->quantity * $detail->quantity;
+                        $oldStock = $ingredient->stock;
+                        $ingredient->decrement('stock', $qtyToDeduct);
                         InventoryLog::create([
-                            'product_id' =>
-                                $ingredient->id,
-
-                            'user_id' =>
-                                Auth::id(),
-
-                            'type' =>
-                                'sale',
-
-                            'quantity' =>
-                                -$qtyToDeduct,
-
-                            'old_stock' =>
-                                $oldStock,
-
-                            'new_stock' =>
-                                $oldStock -
-                                $qtyToDeduct,
-
-                            'note' =>
-                                'Venta: ' .
-                                $product->name .
-                                ' (Orden #' .
-                                $order->id .
-                                ')'
+                            'product_id' => $ingredient->id,
+                            'user_id' => Auth::id(),
+                            'type' => 'sale',
+                            'quantity' => -$qtyToDeduct,
+                            'old_stock' => $oldStock,
+                            'new_stock' => $oldStock - $qtyToDeduct,
+                            'note' => 'Venta: ' . $product->name . ' (Orden #' . $order->id . ')'
                         ]);
                     }
                 } else {
-                    /*
-                    |--------------------------------------------------------------------------
-                    | PRODUCTO SIN INGREDIENTES
-                    |--------------------------------------------------------------------------
-                    */
-
-                    if (
-                        !is_null(
-                            $product->stock
-                        )
-                    ) {
-                        $oldStock =
-                            (float) $product->stock;
-
-                        $qtyToDeduct =
-                            (float) $detail->quantity;
-
-                        $product->decrement(
-                            'stock',
-                            $qtyToDeduct
-                        );
-
+                    if (!is_null($product->stock)) {
+                        $oldStock = $product->stock;
+                        $product->decrement('stock', $detail->quantity);
                         InventoryLog::create([
-                            'product_id' =>
-                                $product->id,
-
-                            'user_id' =>
-                                Auth::id(),
-
-                            'type' =>
-                                'sale',
-
-                            'quantity' =>
-                                -$qtyToDeduct,
-
-                            'old_stock' =>
-                                $oldStock,
-
-                            'new_stock' =>
-                                $oldStock -
-                                $qtyToDeduct,
-
-                            'note' =>
-                                'Venta POS #' .
-                                $order->id
+                            'product_id' => $product->id,
+                            'user_id' => Auth::id(),
+                            'type' => 'sale',
+                            'quantity' => -($detail->quantity),
+                            'old_stock' => $oldStock,
+                            'new_stock' => $oldStock - $detail->quantity,
+                            'note' => 'Venta POS #' . $order->id
                         ]);
                     }
                 }
             }
         });
 
-        /*
-        |--------------------------------------------------------------------------
-        | 12. NOMBRE DEL MÉTODO DE PAGO
-        |--------------------------------------------------------------------------
-        */
-
-        $paymentNames = [
-            'cash' => 'Efectivo',
-            'yape' => 'Yape',
-            'plin' => 'Plin',
-            'card' => 'Tarjeta',
-            'transfer' => 'Transferencia',
-            'qr' => 'QR'
-        ];
-
-        $paymentName =
-            $paymentNames[$method]
-            ?? ucfirst($method);
-
-        /*
-        |--------------------------------------------------------------------------
-        | 13. DATOS DE MESA
-        |--------------------------------------------------------------------------
-        */
-
-        $tableNumber = null;
-
-        if ($order->table) {
-            $tableNumber =
-                $order->table->number
-                ?? $order->table->name
-                ?? $order->table->id;
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 14. MENSAJE
-        |--------------------------------------------------------------------------
-        */
-
-        $successMessage =
-            '✓ PAGO REALIZADO CORRECTAMENTE. ';
-
-        if ($tableNumber) {
-            $successMessage .=
-                'Mesa ' .
-                $tableNumber .
-                ' cobrada. ';
-        }
-
-        $successMessage .=
-            'Total: S/ ' .
-            number_format($total, 2) .
-            ' | Comprobante: ' .
-            $documentType .
-            ' | Método: ' .
-            $paymentName .
-            '.';
-
-        /*
-        |--------------------------------------------------------------------------
-        | 15. INFORMACIÓN DEL CLIENTE
-        |--------------------------------------------------------------------------
-        */
-
-        if ($documentType === 'Boleta') {
-            $successMessage .=
-                ' DNI: ' .
-                $clientDocument .
-                '.';
-        }
-
-        if ($documentType === 'Factura') {
-            $successMessage .=
-                ' RUC: ' .
-                $clientDocument .
-                ' | Razón Social: ' .
-                $businessName .
-                '.';
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 16. CAMBIO
-        |--------------------------------------------------------------------------
-        */
-
-        if ($method === 'cash') {
-            $successMessage .=
-                ' Cambio: S/ ' .
-                number_format(
-                    $change,
-                    2
-                ) .
-                '.';
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 17. REGRESAR AL POS
-        |--------------------------------------------------------------------------
-        */
-
-        return redirect()
-            ->route('pos.index')
-            ->with(
-                'success',
-                $successMessage
-            );
-    }
-
-    /**
-     * Recalcular total.
-     */
-    private function recalculateTotal(
-        Order $order
-    ) {
-        $order->loadMissing('details');
-
-        $subtotal = $order->details->sum(
-            function ($detail) {
-                return
-                    (float) $detail->price *
-                    (int) $detail->quantity;
+        // 3. Envío a SUNAT (no bloqueante: si falla queda en ERROR y puede reintentarse desde Billing)
+        if ($order->isElectronic()) {
+            try {
+                (new SunatService())->sendInvoice($order->fresh('details.product'));
+            } catch (\Throwable $e) {
+                Log::error('Error al enviar a SUNAT', [
+                    'order_id' => $order->id,
+                    'error' => $e->getMessage(),
+                ]);
+                // No interrumpimos la venta; queda PENDING/ERROR para reintento manual.
             }
-        );
+        }
 
-        $discount =
-            (float) ($order->discount ?? 0);
+        $msg = 'Venta registrada.';
+        if ($order->isElectronic()) {
+            $order->refresh();
+            $msg .= ' Comprobante ' . $order->full_number . ' - ' . ($order->sunat_description ?? $order->sunat_status);
+        }
 
-        $tip =
-            (float) ($order->tip ?? 0);
-
-        $total =
-            ($subtotal - $discount) +
-            $tip;
-
-        $order->update([
-            'total' => max(
-                0,
-                $total
-            )
-        ]);
+        return redirect()->route('pos.index')->with('success', $msg);
     }
 
-    /**
-     * HTML del carrito.
-     */
-    private function getCartHtml(
-        Table $table
-    ) {
-        $order = Order::where(
-            'table_id',
-            $table->id
-        )
-            ->where(
-                'status',
-                'pending'
-            )
-            ->with(
-                'details.product'
-            )
-            ->first();
+    private function recalculateTotal(Order $order)
+    {
+        $subtotal = $order->details->sum(fn($d) => $d->price * $d->quantity);
+        $total = ($subtotal - ($order->discount ?? 0)) + ($order->tip ?? 0);
+        $order->update(['total' => max(0, $total)]);
+    }
 
-        $clients = Client::select(
-            'id',
-            'name',
-            'document_number'
-        )
-            ->orderBy('name')
-            ->get();
-
-        $currency = Setting::where(
-            'key',
-            'currency_symbol'
-        )->value('value') ?? 'S/';
-
-        return view(
-            'pos.partials.cart',
-            compact(
-                'order',
-                'clients',
-                'currency'
-            )
-        )->render();
+    private function getCartHtml(Table $table)
+    {
+        $order = Order::where('table_id', $table->id)->where('status', 'pending')->with('details.product')->first();
+        $clients = Client::select('id', 'name', 'document_number')->orderBy('name')->get();
+        $currency = Setting::where('key', 'currency_symbol')->value('value') ?? 'S/';
+        return view('pos.partials.cart', compact('order', 'clients', 'currency'))->render();
     }
 }

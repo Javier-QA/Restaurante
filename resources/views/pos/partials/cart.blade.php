@@ -1,4 +1,4 @@
-<div class="flex-grow-1 overflow-auto p-2">
+<div class="p-2">
     @if($order && $order->details->count() > 0)
         <div class="table-responsive" style="overflow-x: hidden;">
             <table class="table table-borderless align-middle mb-0" style="width: 100%; table-layout: fixed;">
@@ -64,7 +64,7 @@
     @endif
 </div>
 
-<div class="bg-white border-top p-3 flex-shrink-0">
+<div class="bg-white border-top p-3" style="flex-shrink: 0; margin-top: auto;">
     @if($order)
         <input type="hidden" id="cartTotalValue" value="{{ number_format($order->total + ($order->tip ?? 0) - ($order->discount ?? 0), 2, '.', '') }}">
 
@@ -113,7 +113,8 @@
         </div>
 
         <div class="d-grid">
-            <button class="btn btn-success fw-bold py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#checkoutModal">
+            <button class="btn btn-success fw-bold py-2 shadow-sm" 
+                    onclick="var m=document.getElementById('checkoutModal'); if(m){ new bootstrap.Modal(m).show(); }">
                 <i class="bi bi-cash-coin me-2"></i> COBRAR
             </button>
         </div>

@@ -1,576 +1,1244 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Iniciar Sesión - El Capitán</title>
+    <title>
+        Iniciar Sesión — {{ \App\Models\Setting::where('key','company_name')->value('value') ?? 'Mi Restaurante' }}
+    </title>
 
-    @vite(['resources/css/app.scss', 'resources/js/app.js'])
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
 
     <!-- Bootstrap Icons -->
     <link
         rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
     >
 
     <style>
 
-        * {
+        /* =========================================================
+           CONFIGURACIÓN GENERAL
+        ========================================================= */
+
+        *,
+        *::before,
+        *::after {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --orange: #ff8c00;
+            --orange-hover: #e97d00;
+
+            --blue-dark: #063970;
+            --blue-deep: #042a54;
+            --blue-medium: #0b4f8a;
+
+            --input-bg: #edf5ff;
+            --input-border: #d4e2f0;
+
+            --text-dark: #172033;
+            --text-muted: #64748b;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
         }
 
         body {
-            margin: 0;
-            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
 
-            background-color: #eef1f5;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-
-        /* ==========================================
-           CONTENEDOR PRINCIPAL
-        ========================================== */
-
-        .login-container {
-            width: 90%;
-            max-width: 950px;
-            min-height: 570px;
+            height: 100vh;
 
             display: flex;
 
-            background-color: white;
-
-            border-radius: 25px;
+            background: #eef5fb;
 
             overflow: hidden;
-
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
         }
 
 
-        /* ==========================================
-           PARTE IZQUIERDA
-        ========================================== */
+        /* =========================================================
+           PANEL IZQUIERDO - IMAGEN
+        ========================================================= */
 
-        .login-left {
-            width: 50%;
+        .login-hero {
+            flex: 1;
 
-            background-color: #042B6E;
+            position: relative;
+
+            display: none;
+
+            overflow: hidden;
+        }
+
+        @media (min-width: 900px) {
+
+            .login-hero {
+                display: block;
+            }
+
+        }
+
+        .login-hero img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+            object-position: center;
+        }
+
+        /* Capa azul/naranja sobre la imagen */
+
+        .login-hero::after {
+            content: '';
+
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(4, 42, 84, 0.76) 0%,
+                    rgba(4, 42, 84, 0.45) 50%,
+                    rgba(255, 140, 0, 0.25) 100%
+                );
+        }
+
+
+        /* =========================================================
+           CONTENIDO SOBRE LA IMAGEN
+        ========================================================= */
+
+        .hero-content {
+            position: absolute;
+
+            inset: 0;
+
+            z-index: 2;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+
+            padding: 48px;
+
+            color: white;
+        }
+
+        .hero-badge {
+            width: fit-content;
+
+            display: inline-flex;
+            align-items: center;
+
+            gap: 8px;
+
+            margin-bottom: 20px;
+
+            padding: 7px 16px;
+
+            background: rgba(255, 140, 0, 0.92);
 
             color: white;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 50px;
 
-            text-align: center;
+            font-size: .75rem;
+            font-weight: 700;
 
-            padding: 50px;
-        }
-
-        .left-content {
-            max-width: 380px;
-        }
-
-
-        /* NOMBRE DEL NEGOCIO */
-
-        .logo-title {
-            font-family: Georgia, "Times New Roman", serif;
-
-            font-size: 55px;
-
-            font-weight: bold;
-
-            letter-spacing: 2px;
-
-            margin: 0 0 10px;
-        }
-
-
-        /* LÍNEA DECORATIVA */
-
-        .logo-line {
-            width: 100px;
-
-            height: 3px;
-
-            background-color: white;
-
-            margin: 20px auto;
-        }
-
-
-        /* SUBTÍTULO */
-
-        .left-subtitle {
-            font-size: 18px;
+            text-transform: uppercase;
 
             letter-spacing: 1px;
 
-            margin-bottom: 25px;
+            backdrop-filter: blur(6px);
+
+            box-shadow:
+                0 5px 18px rgba(255, 140, 0, 0.25);
+        }
+
+        .hero-title {
+            margin-bottom: 14px;
+
+            font-size: 2.6rem;
+            font-weight: 800;
+
+            line-height: 1.15;
+
+            letter-spacing: -1px;
+
+            text-shadow:
+                0 2px 20px rgba(0, 0, 0, 0.42);
+        }
+
+        .hero-subtitle {
+            max-width: 410px;
+
+            margin-bottom: 36px;
+
+            font-size: 1rem;
+
+            line-height: 1.6;
+
+            opacity: .92;
         }
 
 
-        /* DESCRIPCIÓN */
+        /* =========================================================
+           ESTADÍSTICAS
+        ========================================================= */
 
-        .left-description {
-            font-size: 15px;
+        .hero-stats {
+            display: flex;
 
-            line-height: 1.7;
+            gap: 30px;
+        }
 
-            opacity: 0.85;
+        .hero-stat {
+            display: flex;
+            flex-direction: column;
+        }
 
-            margin: 0;
+        .hero-stat strong {
+            color: var(--orange);
+
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+
+        .hero-stat span {
+            margin-top: 1px;
+
+            font-size: .72rem;
+
+            text-transform: uppercase;
+
+            letter-spacing: .5px;
+
+            opacity: .80;
         }
 
 
-        /* ==========================================
-           PARTE DERECHA
-        ========================================== */
+        /* =========================================================
+           PANEL DERECHO
+        ========================================================= */
 
-        .login-right {
-            width: 50%;
+        .login-panel {
+            width: 100%;
 
-            background-color: #ffffff;
+            /*
+             * Un poco más ancho para permitir que el nombre
+             * EL CAPITÁN - CEVICHERÍA Y MÁS aparezca completo.
+             */
+            max-width: 540px;
+
+            padding: 48px 52px;
+
+            position: relative;
+
+            overflow: hidden;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #0a477f 0%,
+                    var(--blue-dark) 42%,
+                    var(--blue-deep) 100%
+                );
+        }
+
+
+        /* Círculo decorativo superior */
+
+        .login-panel::before {
+            content: '';
+
+            position: absolute;
+
+            width: 300px;
+            height: 300px;
+
+            top: -90px;
+            right: -90px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255, 255, 255, 0.06);
+
+            pointer-events: none;
+        }
+
+
+        /* Círculo decorativo inferior */
+
+        .login-panel::after {
+            content: '';
+
+            position: absolute;
+
+            width: 210px;
+            height: 210px;
+
+            bottom: -75px;
+            left: -70px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255, 255, 255, 0.05);
+
+            pointer-events: none;
+        }
+
+
+        /* =========================================================
+           MARCA / LOGO
+        ========================================================= */
+
+        .login-brand {`r`n            justify-content: center;
+            position: relative;
+
+            z-index: 2;
+
+            display: flex;
+            align-items: center;
+
+            gap: 14px;
+
+            margin-bottom: 42px;
+
+            width: 100%;
+        }
+
+        .login-logo {
+            width: 72px; height: 72px;
+
+            flex: 0 0 72px;
 
             display: flex;
             align-items: center;
             justify-content: center;
 
-            padding: 50px;
+            background: var(--orange);
+
+            color: white;
+
+            border-radius: 14px;
+
+            font-size: 24px;
+
+            box-shadow:
+                0 6px 20px rgba(255, 140, 0, 0.42);
         }
 
-        .login-form {
-            width: 100%;
+        .login-brand-text {
+            flex: 1;
 
-            max-width: 360px;
+            min-width: 0;
+        }
+
+        .login-brand-text h1 {
+            color: white;
+
+            font-size: 1.25rem; font-weight: 800;
+
+            line-height: 1.2;
+
+            letter-spacing: -0.25px;
+
+            /*
+             * Mantiene el nombre en una sola línea.
+             */
+            white-space: nowrap;
+        }
+
+        .login-brand-text p {
+            margin-top: 5px;
+
+            color:
+                rgba(255, 255, 255, 0.62);
+
+            font-size: .82rem;
+
+            line-height: 1.2;
         }
 
 
-        /* ==========================================
-           TÍTULO
-        ========================================== */
+        /* =========================================================
+           BIENVENIDA
+        ========================================================= */
 
-        .login-form h2 {
-            text-align: center;
+        .login-heading {
+            position: relative;
 
-            color: #042B6E;
+            z-index: 2;
 
-            font-size: 30px;
-
-            font-weight: 700;
-
-            margin: 0 0 8px;
+            margin-bottom: 32px;
         }
 
-        .welcome-text {
-            text-align: center;
+        .login-heading h2 {
+            margin-bottom: 9px;
 
-            color: #777;
+            color: white;
 
-            font-size: 15px;
+            font-size: 1.75rem;
+            font-weight: 800;
 
-            margin: 0 0 35px;
+            line-height: 1.2;
+
+            letter-spacing: -0.5px;
+        }
+
+        .login-heading p {
+            color:
+                rgba(255, 255, 255, 0.68);
+
+            font-size: .84rem;
+
+            line-height: 1.5;
         }
 
 
-        /* ==========================================
-           CAMPOS
-        ========================================== */
+        /* =========================================================
+           FORMULARIO
+        ========================================================= */
 
-        .form-group {
-            margin-bottom: 22px;
+        form {
+            position: relative;
+
+            z-index: 2;
         }
 
-        .form-label {
+        .field-group {
+            margin-bottom: 20px;
+        }
+
+        .field-group label {
             display: block;
 
-            color: #333;
-
-            font-size: 14px;
-
-            font-weight: 600;
-
             margin-bottom: 8px;
+
+            color:
+                rgba(255, 255, 255, 0.80);
+
+            font-size: .77rem;
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: .5px;
         }
 
-        .input-container {
+        .field-wrap {
             position: relative;
-        }
 
-        .form-control {
             width: 100%;
-
-            height: 48px;
-
-            padding: 0 15px;
-
-            border: 1px solid #d7d7d7;
-
-            border-radius: 8px;
-
-            background-color: #f7f7f7;
-
-            font-size: 15px;
-
-            outline: none;
-
-            transition: 0.2s;
-        }
-
-        .form-control:focus {
-            background-color: white;
-
-            border-color: #042B6E;
-
-            box-shadow: 0 0 0 3px rgba(4, 43, 110, 0.10);
         }
 
 
-        /* ==========================================
-           CONTRASEÑA
-        ========================================== */
+        /* =========================================================
+           ICONOS DE LOS INPUTS
+        ========================================================= */
 
-        .password-container .form-control {
-            padding-right: 48px;
-        }
-
-        .toggle-password {
+        .field-icon {
             position: absolute;
 
-            right: 12px;
+            left: 16px;
 
             top: 50%;
 
             transform: translateY(-50%);
 
+            z-index: 3;
+
+            width: 18px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: var(--blue-medium);
+
+            font-size: 1rem;
+
+            pointer-events: none;
+
+            transition: color .2s ease;
+        }
+
+        .field-wrap:focus-within .field-icon {
+            color: var(--orange);
+        }
+
+
+        /* =========================================================
+           INPUTS
+        ========================================================= */
+
+        .field-wrap input {
+            width: 100%;
+
+            height: 49px;
+
+            padding:
+                0 48px 0 45px;
+
+            background: var(--input-bg);
+
+            color: var(--text-dark);
+
+            border:
+                1.5px solid var(--input-border);
+
+            border-radius: 12px;
+
+            outline: none;
+
+            font-family: 'Inter', sans-serif;
+
+            font-size: .90rem;
+            font-weight: 500;
+
+            transition:
+                border-color .2s,
+                background .2s,
+                box-shadow .2s;
+        }
+
+        .field-wrap input::placeholder {
+            color: #94a3b8;
+        }
+
+        .field-wrap input:focus {
+            background: white;
+
+            border-color: var(--orange);
+
+            box-shadow:
+                0 0 0 3px rgba(255, 140, 0, 0.14);
+        }
+
+
+        /* =========================================================
+           BOTÓN VER CONTRASEÑA
+        ========================================================= */
+
+        .password-toggle {
+            position: absolute;
+
+            right: 8px;
+
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            z-index: 4;
+
+            width: 36px;
+            height: 36px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
             border: none;
 
             background: transparent;
 
-            color: #777;
+            color: #71869b;
+
+            border-radius: 50%;
 
             cursor: pointer;
 
-            font-size: 18px;
+            font-size: 1.05rem;
 
-            padding: 5px;
+            transition:
+                color .2s,
+                background .2s;
         }
 
-        .toggle-password:hover {
-            color: #042B6E;
+        .password-toggle:hover {
+            color: var(--orange);
+
+            background:
+                rgba(255, 140, 0, 0.10);
+        }
+
+        .password-toggle:focus {
+            outline: none;
+
+            box-shadow:
+                0 0 0 2px rgba(255, 140, 0, 0.15);
         }
 
 
-        /* ==========================================
+        /* =========================================================
+           MENSAJES DE ERROR
+        ========================================================= */
+
+        .field-error {
+            margin-top: 6px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 5px;
+
+            color: #ffb0b0;
+
+            font-size: .75rem;
+        }
+
+        .alert-error {
+            position: relative;
+
+            z-index: 2;
+
+            margin-bottom: 22px;
+
+            padding: 12px 16px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            background:
+                rgba(255, 107, 107, 0.15);
+
+            color: #ffb5b5;
+
+            border:
+                1px solid rgba(255, 107, 107, 0.35);
+
+            border-radius: 12px;
+
+            font-size: .83rem;
+        }
+
+
+        /* =========================================================
            BOTÓN INGRESAR
-        ========================================== */
+        ========================================================= */
 
         .btn-login {
             width: 100%;
 
-            height: 48px;
+            margin-top: 8px;
+
+            padding: 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 10px;
 
             border: none;
 
-            border-radius: 8px;
+            border-radius: 12px;
 
-            background-color: #042B6E;
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff9d1c,
+                    #ff7a00
+                );
 
             color: white;
 
-            font-size: 14px;
+            font-family: 'Inter', sans-serif;
 
-            font-weight: bold;
+            font-size: .82rem;
+            font-weight: 700;
+
+            letter-spacing: .2px;
 
             cursor: pointer;
 
-            transition: 0.2s;
+            box-shadow:
+                0 6px 22px rgba(255, 140, 0, 0.40);
 
-            margin-top: 5px;
+            transition:
+                transform .15s,
+                box-shadow .2s,
+                background .2s;
         }
 
         .btn-login:hover {
-            background-color: #031f52;
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff8c00,
+                    #e86f00
+                );
 
-            transform: translateY(-1px);
+            transform: translateY(-2px);
 
-            box-shadow: 0 5px 12px rgba(4, 43, 110, 0.20);
+            box-shadow:
+                0 10px 28px rgba(255, 140, 0, 0.48);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
         }
 
 
-        /* ==========================================
-           MENSAJE DE ERROR
-        ========================================== */
+        /* =========================================================
+           FOOTER
+        ========================================================= */
 
-        .text-danger {
-            display: block;
+        .login-footer {
+            position: relative;
 
-            color: #dc3545;
+            z-index: 2;
 
-            font-size: 12px;
+            margin-top: 34px;
 
-            margin-top: 5px;
+            color:
+                rgba(255, 255, 255, 0.40);
+
+            text-align: center;
+
+            font-size: .82rem;
         }
 
 
-        /* ==========================================
+        /* =========================================================
            RESPONSIVE
-        ========================================== */
+        ========================================================= */
 
-        @media (max-width: 768px) {
+        @media (max-width: 1100px) {
 
-            .login-container {
-                width: 92%;
+            .login-panel {
+                max-width: 500px;
 
-                min-height: auto;
-
-                flex-direction: column;
-
-                border-radius: 20px;
+                padding-left: 40px;
+                padding-right: 40px;
             }
 
-            .login-left {
-                width: 100%;
-
-                padding: 35px 25px;
+            .login-brand-text h1 {
+                font-size: .92rem;
             }
 
-            .login-right {
-                width: 100%;
+        }
 
-                padding: 40px 25px;
+
+        @media (max-width: 899px) {
+
+            body {
+                overflow-y: auto;
             }
 
-            .logo-title {
-                font-size: 42px;
+            .login-panel {
+                min-height: 100vh;
+
+                max-width: 100%;
+
+                padding:
+                    36px 28px;
             }
 
-            .left-description {
-                display: none;
+            .login-brand {`r`n            justify-content: center;
+                margin-bottom: 34px;
+            }
+
+            .login-brand-text h1 {
+                font-size: 1rem;
+            }
+
+            .login-heading {
+                margin-bottom: 28px;
+            }
+
+        }
+
+
+        @media (max-width: 480px) {
+
+            .login-panel {
+                padding:
+                    30px 22px;
+            }
+
+            .login-logo {
+                width: 46px;
+                height: 46px;
+
+                flex-basis: 46px;
+            }
+
+            .login-brand-text h1 {
+                font-size: .82rem;
+            }
+
+            .login-heading h2 {
+                font-size: 1.55rem;
             }
 
         }
 
     </style>
+
 </head>
 
 
 <body>
 
 
-    <!-- ==========================================
-         CONTENEDOR DEL LOGIN
-    ========================================== -->
+    <!-- =========================================================
+         PANEL IZQUIERDO
+    ========================================================== -->
 
-    <div class="login-container">
+    <div class="login-hero">
+
+        <img
+            src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=85&auto=format&fit=crop"
+            alt="Restaurante elegante"
+            loading="eager"
+        >
 
 
-        <!-- ======================================
-             PARTE IZQUIERDA
-        ======================================= -->
+        <div class="hero-content">
 
-        <div class="login-left">
 
-            <div class="left-content">
+            <div class="hero-badge">
 
-                <h1 class="logo-title">
-                    EL CAPITÁN
-                </h1>
+                <i class="bi bi-shop"></i>
 
-                <div class="logo-line"></div>
+                Sistema de Restaurante
 
-                <div class="left-subtitle">
-                    SISTEMA DE GESTIÓN PROFESIONAL
+            </div>
+
+
+            <h2 class="hero-title">
+
+                Gestión integral
+                <br>
+                de tu restaurante
+
+            </h2>
+
+
+            <p class="hero-subtitle">
+
+                Controla pedidos, mesas, cocina e inventario
+                desde un solo lugar. Rápido, moderno y confiable.
+
+            </p>
+
+
+            <div class="hero-stats">
+
+
+                <div class="hero-stat">
+
+                    <strong>100%</strong>
+
+                    <span>
+                        En tiempo real
+                    </span>
+
                 </div>
 
-                <p class="left-description">
-                    Accede al sistema para gestionar
-                    las operaciones de El Capitán.
-                </p>
+
+                <div class="hero-stat">
+
+                    <strong>POS</strong>
+
+                    <span>
+                        Integrado
+                    </span>
+
+                </div>
+
+
+                <div class="hero-stat">
+
+                    <strong>KDS</strong>
+
+                    <span>
+                        Cocina digital
+                    </span>
+
+                </div>
+
 
             </div>
 
-        </div>
-
-
-        <!-- ======================================
-             PARTE DERECHA
-        ======================================= -->
-
-        <div class="login-right">
-
-            <div class="login-form">
-
-
-                <!-- TÍTULO -->
-
-                <h2>
-                    INICIAR SESIÓN
-                </h2>
-
-                <p class="welcome-text">
-                    
-                </p>
-
-
-                <!-- ==================================
-                     FORMULARIO
-                =================================== -->
-
-                <form
-                    action="{{ route('login.perform') }}"
-                    method="POST"
-                >
-
-                    @csrf
-
-
-                    <!-- ==============================
-                         CORREO ELECTRÓNICO
-                    =============================== -->
-
-                    <div class="form-group">
-
-                        <label
-                            for="email"
-                            class="form-label"
-                        >
-                            Correo Electrónico
-                        </label>
-
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            class="form-control"
-                            value="{{ old('email') }}"
-                            placeholder="admin@admin.com"
-                            required
-                            autofocus
-                        >
-
-                        @error('email')
-
-                            <span class="text-danger">
-                                {{ $message }}
-                            </span>
-
-                        @enderror
-
-                    </div>
-
-
-                    <!-- ==============================
-                         CONTRASEÑA
-                    =============================== -->
-
-                    <div class="form-group">
-
-                        <label
-                            for="password"
-                            class="form-label"
-                        >
-                            Contraseña
-                        </label>
-
-                        <div class="input-container password-container">
-
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                class="form-control"
-                                placeholder="******"
-                                required
-                            >
-
-                            <!-- MOSTRAR / OCULTAR -->
-
-                            <button
-                                type="button"
-                                class="toggle-password"
-                                id="togglePassword"
-                                aria-label="Mostrar contraseña"
-                            >
-                                <i class="bi bi-eye"></i>
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- ==============================
-                         BOTÓN
-                    =============================== -->
-
-                    <button
-                        type="submit"
-                        class="btn-login"
-                    >
-                        INGRESAR AL SISTEMA
-                    </button>
-
-                </form>
-
-            </div>
 
         </div>
+
 
     </div>
 
 
-    <!-- ==========================================
-         JAVASCRIPT
+    <!-- =========================================================
+         PANEL DERECHO
+    ========================================================== -->
+
+    <div class="login-panel">
+
+
+        <!-- =====================================================
+             LOGO Y NOMBRE
+        ====================================================== -->
+
+        <div class="login-brand">
+
+
+            @php
+
+                $logo = \App\Models\Setting::where(
+                    'key',
+                    'company_logo'
+                )->value('value');
+
+            @endphp
+
+
+            @if($logo)
+
+                <img
+                    src="{{ asset('storage/'.$logo) }}"
+                    class="login-logo"
+                    style="object-fit: cover;"
+                    alt="Logo de {{ \App\Models\Setting::where('key','company_name')->value('value') ?? 'Restaurante' }}"
+                >
+
+            @else
+
+                <div class="login-logo">
+
+                    <i class="bi bi-shop"></i>
+
+                </div>
+
+            @endif
+
+
+            <div class="login-brand-text">
+
+                <h1>
+                    {{ \App\Models\Setting::where('key','company_name')->value('value') ?? 'Mi Restaurante' }}
+                </h1>
+
+                <p>
+                    Sistema de Gestión Profesional
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =====================================================
+             BIENVENIDA
+        ====================================================== -->
+
+        <div class="login-heading">
+
+            <h2>
+                Bienvenido de vuelta
+            </h2>
+
+            <p>
+                Ingresa tus credenciales para acceder al sistema
+            </p>
+
+        </div>
+
+
+        <!-- =====================================================
+             MENSAJE DE ERROR
+        ====================================================== -->
+
+        @if(session('error'))
+
+            <div class="alert-error">
+
+                <i class="bi bi-exclamation-triangle-fill"></i>
+
+                {{ session('error') }}
+
+            </div>
+
+        @endif
+
+
+        <!-- =====================================================
+             FORMULARIO
+        ====================================================== -->
+
+        <form
+            action="{{ route('login.perform') }}"
+            method="POST"
+            novalidate
+        >
+
+            @csrf
+
+
+            <!-- =================================================
+                 CORREO ELECTRÓNICO
+            ================================================== -->
+
+            <div class="field-group">
+
+                <label for="email">
+                    Correo Electrónico
+                </label>
+
+
+                <div class="field-wrap">
+
+                    <i
+                        class="bi bi-envelope-fill field-icon"
+                    ></i>
+
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ old('email') }}"
+                        placeholder="correo@restaurante.com"
+                        autocomplete="email"
+                        required
+                        autofocus
+                    >
+
+                </div>
+
+
+                @error('email')
+
+                    <div class="field-error">
+
+                        <i class="bi bi-exclamation-circle"></i>
+
+                        {{ $message }}
+
+                    </div>
+
+                @enderror
+
+            </div>
+
+
+            <!-- =================================================
+                 CONTRASEÑA
+            ================================================== -->
+
+            <div class="field-group">
+
+                <label for="password">
+                    Contraseña
+                </label>
+
+
+                <div class="field-wrap">
+
+
+                    <!-- Candado -->
+
+                    <i
+                        class="bi bi-lock-fill field-icon"
+                    ></i>
+
+
+                    <!-- Contraseña -->
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="••••••••"
+                        autocomplete="current-password"
+                        required
+                    >
+
+
+                    <!-- Botón mostrar / ocultar contraseña -->
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        id="passwordToggle"
+                        title="Mostrar contraseña"
+                        aria-label="Mostrar contraseña"
+                    >
+
+                        <i
+                            class="bi bi-eye"
+                            id="passwordToggleIcon"
+                        ></i>
+
+                    </button>
+
+
+                </div>
+
+
+                @error('password')
+
+                    <div class="field-error">
+
+                        <i class="bi bi-exclamation-circle"></i>
+
+                        {{ $message }}
+
+                    </div>
+
+                @enderror
+
+
+            </div>
+
+
+            <!-- =================================================
+                 BOTÓN INGRESAR
+            ================================================== -->
+
+            <button
+                type="submit"
+                class="btn-login"
+            >
+
+                <i class="bi bi-box-arrow-in-right"></i>
+
+                Ingresar al Sistema
+
+            </button>
+
+
+        </form>
+
+
+        <!-- =====================================================
+             FOOTER
+        ====================================================== -->
+
+        <div class="login-footer">
+
+            &copy; {{ date('Y') }}
+            Sistema de Restaurante · Desarrollado con Amor
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================================================
          MOSTRAR / OCULTAR CONTRASEÑA
-    =========================================== -->
+    ========================================================== -->
 
     <script>
 
-        const password =
+        const passwordInput =
             document.getElementById('password');
 
-        const togglePassword =
-            document.getElementById('togglePassword');
+        const passwordToggle =
+            document.getElementById('passwordToggle');
+
+        const passwordToggleIcon =
+            document.getElementById('passwordToggleIcon');
 
 
-        togglePassword.addEventListener('click', function () {
+        passwordToggle.addEventListener('click', function () {
 
-            if (password.type === 'password') {
+            const passwordIsHidden =
+                passwordInput.type === 'password';
 
-                password.type = 'text';
 
-                this.innerHTML =
-                    '<i class="bi bi-eye-slash"></i>';
+            if (passwordIsHidden) {
 
-                this.setAttribute(
+                /*
+                 * Mostrar contraseña
+                 */
+
+                passwordInput.type = 'text';
+
+
+                passwordToggleIcon.classList.remove(
+                    'bi-eye'
+                );
+
+                passwordToggleIcon.classList.add(
+                    'bi-eye-slash'
+                );
+
+
+                passwordToggle.setAttribute(
+                    'title',
+                    'Ocultar contraseña'
+                );
+
+                passwordToggle.setAttribute(
                     'aria-label',
                     'Ocultar contraseña'
                 );
 
             } else {
 
-                password.type = 'password';
+                /*
+                 * Ocultar contraseña
+                 */
 
-                this.innerHTML =
-                    '<i class="bi bi-eye"></i>';
+                passwordInput.type = 'password';
 
-                this.setAttribute(
+
+                passwordToggleIcon.classList.remove(
+                    'bi-eye-slash'
+                );
+
+                passwordToggleIcon.classList.add(
+                    'bi-eye'
+                );
+
+
+                passwordToggle.setAttribute(
+                    'title',
+                    'Mostrar contraseña'
+                );
+
+                passwordToggle.setAttribute(
                     'aria-label',
                     'Mostrar contraseña'
                 );
 
             }
+
+
+            /*
+             * Mantener el cursor dentro
+             * del campo contraseña.
+             */
+
+            passwordInput.focus();
 
         });
 
@@ -580,3 +1248,8 @@
 </body>
 
 </html>
+
+
+
+
+

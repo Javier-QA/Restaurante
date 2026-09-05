@@ -8,6 +8,8 @@ use App\Models\Product;
 use App\Models\Area;
 use App\Models\Setting;
 use App\Models\OrderDetail;
+use App\Models\Category;
+use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -15,12 +17,12 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // 1. Configuración de Fecha y Moneda
+        // ─── Config ───────────────────────────────────────────────────────────
         $currency = Setting::where('key', 'currency_symbol')->value('value') ?? 'S/';
-        $today = Carbon::today(); // Usa la fecha del servidor/app
+        $today    = Carbon::today();
+        $year     = Carbon::now()->year;
 
-        // 2. KPIs (Indicadores Principales)
-        // Sumamos solo las ventas con estatus 'completed' de HOY
+        // ─── KPIs del día ─────────────────────────────────────────────────────
         $totalSalesToday = Order::where('status', 'completed')
                                 ->whereDate('created_at', $today)
                                 ->sum('total');
@@ -29,48 +31,104 @@ class DashboardController extends Controller
                                  ->whereDate('created_at', $today)
                                  ->count();
 
-        // Mesas Activas (Cualquier orden que no esté 'completed' ni 'cancelled')
         $activeTables = Order::where('status', 'pending')->count();
 
-        // Stock Crítico (Conteo de productos con stock <= 5)
         $lowStockProducts = Product::where('is_active', true)
                                    ->where('stock', '<=', 5)
                                    ->count();
 
-        // 3. Monitor de Mesas (Para el mapa visual)
-        // Cargamos áreas con mesas y sus órdenes activas para pintar rojo/verde
-        $areas = Area::with(['tables' => function($q) {
-            $q->with(['orders' => function($o) {
-                $o->where('status', 'pending'); // Solo nos interesan las activas
+        // ─── Ventas del mes actual ─────────────────────────────────────────────
+        $totalSalesMonth = Order::where('status', 'completed')
+                                ->whereYear('created_at', $year)
+                                ->whereMonth('created_at', Carbon::now()->month)
+                                ->sum('total');
+
+        // ─── Meta mensual (de configuración o 5000 por defecto) ───────────────
+        $monthlyGoal = (float) (Setting::where('key', 'monthly_goal')->value('value') ?? 5000);
+        $goalPercent = $monthlyGoal > 0
+            ? min(100, round(($totalSalesMonth / $monthlyGoal) * 100))
+            : 0;
+
+        // ─── Datos mensuales para el Line Chart (año actual) ──────────────────
+        $monthlySalesRaw = Order::where('status', 'completed')
+            ->whereYear('created_at', $year)
+            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('SUM(total) as total'))
+            ->groupBy('month')
+            ->pluck('total', 'month')
+            ->toArray();
+
+        $monthlyOrdersRaw = Order::where('status', 'completed')
+            ->whereYear('created_at', $year)
+            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as cnt'))
+            ->groupBy('month')
+            ->pluck('cnt', 'month')
+            ->toArray();
+
+        $monthlyReservationsRaw = Reservation::whereYear('created_at', $year)
+            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as cnt'))
+            ->groupBy('month')
+            ->pluck('cnt', 'month')
+            ->toArray();
+
+        // Rellenar los 12 meses con 0 donde no haya datos
+        $monthlySales        = [];
+        $monthlyOrders       = [];
+        $monthlyReservations = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $monthlySales[]        = round($monthlySalesRaw[$m] ?? 0, 2);
+            $monthlyOrders[]       = $monthlyOrdersRaw[$m] ?? 0;
+            $monthlyReservations[] = $monthlyReservationsRaw[$m] ?? 0;
+        }
+
+        // ─── Datos para el Radar Chart (por categoría) ────────────────────────
+        $categoryStats = DB::table('order_details')
+            ->join('orders', 'order_details.order_id', '=', 'orders.id')
+            ->join('products', 'order_details.product_id', '=', 'products.id')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->where('orders.status', 'completed')
+            ->select('categories.name', DB::raw('SUM(order_details.quantity) as total_qty'))
+            ->groupBy('categories.id', 'categories.name')
+            ->orderByDesc('total_qty')
+            ->limit(6)
+            ->get();
+
+        $radarLabels = $categoryStats->pluck('name')->toArray();
+        $radarData   = $categoryStats->pluck('total_qty')->map(fn($v) => (int)$v)->toArray();
+
+        // Si no hay datos suficientes, usar placeholders
+        if (count($radarLabels) < 3) {
+            $radarLabels = ['Entradas', 'Platos', 'Bebidas', 'Postres', 'Especiales'];
+            $radarData   = [0, 0, 0, 0, 0];
+        }
+
+        // ─── Monitor de Mesas ─────────────────────────────────────────────────
+        $areas = Area::with(['tables' => function ($q) {
+            $q->with(['orders' => function ($o) {
+                $o->where('status', 'pending');
             }]);
         }])->get();
 
-        // 4. Gráfico de Ventas (Últimos 7 días)
-        $chartLabels = [];
-        $chartValues = [];
-        
-        // Generamos los últimos 7 días
-        for ($i = 6; $i >= 0; $i--) {
-            $date = Carbon::now()->subDays($i);
-            $chartLabels[] = $date->locale('es')->isoFormat('dd D'); // Ej: "lun 12"
-            
-            // Consulta la suma de ese día específico
-            $daySum = Order::where('status', 'completed')
-                           ->whereDate('created_at', $date->format('Y-m-d'))
-                           ->sum('total');
-            $chartValues[] = $daySum;
-        }
-
-        // 5. Top Productos Vendidos (Histórico General o del Mes)
+        // ─── Top Productos ────────────────────────────────────────────────────
         $topProducts = DB::table('order_details')
             ->join('orders', 'order_details.order_id', '=', 'orders.id')
             ->join('products', 'order_details.product_id', '=', 'products.id')
-            ->where('orders.status', 'completed') // Solo ventas reales
+            ->where('orders.status', 'completed')
             ->select('products.name', 'products.image', DB::raw('SUM(order_details.quantity) as total_qty'))
             ->groupBy('products.id', 'products.name', 'products.image')
             ->orderByDesc('total_qty')
             ->limit(5)
             ->get();
+
+        // ─── Datos legacy (por si alguna vista los usa) ───────────────────────
+        $chartLabels = [];
+        $chartValues = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i);
+            $chartLabels[] = $date->locale('es')->isoFormat('dd D');
+            $chartValues[] = Order::where('status', 'completed')
+                                   ->whereDate('created_at', $date->format('Y-m-d'))
+                                   ->sum('total');
+        }
 
         return view('dashboard', compact(
             'currency',
@@ -78,10 +136,18 @@ class DashboardController extends Controller
             'ordersCountToday',
             'activeTables',
             'lowStockProducts',
+            'totalSalesMonth',
+            'monthlyGoal',
+            'goalPercent',
+            'monthlySales',
+            'monthlyOrders',
+            'monthlyReservations',
+            'radarLabels',
+            'radarData',
             'areas',
+            'topProducts',
             'chartLabels',
-            'chartValues',
-            'topProducts'
+            'chartValues'
         ));
     }
 }

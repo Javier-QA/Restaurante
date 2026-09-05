@@ -14,51 +14,49 @@ class ProductController extends Controller
     public function index()
     {
         // Listamos productos con su categoría, ordenados por los más nuevos
-        // Ahora mostramos 20 productos por página
-        $products = Product::with('category')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
+        $products = Product::with('category')->orderBy('created_at', 'desc')->paginate(10);
         return view('products.index', compact('products'));
     }
 
     public function create()
     {
         $categories = Category::where('is_active', true)->get();
-
         return view('products.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        // 1. Validación
+        // 1. Validación (Incluye el barcode único)
         $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
+            'cost' => 'nullable|numeric|min:0',
+            'promotional_price' => 'nullable|numeric|min:0',
+            'barcode' => 'nullable|string|max:50|unique:products,barcode', // <--- NUEVO
             'image' => 'nullable|image|max:2048',
             'stock' => 'nullable|integer'
         ]);
 
         $data = $request->all();
-
+        
         // 2. Manejo de Imagen
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('products', 'public');
         }
 
-        // Checkbox de "Disponible en POS"
-        // Si no viene, es false
+        // Checkbox de "Disponible en POS" (si no viene, es false)
         $data['is_saleable'] = $request->has('is_saleable');
-
-        // Producto activo por defecto
+        $data['is_chef_recommendation'] = $request->has('is_chef_recommendation');
+        $data['is_new'] = $request->has('is_new');
         $data['is_active'] = true;
+        $data['cost'] = $request->cost ?? 0;
 
         // 3. Crear Producto
         $product = Product::create($data);
 
         // 4. Registro inicial en Kardex si hay stock
-        if ($request->stock > 0) {
+        if($request->stock > 0) {
             InventoryLog::create([
                 'product_id' => $product->id,
                 'user_id' => Auth::id(),
@@ -70,34 +68,28 @@ class ProductController extends Controller
             ]);
         }
 
-        return redirect()
-            ->route('products.index')
-            ->with('success', 'Producto creado correctamente.');
+        return redirect()->route('products.index')->with('success', 'Producto creado correctamente.');
     }
 
     public function edit(Product $product)
     {
         $categories = Category::where('is_active', true)->get();
-
         // Productos que pueden ser insumos (todos menos él mismo)
-        $ingredients = Product::where('id', '!=', $product->id)
-            ->where('is_active', true)
-            ->get();
-
-        return view('products.edit', compact(
-            'product',
-            'categories',
-            'ingredients'
-        ));
+        $ingredients = Product::where('id', '!=', $product->id)->where('is_active', true)->get();
+        
+        return view('products.edit', compact('product', 'categories', 'ingredients'));
     }
 
     public function update(Request $request, Product $product)
     {
-        // 1. Validación
+        // 1. Validación (Barcode único excepto para este producto)
         $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
+            'cost' => 'nullable|numeric|min:0',
+            'promotional_price' => 'nullable|numeric|min:0',
+            'barcode' => 'nullable|string|max:50|unique:products,barcode,' . $product->id, // <--- NUEVO
             'image' => 'nullable|image|max:2048',
         ]);
 
@@ -105,88 +97,59 @@ class ProductController extends Controller
 
         // 2. Manejo de Imagen
         if ($request->hasFile('image')) {
-
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
             }
-
-            $data['image'] = $request->file('image')
-                ->store('products', 'public');
+            $data['image'] = $request->file('image')->store('products', 'public');
         }
 
-        // Checkbox de "Disponible en POS"
         $data['is_saleable'] = $request->has('is_saleable');
+        $data['is_chef_recommendation'] = $request->has('is_chef_recommendation');
+        $data['is_new'] = $request->has('is_new');
+        $data['cost'] = $request->cost ?? 0;
 
         // 3. Actualizar
         $product->update($data);
 
-        // Actualizar receta/insumos
+        // Actualizar receta/insumos (Si enviaste array de ingredientes)
         if ($request->has('ingredients')) {
-
             $syncData = [];
-
             foreach ($request->ingredients as $id => $qty) {
-
-                if ($qty > 0) {
-                    $syncData[$id] = [
-                        'quantity' => $qty
-                    ];
-                }
+                if ($qty > 0) $syncData[$id] = ['quantity' => $qty];
             }
-
             $product->ingredients()->sync($syncData);
         }
 
-        return redirect()
-            ->route('products.index')
-            ->with('success', 'Producto actualizado.');
+        return redirect()->route('products.index')->with('success', 'Producto actualizado.');
     }
 
     public function destroy(Product $product)
     {
-        // Eliminado lógico (desactivar) en lugar de borrar
-        // para mantener el historial
-        $product->update([
-            'is_active' => false
-        ]);
-
-        return redirect()
-            ->route('products.index')
-            ->with('success', 'Producto eliminado (desactivado).');
+        // Eliminado lógico (desactivar) en lugar de borrar para mantener historial
+        $product->update(['is_active' => false]);
+        return redirect()->route('products.index')->with('success', 'Producto eliminado (desactivado).');
     }
 
     // Funciones extra para ajustes rápidos
-
     public function toggleStatus(Product $product)
     {
-        $product->update([
-            'is_active' => !$product->is_active
-        ]);
-
+        $product->update(['is_active' => !$product->is_active]);
         return back();
     }
 
     public function adjustStock(Request $request, Product $product)
     {
-        $request->validate([
-            'quantity' => 'required|integer|min:1',
-            'type' => 'required|in:add,sub'
-        ]);
-
+        $request->validate(['quantity' => 'required|integer|min:1', 'type' => 'required|in:add,sub']);
+        
         $oldStock = $product->stock;
         $qty = $request->quantity;
-
+        
         if ($request->type === 'sub') {
-
             $product->decrement('stock', $qty);
-
             $newStock = $oldStock - $qty;
             $type = 'adjustment_out';
-
         } else {
-
             $product->increment('stock', $qty);
-
             $newStock = $oldStock + $qty;
             $type = 'adjustment_in';
         }

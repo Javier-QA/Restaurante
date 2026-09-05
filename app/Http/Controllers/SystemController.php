@@ -37,13 +37,12 @@ class SystemController extends Controller
             DB::table('order_details')->truncate();
             DB::table('orders')->truncate();
 
-            // 2. Borrar Reservas
+            // 2. Borrar Reservas y Finanzas
             DB::table('reservations')->truncate();
+            DB::table('expenses')->truncate();
+            DB::table('cash_registers')->truncate();
 
-            // 3. Borrar Kardex (Opcional: A veces se quiere mantener el stock inicial, pero para reset total borramos todo)
-            // Si borras el kardex, el stock en la tabla products se mantiene, pero pierdes el historial.
-            // Para ser coherentes, reiniciamos el stock de productos a 0 también o borramos solo logs.
-            // Aquí borraremos historial y pondremos stock a 0 para obligar a un inventario inicial real.
+            // 3. Borrar Kardex
             DB::table('inventory_logs')->truncate();
             DB::table('products')->update(['stock' => 0]); 
 
@@ -53,6 +52,80 @@ class SystemController extends Controller
 
         } catch (\Exception $e) {
             return back()->with('error', 'Error crítico: ' . $e->getMessage());
+        }
+    }
+
+    public function backup()
+    {
+        try {
+            $dbName = env('DB_DATABASE');
+            $dbUser = env('DB_USERNAME');
+            $dbPass = env('DB_PASSWORD');
+            $dbHost = env('DB_HOST', '127.0.0.1');
+
+            $fileName = 'backup_' . date('Y-m-d_H-i-s') . '.sql';
+            $filePath = storage_path('app/' . $fileName);
+
+            $passwordParam = empty($dbPass) ? '' : '--password="' . $dbPass . '"';
+            $command = "mysqldump --user=\"{$dbUser}\" {$passwordParam} --host=\"{$dbHost}\" {$dbName} > \"{$filePath}\"";
+
+            $output = [];
+            $returnVar = null;
+            exec($command, $output, $returnVar);
+
+            if ($returnVar !== 0) {
+                return back()->with('error', 'No se pudo generar el backup. Verifica que mysqldump esté en el PATH.');
+            }
+
+            return response()->download($filePath)->deleteFileAfterSend(true);
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al generar la copia de seguridad: ' . $e->getMessage());
+        }
+    }
+
+    public function restore(Request $request)
+    {
+        $request->validate([
+            'backup_file' => 'required|file',
+            'password' => 'required'
+        ]);
+
+        if (!password_verify($request->password, auth()->user()->password)) {
+            return back()->with('error', 'Contraseña incorrecta. No se restauró el sistema.');
+        }
+
+        try {
+            $file = $request->file('backup_file');
+            
+            // Verificación simple de que es un archivo SQL
+            if ($file->getClientOriginalExtension() !== 'sql') {
+                return back()->with('error', 'El archivo debe ser un .sql válido.');
+            }
+
+            $dbName = env('DB_DATABASE');
+            $dbUser = env('DB_USERNAME');
+            $dbPass = env('DB_PASSWORD');
+            $dbHost = env('DB_HOST', '127.0.0.1');
+
+            $filePath = $file->getRealPath();
+            
+            $passwordParam = empty($dbPass) ? '' : '--password="' . $dbPass . '"';
+            // Usa < para inyectar el archivo SQL en la BD
+            $command = "mysql --user=\"{$dbUser}\" {$passwordParam} --host=\"{$dbHost}\" {$dbName} < \"{$filePath}\"";
+
+            $output = [];
+            $returnVar = null;
+            exec($command, $output, $returnVar);
+
+            if ($returnVar !== 0) {
+                return back()->with('error', 'Ocurrió un error al ejecutar la restauración en la base de datos.');
+            }
+
+            return back()->with('success', '¡El sistema ha sido restaurado exitosamente desde la copia de seguridad!');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al restaurar el sistema: ' . $e->getMessage());
         }
     }
 }

@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Esto le dice a Laravel: "Cuando veas 'role', usa este archivo CheckRole"
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
+            'cash_register' => \App\Http\Middleware\RequireOpenCashRegister::class,
         ]);
 
     })
