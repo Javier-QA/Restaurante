@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
 
@@ -498,6 +498,124 @@
                                     value="{{ $settings['ticket_footer'] ?? '¡Gracias por su visita!' }}"
                                 >
 
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-bullseye me-1"></i>
+                                    Meta mensual de ventas
+                                </label>
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text">
+                                        {{ $settings['currency_symbol'] ?? 'S/' }}
+                                    </span>
+
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        name="monthly_goal"
+                                        class="form-control"
+                                        value="{{ old('monthly_goal', $settings['monthly_goal'] ?? 5000) }}"
+                                        placeholder="5000.00"
+                                    >
+
+                                </div>
+
+                                <small class="text-muted">
+                                    Esta meta se utiliza para calcular el progreso mensual del Dashboard.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        {{-- =================================================
+                             CELEBRACIÓN DE META MENSUAL
+                        ================================================== --}}
+
+                        <div class="row g-3 mb-4">
+
+                            <div class="col-md-6">
+                                <div class="border rounded-3 p-3 h-100 bg-light">
+
+                                    <div class="form-check form-switch mb-1">
+
+                                        <input
+                                            type="hidden"
+                                            name="goal_notification_enabled"
+                                            value="0"
+                                        >
+
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            role="switch"
+                                            id="goal_notification_enabled"
+                                            name="goal_notification_enabled"
+                                            value="1"
+                                            {{ ($settings['goal_notification_enabled'] ?? '1') == '1' ? 'checked' : '' }}
+                                        >
+
+                                        <label
+                                            class="form-check-label fw-bold"
+                                            for="goal_notification_enabled"
+                                        >
+                                            <i class="bi bi-bell-fill me-1"></i>
+                                            Notificación de meta
+                                        </label>
+
+                                    </div>
+
+                                    <small class="text-muted">
+                                        Muestra una felicitación cuando se alcanza o supera la meta mensual.
+                                    </small>
+
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="border rounded-3 p-3 h-100 bg-light">
+
+                                    <div class="form-check form-switch mb-1">
+
+                                        <input
+                                            type="hidden"
+                                            name="goal_confetti_enabled"
+                                            value="0"
+                                        >
+
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            role="switch"
+                                            id="goal_confetti_enabled"
+                                            name="goal_confetti_enabled"
+                                            value="1"
+                                            {{ ($settings['goal_confetti_enabled'] ?? '1') == '1' ? 'checked' : '' }}
+                                        >
+
+                                        <label
+                                            class="form-check-label fw-bold"
+                                            for="goal_confetti_enabled"
+                                        >
+                                            <i class="bi bi-stars me-1"></i>
+                                            Confetis de celebración
+                                        </label>
+
+                                    </div>
+
+                                    <small class="text-muted">
+                                        Muestra confetis mientras está visible la felicitación.
+                                    </small>
+
+                                </div>
                             </div>
 
                         </div>
