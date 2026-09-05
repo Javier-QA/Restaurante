@@ -5,6 +5,62 @@
 
     <title>Reporte de Ventas</title>
 
+    @php
+        $dashboardTheme = \App\Models\Setting::where(
+            'key',
+            'dashboard_theme'
+        )->value('value') ?? 'ocean-orange';
+
+        $pdfThemes = [
+
+            'ocean-orange' => [
+                'primary' => '#ff8c00',
+                'dark'    => '#063970',
+                'accent'  => '#0b84c6',
+                'light'   => '#eef8fc',
+            ],
+
+            'lime-blue' => [
+                'primary' => '#84cc16',
+                'dark'    => '#063970',
+                'accent'  => '#22a06b',
+                'light'   => '#f2fbf3',
+            ],
+
+            'purple-orange' => [
+                'primary' => '#ff8c00',
+                'dark'    => '#4c1d95',
+                'accent'  => '#7c3aed',
+                'light'   => '#f7f2ff',
+            ],
+
+            'sand-navy' => [
+                'primary' => '#c98a52',
+                'dark'    => '#063970',
+                'accent'  => '#e7c6a5',
+                'light'   => '#f7f1e9',
+            ],
+
+            'teal-amber' => [
+                'primary' => '#f59e0b',
+                'dark'    => '#115e59',
+                'accent'  => '#0f766e',
+                'light'   => '#f0fdfa',
+            ],
+
+            'wine-blue' => [
+                'primary' => '#2563eb',
+                'dark'    => '#7f1d1d',
+                'accent'  => '#b91c1c',
+                'light'   => '#fef2f2',
+            ],
+        ];
+
+        $pdfTheme =
+            $pdfThemes[$dashboardTheme]
+            ?? $pdfThemes['ocean-orange'];
+    @endphp
+
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;
@@ -21,7 +77,7 @@
         .header h1 {
             margin: 0;
             font-size: 22px;
-            color: #063970;
+            color: {{ $pdfTheme['dark'] }};
         }
 
         .header p {
@@ -51,7 +107,7 @@
         .summary-value {
             font-size: 16px;
             font-weight: bold;
-            color: #063970;
+            color: {{ $pdfTheme['dark'] }};
         }
 
         .section {
@@ -61,10 +117,10 @@
         .section-title {
             font-size: 14px;
             font-weight: bold;
-            color: #063970;
+            color: {{ $pdfTheme['dark'] }};
             padding-bottom: 6px;
             margin-bottom: 10px;
-            border-bottom: 2px solid #ff8c00;
+            border-bottom: 2px solid {{ $pdfTheme['primary'] }};
         }
 
         .progress-wrap {
@@ -74,20 +130,20 @@
         .progress {
             width: 100%;
             height: 14px;
-            background: #e5e7eb;
+            background: {{ $pdfTheme['light'] }};
             border-radius: 7px;
             overflow: hidden;
         }
 
         .progress-bar {
             height: 14px;
-            background: #ff8c00;
+            background: {{ $pdfTheme['primary'] }};
         }
 
         .progress-text {
             margin-bottom: 7px;
             font-weight: bold;
-            color: #063970;
+            color: {{ $pdfTheme['dark'] }};
         }
 
         table.data {
@@ -96,7 +152,7 @@
         }
 
         table.data th {
-            background: #063970;
+            background: {{ $pdfTheme['dark'] }};
             color: #ffffff;
             padding: 8px;
             text-align: left;

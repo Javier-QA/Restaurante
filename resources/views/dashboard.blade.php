@@ -292,7 +292,61 @@ document.addEventListener('DOMContentLoaded', function () {
         .goal-confetti-piece {
             display: none !important;
         }
-    </style>
+    
+    .dashboard-top-header {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-top-header::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 5px;
+        background: linear-gradient(
+            180deg,
+            var(--dash-primary),
+            white
+        );
+    }
+
+    .dashboard-top-header .bi-trophy-fill {
+        color: var(--dash-primary);
+    }
+
+    .top-product-item {
+        transition:
+            transform .18s ease,
+            background-color .18s ease;
+    }
+
+    .top-product-item:hover {
+        transform: translateX(3px);
+    }
+
+    .top-product-item:nth-child(1) .badge {
+        background: var(--dash-primary) !important;
+    }
+
+    .top-product-item:nth-child(2) .badge {
+        background: var(--dash-accent-1) !important;
+    }
+
+    .top-product-item:nth-child(3) .badge {
+        background: var(--dash-accent-2) !important;
+    }
+
+    .top-product-item:nth-child(4) .badge {
+        background: var(--dash-accent-4) !important;
+    }
+
+    .top-product-item:nth-child(5) .badge {
+        background: var(--dash-dark-2) !important;
+    }
+
+</style>
 @endif
 
 <div class="container-fluid p-0">
@@ -650,8 +704,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         <div class="col-lg-4">
             <div class="card">
-                <div class="card-header py-3 px-4">
-                    <h6 class="fw-bold mb-0">🏆 Más Vendidos</h6>
+                <div class="card-header py-3 px-4 dashboard-top-header">
+                    <h6 class="fw-bold mb-0"><i class="bi bi-trophy-fill me-2"></i>Más Vendidos</h6>
                 </div>
                 <div class="card-body px-0 py-2">
                     <div class="list-group list-group-flush">
@@ -676,7 +730,17 @@ document.addEventListener('DOMContentLoaded', function () {
                                     <div class="fw-bold text-dark text-truncate" style="font-size:.84rem;">{{ $product->name }}</div>
                                     <small class="text-muted">{{ $product->total_qty }} unidades</small>
                                 </div>
-                                <i class="bi bi-trophy-fill text-warning ms-2" style="opacity:.6;"></i>
+                                @if($loop->iteration === 1)
+                                    <i class="bi bi-award-fill ms-2" style="color:#d4af37;font-size:1.1rem;"></i>
+                                @elseif($loop->iteration === 2)
+                                    <i class="bi bi-award-fill ms-2" style="color:#9ca3af;font-size:1.1rem;"></i>
+                                @elseif($loop->iteration === 3)
+                                    <i class="bi bi-award-fill ms-2" style="color:#cd7f32;font-size:1.1rem;"></i>
+                                @else
+                                    <span class="ms-2 fw-bold text-muted" style="font-size:.75rem;">
+                                        #{{ $loop->iteration }}
+                                    </span>
+                                @endif
                             </div>
                         @empty
                             <div class="text-center py-5 text-muted">Sin datos de ventas aún.</div>
@@ -1416,6 +1480,60 @@ document.addEventListener('DOMContentLoaded', function () {
 
     .goal-toast.goal-toast-stopped {
         animation: none !important;
+    }
+
+
+    .dashboard-top-header {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-top-header::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 5px;
+        background: linear-gradient(
+            180deg,
+            var(--dash-primary),
+            white
+        );
+    }
+
+    .dashboard-top-header .bi-trophy-fill {
+        color: var(--dash-primary);
+    }
+
+    .top-product-item {
+        transition:
+            transform .18s ease,
+            background-color .18s ease;
+    }
+
+    .top-product-item:hover {
+        transform: translateX(3px);
+    }
+
+    .top-product-item:nth-child(1) .badge {
+        background: var(--dash-primary) !important;
+    }
+
+    .top-product-item:nth-child(2) .badge {
+        background: var(--dash-accent-1) !important;
+    }
+
+    .top-product-item:nth-child(3) .badge {
+        background: var(--dash-accent-2) !important;
+    }
+
+    .top-product-item:nth-child(4) .badge {
+        background: var(--dash-accent-4) !important;
+    }
+
+    .top-product-item:nth-child(5) .badge {
+        background: var(--dash-dark-2) !important;
     }
 
 </style>
