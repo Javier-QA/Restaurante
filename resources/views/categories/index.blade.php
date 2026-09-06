@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-secondary fw-bold">Gestión de Categorías</h2>
+        <h2 class="fw-bold mb-0" style="color: #000 !important;"><i class="bi bi-tags-fill me-2" style="color: #000 !important;"></i>Gestión de Categorías</h2>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
             <i class="bi bi-plus-lg"></i> Nueva Categoría
         </button>

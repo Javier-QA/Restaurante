@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid py-4">
+<div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold mb-0 text-dark">Historial de Turnos de Caja</h2>
+            <h2 class="fw-bold mb-0" style="color: #000 !important;"><i class="bi bi-clock-history me-2" style="color: #000 !important;"></i>Historial de Turnos de Caja</h2>
             <p class="text-muted mb-0">Auditoría de todos los turnos abiertos y cerrados por los usuarios.</p>
         </div>
     </div>

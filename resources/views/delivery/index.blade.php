@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid py-4">
+<div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="h4 mb-0 fw-bold text-gray-800"><i class="bi bi-bicycle me-2 text-primary"></i>Delivery (Pedidos a Domicilio)</h2>
+            <h2 class="fw-bold mb-0" style="color: #000 !important;"><i class="bi bi-bicycle me-2" style="color: #000 !important;"></i>Delivery (Pedidos a Domicilio)</h2>
             <p class="text-muted small mb-0 mt-1">Gestión de pedidos para enviar hoy.</p>
         </div>
         <div>
-            <a href="{{ route('delivery.drivers') }}" class="btn btn-outline-secondary me-2">
+            <a href="{{ route('delivery.drivers') }}" class="btn btn-outline-secondary me-2" style="border: 1.5px solid #6c757d !important;">
                 <i class="bi bi-person-vcard me-1"></i> Repartidores
             </a>
             <a href="{{ route('delivery.create') }}" class="btn btn-primary shadow-sm fw-bold">

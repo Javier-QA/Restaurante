@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid py-4">
+<div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h3 class="fw-bold mb-0 text-gray-800"><i class="bi bi-person-vcard me-2 text-primary"></i>Repartidores</h3>
+            <h2 class="fw-bold mb-0" style="color: #000 !important;"><i class="bi bi-person-vcard me-2" style="color: #000 !important;"></i>Repartidores</h2>
             <p class="text-muted small mb-0 mt-1">Gestión del personal de delivery.</p>
         </div>
         <div>
@@ -24,7 +24,7 @@
         </div>
     @endif
 
-    <div class="card border-0 shadow-sm">
+    <div class="card border shadow-sm" style="border-color: #dee2e6 !important;">
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">

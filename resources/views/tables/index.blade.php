@@ -4,7 +4,7 @@
 <div class="container-fluid tables-page">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold text-dark mb-0"><i class="bi bi-grid-3x3-gap-fill me-2"></i> Diseño de Salón</h2>
+            <h2 class="fw-bold mb-0" style="color: #000 !important;"><i class="bi bi-grid-3x3-gap-fill me-2" style="color: #000 !important;"></i> Diseño de Salón</h2>
             <p class="text-muted mb-0">Arrastra las mesas y guarda la distribución</p>
         </div>
         <div class="d-flex gap-2">

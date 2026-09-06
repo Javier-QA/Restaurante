@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="mb-4">
-    <h2 class="fw-bold text-dark mb-1"><i class="bi bi-shield-lock-fill me-2 text-primary"></i>Centro de Mantenimiento</h2>
+    <h2 class="fw-bold mb-1" style="color: #000 !important;"><i class="bi bi-shield-lock-fill me-2" style="color: #000 !important;"></i>Centro de Mantenimiento</h2>
     <p class="text-muted">Gestiona la integridad de tu información y la salud del sistema.</p>
 </div>
 

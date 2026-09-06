@@ -4,7 +4,7 @@
 <div class="container-fluid pos-page">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold text-dark mb-0">Punto de Venta</h2>
+            <h2 class="fw-bold mb-0" style="color: #000 !important;"><i class="bi bi-shop me-2" style="color: #000 !important;"></i>Punto de Venta</h2>
             <p class="text-muted mb-0">Selecciona una mesa para comenzar</p>
         </div>
         <div class="d-flex gap-3">
