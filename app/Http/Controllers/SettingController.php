@@ -33,7 +33,7 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
-        $data = $request->except(['_token', 'company_logo', 'sunat_cert_file']);
+        $data = $request->except(['_token', 'company_logo', 'sunat_cert_file', 'yape_qr', 'plin_qr']);
 
         // 1. Guardar textos (Nombre, Timezone, Moneda, config SUNAT, etc.)
         foreach ($data as $key => $value) {
@@ -79,6 +79,45 @@ class SettingController extends Controller
             );
         }
 
+        // 4. Guardar QR de Yape
+        if ($request->hasFile('yape_qr')) {
+            $request->validate([
+                'yape_qr' => 'image|mimes:jpeg,jpg,png,webp|max:2048',
+            ]);
+
+            $oldYape = Setting::where('key', 'yape_qr')->value('value');
+
+            if ($oldYape) {
+                Storage::disk('public')->delete($oldYape);
+            }
+
+            $path = $request->file('yape_qr')->store('settings', 'public');
+
+            Setting::updateOrCreate(
+                ['key' => 'yape_qr'],
+                ['value' => $path]
+            );
+        }
+
+        // 5. Guardar QR de Plin
+        if ($request->hasFile('plin_qr')) {
+            $request->validate([
+                'plin_qr' => 'image|mimes:jpeg,jpg,png,webp|max:2048',
+            ]);
+
+            $oldPlin = Setting::where('key', 'plin_qr')->value('value');
+
+            if ($oldPlin) {
+                Storage::disk('public')->delete($oldPlin);
+            }
+
+            $path = $request->file('plin_qr')->store('settings', 'public');
+
+            Setting::updateOrCreate(
+                ['key' => 'plin_qr'],
+                ['value' => $path]
+            );
+        }
         return redirect()->back()->with('success', 'Configuración actualizada correctamente.');
     }
 }

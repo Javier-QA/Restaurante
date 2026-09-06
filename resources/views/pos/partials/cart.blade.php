@@ -1,4 +1,4 @@
-<div class="p-2">
+<div class="p-2 pos-cart-body">
     @if($order && $order->details->count() > 0)
         <div class="table-responsive" style="overflow-x: hidden;">
             <table class="table table-borderless align-middle mb-0" style="width: 100%; table-layout: fixed;">
@@ -35,7 +35,7 @@
                                        data-detail-id="{{ $detail->id }}" 
                                        data-note-content="{{ $detail->note }}">
                                        <i class="bi bi-pencil" style="font-size: 0.7rem;"></i>
-                                    </a>
+                                    </button>
                                 </div>
                             </td>
 
@@ -64,7 +64,7 @@
     @endif
 </div>
 
-<div class="bg-white border-top p-3" style="flex-shrink: 0; margin-top: auto;">
+<div class="pos-cart-summary border-top p-3" style="flex-shrink: 0; margin-top: auto;">
     @if($order)
         <input type="hidden" id="cartTotalValue" value="{{ number_format($order->total + ($order->tip ?? 0) - ($order->discount ?? 0), 2, '.', '') }}">
 
@@ -106,7 +106,10 @@
                 </a>
             </div>
             <div class="col-4">
-                <a href="{{ route('pos.precheck', $order->id) }}" target="_blank" class="btn btn-light w-100 border text-muted btn-sm fw-bold py-2" title="Pre-cuenta">
+                <a href="{{ route('pos.precheck', $order->id) }}"
+   class="btn btn-light w-100 border text-muted btn-sm fw-bold py-2"
+   title="Pre-cuenta"
+   onclick="window.open(this.href, 'precuenta', 'width=430,height=720,resizable=yes,scrollbars=yes'); return false;">
                     <i class="bi bi-receipt"></i> <span style="font-size: 0.7rem;">Pre</span>
                 </a>
             </div>
@@ -120,3 +123,79 @@
         </div>
     @endif
 </div>
+
+<style>
+    .pos-cart-body {
+        color: var(--pos-text, #172033);
+    }
+
+    .pos-cart-body table thead {
+        color: var(--pos-muted, #64748b) !important;
+    }
+
+    .pos-cart-body tbody tr {
+        transition: background .15s ease;
+    }
+
+    .pos-cart-body tbody tr:hover {
+        background:
+            color-mix(
+                in srgb,
+                var(--pos-primary, #ff8c00) 5%,
+                #ffffff
+            );
+    }
+
+    .pos-cart-body .text-primary {
+        color: var(--pos-primary, #ff8c00) !important;
+    }
+
+    .pos-cart-body .btn-outline-primary {
+        color: var(--pos-primary, #ff8c00) !important;
+        border-color: var(--pos-primary, #ff8c00) !important;
+    }
+
+    .pos-cart-body .btn-outline-primary:hover {
+        background: var(--pos-primary, #ff8c00) !important;
+        color: #fff !important;
+    }
+
+    .pos-cart-summary {
+        background:
+            color-mix(
+                in srgb,
+                var(--pos-primary, #ff8c00) 4%,
+                #ffffff
+            ) !important;
+
+        border-color: var(--pos-border, #dce7f1) !important;
+    }
+
+    .pos-cart-summary h3.text-primary {
+        color: var(--pos-primary, #ff8c00) !important;
+    }
+
+    .pos-cart-summary .btn-light {
+        background: #ffffff !important;
+        border-color: var(--pos-border, #dce7f1) !important;
+        color: var(--pos-muted, #64748b) !important;
+    }
+
+    .pos-cart-summary .btn-light:hover {
+        color: var(--pos-primary, #ff8c00) !important;
+        border-color: var(--pos-primary, #ff8c00) !important;
+    }
+
+    .pos-cart-summary .btn-success {
+        background: var(--pos-primary, #ff8c00) !important;
+        border-color: var(--pos-primary, #ff8c00) !important;
+        color: #fff !important;
+    }
+
+    .pos-cart-summary .btn-success:hover {
+        background: var(--pos-primary-hover, #e07b00) !important;
+        border-color: var(--pos-primary-hover, #e07b00) !important;
+    }
+
+</style>
+

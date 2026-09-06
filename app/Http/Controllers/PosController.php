@@ -36,6 +36,9 @@ class PosController extends Controller
         }])->get();
         
         $currency = Setting::where('key', 'currency_symbol')->value('value') ?? 'S/';
+
+        $yapeQr = Setting::where('key', 'yape_qr')->value('value');
+        $plinQr = Setting::where('key', 'plin_qr')->value('value');
         return view('pos.index', compact('areas', 'currency'));
     }
 
@@ -53,7 +56,10 @@ class PosController extends Controller
         $clients = Client::select('id', 'name', 'document_number')->orderBy('name')->get();
         $currency = Setting::where('key', 'currency_symbol')->value('value') ?? 'S/';
 
-        return view('pos.order', compact('table', 'categories', 'order', 'freeTables', 'clients', 'currency'));
+        $yapeQr = Setting::where('key', 'yape_qr')->value('value');
+        $plinQr = Setting::where('key', 'plin_qr')->value('value');
+
+        return view('pos.order', compact('table', 'categories', 'order', 'freeTables', 'clients', 'currency', 'yapeQr', 'plinQr'));
     }
 
     // --- AGREGAR POR CLIC (Normal) ---
@@ -158,8 +164,264 @@ class PosController extends Controller
         return redirect()->route('pos.order', $request->target_table_id);
     }
 
-    public function getSplitContent(Order $order) { return view('pos.partials.split_content', compact('order')); }
-    public function processSplit(Request $request, Order $order) { return redirect()->back(); }
+    public function getSplitContent(Order $order)
+{
+    $yapeQr = Setting::where('key', 'yape_qr')->value('value');
+    $plinQr = Setting::where('key', 'plin_qr')->value('value');
+    $currency = Setting::where('key', 'currency_symbol')->value('value') ?? 'S/';
+    $clients = Client::select('id', 'name', 'document_number')
+        ->orderBy('name')
+        ->get();
+
+    return view(
+        'pos.partials.split_content',
+        compact('order', 'yapeQr', 'plinQr', 'currency', 'clients')
+    );
+}
+    public function processSplit(Request $request, Order $order)
+{
+    if ($order->status !== 'pending') {
+        return redirect()
+            ->route('pos.index')
+            ->with('error', 'La orden ya está cerrada.');
+    }
+
+    $request->validate([
+        'selected_items' => 'required|array|min:1',
+        'selected_items.*' => 'integer|exists:order_details,id',
+        'payment_method' => 'required|in:cash,card,yape,plin',
+    ]);
+
+    $selectedIds = $request->input('selected_items', []);
+    $paymentMethod = $request->input('payment_method', 'cash');
+
+    $documentType = $request->input('document_type', 'Ticket');
+    $clientName = trim((string) $request->input('client_name', ''));
+    $clientDocument = trim((string) $request->input('client_document', ''));
+
+    $splitClientId = $order->client_id;
+
+    if ($clientDocument !== '') {
+        $matchedClient = Client::where('document_number', $clientDocument)->first();
+
+        if ($matchedClient) {
+            $splitClientId = $matchedClient->id;
+        }
+    }
+
+    $receivedAmount = $paymentMethod === 'cash'
+        ? (float) $request->input('received_amount', 0)
+        : null;
+
+    if ($paymentMethod === 'cash' && $receivedAmount < 0) {
+        return redirect()
+            ->back()
+            ->with('error', 'El monto recibido no puede ser negativo.');
+    }
+
+    $selectedDetailsForValidation = OrderDetail::where('order_id', $order->id)
+        ->whereIn('id', $selectedIds)
+        ->get();
+
+    $splitTotalForValidation = $selectedDetailsForValidation->sum(function ($detail) {
+        return $detail->price * $detail->quantity;
+    });
+
+    if ($paymentMethod === 'cash' && $receivedAmount < $splitTotalForValidation) {
+        return redirect()
+            ->back()
+            ->with('error', 'El monto recibido es menor al total a cobrar.');
+    }
+
+    if ($documentType === 'Factura') {
+        $doc = preg_replace('/\D/', '', $clientDocument);
+
+        if (strlen($doc) !== 11) {
+            return redirect()
+                ->back()
+                ->with('error', 'Para emitir Factura debe ingresar un RUC de 11 dígitos.');
+        }
+
+        if ($clientName === '') {
+            return redirect()
+                ->back()
+                ->with('error', 'Para emitir Factura debe indicar la razón social.');
+        }
+    }
+
+    if ($documentType === 'Boleta' && $clientDocument !== '') {
+        $doc = preg_replace('/\D/', '', $clientDocument);
+
+        if (strlen($doc) !== 8) {
+            return redirect()
+                ->back()
+                ->with('error', 'Para Boleta el DNI debe tener 8 dígitos.');
+        }
+    }
+    $splitOrder = null;
+
+    DB::transaction(function () use (
+        $order,
+        $selectedIds,
+        $paymentMethod,
+        $receivedAmount,
+        $documentType,
+        $clientName,
+        $clientDocument,
+        $splitClientId,
+        &$splitOrder
+    ) {
+
+        $selectedDetails = OrderDetail::where('order_id', $order->id)
+            ->whereIn('id', $selectedIds)
+            ->get();
+
+        if ($selectedDetails->isEmpty()) {
+            throw new \Exception('No se seleccionaron productos válidos.');
+        }
+
+        $splitTotal = $selectedDetails->sum(function ($detail) {
+            return $detail->price * $detail->quantity;
+        });
+
+        // Configuración SUNAT para esta parte de la cuenta
+        $config = new SunatConfig();
+        $igvFactor = $config->igvFactor();
+
+        $isElectronic = in_array(
+            $documentType,
+            ['Boleta', 'Factura'],
+            true
+        );
+
+        $totalGravada = 0;
+        $igv = 0;
+
+        if ($isElectronic) {
+            $totalGravada = round(
+                (float) $splitTotal / (1 + $igvFactor),
+                2
+            );
+
+            $igv = round(
+                (float) $splitTotal - $totalGravada,
+                2
+            );
+        }
+
+        $serie = null;
+        $correlativo = null;
+
+        if ($isElectronic) {
+            $tipo = $documentType === 'Factura'
+                ? 'factura'
+                : 'boleta';
+
+            $next = DocumentSeries::next($tipo);
+
+            $serie = $next['serie'];
+            $correlativo = $next['correlativo'];
+        }
+
+        $splitOrder = Order::create([
+            'table_id' => $order->table_id,
+            'user_id' => $order->user_id,
+            'client_id' => $splitClientId,
+
+            'status' => 'completed',
+            'total' => $splitTotal,
+
+            'payment_method' => $paymentMethod,
+
+            'received_amount' => $paymentMethod === 'cash'
+                ? $receivedAmount
+                : $splitTotal,
+
+            'change_amount' => $paymentMethod === 'cash'
+                ? max(0, $receivedAmount - $splitTotal)
+                : 0,
+
+            'document_type' => $documentType,
+
+            'client_name' => $clientName !== ''
+                ? $clientName
+                : ($order->client_name ?? 'Público'),
+
+            'client_document' => $clientDocument !== ''
+                ? $clientDocument
+                : $order->client_document,
+
+            'discount' => 0,
+            'tip' => 0,
+
+            'cash_register_id' =>
+                Auth::user()->activeCashRegister->id ?? null,
+
+            'serie' => $serie,
+            'correlativo' => $correlativo,
+
+            'subtotal' => $totalGravada,
+            'igv' => $igv,
+            'total_gravada' => $totalGravada,
+
+            'sunat_status' => $isElectronic
+                ? 'PENDING'
+                : 'NOT_APPLICABLE',
+        ]);
+
+        foreach ($selectedDetails as $detail) {
+            $detail->order_id = $splitOrder->id;
+            $detail->save();
+        }
+
+        $remainingTotal = OrderDetail::where('order_id', $order->id)
+            ->get()
+            ->sum(function ($detail) {
+                return $detail->price * $detail->quantity;
+            });
+
+        if ($remainingTotal <= 0) {
+            $order->delete();
+        } else {
+            $order->total = $remainingTotal;
+            $order->save();
+        }
+    });
+
+    $message = 'Parte de la cuenta cobrada correctamente.';
+
+    if ($splitOrder && $splitOrder->isElectronic()) {
+
+        try {
+
+            (new SunatService())->sendInvoice(
+                $splitOrder->fresh('details.product')
+            );
+
+        } catch (\Throwable $e) {
+
+            Log::error(
+                'Error al enviar comprobante dividido a SUNAT',
+                [
+                    'order_id' => $splitOrder->id,
+                    'error' => $e->getMessage(),
+                ]
+            );
+        }
+
+        $splitOrder->refresh();
+
+        $message .= ' Comprobante '
+            . ($splitOrder->full_number ?? '')
+            . ' - '
+            . ($splitOrder->sunat_description
+                ?? $splitOrder->sunat_status);
+    }
+
+    return redirect()
+        ->route('pos.order', $order->table_id)
+        ->with('success', $message);
+}
     public function precheck(Order $order) { $settings = Setting::pluck('value', 'key')->toArray(); return view('sales.ticket', compact('order', 'settings')); }
     public function kitchenTicket(Order $order) { return view('sales.kitchen_ticket', compact('order')); }
 
@@ -226,7 +488,7 @@ class PosController extends Controller
                 'subtotal' => $totalGravada,
                 'igv' => $igv,
                 'total_gravada' => $totalGravada,
-                'sunat_status' => $isElectronic ? 'PENDING' : null,
+                'sunat_status' => $isElectronic ? 'PENDING' : 'NOT_APPLICABLE',
             ]);
 
             foreach($order->details as $detail) {
@@ -300,6 +562,9 @@ class PosController extends Controller
         $order = Order::where('table_id', $table->id)->where('status', 'pending')->with('details.product')->first();
         $clients = Client::select('id', 'name', 'document_number')->orderBy('name')->get();
         $currency = Setting::where('key', 'currency_symbol')->value('value') ?? 'S/';
+
+        $yapeQr = Setting::where('key', 'yape_qr')->value('value');
+        $plinQr = Setting::where('key', 'plin_qr')->value('value');
         return view('pos.partials.cart', compact('order', 'clients', 'currency'))->render();
     }
 }

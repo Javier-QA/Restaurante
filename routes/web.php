@@ -207,7 +207,12 @@ Route::middleware(['auth'])->group(function () {
 
 
         // Gastos
-        Route::resource(
+        
+        Route::get(
+            '/clients/document/{document}',
+            [ClientController::class, 'findByDocument']
+        )->name('clients.find-document');
+Route::resource(
             'expenses',
             ExpenseController::class
         )->only(['store', 'destroy']);

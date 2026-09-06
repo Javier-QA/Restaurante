@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class ClientController extends Controller
 {
@@ -79,5 +80,104 @@ class ClientController extends Controller
     {
         $client->delete();
         return redirect()->route('clients.index')->with('success', 'Cliente eliminado.');
+    }
+    public function findByDocument(string $document)
+    {
+        $document = preg_replace('/\D/', '', $document);
+
+        if (!in_array(strlen($document), [8, 11], true)) {
+            return response()->json([
+                'found' => false,
+                'message' => 'Documento inválido.',
+            ], 422);
+        }
+
+        // 1. Primero buscar en la base de datos local
+        $client = Client::where('document_number', $document)
+            ->first(['id', 'name', 'document_number']);
+
+        if ($client) {
+            return response()->json([
+                'found' => true,
+                'source' => 'local',
+                'client' => $client,
+            ]);
+        }
+
+        // 2. Si no existe, consultar Factiliza
+        $token = config('services.factiliza.token');
+        $baseUrl = rtrim(
+            config('services.factiliza.base_url', 'https://api.factiliza.com'),
+            '/'
+        );
+
+        if (!$token) {
+            return response()->json([
+                'found' => false,
+                'message' => 'Factiliza no está configurado.',
+            ], 503);
+        }
+
+        $endpoint = strlen($document) === 8
+            ? "{$baseUrl}/v1/dni/info/{$document}"
+            : "{$baseUrl}/v1/ruc/info/{$document}";
+
+        try {
+            $response = Http::withToken($token)
+                ->acceptJson()
+                ->timeout(10)
+                ->get($endpoint);
+
+            if (!$response->successful()) {
+                return response()->json([
+                    'found' => false,
+                    'message' => 'No se pudo consultar el documento.',
+                ], 502);
+            }
+
+            $json = $response->json();
+
+            if (!($json['success'] ?? false) || empty($json['data'])) {
+                return response()->json([
+                    'found' => false,
+                    'message' => $json['message'] ?? 'Documento no encontrado.',
+                ], 404);
+            }
+
+            $data = $json['data'];
+
+            $name = strlen($document) === 8
+                ? ($data['nombre_completo'] ?? null)
+                : ($data['nombre_o_razon_social'] ?? null);
+
+            if (!$name) {
+                return response()->json([
+                    'found' => false,
+                    'message' => 'La consulta no devolvió nombre.',
+                ], 404);
+            }
+
+            // 3. Guardar para no volver a gastar consultas
+            $client = Client::firstOrCreate(
+                ['document_number' => $document],
+                ['name' => $name]
+            );
+
+            return response()->json([
+                'found' => true,
+                'source' => 'factiliza',
+                'client' => [
+                    'id' => $client->id,
+                    'name' => $client->name,
+                    'document_number' => $client->document_number,
+                ],
+            ]);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'found' => false,
+                'message' => 'Error al consultar Factiliza.',
+            ], 502);
+        }
     }
 }

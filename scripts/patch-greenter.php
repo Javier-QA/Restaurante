@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Re-aplica los parches necesarios sobre la librería Greenter para
  * que sea compatible con PHP 8+.
@@ -39,6 +39,16 @@ $patches = [
         'replace'=> '<cbc:Note><![CDATA[{{ leg.value }}]]></cbc:Note>',
         'name'   => 'notadb2.1.xml.twig (remove languageLocaleID)',
     ],
+    [
+        'file'   => __DIR__ . '/../vendor/greenter/xml/src/Xml/Templates/invoice2.1.xml.twig',
+        'search' => '    {% if doc.detraccion %}',
+        'replace'=> '    <cac:PaymentTerms>
+        <cbc:ID>FormaPago</cbc:ID>
+        <cbc:PaymentMeansID>Contado</cbc:PaymentMeansID>
+    </cac:PaymentTerms>
+    {% if doc.detraccion %}',
+        'name'   => 'invoice2.1.xml.twig (FormaPago Contado)',
+    ],
 ];
 
 $applied  = 0;
@@ -77,3 +87,4 @@ if ($applied > 0) {
 } elseif ($missing === 0) {
     echo "Greenter: todos los parches ya estaban aplicados.\n";
 }
+

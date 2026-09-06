@@ -1732,6 +1732,182 @@
 
 
                         {{-- =================================================
+                             MÉTODOS DE PAGO - QR
+                        ================================================== --}}
+
+                        <hr class="text-muted opacity-25">
+
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-1" style="color:#198754;">
+                                <i class="bi bi-qr-code me-2"></i>
+                                Métodos de pago
+                            </h5>
+
+                            <p class="text-muted small mb-4">
+                                Configura los códigos QR que se mostrarán al cobrar mediante Yape o Plin.
+                            </p>
+
+                            <div class="row g-4">
+
+                                {{-- YAPE --}}
+                                <div class="col-md-6">
+                                    <div class="card border-0 shadow-sm h-100"
+                                         style="border-radius:18px !important; border-top:4px solid #742284 !important;">
+
+                                        <div class="card-body p-4">
+
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="d-flex align-items-center justify-content-center me-3"
+                                                     style="width:46px;height:46px;border-radius:13px;background:#f5e9f8;color:#742284;font-size:1.4rem;">
+                                                    <i class="bi bi-qr-code"></i>
+                                                </div>
+
+                                                <div>
+                                                    <div class="fw-bold fs-5" style="color:#742284;">
+                                                        Yape
+                                                    </div>
+                                                    <small class="text-muted">
+                                                        Código QR para pagos con Yape
+                                                    </small>
+                                                </div>
+                                            </div>
+
+                                            @if(!empty($settings['yape_qr']))
+                                                <div class="text-center mb-3">
+                                                    <img
+                                                        src="{{ asset('storage/' . $settings['yape_qr']) }}"
+                                                        alt="QR Yape"
+                                                        style="
+                                                            width:170px;
+                                                            height:170px;
+                                                            object-fit:contain;
+                                                            border-radius:15px;
+                                                            border:1px solid #e5e7eb;
+                                                            padding:8px;
+                                                            background:white;
+                                                        "
+                                                    >
+                                                </div>
+
+                                                <div class="text-center mb-3">
+                                                    <span class="badge rounded-pill"
+                                                          style="background:#f5e9f8;color:#742284;">
+                                                        <i class="bi bi-check-circle-fill me-1"></i>
+                                                        QR configurado
+                                                    </span>
+                                                </div>
+                                            @else
+                                                <div class="text-center py-4 mb-3"
+                                                     style="border:2px dashed #d8b9df;border-radius:15px;background:#fcf8fd;">
+                                                    <i class="bi bi-qr-code d-block mb-2"
+                                                       style="font-size:2.5rem;color:#742284;"></i>
+                                                    <span class="text-muted small">
+                                                        Aún no se ha cargado un QR
+                                                    </span>
+                                                </div>
+                                            @endif
+
+                                            <label class="form-label fw-bold">
+                                                {{ !empty($settings['yape_qr']) ? 'Cambiar QR' : 'Subir QR' }}
+                                            </label>
+
+                                            <input
+                                                type="file"
+                                                name="yape_qr"
+                                                class="form-control"
+                                                accept="image/png,image/jpeg,image/webp"
+                                            >
+
+                                            <small class="text-muted">
+                                                PNG, JPG o WEBP. Máximo 2 MB.
+                                            </small>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                {{-- PLIN --}}
+                                <div class="col-md-6">
+                                    <div class="card border-0 shadow-sm h-100"
+                                         style="border-radius:18px !important; border-top:4px solid #00a884 !important;">
+
+                                        <div class="card-body p-4">
+
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="d-flex align-items-center justify-content-center me-3"
+                                                     style="width:46px;height:46px;border-radius:13px;background:#e8f8f3;color:#00a884;font-size:1.4rem;">
+                                                    <i class="bi bi-qr-code"></i>
+                                                </div>
+
+                                                <div>
+                                                    <div class="fw-bold fs-5" style="color:#00a884;">
+                                                        Plin
+                                                    </div>
+                                                    <small class="text-muted">
+                                                        Código QR para pagos con Plin
+                                                    </small>
+                                                </div>
+                                            </div>
+
+                                            @if(!empty($settings['plin_qr']))
+                                                <div class="text-center mb-3">
+                                                    <img
+                                                        src="{{ asset('storage/' . $settings['plin_qr']) }}"
+                                                        alt="QR Plin"
+                                                        style="
+                                                            width:170px;
+                                                            height:170px;
+                                                            object-fit:contain;
+                                                            border-radius:15px;
+                                                            border:1px solid #e5e7eb;
+                                                            padding:8px;
+                                                            background:white;
+                                                        "
+                                                    >
+                                                </div>
+
+                                                <div class="text-center mb-3">
+                                                    <span class="badge rounded-pill"
+                                                          style="background:#e8f8f3;color:#008b6d;">
+                                                        <i class="bi bi-check-circle-fill me-1"></i>
+                                                        QR configurado
+                                                    </span>
+                                                </div>
+                                            @else
+                                                <div class="text-center py-4 mb-3"
+                                                     style="border:2px dashed #a7e3d4;border-radius:15px;background:#f5fcfa;">
+                                                    <i class="bi bi-qr-code d-block mb-2"
+                                                       style="font-size:2.5rem;color:#00a884;"></i>
+                                                    <span class="text-muted small">
+                                                        Aún no se ha cargado un QR
+                                                    </span>
+                                                </div>
+                                            @endif
+
+                                            <label class="form-label fw-bold">
+                                                {{ !empty($settings['plin_qr']) ? 'Cambiar QR' : 'Subir QR' }}
+                                            </label>
+
+                                            <input
+                                                type="file"
+                                                name="plin_qr"
+                                                class="form-control"
+                                                accept="image/png,image/jpeg,image/webp"
+                                            >
+
+                                            <small class="text-muted">
+                                                PNG, JPG o WEBP. Máximo 2 MB.
+                                            </small>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        {{-- =================================================
                              GUARDAR
                         ================================================== --}}
 

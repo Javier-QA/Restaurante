@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+
+    'factiliza' => [
+        'token' => env('FACTILIZA_TOKEN'),
+        'base_url' => env('FACTILIZA_BASE_URL', 'https://api.factiliza.com'),
+    ],
 ];

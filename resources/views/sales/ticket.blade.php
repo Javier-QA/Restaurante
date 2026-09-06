@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket #{{ $order->id }}</title>
+    <title>Precuenta #{{ $order->id }}</title>
     <style>
         /* CONFIGURACIÓN EXACTA PARA IMPRESORA TÉRMICA */
         @page {
@@ -14,7 +14,7 @@
         body {
             font-family: 'Courier New', Courier, monospace; /* Fuente monoespaciada para alinear columnas */
             font-size: 12px;
-            margin: 0;
+            margin: 20px auto;
             padding: 5px;
             width: 78mm; /* Ancho estándar de papel térmico (80mm menos márgenes de seguridad) */
             color: #000;
@@ -45,9 +45,162 @@
             body { margin: 0; padding: 0; }
         }
     </style>
+
+<style>
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    width: auto !important;
+    min-height: 100vh;
+    margin: 0 !important;
+    padding: 80px 20px 40px !important;
+    background: #eef5fb !important;
+    box-sizing: border-box;
+}
+
+.ticket-preview {
+    width: 78mm;
+    margin: 0 auto;
+    padding: 18px 14px;
+    background: #ffffff;
+    color: #000;
+    box-shadow: 0 12px 35px rgba(0,0,0,.12);
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.preview-toolbar {
+    position: fixed;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.preview-btn {
+    min-width: 105px;
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+}
+
+.preview-btn-back {
+    background: #ffffff;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+
+.preview-btn-back:hover {
+    background: #f8fafc;
+    color: #1e293b;
+}
+
+.preview-btn-print {
+    background: #ff8c00;
+    color: #ffffff;
+    border: 1px solid #ff8c00;
+}
+
+.preview-btn-print:hover {
+    background: #e07b00;
+    border-color: #e07b00;
+}
+
+.header {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.header img {
+    max-width: 60px !important;
+}
+
+.totals {
+    margin-top: 14px;
+}
+
+.footer {
+    margin-top: 16px;
+}
+
+@media print {
+
+    body {
+        width: 78mm !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        padding: 5px !important;
+        background: #ffffff !important;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .ticket-preview {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        border-radius: 0;
+    }
+}
+</style>
+
+<style>
+/* IMPRESION TERMICA 80MM */
+@media print {
+
+    @page {
+        size: 80mm auto;
+        margin: 2mm;
+    }
+
+    html,
+    body {
+        width: 80mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+    }
+
+    .ticket-preview {
+        width: 78mm !important;
+        margin: 0 auto !important;
+        padding: 3mm 2mm !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .no-print,
+    .preview-toolbar {
+        display: none !important;
+    }
+
+    table {
+        width: 100% !important;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
+</style>
 </head>
-<body onload="window.print()"> <div class="no-print" style="position: fixed; top: 0; right: 0; padding: 10px; background: white; border: 1px solid #ccc; z-index: 1000;">
-        <button onclick="window.print()" style="padding: 10px 20px; font-weight: bold; cursor: pointer;">🖨️ Imprimir</button>
+<body> <div class="no-print" style="position: fixed; top: 0; right: 0; padding: 10px; background: white; border: 1px solid #ccc; z-index: 1000;">
+        <button onclick="window.print()" style="padding: 10px 18px; font-weight: bold; cursor: pointer; background: #198754; color: white; border: 0; border-radius: 6px;">IMPRIMIR PRECUENTA</button>
     </div>
 
     <div class="header text-center">
@@ -60,7 +213,7 @@
         <div>{{ $settings['company_address'] ?? 'Dirección del Local' }}</div>
         <div>Tel: {{ $settings['company_phone'] ?? '---' }}</div>
         <div style="margin-top: 5px;">{{ now()->format('d/m/Y H:i') }}</div>
-        <div>TICKET: #{{ str_pad($order->id, 6, '0', STR_PAD_LEFT) }}</div>
+        <div class="fw-bold" style="margin-top:5px;">PRECUENTA #{{ str_pad($order->id, 6, '0', STR_PAD_LEFT) }}</div>
         
         @if($order->client_name && $order->client_name != 'Público')
             <div style="margin-top: 3px; font-weight: bold;">Cli: {{ Str::limit($order->client_name, 20) }}</div>
@@ -117,14 +270,6 @@
             <span>TOTAL A PAGAR:</span>
             <span>{{ $settings['currency_symbol'] ?? 'S/' }} {{ number_format($order->total, 2) }}</span>
         </div>
-        
-        <div class="row" style="margin-top: 5px; font-size: 10px;">
-            <span>F. PAGO: {{ strtoupper($order->payment_method) }}</span>
-        </div>
-        <div class="row" style="font-size: 10px;">
-            <span>RECIBIDO: {{ number_format($order->received_amount, 2) }}</span>
-            <span>VUELTO: {{ number_format($order->change_amount, 2) }}</span>
-        </div>
     </div>
 
     <div class="footer text-center">
@@ -132,6 +277,8 @@
         <br><br>
         .
     </div>
+
+</div>
 
 </body>
 </html>
