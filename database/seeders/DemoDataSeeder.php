@@ -58,8 +58,8 @@ class DemoDataSeeder extends Seeder
             ]);
         }
 
-        // 3. CREAR CATEGORÍAS (10)
-        $categoryNames = ['Entradas', 'Platos Fuertes', 'Bebidas Frías', 'Bebidas Calientes', 'Postres', 'Ensaladas', 'Sopas', 'Pizzas', 'Hamburguesas', 'Especialidades'];
+        // 3. CREAR CATEGORÍAS (9)
+        $categoryNames = ['Entradas', 'Ceviches y Tiraditos', 'Calientes', 'Los Bravos', 'Dúos', 'Tríos', 'Para los Engreídos', 'Para la Sed', 'Para Toda Ocasión'];
         $categories = [];
         foreach ($categoryNames as $name) {
             $categories[] = Category::create([
@@ -69,13 +69,77 @@ class DemoDataSeeder extends Seeder
                 'updated_at' => $now,
             ]);
         }
-
-        // 4. CREAR PRODUCTOS (10)
+        // 4. CREAR PRODUCTOS (52)
         $productsData = [
-            ['Tequeños', 1, 12.00], ['Lomo Saltado', 2, 35.00], ['Limonada Frozen', 3, 8.00], 
-            ['Café Americano', 4, 6.00], ['Cheesecake', 5, 15.00], ['Ensalada César', 6, 22.00], 
-            ['Dieta de Pollo', 7, 18.00], ['Pizza Hawaiana', 8, 30.00], ['Hamburguesa Royal', 9, 25.00], 
-            ['Ceviche', 10, 38.00]
+            // ENTRADAS
+            ['LANGOSTINOS AL PANKO (8 unid.)', 1, 28.00],
+            ['CONCHITAS A LA PARMESANA (10 unid.)', 1, 35.00],
+            ['CHORITOS A LA CHALACA (10 unid.)', 1, 28.00],
+            ['LECHE DE TIGRE', 1, 18.00],
+            ['LECHE DE TIGRE EL CAPITÁN', 1, 25.00],
+            ['CAUSA DE PULPA DE CANGREJO', 1, 30.00],
+            ['CAUSA DE LANGOSTINOS', 1, 28.00],
+            ['CAUSA ACEVICHADA', 1, 27.00],
+
+            // CEVICHES Y TIRADITOS
+            ['CEVICHE EL CAPITÁN', 2, 45.00],
+            ['CEVICHE DE PESCADO', 2, 32.00],
+            ['CEVICHE MIXTO', 2, 35.00],
+            ['CEVICHE DE PULPO', 2, 43.00],
+            ['CEVICHE CON ESQUINA', 2, 35.00],
+            ['TIRADITO DE PESCADO', 2, 30.00],
+            ['TIRADITO DE PEJERREY', 2, 25.00],
+
+            // CALIENTES
+            ['CHITA AL AJO', 3, 50.00],
+            ['PESCADO A LO MACHO', 3, 50.00],
+            ['PESCADO FRITO', 3, 45.00],
+            ['CHICHARRÓN DE PESCADO', 3, 32.00],
+            ['CHICHARRÓN MIXTO', 3, 35.00],
+            ['CHICHARRÓN DE CALAMAR', 3, 40.00],
+            ['JALEA EL CAPITÁN', 3, 40.00],
+            ['ARROZ CON MARISCOS', 3, 32.00],
+            ['ARROZ CON LANGOSTINOS', 3, 35.00],
+            ['FILETE PESCADO', 3, 32.00],
+            ['CHAUFA DE LANGOSTINOS', 3, 32.00],
+
+            // LOS BRAVOS
+            ['SUDADO DE PESCADO', 4, 45.00],
+            ['PARIHUELA', 4, 45.00],
+            ['CHILCANO DE PESCADO', 4, 12.00],
+
+            // DÚOS
+            ['DÚO CLASICO', 5, 34.00],
+            ['DÚO CHINITO', 5, 34.00],
+            ['DÚO FRITO', 5, 34.00],
+            ['DÚO MI CAUSA', 5, 38.00],
+
+            // TRÍOS
+            ['EL CASUAL', 6, 44.00],
+            ['EL CAPITÁN', 6, 44.00],
+            ['EL ORIENTAL', 6, 44.00],
+
+            // PARA LOS ENGREÍDOS
+            ['SPAGUETTI SALTADO', 7, 35.00],
+            ['LOMO SALTADO', 7, 35.00],
+            ['LOMO SALTADO A LO POBRE', 7, 37.00],
+            ['MILANESA DE POLLO', 7, 28.00],
+            ['POLLO A LA PLANCHA', 7, 25.00],
+
+            // PARA LA SED
+            ['CHICHA MORADA', 8, 18.00],
+            ['MARACUYA', 8, 18.00],
+            ['LIMONADA', 8, 15.00],
+            ['GASEOSA 600ml', 8, 5.00],
+            ['AGUA SAN MATEO', 8, 3.00],
+
+            // PARA TODA OCASIÓN
+            ['CERVEZA STELLA ARTOIS 330ml', 9, 8.00],
+            ['CERVEZA HEINEKEN 330ml', 9, 8.00],
+            ['CERVEZA CUSQUEÑA 310ml', 9, 7.00],
+            ['CERVEZA PILSEN 630ml', 9, 10.00],
+            ['PISCO SOUR', 9, 15.00],
+            ['CHILCANO DE PISCO', 9, 15.00]
         ];
         $products = [];
         foreach ($productsData as $index => $p) {
