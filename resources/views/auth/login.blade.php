@@ -814,7 +814,7 @@
     <div class="login-hero">
 
         <img
-            src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=85&auto=format&fit=crop"
+            src="{{ asset('images/login-restaurante.jpg') }}"
             alt="Restaurante elegante"
             loading="eager"
         >
@@ -827,24 +827,21 @@
 
                 <i class="bi bi-shop"></i>
 
-                Sistema de Restaurante
+                Sistema de Gestión
 
             </div>
 
 
             <h2 class="hero-title">
 
-                Gestión integral
-                <br>
-                de tu restaurante
+                Gestión eficiente de pedidos
 
             </h2>
 
 
             <p class="hero-subtitle">
 
-                Controla pedidos, mesas, cocina e inventario
-                desde un solo lugar. Rápido, moderno y confiable.
+                Gestiona pedidos, mesas y cocina de forma rápida, organizada y en tiempo real.
 
             </p>
 
@@ -854,33 +851,21 @@
 
                 <div class="hero-stat">
 
-                    <strong>100%</strong>
-
-                    <span>
-                        En tiempo real
-                    </span>
+                    <strong>PEDIDOS</strong><span>Registro eficiente</span>
 
                 </div>
 
 
                 <div class="hero-stat">
 
-                    <strong>POS</strong>
-
-                    <span>
-                        Integrado
-                    </span>
+                    <strong>COCINA</strong><span>Seguimiento de pedidos</span>
 
                 </div>
 
 
                 <div class="hero-stat">
 
-                    <strong>KDS</strong>
-
-                    <span>
-                        Cocina digital
-                    </span>
+                    <strong>CONTROL</strong><span>Gestión en tiempo real</span>
 
                 </div>
 
@@ -1144,7 +1129,7 @@
         <div class="login-footer">
 
             &copy; {{ date('Y') }}
-            Sistema de Restaurante · Desarrollado con Amor
+            Sistema de Gestión · Desarrollado con Amor
 
         </div>
 
@@ -1248,6 +1233,11 @@
 </body>
 
 </html>
+
+
+
+
+
 
 
 
