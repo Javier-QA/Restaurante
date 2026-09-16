@@ -42,6 +42,12 @@
                                     @endif
                                 </td>
                                 <td>
+                                    <button type="button" class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#editCategoryModal{{ $category->id }}" title="Editar">
+
+                                        <i class="bi bi-pencil-square"></i>
+
+                                    </button>
+
                                     <form action="{{ route('categories.destroy', $category) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
@@ -65,6 +71,48 @@
     </div>
 </div>
 
+@foreach($categories as $category)
+<div class="modal fade" id="editCategoryModal{{ $category->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Editar Categoría</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form action="{{ route('categories.update', $category) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre de la Categoría</label>
+                        <input type="text" class="form-control" name="name" value="{{ $category->name }}" required maxlength="50">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Imagen (Opcional)</label>
+                        @if($category->image)
+                            <div class="mb-2">
+                                <img src="{{ asset('storage/' . $category->image) }}" class="rounded" width="80" height="80" style="object-fit: cover;">
+                            </div>
+                        @endif
+                        <input type="file" class="form-control" name="image" accept="image/*">
+                        <small class="text-muted">Si no seleccionas una imagen, se conservará la actual.</small>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg me-1"></i> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
 <div class="modal fade" id="createCategoryModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

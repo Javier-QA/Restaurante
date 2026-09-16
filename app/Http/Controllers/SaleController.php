@@ -27,7 +27,9 @@ class SaleController extends Controller
         // 2. Totales Ventas
         $totalCash = $orders->where('payment_method', 'cash')->sum('total');
         $totalCard = $orders->where('payment_method', 'card')->sum('total');
-        $totalSales = $totalCash + $totalCard;
+        $totalYape = $orders->where('payment_method', 'yape')->sum('total');
+        $totalPlin = $orders->where('payment_method', 'plin')->sum('total');
+        $totalSales = $totalCash + $totalCard + $totalYape + $totalPlin;
 
         // 3. Obtener Gastos (Lista y Total)
         $expenses = Expense::whereDate('created_at', '>=', $startDate)
@@ -43,7 +45,7 @@ class SaleController extends Controller
 
         return view('sales.index', compact(
             'orders', 'expenses', 'startDate', 'endDate', 
-            'totalCash', 'totalCard', 'totalSales', 'totalExpenses', 'balance'
+            'totalCash', 'totalCard', 'totalYape', 'totalPlin', 'totalSales', 'totalExpenses', 'balance'
         ));
     }
 
@@ -69,6 +71,8 @@ class SaleController extends Controller
             'end_date' => Carbon::parse($endDate),
             'cash' => $orders->where('payment_method', 'cash')->sum('total'),
             'card' => $orders->where('payment_method', 'card')->sum('total'),
+            'yape' => $orders->where('payment_method', 'yape')->sum('total'),
+            'plin' => $orders->where('payment_method', 'plin')->sum('total'),
             'orders_count' => $orders->count(),
             'expenses' => 0
         ];
@@ -79,7 +83,7 @@ class SaleController extends Controller
                                         ->sum('amount');
         }
 
-        $stats['total'] = $stats['cash'] + $stats['card'];
+        $stats['total'] = $stats['cash'] + $stats['card'] + $stats['yape'] + $stats['plin'];
         $stats['balance'] = $stats['cash'] - $stats['expenses'];
 
         $settings = Setting::pluck('value', 'key')->toArray();

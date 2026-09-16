@@ -96,7 +96,7 @@
                                     <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#adjustStock{{ $product->id }}" title="Ajustar Stock">
                                         <i class="bi bi-arrow-left-right"></i>
                                     </button>
-                                    <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-outline-primary" title="Editar">
+                                    <a href="{{ route('products.edit', ['product' => $product->id, 'page' => $products->currentPage()]) }}" class="btn btn-sm btn-outline-primary" title="Editar">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <button type="button" class="btn btn-sm btn-outline-danger" onclick="if(confirm('¿Eliminar producto?')) document.getElementById('del-{{$product->id}}').submit()" title="Eliminar">
@@ -140,7 +140,31 @@
         </div>
     </div>
     <div class="card-footer bg-white border-0 py-3">
-        {{ $products->links() }}
+        <div class="text-center">
+            <div class="text-muted small mb-2">
+                Mostrando <strong>{{ $products->firstItem() ?? 0 }}</strong> a <strong>{{ $products->lastItem() ?? 0 }}</strong> de <strong>{{ $products->total() }}</strong> resultados
+            </div>
+
+            @if($products->hasPages())
+                <nav aria-label="Paginación de inventario">
+                    <ul class="pagination pagination-sm justify-content-center mb-0">
+                        <li class="page-item {{ $products->onFirstPage() ? 'disabled' : '' }}">
+                            <a class="page-link" href="{{ $products->previousPageUrl() ?? '#' }}" aria-label="Anterior">&lsaquo;</a>
+                        </li>
+
+                        @foreach($products->getUrlRange(1, $products->lastPage()) as $page => $url)
+                            <li class="page-item {{ $page == $products->currentPage() ? 'active' : '' }}">
+                                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                            </li>
+                        @endforeach
+
+                        <li class="page-item {{ $products->hasMorePages() ? '' : 'disabled' }}">
+                            <a class="page-link" href="{{ $products->nextPageUrl() ?? '#' }}" aria-label="Siguiente">&rsaquo;</a>
+                        </li>
+                    </ul>
+                </nav>
+            @endif
+        </div>
     </div>
 </div>
 @endsection

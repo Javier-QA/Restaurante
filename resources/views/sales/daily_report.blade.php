@@ -66,8 +66,16 @@
             <td class="text-end">{{ number_format($stats['cash'], 2) }}</td>
         </tr>
         <tr>
-            <td>(+) Tarjeta / Yape:</td>
-            <td class="text-end">{{ number_format($stats['card'], 2) }}</td>
+            <td>(+) Tarjeta:</td>
+            <td class="text-end">S/ {{ number_format($stats['card'], 2) }}</td>
+        </tr>
+        <tr>
+            <td>(+) Yape:</td>
+            <td class="text-end">S/ {{ number_format($stats['yape'], 2) }}</td>
+        </tr>
+        <tr>
+            <td>(+) Plin:</td>
+            <td class="text-end">S/ {{ number_format($stats['plin'], 2) }}</td>
         </tr>
     </table>
 

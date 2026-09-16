@@ -1,6 +1,199 @@
 @extends('layouts.app')
 
 @section('content')
+
+<style>
+    .sales-kpi {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px 22px;
+        min-height: 132px;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 2px 14px rgba(15, 23, 42, .07);
+        position: relative;
+        overflow: hidden;
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .sales-kpi:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 28px rgba(15, 23, 42, .14);
+    }
+
+    .sales-kpi::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 5px;
+        height: 100%;
+        background: linear-gradient(180deg, var(--kpi-color) 0%, color-mix(in srgb, var(--kpi-color) 25%, white) 65%, white 100%);
+        border-radius: 16px 0 0 16px;
+    }
+
+    .sales-kpi-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 1.5rem;
+        color: var(--kpi-color);
+        background: var(--kpi-bg);
+    }
+
+    .sales-kpi-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .sales-kpi-label {
+        display: block;
+        font-size: .72rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        color: #64748b;
+        margin-bottom: 4px;
+    }
+
+    .sales-kpi-value {
+        font-size: 1.55rem;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.1;
+        margin-bottom: 5px;
+        white-space: nowrap;
+    }
+
+    .sales-kpi-sub {
+        font-size: .72rem;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+    }
+    .sales-kpi-badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        font-size: .6rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        padding: 3px 8px;
+        border-radius: 20px;
+        color: var(--kpi-color);
+        background: var(--kpi-bg);
+    }
+
+    /* Selector Historial de Ventas / Gastos */
+    .sales-history-tabs {
+        display: inline-flex;
+        gap: 6px;
+        padding: 5px;
+        margin: 14px 16px;
+        background: #f1f5f9;
+        border-radius: 14px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .sales-history-tabs .nav-link {
+        border: 0 !important;
+        border-radius: 10px !important;
+        padding: 9px 16px;
+        font-size: .82rem;
+        font-weight: 700;
+        color: #64748b;
+        background: transparent;
+        transition: all .2s ease;
+    }
+
+    .sales-history-tabs .nav-link:hover {
+        background: #fff;
+        color: #0f172a;
+    }
+
+    .sales-history-tabs .nav-link.active {
+        background: #fff !important;
+        color: #198754 !important;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, .10);
+    }
+
+    .sales-history-tabs .expenses-history-tab.active {
+        color: #dc3545 !important;
+    }
+
+    .sales-history-tabs .nav-link i {
+        font-size: 1rem;
+    }
+
+    /* Acciones de Caja */
+    .sales-action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        min-height: 40px;
+        padding: 7px 14px;
+        border-radius: 11px;
+        font-size: .82rem;
+        font-weight: 700;
+        border: 1px solid transparent;
+        transition: all .2s ease;
+        text-decoration: none;
+        box-shadow: 0 2px 7px rgba(15, 23, 42, .06);
+    }
+
+    .sales-action-btn i {
+        width: 25px;
+        height: 25px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 7px;
+        font-size: .9rem;
+    }
+
+    .sales-action-report {
+        color: #334155;
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+    }
+
+    .sales-action-report i {
+        color: #1e293b;
+        background: #e2e8f0;
+    }
+
+    .sales-action-report:hover {
+        color: #0f172a;
+        background: #e2e8f0;
+        border-color: #94a3b8;
+        transform: translateY(-1px);
+        box-shadow: 0 5px 12px rgba(15, 23, 42, .10);
+    }
+
+    .sales-action-expense {
+        color: #dc2626;
+        background: #fff1f2;
+        border-color: #fecaca;
+    }
+
+    .sales-action-expense i {
+        color: #dc2626;
+        background: #ffe4e6;
+    }
+
+    .sales-action-expense:hover {
+        color: #b91c1c;
+        background: #ffe4e6;
+        border-color: #fca5a5;
+        transform: translateY(-1px);
+        box-shadow: 0 5px 12px rgba(220, 38, 38, .12);
+    }
+</style>
 <div class="container-fluid">
     
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -17,65 +210,160 @@
                 <button type="submit" class="btn btn-primary btn-sm px-3 fw-bold"><i class="bi bi-search"></i></button>
             </form>
             
-            <a href="{{ route('sales.daily.report', ['start_date' => $startDate, 'end_date' => $endDate]) }}" target="_blank" class="btn btn-dark fw-bold d-flex align-items-center">
-                <i class="bi bi-printer me-2"></i> Corte Z
+            <a href="{{ route('sales.daily.report', ['start_date' => $startDate, 'end_date' => $endDate]) }}" target="_blank" class="sales-action-btn sales-action-report">
+                <i class="bi bi-printer"></i><span>Corte Z</span>
             </a>
             
-            <button class="btn btn-danger fw-bold d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#expenseModal">
-                <i class="bi bi-dash-circle me-2"></i> Registrar Salida
+            <button class="sales-action-btn sales-action-expense" data-bs-toggle="modal" data-bs-target="#expenseModal">
+                <i class="bi bi-dash-circle"></i><span>Registrar Salida</span>
             </button>
         </div>
     </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm bg-primary text-white h-100">
-                <div class="card-body">
-                    <small class="opacity-75 text-uppercase fw-bold">Venta Total</small>
-                    <h3 class="fw-bold mb-0 mt-1">{{ number_format($totalSales, 2) }}</h3>
-                    <small>{{ $orders->count() }} operaciones</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm bg-success text-white h-100">
-                <div class="card-body">
-                    <small class="opacity-75 text-uppercase fw-bold">Entrada Efectivo</small>
-                    <h3 class="fw-bold mb-0 mt-1">{{ number_format($totalCash, 2) }}</h3>
-                    <small>Dinero Físico Ingresado</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm bg-danger text-white h-100">
-                <div class="card-body">
-                    <small class="opacity-75 text-uppercase fw-bold">Gastos / Salidas</small>
-                    <h3 class="fw-bold mb-0 mt-1">{{ number_format($totalExpenses, 2) }}</h3>
-                    <small>{{ $expenses->count() }} movimientos</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm h-100 {{ $balance >= 0 ? 'bg-dark text-white' : 'bg-warning text-dark' }}">
-                <div class="card-body">
-                    <small class="opacity-75 text-uppercase fw-bold">Dinero en Caja (Balance)</small>
-                    <h3 class="fw-bold mb-0 mt-1">{{ number_format($balance, 2) }}</h3>
-                    <small>Efectivo - Gastos</small>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="row g-3 mb-4 align-items-stretch">
 
+        {{-- VENTA TOTAL - BLOQUE PRINCIPAL --}}
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="sales-kpi" style="--kpi-color:#84cc16; --kpi-bg:#f1f8e5;">
+                <div class="sales-kpi-icon">
+                    <i class="bi bi-cash-coin"></i>
+                </div>
+
+                <div class="sales-kpi-content">
+                    <span class="sales-kpi-label">Venta Total</span>
+
+                    <div class="sales-kpi-value">
+                        S/ {{ number_format($totalSales, 2) }}
+                    </div>
+
+                    <div class="sales-kpi-sub">
+                        <i class="bi bi-receipt me-1"></i>
+                        {{ $orders->count() }} operaciones
+                    </div>
+                </div>
+
+                <div class="sales-kpi-badge">TOTAL</div>
+            </div>
+        </div>
+
+        {{-- MÉTODOS, GASTOS Y BALANCE --}}
+        
+            
+
+                {{-- EFECTIVO --}}
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="sales-kpi" style="--kpi-color:#198754; --kpi-bg:#e8f5ee;">
+                        <div class="sales-kpi-icon">
+                            <i class="bi bi-cash-stack"></i>
+                        </div>
+                        <div class="sales-kpi-content">
+                            <span class="sales-kpi-label">Efectivo</span>
+                            <div class="sales-kpi-value">S/ {{ number_format($totalCash, 2) }}</div>
+                            <div class="sales-kpi-sub">
+                                <i class="bi bi-wallet2 me-1"></i> Dinero físico ingresado
+                            </div>
+                        </div>
+                        <div class="sales-kpi-badge">CAJA</div>
+                    </div>
+                </div>
+
+                {{-- YAPE --}}
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="sales-kpi" style="--kpi-color:#742284; --kpi-bg:#f5e9f8;">
+                        <div class="sales-kpi-icon">
+                            <i class="bi bi-qr-code"></i>
+                        </div>
+                        <div class="sales-kpi-content">
+                            <span class="sales-kpi-label">Yape</span>
+                            <div class="sales-kpi-value">S/ {{ number_format($totalYape, 2) }}</div>
+                            <div class="sales-kpi-sub">
+                                <i class="bi bi-phone me-1"></i> Pagos digitales
+                            </div>
+                        </div>
+                        <div class="sales-kpi-badge">YAPE</div>
+                    </div>
+                </div>
+
+                {{-- PLIN --}}
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="sales-kpi" style="--kpi-color:#00a884; --kpi-bg:#e8f8f3;">
+                        <div class="sales-kpi-icon">
+                            <i class="bi bi-qr-code-scan"></i>
+                        </div>
+                        <div class="sales-kpi-content">
+                            <span class="sales-kpi-label">Plin</span>
+                            <div class="sales-kpi-value">S/ {{ number_format($totalPlin, 2) }}</div>
+                            <div class="sales-kpi-sub">
+                                <i class="bi bi-phone me-1"></i> Pagos digitales
+                            </div>
+                        </div>
+                        <div class="sales-kpi-badge">PLIN</div>
+                    </div>
+                </div>
+
+                {{-- TARJETA --}}
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="sales-kpi" style="--kpi-color:#0d6efd; --kpi-bg:#eaf2ff;">
+                        <div class="sales-kpi-icon">
+                            <i class="bi bi-credit-card"></i>
+                        </div>
+                        <div class="sales-kpi-content">
+                            <span class="sales-kpi-label">Tarjeta</span>
+                            <div class="sales-kpi-value">S/ {{ number_format($totalCard, 2) }}</div>
+                            <div class="sales-kpi-sub">
+                                <i class="bi bi-credit-card-2-front me-1"></i> Pagos con tarjeta
+                            </div>
+                        </div>
+                        <div class="sales-kpi-badge">POS</div>
+                    </div>
+                </div>
+
+                {{-- GASTOS --}}
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="sales-kpi" style="--kpi-color:#ef4444; --kpi-bg:#fff1f2;">
+                        <div class="sales-kpi-icon">
+                            <i class="bi bi-arrow-down-circle"></i>
+                        </div>
+                        <div class="sales-kpi-content">
+                            <span class="sales-kpi-label">Gastos / Salidas</span>
+                            <div class="sales-kpi-value">S/ {{ number_format($totalExpenses, 2) }}</div>
+                            <div class="sales-kpi-sub">
+                                <i class="bi bi-journal-minus me-1"></i>
+                                {{ $expenses->count() }} movimientos
+                            </div>
+                        </div>
+                        <div class="sales-kpi-badge">SALIDA</div>
+                    </div>
+                </div>
+
+                {{-- BALANCE --}}
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="sales-kpi"
+                         style="--kpi-color:{{ $balance >= 0 ? '#0f766e' : '#ef4444' }}; --kpi-bg:{{ $balance >= 0 ? '#e7f7f5' : '#fff1f2' }};">
+                        <div class="sales-kpi-icon">
+                            <i class="bi bi-safe2"></i>
+                        </div>
+                        <div class="sales-kpi-content">
+                            <span class="sales-kpi-label">Balance de Caja</span>
+                            <div class="sales-kpi-value">S/ {{ number_format($balance, 2) }}</div>
+                            <div class="sales-kpi-sub">
+                                <i class="bi bi-calculator me-1"></i> Efectivo - gastos
+                            </div>
+                        </div>
+                        <div class="sales-kpi-badge">BALANCE</div>
+                    </div>
+                </div>
+    </div>
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-white p-0 border-bottom-0">
-            <ul class="nav nav-tabs ps-3 pt-3" id="salesTabs" role="tablist">
+            <ul class="nav sales-history-tabs" id="salesTabs" role="tablist">
                 <li class="nav-item">
-                    <button class="nav-link active fw-bold" id="sales-tab" data-bs-toggle="tab" data-bs-target="#sales" type="button">
+                    <button class="nav-link active" id="sales-tab" data-bs-toggle="tab" data-bs-target="#sales" type="button">
                         <i class="bi bi-receipt me-2"></i> Historial de Ventas
                     </button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link fw-bold text-danger" id="expenses-tab" data-bs-toggle="tab" data-bs-target="#expenses" type="button">
+                    <button class="nav-link expenses-history-tab" id="expenses-tab" data-bs-toggle="tab" data-bs-target="#expenses" type="button">
                         <i class="bi bi-journal-minus me-2"></i> Historial de Gastos
                     </button>
                 </li>
@@ -107,8 +395,22 @@
                                     <td>{{ $order->client_name }} <br><small class="text-muted">{{ $order->document_type }}</small></td>
                                     <td><span class="badge bg-light text-dark border">{{ $order->table->name ?? 'Barra' }}</span></td>
                                     <td>
-                                        <span class="badge {{ $order->payment_method == 'cash' ? 'bg-success text-success' : 'bg-primary text-primary' }} bg-opacity-10 border {{ $order->payment_method == 'cash' ? 'border-success' : 'border-primary' }}">
-                                            {{ $order->payment_method == 'cash' ? 'Efectivo' : 'Tarjeta' }}
+                                        @php
+                                            $paymentStyles = [
+                                                'cash' => ['label' => 'Efectivo', 'color' => '#198754', 'bg' => '#e8f5ee'],
+                                                'card' => ['label' => 'Tarjeta', 'color' => '#0d6efd', 'bg' => '#eaf2ff'],
+                                                'yape' => ['label' => 'Yape', 'color' => '#742284', 'bg' => '#f5e9f8'],
+                                                'plin' => ['label' => 'Plin', 'color' => '#00a884', 'bg' => '#e8f8f3'],
+                                            ];
+                                            $payment = $paymentStyles[$order->payment_method] ?? [
+                                                'label' => ucfirst($order->payment_method ?? 'Sin definir'),
+                                                'color' => '#6c757d',
+                                                'bg' => '#f1f3f5'
+                                            ];
+                                        @endphp
+                                        <span class="badge rounded-pill px-3 py-2"
+                                              style="background:{{ $payment['bg'] }}; color:{{ $payment['color'] }}; border:1px solid {{ $payment['color'] }};">
+                                            {{ $payment['label'] }}
                                         </span>
                                     </td>
                                     <td class="text-end fw-bold">{{ number_format($order->total, 2) }}</td>
@@ -182,7 +484,7 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Monto a Retirar</label>
                     <div class="input-group">
-                        <span class="input-group-text">$</span>
+                        <span class="input-group-text fw-bold">S/</span>
                         <input type="number" step="0.01" name="amount" class="form-control fs-4 fw-bold text-danger" placeholder="0.00" required>
                     </div>
                 </div>

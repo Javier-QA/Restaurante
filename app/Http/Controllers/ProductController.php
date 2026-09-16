@@ -111,16 +111,17 @@ class ProductController extends Controller
         // 3. Actualizar
         $product->update($data);
 
-        // Actualizar receta/insumos (Si enviaste array de ingredientes)
-        if ($request->has('ingredients')) {
-            $syncData = [];
-            foreach ($request->ingredients as $id => $qty) {
-                if ($qty > 0) $syncData[$id] = ['quantity' => $qty];
+        // Actualizar receta/insumos
+        // Si no se envían ingredientes, se elimina la receta actual.
+        $syncData = [];
+        foreach ($request->input('ingredients', []) as $id => $qty) {
+            if ((float) $qty > 0) {
+                $syncData[$id] = ['quantity' => $qty];
             }
-            $product->ingredients()->sync($syncData);
         }
+        $product->ingredients()->sync($syncData);
 
-        return redirect()->route('products.index')->with('success', 'Producto actualizado.');
+        return redirect()->route('products.index', ['page' => $request->input('page', 1)])->with('success', 'Producto actualizado.');
     }
 
     public function destroy(Product $product)
