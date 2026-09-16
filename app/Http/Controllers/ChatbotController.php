@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\RestaurantAssistantService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use Carbon\Carbon;
 
 class ChatbotController extends Controller
 {
@@ -21,301 +20,26 @@ class ChatbotController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | NORMALIZAR MENSAJE
+        | ASISTENTE INTELIGENTE DEL RESTAURANTE
         |--------------------------------------------------------------------------
-        | Permite reconocer mayúsculas, minúsculas y tildes.
+        | Primero intenta responder utilizando los datos reales del sistema.
+        | Si no reconoce la consulta, continúa con las reglas anteriores
+        | y finalmente utiliza Ollama como respaldo.
         */
 
-        $mensaje = strtolower($message);
+        try {
+            $assistant = app(RestaurantAssistantService::class);
+            $assistantResult = $assistant->answer($message);
 
-        $mensaje = strtr($mensaje, [
-            'á' => 'a',
-            'é' => 'e',
-            'í' => 'i',
-            'ó' => 'o',
-            'ú' => 'u',
-            'ü' => 'u',
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | 1. SALUDOS
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            str_contains($mensaje, 'hola') ||
-            str_contains($mensaje, 'buenos dias') ||
-            str_contains($mensaje, 'buenas tardes') ||
-            str_contains($mensaje, 'buenas noches')
-        ) {
-            return response()->json([
-                'response' => 'Hola, administrador. ¿En qué puedo ayudarte?'
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 2. VENTAS DE ESTA SEMANA
-        |--------------------------------------------------------------------------
-        | IMPORTANTE:
-        | Este bloque va ANTES de ventas de hoy para evitar
-        | que "cuanto vendimos esta semana" sea interpretado
-        | como una consulta de ventas de hoy.
-        */
-
-        if (
-            str_contains($mensaje, 'vendimos esta semana') ||
-            str_contains($mensaje, 'ventas de esta semana') ||
-            str_contains($mensaje, 'ventas esta semana') ||
-            str_contains($mensaje, 'ingresos de esta semana') ||
-            str_contains($mensaje, 'ingresos esta semana') ||
-            str_contains($mensaje, 'venta semanal') ||
-            str_contains($mensaje, 'cuanto vendimos esta semana') ||
-            str_contains($mensaje, 'cuanto hemos vendido esta semana') ||
-            str_contains($mensaje, 'cuanto se vendio esta semana') ||
-            str_contains($mensaje, 'cuanto hemos vendido en la semana') ||
-            str_contains($mensaje, 'cuanto vendimos en la semana') ||
-            str_contains($mensaje, 'cuanto se vendio en la semana')
-        ) {
-            $inicioSemana = Carbon::now()->startOfWeek();
-            $finSemana = Carbon::now()->endOfWeek();
-
-            $totalSemana = DB::table('orders')
-                ->whereBetween('created_at', [
-                    $inicioSemana,
-                    $finSemana
-                ])
-                ->sum('total');
-
-            return response()->json([
-                'response' =>
-                    'Esta semana el restaurante ha vendido S/ ' .
-                    number_format($totalSemana, 2)
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 3. VENTAS DE HOY
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            str_contains($mensaje, 'vendimos hoy') ||
-            str_contains($mensaje, 'ventas de hoy') ||
-            str_contains($mensaje, 'venta de hoy') ||
-            str_contains($mensaje, 'ingresos de hoy') ||
-            str_contains($mensaje, 'ingreso de hoy') ||
-            str_contains($mensaje, 'dinero de hoy') ||
-            str_contains($mensaje, 'ventas del dia') ||
-            str_contains($mensaje, 'ventas del día') ||
-            str_contains($mensaje, 'cuanto vendimos hoy') ||
-            str_contains($mensaje, 'cuanto hemos vendido hoy') ||
-            str_contains($mensaje, 'cuanto se vendio hoy') ||
-            str_contains($mensaje, 'cuanto se vendio el dia de hoy')
-        ) {
-            $totalVentas = DB::table('orders')
-                ->whereDate('created_at', Carbon::today())
-                ->sum('total');
-
-            return response()->json([
-                'response' =>
-                    'Hoy el restaurante ha vendido S/ ' .
-                    number_format($totalVentas, 2)
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 4. PEDIDOS DE HOY
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            str_contains($mensaje, 'cuantos pedidos') ||
-            str_contains($mensaje, 'cuantos pedidos tenemos') ||
-            str_contains($mensaje, 'pedidos tenemos') ||
-            str_contains($mensaje, 'pedidos de hoy') ||
-            str_contains($mensaje, 'pedidos hoy')
-        ) {
-            $cantidadPedidos = DB::table('orders')
-                ->whereDate('created_at', Carbon::today())
-                ->count();
-
-            return response()->json([
-                'response' =>
-                    'Hoy tenemos ' .
-                    $cantidadPedidos .
-                    ' pedido(s) registrado(s).'
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 5. PRODUCTOS SIN STOCK
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            str_contains($mensaje, 'sin stock') ||
-            str_contains($mensaje, 'sin existencias') ||
-            str_contains($mensaje, 'agotados') ||
-            str_contains($mensaje, 'agotado')
-        ) {
-            $productos = DB::table('products')
-                ->where('is_active', 1)
-                ->whereNotNull('stock')
-                ->where('stock', 0)
-                ->orderBy('name', 'asc')
-                ->get([
-                    'name',
-                    'price',
-                    'stock'
-                ]);
-
-            if ($productos->isEmpty()) {
-                return response()->json([
-                    'response' =>
-                        'Actualmente no hay productos registrados sin stock.'
-                ]);
+            if ($assistantResult !== null) {
+                return response()->json($assistantResult);
             }
-
-            return response()->json([
-                'response' =>
-                    'Estos productos están actualmente sin stock:',
-                'products' => $productos,
-                'product_table_type' => 'sin_stock'
+        } catch (\Throwable $e) {
+            \Log::error('Error en RestaurantAssistantService', [
+                'message' => $e->getMessage(),
+                'question' => $message,
             ]);
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 6. PRODUCTOS CON POCO STOCK
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            str_contains($mensaje, 'poco stock') ||
-            str_contains($mensaje, 'stock bajo') ||
-            str_contains($mensaje, 'se estan acabando') ||
-            str_contains($mensaje, 'se acaban') ||
-            str_contains($mensaje, 'poco inventario')
-        ) {
-            $productos = DB::table('products')
-                ->where('is_active', 1)
-                ->whereNotNull('stock')
-                ->where('stock', '>', 0)
-                ->where('stock', '<=', 5)
-                ->orderBy('stock', 'asc')
-                ->orderBy('name', 'asc')
-                ->get([
-                    'name',
-                    'price',
-                    'stock'
-                ]);
-
-            if ($productos->isEmpty()) {
-                return response()->json([
-                    'response' =>
-                        'Actualmente no hay productos con stock bajo.'
-                ]);
-            }
-
-            return response()->json([
-                'response' =>
-                    'Estos productos tienen poco stock:',
-                'products' => $productos,
-                'product_table_type' => 'poco_stock'
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 7. PRODUCTO MÁS VENDIDO
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            str_contains($mensaje, 'mas vendido') ||
-            str_contains($mensaje, 'producto estrella') ||
-            str_contains($mensaje, 'plato estrella') ||
-            str_contains($mensaje, 'que se vende mas') ||
-            str_contains($mensaje, 'que producto se vende mas')
-        ) {
-            $producto = DB::table('order_details')
-                ->join(
-                    'products',
-                    'products.id',
-                    '=',
-                    'order_details.product_id'
-                )
-                ->select(
-                    'products.name',
-                    DB::raw(
-                        'SUM(order_details.quantity) as total_vendido'
-                    )
-                )
-                ->groupBy(
-                    'products.id',
-                    'products.name'
-                )
-                ->orderByDesc('total_vendido')
-                ->first();
-
-            if (!$producto) {
-                return response()->json([
-                    'response' =>
-                        'Todavía no hay ventas registradas para determinar el producto más vendido.'
-                ]);
-            }
-
-            return response()->json([
-                'response' =>
-                    "El producto más vendido es {$producto->name}, " .
-                    "con {$producto->total_vendido} unidad(es) vendida(s)."
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 8. LISTA DE PRODUCTOS
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            str_contains($mensaje, 'muestrame los productos') ||
-            str_contains($mensaje, 'lista de productos') ||
-            str_contains($mensaje, 'que productos tenemos') ||
-            str_contains($mensaje, 'mostrar productos') ||
-            str_contains($mensaje, 'ver productos') ||
-            str_contains($mensaje, 'catalogo de productos') ||
-            str_contains($mensaje, 'menu de productos')
-        ) {
-            $productos = DB::table('products')
-                ->where('is_active', 1)
-                ->orderBy('name', 'asc')
-                ->get([
-                    'name',
-                    'price',
-                    'stock'
-                ]);
-
-            if ($productos->isEmpty()) {
-                return response()->json([
-                    'response' =>
-                        'No hay productos registrados.'
-                ]);
-            }
-
-            return response()->json([
-                'response' =>
-                    'Aquí tienes la lista de productos:',
-                'products' => $productos,
-                'product_table_type' => 'productos'
-            ]);
-        }
-
         /*
         |--------------------------------------------------------------------------
         | 9. PREGUNTAS GENERALES → OLLAMA

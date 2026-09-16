@@ -187,6 +187,48 @@ class DeliveryController extends Controller
         DB::transaction(function () use ($delivery, $request) {
             $order = $delivery->order;
 
+            // Calcular el consumo total de stock de todo el pedido.
+            $stockRequirements = [];
+
+            foreach ($order->details as $detail) {
+                $product = Product::with('ingredients')->findOrFail($detail->product_id);
+
+                if ($product->ingredients->count() > 0) {
+                    foreach ($product->ingredients as $ingredient) {
+                        $required = (float) $ingredient->pivot->quantity
+                            * (float) $detail->quantity;
+
+                        if (!isset($stockRequirements[$ingredient->id])) {
+                            $stockRequirements[$ingredient->id] = 0;
+                        }
+
+                        $stockRequirements[$ingredient->id] += $required;
+                    }
+                } elseif (!is_null($product->stock)) {
+                    if (!isset($stockRequirements[$product->id])) {
+                        $stockRequirements[$product->id] = 0;
+                    }
+
+                    $stockRequirements[$product->id] += (float) $detail->quantity;
+                }
+            }
+
+            // Bloquear y validar el stock acumulado antes de completar el delivery.
+            foreach ($stockRequirements as $productId => $required) {
+                $stockItem = Product::whereKey($productId)
+                    ->lockForUpdate()
+                    ->firstOrFail();
+
+                $available = (float) $stockItem->stock;
+
+                if ($available < $required) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'stock' => 'Stock insuficiente de ' . $stockItem->name .
+                            '. Disponible: ' . $available .
+                            '. Necesario: ' . $required . '.',
+                    ]);
+                }
+            }
             // Marcar orden como completada
             $order->update([
                 'status'          => 'completed',
