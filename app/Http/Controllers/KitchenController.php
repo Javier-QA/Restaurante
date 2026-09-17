@@ -25,6 +25,43 @@ class KitchenController extends Controller
         return view('kitchen.index', compact('orders'));
     }
 
+    // Devuelve los pedidos activos para actualizar el KDS sin recargar la página
+    public function orders()
+    {
+        $orders = Order::whereHas('details', function ($q) {
+                $q->whereIn('status', ['pending', 'cooking']);
+            })
+            ->with([
+                'table',
+                'details' => function ($q) {
+                    $q->whereIn('status', ['pending', 'cooking'])
+                        ->with('product');
+                }
+            ])
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        return response()->json([
+            'orders' => $orders->map(function ($order) {
+                return [
+                    'id' => $order->id,
+                    'table' => $order->table
+                        ? $order->table->name
+                        : 'Para Llevar',
+                    'time' => $order->created_at->format('H:i'),
+                    'details' => $order->details->map(function ($detail) {
+                        return [
+                            'id' => $detail->id,
+                            'product' => $detail->product?->name ?? 'Producto',
+                            'quantity' => $detail->quantity,
+                            'status' => $detail->status,
+                            'note' => $detail->note,
+                        ];
+                    })->values(),
+                ];
+            })->values(),
+        ]);
+    }
     // Avanzar estado del plato: Pendiente -> Cocinando -> Servido
     public function updateStatus(OrderDetail $detail)
     {

@@ -147,6 +147,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/kitchen', [KitchenController::class, 'index'])
         ->name('kitchen.index');
 
+    Route::get(
+        '/kitchen/orders',
+        [KitchenController::class, 'orders']
+    )->name('kitchen.orders');
     Route::post(
         '/kitchen/{detail}/status',
         [KitchenController::class, 'updateStatus']
@@ -182,14 +186,15 @@ Route::middleware(['auth'])->group(function () {
     // ZONA FINANCIERA (Cajeros y Admins)
     // =========================================================
 
-    Route::middleware(['role:admin,cashier'])->group(function () {
-
-        // Cobro Final
+    // Cobro desde POS: Admin, Cajero y Mozo
+    Route::middleware(['role:admin,cashier,waiter'])->group(function () {
         Route::post(
             '/pos/order/{order}/checkout',
             [PosController::class, 'checkout']
         )->name('pos.checkout');
+    });
 
+    Route::middleware(['role:admin,cashier'])->group(function () {
 
         // Ventas
         Route::get('/sales', [SaleController::class, 'index'])
