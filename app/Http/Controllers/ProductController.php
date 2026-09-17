@@ -47,6 +47,7 @@ class ProductController extends Controller
 
         // Checkbox de "Disponible en POS" (si no viene, es false)
         $data['is_saleable'] = $request->has('is_saleable');
+        $data['controls_stock'] = $request->has('controls_stock');
         $data['is_chef_recommendation'] = $request->has('is_chef_recommendation');
         $data['is_new'] = $request->has('is_new');
         $data['is_active'] = true;
@@ -104,6 +105,7 @@ class ProductController extends Controller
         }
 
         $data['is_saleable'] = $request->has('is_saleable');
+        $data['controls_stock'] = $request->has('controls_stock');
         $data['is_chef_recommendation'] = $request->has('is_chef_recommendation');
         $data['is_new'] = $request->has('is_new');
         $data['cost'] = $request->cost ?? 0;

@@ -18,6 +18,7 @@ class Product extends Model
         'image',
         'category_id',
         'stock',
+        'controls_stock',
         'is_active',
         'is_saleable',
         'promotional_price',

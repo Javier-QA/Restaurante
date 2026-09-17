@@ -1027,7 +1027,7 @@
 
             word-break: break-word;
 
-            white-space: normal;
+            white-space: pre-wrap;
         }
 
         .chatbot-message.bot {
@@ -3025,7 +3025,8 @@
 
 
             function addChatbotProductsTable(
-                products
+                products,
+                intent = null
             ) {
 
 
@@ -3037,6 +3038,114 @@
 
                     return;
 
+                }
+
+
+                // TABLA ESPECIAL: PRODUCTO MÁS VENDIDO
+                if (intent === 'best_selling_product') {
+
+                    const wrapper =
+                        document.createElement('div');
+
+                    wrapper.className =
+                        'chatbot-products-table-wrapper';
+
+
+                    const table =
+                        document.createElement('table');
+
+                    table.className =
+                        'chatbot-products-table';
+
+
+                    const thead =
+                        document.createElement('thead');
+
+                    const headerRow =
+                        document.createElement('tr');
+
+
+                    [
+                        'Producto',
+                        'Unidades vendidas',
+                        'Total generado'
+                    ].forEach(label => {
+
+                        const th =
+                            document.createElement('th');
+
+                        th.textContent = label;
+
+                        headerRow.appendChild(th);
+
+                    });
+
+
+                    thead.appendChild(headerRow);
+
+
+                    const tbody =
+                        document.createElement('tbody');
+
+
+                    products.forEach(product => {
+
+                        const row =
+                            document.createElement('tr');
+
+
+                        const nameCell =
+                            document.createElement('td');
+
+                        nameCell.textContent =
+                            product.name ?? '-';
+
+
+                        const quantityCell =
+                            document.createElement('td');
+
+                        quantityCell.textContent =
+                            Number(
+                                product.quantity_sold ?? 0
+                            );
+
+
+                        const totalCell =
+                            document.createElement('td');
+
+                        const total =
+                            Number(
+                                product.sales_total ?? 0
+                            );
+
+                        totalCell.textContent =
+                            'S/ ' +
+                            (
+                                Number.isFinite(total)
+                                    ? total.toFixed(2)
+                                    : '0.00'
+                            );
+
+
+                        row.appendChild(nameCell);
+                        row.appendChild(quantityCell);
+                        row.appendChild(totalCell);
+
+                        tbody.appendChild(row);
+
+                    });
+
+
+                    table.appendChild(thead);
+                    table.appendChild(tbody);
+
+                    wrapper.appendChild(table);
+
+                    chatbotMessages.appendChild(wrapper);
+
+                    scrollChatbotBottom();
+
+                    return;
                 }
 
 
@@ -3454,7 +3563,8 @@
 
 
                         addChatbotProductsTable(
-                            data.products
+                            data.products,
+                            data.intent ?? null
                         );
 
                     }

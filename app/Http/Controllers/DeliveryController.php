@@ -204,7 +204,7 @@ class DeliveryController extends Controller
 
                         $stockRequirements[$ingredient->id] += $required;
                     }
-                } elseif (!is_null($product->stock)) {
+                } elseif ($product->controls_stock && !is_null($product->stock)) {
                     if (!isset($stockRequirements[$product->id])) {
                         $stockRequirements[$product->id] = 0;
                     }
@@ -260,7 +260,7 @@ class DeliveryController extends Controller
                             'note'       => 'Delivery #' . $delivery->id,
                         ]);
                     }
-                } elseif (!is_null($product->stock)) {
+                } elseif ($product->controls_stock && !is_null($product->stock)) {
                     $oldStock = $product->stock;
                     $product->decrement('stock', $detail->quantity);
                     InventoryLog::create([

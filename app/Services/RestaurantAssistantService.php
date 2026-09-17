@@ -39,6 +39,78 @@ class RestaurantAssistantService
     public function detectPeriod(string $message): ?array
     {
         $message = $this->normalize($message);
+
+        // LISTADO GENERAL DE PRODUCTOS
+        $isProductListQuestion =
+            str_contains($message, 'muestrame los productos') ||
+            str_contains($message, 'mostrar productos') ||
+            str_contains($message, 'lista de productos') ||
+            str_contains($message, 'listar productos') ||
+            str_contains($message, 'que productos tenemos') ||
+            str_contains($message, 'que productos hay') ||
+            str_contains($message, 'muestrame el menu') ||
+            str_contains($message, 'mostrar menu') ||
+            $message === 'productos' ||
+            $message === 'menu';
+
+        if ($isProductListQuestion) {
+            $products = DB::table('products')
+                ->leftJoin('categories', 'categories.id', '=', 'products.category_id')
+                ->where('products.is_active', 1)
+                ->where('products.is_saleable', 1)
+                ->orderBy('categories.name')
+                ->orderBy('products.name')
+                ->get([
+                    'products.id',
+                    'products.name',
+                    'products.price',
+                    'products.promotional_price',
+                    'products.stock',
+                    'categories.name as category_name',
+                ]);
+
+            if ($products->isEmpty()) {
+                return [
+                    'response' => 'No hay productos activos disponibles actualmente.',
+                    'intent' => 'product_list',
+                    'count' => 0,
+                    'products' => [],
+                ];
+            }
+
+            $lines = [];
+            $currentCategory = null;
+
+            foreach ($products as $product) {
+                $category = $product->category_name ?: 'Sin categoría';
+
+                if ($currentCategory !== $category) {
+                    if ($currentCategory !== null) {
+                        $lines[] = '';
+                    }
+
+                    $lines[] = $category . ':';
+                    $currentCategory = $category;
+                }
+
+                $price = $product->promotional_price !== null
+                    ? (float) $product->promotional_price
+                    : (float) $product->price;
+
+                $lines[] =
+                    '- ' . $product->name .
+                    ' | S/ ' . number_format($price, 2);
+            }
+
+            return [
+                'response' =>
+                    'Actualmente tenemos ' . $products->count() .
+                    ' productos disponibles en la carta.',
+                'intent' => 'product_list',
+                'count' => $products->count(),
+                'products' => $products->toArray(),
+            ];
+        }
         $now = Carbon::now();
 
         if (str_contains($message, 'hoy') || str_contains($message, 'dia de hoy')) {
@@ -176,6 +248,7 @@ class RestaurantAssistantService
     {
         return DB::table('products')
             ->where('is_active', 1)
+            ->where('controls_stock', 1)
             ->where('stock', '<=', 0)
             ->orderBy('name')
             ->get(['id', 'name', 'stock']);
@@ -188,6 +261,7 @@ class RestaurantAssistantService
     {
         return DB::table('products')
             ->where('is_active', 1)
+            ->where('controls_stock', 1)
             ->whereBetween('stock', [$minimum, $maximum])
             ->orderBy('stock')
             ->orderBy('name')
@@ -601,6 +675,78 @@ class RestaurantAssistantService
     {
         $message = $this->normalize($message);
 
+        // LISTADO GENERAL DE PRODUCTOS
+        $isProductListQuestion =
+            str_contains($message, 'muestrame los productos') ||
+            str_contains($message, 'mostrar productos') ||
+            str_contains($message, 'lista de productos') ||
+            str_contains($message, 'listar productos') ||
+            str_contains($message, 'que productos tenemos') ||
+            str_contains($message, 'que productos hay') ||
+            str_contains($message, 'muestrame el menu') ||
+            str_contains($message, 'mostrar menu') ||
+            $message === 'productos' ||
+            $message === 'menu';
+
+        if ($isProductListQuestion) {
+            $products = DB::table('products')
+                ->leftJoin('categories', 'categories.id', '=', 'products.category_id')
+                ->where('products.is_active', 1)
+                ->where('products.is_saleable', 1)
+                ->orderBy('categories.name')
+                ->orderBy('products.name')
+                ->get([
+                    'products.id',
+                    'products.name',
+                    'products.price',
+                    'products.promotional_price',
+                    'products.stock',
+                    'categories.name as category_name',
+                ]);
+
+            if ($products->isEmpty()) {
+                return [
+                    'response' => 'No hay productos activos disponibles actualmente.',
+                    'intent' => 'product_list',
+                    'count' => 0,
+                    'products' => [],
+                ];
+            }
+
+            $lines = [];
+            $currentCategory = null;
+
+            foreach ($products as $product) {
+                $category = $product->category_name ?: 'Sin categoría';
+
+                if ($currentCategory !== $category) {
+                    if ($currentCategory !== null) {
+                        $lines[] = '';
+                    }
+
+                    $lines[] = $category . ':';
+                    $currentCategory = $category;
+                }
+
+                $price = $product->promotional_price !== null
+                    ? (float) $product->promotional_price
+                    : (float) $product->price;
+
+                $lines[] =
+                    '- ' . $product->name .
+                    ' | S/ ' . number_format($price, 2);
+            }
+
+            return [
+                'response' =>
+                    'Actualmente tenemos ' . $products->count() .
+                    ' productos disponibles en la carta.',
+                'intent' => 'product_list',
+                'count' => $products->count(),
+                'products' => $products->toArray(),
+            ];
+        }
+
         $hasAny = function (array $words) use ($message): bool {
             foreach ($words as $word) {
                 if (str_contains($message, $word)) {
@@ -883,6 +1029,99 @@ class RestaurantAssistantService
     public function answer(string $message): ?array
     {
         $message = $this->normalize($message);
+
+        // LISTADO GENERAL DE PRODUCTOS
+        $isProductListQuestion =
+            str_contains($message, 'muestrame los productos') ||
+            str_contains($message, 'mostrar productos') ||
+            str_contains($message, 'lista de productos') ||
+            str_contains($message, 'listar productos') ||
+            str_contains($message, 'que productos tenemos') ||
+            str_contains($message, 'que productos hay') ||
+            str_contains($message, 'muestrame el menu') ||
+            str_contains($message, 'mostrar menu') ||
+            $message === 'productos' ||
+            $message === 'menu';
+
+        if ($isProductListQuestion) {
+            $products = DB::table('products')
+                ->leftJoin('categories', 'categories.id', '=', 'products.category_id')
+                ->where('products.is_active', 1)
+                ->where('products.is_saleable', 1)
+                ->orderBy('categories.name')
+                ->orderBy('products.name')
+                ->get([
+                    'products.id',
+                    'products.name',
+                    'products.price',
+                    'products.promotional_price',
+                    'products.stock',
+                    'categories.name as category_name',
+                ]);
+
+            if ($products->isEmpty()) {
+                return [
+                    'response' => 'No hay productos activos disponibles actualmente.',
+                    'intent' => 'product_list',
+                    'count' => 0,
+                    'products' => [],
+                ];
+            }
+
+            $lines = [];
+            $currentCategory = null;
+
+            foreach ($products as $product) {
+                $category = $product->category_name ?: 'Sin categoría';
+
+                if ($currentCategory !== $category) {
+                    if ($currentCategory !== null) {
+                        $lines[] = '';
+                    }
+
+                    $lines[] = $category . ':';
+                    $currentCategory = $category;
+                }
+
+                $price = $product->promotional_price !== null
+                    ? (float) $product->promotional_price
+                    : (float) $product->price;
+
+                $lines[] =
+                    '- ' . $product->name .
+                    ' | S/ ' . number_format($price, 2);
+            }
+
+            return [
+                'response' =>
+                    'Actualmente tenemos ' . $products->count() .
+                    ' productos disponibles en la carta.',
+                'intent' => 'product_list',
+                'count' => $products->count(),
+                'products' => $products->toArray(),
+            ];
+        }
+
+        // RECOMENDACIONES PARA MEJORAR LAS VENTAS
+        $isSalesAdvice =
+            str_contains($message, 'como puedo mejorar las ventas') ||
+            str_contains($message, 'como mejorar las ventas') ||
+            str_contains($message, 'mejorar mis ventas') ||
+            str_contains($message, 'aumentar las ventas') ||
+            str_contains($message, 'incrementar las ventas');
+
+        if ($isSalesAdvice) {
+            return [
+                'response' =>
+                    "Puedes mejorar las ventas aplicando estas estrategias:\n\n" .
+                    "1. Promociona los platos más vendidos y crea combos atractivos.\n" .
+                    "2. Ofrece promociones en los días u horarios con menos ventas.\n" .
+                    "3. Incentiva la recompra de los clientes frecuentes.\n" .
+                    "4. Publica promociones y platos destacados en redes sociales.\n" .
+                    "5. Revisa periódicamente las ventas para identificar qué productos tienen mejor rendimiento.",
+                'intent' => 'sales_advice',
+            ];
+        }
 
         // COMPARACIONES DE VENTAS
         $isComparison = str_contains($message, 'compara') ||

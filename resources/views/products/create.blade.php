@@ -68,7 +68,16 @@
                     <small class="d-block text-muted ms-5" style="font-size: 0.75rem;">Si se desmarca, solo será un insumo para recetas.</small>
                 </div>
 
-                <div class="alert bg-primary bg-opacity-10 border border-primary border-opacity-25 rounded-3 mb-4 p-3">
+                <div class="form-check form-switch mb-4 bg-light p-3 rounded border">
+    <input class="form-check-input" type="checkbox" name="controls_stock" id="controlsStockCheck">
+    <label class="form-check-label fw-bold ms-2" for="controlsStockCheck">
+        Controlar stock de este producto
+    </label>
+    <small class="d-block text-muted ms-5" style="font-size: 0.75rem;">
+        Actívalo para productos que se controlan por unidades. Si el producto tiene receta, se controlarán sus ingredientes.
+    </small>
+</div>
+<div class="alert bg-primary bg-opacity-10 border border-primary border-opacity-25 rounded-3 mb-4 p-3">
                     <h6 class="text-primary fw-bold mb-3"><i class="bi bi-qr-code-scan me-2"></i>Opciones para Carta Digital (Menú QR)</h6>
                     
                     <div class="row g-3">
