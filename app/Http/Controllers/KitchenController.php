@@ -62,16 +62,37 @@ class KitchenController extends Controller
             })->values(),
         ]);
     }
-    // Avanzar estado del plato: Pendiente -> Cocinando -> Servido
+    // Avanzar estado del plato y sincronizar automáticamente el Delivery
     public function updateStatus(OrderDetail $detail)
     {
-        if ($detail->status == 'pending') {
+        if ($detail->status === 'pending') {
             $detail->update(['status' => 'cooking']);
-        } elseif ($detail->status == 'cooking') {
+        } elseif ($detail->status === 'cooking') {
             $detail->update(['status' => 'served']);
         }
 
-        // Retornamos al KDS
-        return redirect()->route('kitchen.index'); // En una versión avanzada, esto sería AJAX
+        $order = $detail->order()->with('details')->first();
+
+        if ($order) {
+            $delivery = $order->delivery;
+
+            if ($delivery && !in_array($delivery->status, ['delivered', 'cancelled'])) {
+                $hasCookingItems = $order->details
+                    ->contains(fn ($item) => $item->status === 'cooking');
+
+                $allServed = $order->details->isNotEmpty()
+                    && $order->details->every(fn ($item) => $item->status === 'served');
+
+                if ($allServed) {
+                    // Delivery: En camino
+                    // Recojo en local: Listo para recoger
+                    $delivery->update(['status' => 'on_way']);
+                } elseif ($hasCookingItems) {
+                    $delivery->update(['status' => 'preparing']);
+                }
+            }
+        }
+
+        return redirect()->route('kitchen.index');
     }
 }

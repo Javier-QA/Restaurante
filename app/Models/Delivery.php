@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Delivery extends Model
 {
     protected $fillable = [
-        'order_id', 'client_id', 'client_name', 'client_phone',
+        'order_id', 'delivery_type', 'client_id', 'client_name', 'client_phone',
         'address', 'reference', 'driver_id', 'user_id', 'cash_register_id',
         'status', 'payment_method', 'delivery_fee', 'notes',
         'scheduled_at', 'delivered_at',
@@ -38,7 +38,18 @@ class Delivery extends Model
 
     public function getStatusLabelAttribute(): string
     {
+        if ($this->delivery_type === 'pickup' && $this->status === 'on_way') {
+            return 'Listo para recoger';
+        }
+
         return self::$statusLabels[$this->status] ?? $this->status;
+    }
+
+    public function getDeliveryTypeLabelAttribute(): string
+    {
+        return $this->delivery_type === 'pickup'
+            ? 'Recojo en local'
+            : 'Delivery';
     }
 
     public function getTotalWithFeeAttribute(): float

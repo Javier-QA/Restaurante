@@ -4,15 +4,15 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold mb-0" style="color: #000 !important;"><i class="bi bi-person-vcard me-2" style="color: #000 !important;"></i>Repartidores</h2>
-            <p class="text-muted small mb-0 mt-1">Gestión del personal de delivery.</p>
+            <h2 class="fw-bold mb-0" style="color: #000 !important;"><i class="bi bi-person-vcard me-2" style="color: #000 !important;"></i>Delivery</h2>
+            <p class="text-muted small mb-0 mt-1">Gestión de delivery.</p>
         </div>
         <div>
             <a href="{{ route('delivery.index') }}" class="btn btn-outline-secondary me-2">
                 <i class="bi bi-arrow-left"></i> Volver a Delivery
             </a>
             <button class="btn btn-primary shadow-sm fw-bold" data-bs-toggle="modal" data-bs-target="#driverModal">
-                <i class="bi bi-plus-lg me-1"></i> Nuevo Repartidor
+                <i class="bi bi-plus-lg me-1"></i> Nuevo Delivery
             </button>
         </div>
     </div>
@@ -61,7 +61,7 @@
                                     <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#editDriverModal{{ $driver->id }}">
                                         <i class="bi bi-pencil"></i>
                                     </button>
-                                    <form action="{{ route('delivery.drivers.destroy', $driver) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar repartidor?');">
+                                    <form action="{{ route('delivery.drivers.destroy', $driver) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar delivery?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -76,7 +76,7 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title fw-bold">Editar Repartidor</h5>
+                                            <h5 class="modal-title fw-bold">Editar Delivery</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <form action="{{ route('delivery.drivers.update', $driver) }}" method="POST">
@@ -94,7 +94,7 @@
                                                 <div class="mb-3">
                                                     <div class="form-check form-switch">
                                                         <input class="form-check-input" type="checkbox" name="is_active" value="1" id="active{{ $driver->id }}" {{ $driver->is_active ? 'checked' : '' }}>
-                                                        <label class="form-check-label" for="active{{ $driver->id }}">Repartidor Activo</label>
+                                                        <label class="form-check-label" for="active{{ $driver->id }}">Delivery Activo</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -110,7 +110,7 @@
                             <tr>
                                 <td colspan="5" class="text-center py-5 text-muted">
                                     <i class="bi bi-person-x display-4 d-block mb-3 opacity-50"></i>
-                                    No hay repartidores registrados.
+                                    No hay delivery registrados.
                                 </td>
                             </tr>
                         @endforelse
@@ -126,7 +126,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold">Nuevo Repartidor</h5>
+                <h5 class="modal-title fw-bold">Nuevo Delivery</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('delivery.drivers.store') }}" method="POST">
@@ -143,7 +143,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Repartidor</button>
+                    <button type="submit" class="btn btn-primary">Guardar Delivery</button>
                 </div>
             </form>
         </div>

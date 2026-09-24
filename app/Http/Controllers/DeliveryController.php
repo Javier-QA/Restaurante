@@ -30,6 +30,8 @@ class DeliveryController extends Controller
 
         $drivers  = DeliveryDriver::where('is_active', true)->orderBy('name')->get();
         $currency = Setting::where('key', 'currency_symbol')->value('value') ?? 'S/';
+        $yapeQr = Setting::where('key', 'yape_qr')->value('value');
+        $plinQr = Setting::where('key', 'plin_qr')->value('value');
         $statuses = Delivery::$statusLabels;
 
         // Contadores para las columnas del kanban
@@ -44,6 +46,47 @@ class DeliveryController extends Controller
     }
 
     /* ══════════════════════════════════════════════
+       ORDERS — Actualización automática del Kanban
+    ══════════════════════════════════════════════ */
+    public function orders()
+    {
+        $deliveries = Delivery::with(['order.details.product', 'driver', 'client'])
+            ->today()
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->groupBy('status');
+
+        $currency = Setting::where('key', 'currency_symbol')->value('value') ?? 'S/';
+        $yapeQr = Setting::where('key', 'yape_qr')->value('value');
+        $plinQr = Setting::where('key', 'plin_qr')->value('value');
+
+        $statuses = ['pending', 'preparing', 'on_way', 'delivered'];
+
+        $columns = [];
+        $counts = [];
+
+        foreach ($statuses as $status) {
+            $items = $deliveries->get($status, collect());
+
+            $columns[$status] = $items->map(function ($delivery) use ($currency) {
+                return view('delivery.partials.card', compact('delivery', 'currency'))->render();
+            })->implode('');
+
+            $counts[$status] = $items->count();
+        }
+
+        return response()->json([
+            'columns' => $columns,
+            'counts' => $counts,
+            'deliveries' => $deliveries->flatten(1)->map(function ($delivery) {
+                return [
+                    'id' => $delivery->id,
+                    'status' => $delivery->status,
+                ];
+            })->values(),
+        ]);
+    }
+    /* ══════════════════════════════════════════════
        CREATE — Formulario nuevo pedido
     ══════════════════════════════════════════════ */
     public function create()
@@ -55,6 +98,8 @@ class DeliveryController extends Controller
         $clients  = Client::orderBy('name')->get();
         $drivers  = DeliveryDriver::where('is_active', true)->orderBy('name')->get();
         $currency = Setting::where('key', 'currency_symbol')->value('value') ?? 'S/';
+        $yapeQr = Setting::where('key', 'yape_qr')->value('value');
+        $plinQr = Setting::where('key', 'plin_qr')->value('value');
 
         return view('delivery.create', compact('categories', 'clients', 'drivers', 'currency'));
     }
@@ -65,9 +110,13 @@ class DeliveryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'client_name'    => 'required|string|max:255',
-            'client_phone'   => 'required|string|max:30',
-            'address'        => 'required|string',
+            'delivery_type'  => 'required|in:delivery,pickup',
+            'client_name'    => 'nullable|string|max:255',
+            'client_phone'   => 'nullable|string|max:30',
+            'address'        => 'nullable|string',
+            'reference'      => 'nullable|string|max:255',
+            'driver_id'      => 'nullable|exists:delivery_drivers,id',
+            'delivery_fee'   => 'nullable|numeric|min:0',
             'payment_method' => 'required|in:cash,card,yape,plin',
             'products'       => 'required|array|min:1',
             'products.*.id'  => 'required|exists:products,id',
@@ -103,18 +152,26 @@ class DeliveryController extends Controller
                 ]);
             }
 
-            $deliveryFee = (float) ($request->delivery_fee ?? 0);
+            $isPickup = $request->delivery_type === 'pickup';
+            $deliveryFee = $isPickup
+                ? 0
+                : (float) ($request->delivery_fee ?? 0);
+
+            $driverId = $isPickup
+                ? null
+                : ($request->driver_id ?: null);
             $order->update(['total' => $subtotal]);
 
             // 3. Crear el Delivery
             Delivery::create([
                 'order_id'        => $order->id,
+                'delivery_type'   => $request->delivery_type,
                 'client_id'       => $request->client_id ?: null,
                 'client_name'     => $request->client_name,
                 'client_phone'    => $request->client_phone,
                 'address'         => $request->address,
                 'reference'       => $request->reference,
-                'driver_id'       => $request->driver_id ?: null,
+                'driver_id'       => $driverId,
                 'user_id'         => Auth::id(),
                 'cash_register_id'=> Auth::user()->activeCashRegister->id ?? null,
                 'status'          => 'pending',
@@ -125,7 +182,7 @@ class DeliveryController extends Controller
             ]);
         });
 
-        return redirect()->route('delivery.index')->with('success', '¡Pedido de delivery creado correctamente!');
+        return redirect()->route('delivery.index')->with('success', '¡Pedido creado correctamente!');
     }
 
     /* ══════════════════════════════════════════════
@@ -136,9 +193,11 @@ class DeliveryController extends Controller
         $delivery->load(['order.details.product', 'driver', 'client', 'user']);
         $drivers  = DeliveryDriver::where('is_active', true)->orderBy('name')->get();
         $currency = Setting::where('key', 'currency_symbol')->value('value') ?? 'S/';
+        $yapeQr = Setting::where('key', 'yape_qr')->value('value');
+        $plinQr = Setting::where('key', 'plin_qr')->value('value');
         $statuses = Delivery::$statusLabels;
 
-        return view('delivery.show', compact('delivery', 'drivers', 'currency', 'statuses'));
+        return view('delivery.show', compact('delivery', 'drivers', 'currency', 'statuses', 'yapeQr', 'plinQr'));
     }
 
     /* ══════════════════════════════════════════════
@@ -146,20 +205,47 @@ class DeliveryController extends Controller
     ══════════════════════════════════════════════ */
     public function updateStatus(Request $request, Delivery $delivery)
     {
-        $request->validate(['status' => 'required|in:pending,preparing,on_way,delivered,cancelled']);
+        $request->validate([
+            'status' => 'required|in:pending,preparing,on_way',
+        ]);
+
+        $transitions = [
+            'pending'   => 'preparing',
+            'preparing' => 'on_way',
+        ];
+
+        $nextStatus = $transitions[$delivery->status] ?? null;
+
+        if ($request->status !== $nextStatus) {
+            return redirect()->route('delivery.show', $delivery)
+                ->with('error', 'El cambio de estado solicitado no está permitido.');
+        }
+
+        if ($request->status === 'on_way') {
+            $delivery->load('order.details');
+
+            if (!$delivery->order) {
+                return redirect()->route('delivery.show', $delivery)
+                    ->with('error', 'No se encontró la orden asociada al delivery.');
+            }
+
+            $hasPendingItems = $delivery->order->details()
+                ->whereIn('status', ['pending', 'cooking'])
+                ->exists();
+
+            if ($hasPendingItems) {
+                return redirect()->route('delivery.show', $delivery)
+                    ->with('error', 'El pedido todavía no está listo en cocina.');
+            }
+        }
 
         $delivery->update([
-            'status'       => $request->status,
-            'delivered_at' => $request->status === 'delivered' ? now() : $delivery->delivered_at,
+            'status' => $request->status,
         ]);
 
-        return response()->json([
-            'success' => true,
-            'label'   => Delivery::$statusLabels[$request->status],
-            'color'   => Delivery::$statusColors[$request->status],
-        ]);
+        return redirect()->route('delivery.show', $delivery)
+            ->with('success', 'Estado actualizado a ' . Delivery::$statusLabels[$request->status] . '.');
     }
-
     /* ══════════════════════════════════════════════
        ASSIGN DRIVER — AJAX
     ══════════════════════════════════════════════ */
@@ -180,23 +266,139 @@ class DeliveryController extends Controller
     ══════════════════════════════════════════════ */
     public function checkout(Request $request, Delivery $delivery)
     {
-        if ($delivery->status === 'delivered' || $delivery->status === 'cancelled') {
-            return redirect()->route('delivery.show', $delivery)->with('error', 'Este pedido ya fue cerrado.');
+        if (in_array($delivery->status, ['delivered', 'cancelled'])) {
+            return redirect()->route('delivery.show', $delivery)
+                ->with('error', 'Este pedido ya fue cerrado.');
         }
 
-        DB::transaction(function () use ($delivery, $request) {
+        if ($delivery->status !== 'on_way') {
+            return redirect()->route('delivery.show', $delivery)
+                ->with('error', 'El pedido debe estar En camino antes de poder entregarlo y cobrarlo.');
+        }
+
+        $documentType = $request->input('document_type', 'Ticket');
+        $clientDocument = trim((string) $request->input('client_document'));
+        $clientName = trim((string) ($request->input('business_name') ?: $delivery->client_name));
+
+        // Validación específica para Factura: RUC de 11 dígitos + razón social.
+        if ($documentType === 'Factura') {
+            $doc = preg_replace('/\D/', '', $clientDocument);
+
+            if (strlen($doc) !== 11) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Para emitir Factura el cliente debe tener RUC de 11 dígitos.');
+            }
+
+            if ($clientName === '') {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Para emitir Factura debe indicar la razón social del cliente.');
+            }
+        }
+
+        // Validación específica para Boleta: DNI opcional, pero si se registra debe tener 8 dígitos.
+        if ($documentType === 'Boleta' && $clientDocument !== '') {
+            $doc = preg_replace('/\D/', '', $clientDocument);
+
+            if (strlen($doc) !== 8) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Para emitir Boleta el DNI debe tener 8 dígitos.');
+            }
+        }
+
+        $paymentMethod = $request->input('payment_method', $delivery->payment_method);
+        $received = $paymentMethod === 'cash'
+            ? (float) $request->input('received_amount', 0)
+            : (float) $delivery->total_with_fee;
+
+        if ($paymentMethod === 'cash' && $received < (float) $delivery->total_with_fee) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'El monto recibido no puede ser menor al total.');
+
+        }
+        $change = max(
+            0,
+            $received - (float) $delivery->total_with_fee
+        );
+
+        $order = null;
+
+        DB::transaction(function () use (
+            $request,
+            $delivery,
+            $documentType,
+            $clientDocument,
+            $clientName,
+            $received,
+            $change,
+            &$order
+        ) {
             $order = $delivery->order;
 
-            // Calcular el consumo total de stock de todo el pedido.
+            if (!$order) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'order' => 'No se encontró la orden asociada al Delivery.'
+                ]);
+            }
+
+            // 1. Calcular IGV igual que en POS.
+            $config = new \App\Services\Sunat\SunatConfig();
+            $igvFactor = $config->igvFactor();
+
+            $isElectronic = in_array(
+                $documentType,
+                ['Boleta', 'Factura'],
+                true
+            );
+
+            $totalBase = (float) $order->total;
+
+            $totalGravada = 0;
+            $igv = 0;
+
+            if ($isElectronic) {
+                $totalGravada = round(
+                    $totalBase / (1 + $igvFactor),
+                    2
+                );
+
+                $igv = round(
+                    $totalBase - $totalGravada,
+                    2
+                );
+            }
+
+            // 2. Serie y correlativo.
+            $serie = null;
+            $correlativo = null;
+
+            if ($isElectronic) {
+                $tipo = $documentType === 'Factura'
+                    ? 'factura'
+                    : 'boleta';
+
+                $next = \App\Models\DocumentSeries::next($tipo);
+
+                $serie = $next['serie'];
+                $correlativo = $next['correlativo'];
+            }
+
+            // 3. Calcular y validar stock.
             $stockRequirements = [];
 
             foreach ($order->details as $detail) {
-                $product = Product::with('ingredients')->findOrFail($detail->product_id);
+                $product = Product::with('ingredients')
+                    ->findOrFail($detail->product_id);
 
                 if ($product->ingredients->count() > 0) {
                     foreach ($product->ingredients as $ingredient) {
-                        $required = (float) $ingredient->pivot->quantity
-                            * (float) $detail->quantity;
+
+                        $required =
+                            (float) $ingredient->pivot->quantity *
+                            (float) $detail->quantity;
 
                         if (!isset($stockRequirements[$ingredient->id])) {
                             $stockRequirements[$ingredient->id] = 0;
@@ -204,17 +406,21 @@ class DeliveryController extends Controller
 
                         $stockRequirements[$ingredient->id] += $required;
                     }
-                } elseif ($product->controls_stock && !is_null($product->stock)) {
+                } elseif (
+                    $product->controls_stock &&
+                    !is_null($product->stock)
+                ) {
                     if (!isset($stockRequirements[$product->id])) {
                         $stockRequirements[$product->id] = 0;
                     }
 
-                    $stockRequirements[$product->id] += (float) $detail->quantity;
+                    $stockRequirements[$product->id] +=
+                        (float) $detail->quantity;
                 }
             }
 
-            // Bloquear y validar el stock acumulado antes de completar el delivery.
             foreach ($stockRequirements as $productId => $required) {
+
                 $stockItem = Product::whereKey($productId)
                     ->lockForUpdate()
                     ->firstOrFail();
@@ -223,68 +429,148 @@ class DeliveryController extends Controller
 
                 if ($available < $required) {
                     throw \Illuminate\Validation\ValidationException::withMessages([
-                        'stock' => 'Stock insuficiente de ' . $stockItem->name .
-                            '. Disponible: ' . $available .
-                            '. Necesario: ' . $required . '.',
+                        'stock' =>
+                            'Stock insuficiente de ' .
+                            $stockItem->name .
+                            '. Disponible: ' .
+                            $available .
+                            '. Necesario: ' .
+                            $required .
+                            '.',
                     ]);
                 }
             }
-            // Marcar orden como completada
+
+            // 4. Completar orden.
             $order->update([
-                'status'          => 'completed',
-                'payment_method'  => $delivery->payment_method,
-                'received_amount' => $request->received_amount ?? $delivery->total_with_fee,
-                'change_amount'   => max(0, ($request->received_amount ?? 0) - $delivery->total_with_fee),
-                'document_type'   => $request->document_type ?? 'Ticket',
-                'client_name'     => $delivery->client_name,
-                'cash_register_id'=> Auth::user()->activeCashRegister->id ?? null,
+                'status' => 'completed',
+                'payment_method' => $request->payment_method,
+                'received_amount' => $received,
+                'change_amount' => $change,
+
+                'document_type' => $documentType,
+                'client_id' => $delivery->client_id,
+                'client_name' => $clientName,
+                'client_document' => $clientDocument ?: null,
+
+                // SUNAT
+                'serie' => $serie,
+                'correlativo' => $correlativo,
+                'subtotal' => $totalGravada,
+                'igv' => $igv,
+                'total_gravada' => $totalGravada,
+                'sunat_status' => $isElectronic
+                    ? 'PENDING'
+                    : 'NOT_APPLICABLE',
+
+                'cash_register_id' =>
+                    Auth::user()->activeCashRegister->id ?? null,
             ]);
 
-            // Descontar stock
+            // 5. Descontar stock.
             foreach ($order->details as $detail) {
-                $product     = $detail->product;
+
+                $product = $detail->product;
                 $ingredients = $product->ingredients;
 
                 if ($ingredients->count() > 0) {
+
                     foreach ($ingredients as $ingredient) {
-                        $qty      = $ingredient->pivot->quantity * $detail->quantity;
+
+                        $qty =
+                            $ingredient->pivot->quantity *
+                            $detail->quantity;
+
                         $oldStock = $ingredient->stock;
+
                         $ingredient->decrement('stock', $qty);
+
                         InventoryLog::create([
                             'product_id' => $ingredient->id,
-                            'user_id'    => Auth::id(),
-                            'type'       => 'sale',
-                            'quantity'   => -$qty,
-                            'old_stock'  => $oldStock,
-                            'new_stock'  => $oldStock - $qty,
-                            'note'       => 'Delivery #' . $delivery->id,
+                            'user_id' => Auth::id(),
+                            'type' => 'sale',
+                            'quantity' => -$qty,
+                            'old_stock' => $oldStock,
+                            'new_stock' => $oldStock - $qty,
+                            'note' => 'Delivery #' . $delivery->id,
                         ]);
                     }
-                } elseif ($product->controls_stock && !is_null($product->stock)) {
+
+                } elseif (
+                    $product->controls_stock &&
+                    !is_null($product->stock)
+                ) {
+
                     $oldStock = $product->stock;
-                    $product->decrement('stock', $detail->quantity);
+
+                    $product->decrement(
+                        'stock',
+                        $detail->quantity
+                    );
+
                     InventoryLog::create([
                         'product_id' => $product->id,
-                        'user_id'    => Auth::id(),
-                        'type'       => 'sale',
-                        'quantity'   => -($detail->quantity),
-                        'old_stock'  => $oldStock,
-                        'new_stock'  => $oldStock - $detail->quantity,
-                        'note'       => 'Delivery #' . $delivery->id,
+                        'user_id' => Auth::id(),
+                        'type' => 'sale',
+                        'quantity' => -$detail->quantity,
+                        'old_stock' => $oldStock,
+                        'new_stock' =>
+                            $oldStock - $detail->quantity,
+                        'note' => 'Delivery #' . $delivery->id,
                     ]);
                 }
             }
 
-            // Marcar delivery como entregado
+            // 6. Marcar Delivery como entregado.
             $delivery->update([
-                'status'       => 'delivered',
+                'status' => 'delivered',
                 'delivered_at' => now(),
             ]);
         });
 
-        return redirect()->route('delivery.index')->with('success', 'Pedido entregado y cobrado correctamente.');
-    }
+        // 7. Enviar comprobante electrónico a SUNAT.
+        if ($order && $order->isElectronic()) {
 
+            try {
+
+                (new \App\Services\Sunat\SunatService())
+                    ->sendInvoice(
+                        $order->fresh('details.product')
+                    );
+
+                $order->refresh();
+
+            } catch (\Throwable $e) {
+
+                \Illuminate\Support\Facades\Log::error(
+                    'Error al enviar Delivery a SUNAT',
+                    [
+                        'order_id' => $order->id,
+                        'delivery_id' => $delivery->id,
+                        'error' => $e->getMessage(),
+                    ]
+                );
+            }
+        }
+
+        $message = 'Pedido entregado y cobrado correctamente.';
+
+        if ($order && $order->isElectronic()) {
+
+            $order->refresh();
+
+            $message .=
+                ' Comprobante ' .
+                ($order->full_number ?? '') .
+                ' - ' .
+                ($order->sunat_description ??
+                 $order->sunat_status);
+        }
+
+        return redirect()
+            ->route('delivery.index')
+            ->with('success', $message);
+    }
     /* ══════════════════════════════════════════════
        CANCEL — Cancelar
     ══════════════════════════════════════════════ */
@@ -329,3 +615,4 @@ class DeliveryController extends Controller
         return redirect()->back()->with('success', 'Repartidor eliminado.');
     }
 }
+

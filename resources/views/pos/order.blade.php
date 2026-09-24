@@ -1,6 +1,33 @@
 @extends('layouts.app')
 
 @section('content')
+{{-- Notificaciones del POS --}}
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show pos-session-alert shadow"
+         role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Atención:</strong> {{ session('error') }}
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Cerrar"></button>
+    </div>
+@endif
+
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show pos-session-alert shadow"
+         role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        {{ session('success') }}
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Cerrar"></button>
+    </div>
+@endif
+
 {{-- POS ocupa 100% del viewport independiente del layout --}}
 <div id="pos-wrap" class="pos-order-page" style="
     position: fixed;
@@ -174,12 +201,12 @@
     <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header py-2 pos-modal-note">
-                <h6 class="modal-title fw-bold text-dark">Nota Cocina</h6>
+                <h6 class="modal-title fw-bold text-dark">Nota del Plato</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="noteDetailId">
-                <textarea id="noteText" class="form-control" rows="3"></textarea>
+                <label for="noteText" class="form-label fw-semibold">Indicaciones para cocina</label><textarea id="noteText" class="form-control" rows="3" maxlength="255" placeholder="Ejemplo: sin cebolla, sin picante..."></textarea>
             </div>
             <div class="modal-footer p-1">
                 <button type="button" class="btn btn-warning w-100 btn-sm text-dark fw-bold" onclick="saveNote()">Guardar Nota</button>
@@ -200,12 +227,12 @@
                     @csrf
                     <div class="modal-body">
                         <label class="form-label small text-muted">Destino:</label>
-                        <select name="target_table_id" class="form-select" required>
+                        <div class="position-relative"><select name="target_table_id" class="form-select pos-move-table-select" required>
                             <option value="" selected disabled>-- Elegir Mesa --</option>
                             @foreach($freeTables as $ft)
                                 <option value="{{ $ft->id }}">{{ $ft->name }} ({{ $ft->area->name }})</option>
                             @endforeach
-                        </select>
+                        </select><i class="bi bi-chevron-down pos-move-table-arrow"></i></div>
                     </div>
                     <div class="modal-footer p-1">
                         <button type="submit" class="btn btn-info w-100 btn-sm text-white fw-bold">Confirmar</button>
@@ -682,6 +709,237 @@
         });
     };
 
+    window.showPosNotification = function(message) {
+        let notification = document.getElementById('posSystemNotification');
+
+        if (!notification) {
+            notification = document.createElement('div');
+            notification.id = 'posSystemNotification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 24px;
+                right: 24px;
+                z-index: 99999;
+                width: min(390px, calc(100vw - 48px));
+                background: var(--card-bg, #ffffff);
+                color: var(--text-main, #172033);
+                border: 1px solid var(--border-soft, #e5e7eb);
+                border-left: 5px solid var(--primary, #ff8c00);
+                border-radius: var(--radius-md, 12px);
+                box-shadow: var(--shadow-soft, 0 10px 30px rgba(0,0,0,.15));
+                padding: 14px 16px;
+                display: none;
+            `;
+
+            document.body.appendChild(notification);
+        }
+
+        notification.innerHTML = `
+            <div style="display:flex; align-items:flex-start; gap:12px;">
+                <i class="bi bi-exclamation-triangle-fill"
+                   style="color:var(--primary, #ff8c00); font-size:1.25rem;"></i>
+
+                <div style="flex:1;">
+                    <div style="font-weight:700; margin-bottom:2px;">
+                        Pedido pendiente de envío
+                    </div>
+                    <div style="font-size:.9rem;">
+                        ${message}
+                    </div>
+                </div>
+
+                <button type="button"
+                        onclick="this.closest('#posSystemNotification').style.display='none'"
+                        style="border:0;background:transparent;color:var(--text-muted,#6b7280);font-size:1.2rem;line-height:1;">
+                    &times;
+                </button>
+            </div>
+        `;
+
+        notification.style.display = 'block';
+
+        clearTimeout(window.posNotificationTimer);
+
+        window.posNotificationTimer = setTimeout(() => {
+            notification.style.display = 'none';
+        }, 4000);
+    };
+
+    window.showPosSuccessNotification = function(message) {
+        let notification = document.getElementById('posSuccessNotification');
+
+        if (!notification) {
+            notification = document.createElement('div');
+            notification.id = 'posSuccessNotification';
+
+            notification.style.cssText = `
+                position: fixed;
+                top: 24px;
+                right: 24px;
+                z-index: 99999;
+                width: min(390px, calc(100vw - 48px));
+                background: var(--card-bg, #ffffff);
+                color: var(--text-main, #172033);
+                border: 1px solid var(--border-soft, #e5e7eb);
+                border-left: 5px solid var(--accent-2, #198754);
+                border-radius: var(--radius-md, 12px);
+                box-shadow: var(--shadow-soft, 0 10px 30px rgba(0,0,0,.15));
+                padding: 14px 16px;
+                display: none;
+            `;
+
+            document.body.appendChild(notification);
+        }
+
+        notification.innerHTML = `
+            <div style="display:flex; align-items:flex-start; gap:12px;">
+
+                <i class="bi bi-check-circle-fill"
+                   style="color:var(--accent-2, #198754); font-size:1.25rem;"></i>
+
+                <div style="flex:1;">
+                    <div style="font-weight:700; margin-bottom:2px;">
+                        Pedido enviado con éxito
+                    </div>
+
+                    <div style="font-size:.9rem;">
+                        ${message}
+                    </div>
+                </div>
+
+                <button type="button"
+                        onclick="this.closest('#posSuccessNotification').style.display='none'"
+                        style="border:0;background:transparent;color:var(--text-muted,#6b7280);font-size:1.2rem;line-height:1;">
+                    &times;
+                </button>
+            </div>
+        `;
+
+        notification.style.display = 'block';
+
+        clearTimeout(window.posSuccessNotificationTimer);
+
+        window.posSuccessNotificationTimer = setTimeout(() => {
+            notification.style.display = 'none';
+        }, 4000);
+    };
+
+    window.confirmAndSendToKitchen = function(orderId) {
+        let modalElement = document.getElementById('sendKitchenConfirmModal');
+
+        if (!modalElement) {
+            modalElement = document.createElement('div');
+            modalElement.className = 'modal fade';
+            modalElement.id = 'sendKitchenConfirmModal';
+            modalElement.tabIndex = -1;
+
+            modalElement.innerHTML = `
+                <div class="modal-dialog modal-dialog-centered modal-sm">
+                    <div class="modal-content border-0 shadow-lg"
+                         style="border-radius:var(--radius-md, 14px); overflow:hidden;">
+
+                        <div class="modal-header border-0"
+                             style="background:var(--primary, #ff8c00); color:#fff;">
+                            <h6 class="modal-title fw-bold">
+                                <i class="bi bi-send-check me-2"></i>
+                                Enviar pedido
+                            </h6>
+
+                            <button type="button"
+                                    class="btn-close btn-close-white"
+                                    data-bs-dismiss="modal">
+                            </button>
+                        </div>
+
+                        <div class="modal-body text-center px-4 py-4">
+                            <div class="mb-3">
+                                <i class="bi bi-question-circle"
+                                   style="font-size:2.8rem; color:var(--primary, #ff8c00);"></i>
+                            </div>
+
+                            <div class="fw-bold mb-2">
+                                ¿Enviar pedido a Cocina?
+                            </div>
+
+                            <div class="small text-muted">
+                                Los platos serán enviados a Cocina y ya no podrán modificarse.
+                            </div>
+                        </div>
+
+                        <div class="modal-footer border-0 pt-0 px-4 pb-4">
+                            <button type="button"
+                                    class="btn btn-light border flex-fill"
+                                    data-bs-dismiss="modal">
+                                Cancelar
+                            </button>
+
+                            <button type="button"
+                                    id="confirmSendKitchenBtn"
+                                    class="btn flex-fill fw-bold text-white"
+                                    style="background:var(--primary, #ff8c00);">
+                                Aceptar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modalElement);
+        }
+
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+        const confirmBtn = document.getElementById('confirmSendKitchenBtn');
+
+        confirmBtn.onclick = function() {
+            confirmBtn.disabled = true;
+            confirmBtn.innerHTML =
+                '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
+
+            fetch(`{{ url('/pos/order') }}/${orderId}/send-kitchen`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'text/html'
+                }
+            })
+            .then(async response => {
+                const responseContent = await response.text();
+
+                if (!response.ok) {
+                    throw new Error(
+                        responseContent || 'No se pudo enviar el pedido a Cocina.'
+                    );
+                }
+
+                return responseContent;
+            })
+            .then(html => {
+                document.getElementById('cart-container').innerHTML = html;
+                updateCheckoutTotal();
+
+                modal.hide();
+
+                setTimeout(() => {
+                    showPosSuccessNotification(
+                        'Los platos fueron enviados correctamente a Cocina.'
+                    );
+                }, 250);
+            })
+            .catch(error => {
+                modal.hide();
+
+                setTimeout(() => {
+                    showPosNotification(error.message);
+                }, 250);
+            })
+            .finally(() => {
+                confirmBtn.disabled = false;
+                confirmBtn.innerHTML = 'Aceptar';
+            });
+        };
+
+        modal.show();
+    };
     window.applyOptions = function() {
         var discount = document.getElementById('inputDiscount').value;
         var tip = document.getElementById('inputTip').value;
@@ -2745,4 +3003,6 @@ window.lookupClientByDocument = async function() {
 .pos-move-table-btn:active {
     transform: scale(.97);
 }
+
+    .pos-move-table-arrow { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-muted); font-size: 0.85rem; z-index: 5; }
 </style>

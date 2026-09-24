@@ -51,7 +51,7 @@ class PosController extends Controller
         }])->where('is_active', true)->get();
 
         $order = Order::where('table_id', $table->id)->where('status', 'pending')->with('details.product')->first();
-        $occupiedTableIds = Order::where('status', 'pending')->pluck('table_id');
+        $occupiedTableIds = Order::where('status', 'pending')->whereNotNull('table_id')->pluck('table_id');
         $freeTables = Table::whereNotIn('id', $occupiedTableIds)->where('id', '!=', $table->id)->with('area')->get();
         $clients = Client::select('id', 'name', 'document_number')->orderBy('name')->get();
         $currency = Setting::where('key', 'currency_symbol')->value('value') ?? 'S/';
@@ -99,16 +99,19 @@ class PosController extends Controller
                 ['user_id' => auth()->id() ?? 1, 'total' => 0]
             );
 
-            $detail = $order->details()->where('product_id', $product->id)->first();
+            $detail = $order->details()
+                ->where('product_id', $product->id)
+                ->where('status', 'draft')
+                ->first();
 
             if ($detail) {
                 $detail->increment('quantity');
             } else {
                 $order->details()->create([
-                    'product_id' => $product->id, 
-                    'quantity' => 1, 
-                    'price' => $product->price, 
-                    'status' => 'pending'
+                    'product_id' => $product->id,
+                    'quantity' => 1,
+                    'price' => $product->price,
+                    'status' => 'draft'
                 ]);
             }
             $this->recalculateTotal($order);
@@ -118,35 +121,86 @@ class PosController extends Controller
     // --- ACTUALIZAR CANTIDAD (Corregido para devolver HTML) ---
     public function updateQuantity(Request $request, OrderDetail $detail)
     {
-        $newQty = $request->quantity;
         $order = $detail->order;
-        
-        if ($newQty < 1) { 
-            $detail->delete(); 
-        } else { 
-            $detail->update(['quantity' => $newQty]); 
+        $table = $order->table;
+
+        if ($detail->status !== 'draft') {
+            return response('El plato ya fue enviado a Cocina y no puede modificarse.', 422);
         }
-        
+
+        $newQty = (int) $request->quantity;
+
+        if ($newQty < 1) {
+            $detail->delete();
+
+            if (!$order->details()->exists()) {
+                $order->delete();
+                return $this->getCartHtml($table);
+            }
+        } else {
+            $detail->update(['quantity' => $newQty]);
+        }
+
         $this->recalculateTotal($order);
+
+        return $this->getCartHtml($table);
+    }
+
+    // --- ACTUALIZAR NOTA ---
+    public function updateNote(Request $request, OrderDetail $detail)
+    {
+        if ($detail->status !== 'draft') {
+            return response('El plato ya fue enviado a Cocina y no puede modificarse.', 422);
+        }
+
+        $detail->update(['note' => $request->note]);
+
+        return $this->getCartHtml($detail->order->table);
+    }
+
+    // --- ELIMINAR ITEM ---
+    public function removeItem(OrderDetail $detail)
+    {
+        $order = $detail->order;
+        $table = $order->table;
+
+        if ($detail->status !== 'draft') {
+            return response('El plato ya fue enviado a Cocina y no puede eliminarse.', 422);
+        }
+
+        $detail->delete();
+
+        if (!$order->details()->exists()) {
+            $order->delete();
+            return $this->getCartHtml($table);
+        }
+
+        $this->recalculateTotal($order);
+
+        return $this->getCartHtml($table);
+    }
+
+    // --- CONFIRMAR PEDIDO Y ENVIAR A COCINA ---
+    public function sendToKitchen(Order $order)
+    {
+        if ($order->status !== 'pending') {
+            return response('El pedido ya está cerrado.', 422);
+        }
+
+        $draftDetails = $order->details()
+            ->where('status', 'draft')
+            ->get();
+
+        if ($draftDetails->isEmpty()) {
+            return response('No hay platos nuevos para enviar a Cocina.', 422);
+        }
+
+        $order->details()
+            ->where('status', 'draft')
+            ->update(['status' => 'pending']);
+
         return $this->getCartHtml($order->table);
     }
-
-    // --- ACTUALIZAR NOTA (Corregido para devolver HTML) ---
-    public function updateNote(Request $request, OrderDetail $detail) 
-    { 
-        $detail->update(['note' => $request->note]); 
-        return $this->getCartHtml($detail->order->table); 
-    }
-
-    // --- ELIMINAR ITEM (Corregido para devolver HTML) ---
-    public function removeItem(OrderDetail $detail) 
-    { 
-        $order = $detail->order; 
-        $detail->delete(); 
-        $this->recalculateTotal($order); 
-        return $this->getCartHtml($order->table); 
-    }
-
     // --- APLICAR DESCUENTO (Corregido para devolver HTML) ---
     public function applyDiscount(Request $request, Order $order) 
     { 
@@ -186,13 +240,22 @@ class PosController extends Controller
             ->with('error', 'La orden ya está cerrada.');
     }
 
+    if ($order->details()->whereIn('status', ['draft', 'pending'])->exists()) {
+        return redirect()
+            ->route('pos.order', $order->table_id)
+            ->with('error', 'Cocina debe iniciar la preparación antes de dividir la cuenta.');
+    }
+
     $request->validate([
         'selected_items' => 'required|array|min:1',
         'selected_items.*' => 'integer|exists:order_details,id',
+        'split_quantities' => 'required|array',
+        'split_quantities.*' => 'nullable|integer|min:0',
         'payment_method' => 'required|in:cash,card,yape,plin',
     ]);
 
     $selectedIds = $request->input('selected_items', []);
+    $splitQuantities = $request->input('split_quantities', []);
     $paymentMethod = $request->input('payment_method', 'cash');
 
     $documentType = $request->input('document_type', 'Ticket');
@@ -223,8 +286,14 @@ class PosController extends Controller
         ->whereIn('id', $selectedIds)
         ->get();
 
-    $splitTotalForValidation = $selectedDetailsForValidation->sum(function ($detail) {
-        return $detail->price * $detail->quantity;
+    $splitTotalForValidation = $selectedDetailsForValidation->sum(function ($detail) use ($splitQuantities) {
+        $selectedQty = (int) ($splitQuantities[$detail->id] ?? 0);
+
+        if ($selectedQty < 1 || $selectedQty > $detail->quantity) {
+            return 0;
+        }
+
+        return $detail->price * $selectedQty;
     });
 
     if ($paymentMethod === 'cash' && $receivedAmount < $splitTotalForValidation) {
@@ -263,6 +332,7 @@ class PosController extends Controller
     DB::transaction(function () use (
         $order,
         $selectedIds,
+        $splitQuantities,
         $paymentMethod,
         $receivedAmount,
         $documentType,
@@ -280,8 +350,14 @@ class PosController extends Controller
             throw new \Exception('No se seleccionaron productos válidos.');
         }
 
-        $splitTotal = $selectedDetails->sum(function ($detail) {
-            return $detail->price * $detail->quantity;
+        $splitTotal = $selectedDetails->sum(function ($detail) use ($splitQuantities) {
+            $selectedQty = (int) ($splitQuantities[$detail->id] ?? 0);
+
+            if ($selectedQty < 1 || $selectedQty > $detail->quantity) {
+                throw new \Exception('La cantidad seleccionada no es válida.');
+            }
+
+            return $detail->price * $selectedQty;
         });
 
         // Configuración SUNAT para esta parte de la cuenta
@@ -370,8 +446,35 @@ class PosController extends Controller
         ]);
 
         foreach ($selectedDetails as $detail) {
-            $detail->order_id = $splitOrder->id;
+            $selectedQty = (int) ($splitQuantities[$detail->id] ?? 0);
+
+            if ($selectedQty < 1 || $selectedQty > $detail->quantity) {
+                throw new \Exception('La cantidad seleccionada no es válida.');
+            }
+
+            // Si se cobran todas las unidades, mover la línea completa.
+            if ($selectedQty === (int) $detail->quantity) {
+                $detail->order_id = $splitOrder->id;
+                $detail->save();
+                continue;
+            }
+
+            // Si se cobra solo una parte, reducir la cantidad
+            // que permanece en la mesa.
+            $remainingQty = (int) $detail->quantity - $selectedQty;
+
+            $detail->quantity = $remainingQty;
             $detail->save();
+
+            // Crear en la cuenta cobrada únicamente las unidades seleccionadas.
+            OrderDetail::create([
+                'order_id' => $splitOrder->id,
+                'product_id' => $detail->product_id,
+                'quantity' => $selectedQty,
+                'price' => $detail->price,
+                'status' => $detail->status,
+                'note' => $detail->note,
+            ]);
         }
 
         $remainingTotal = OrderDetail::where('order_id', $order->id)
@@ -428,6 +531,12 @@ class PosController extends Controller
     public function checkout(Request $request, Order $order)
     {
         if($order->status !== 'pending') return redirect()->route('pos.index')->with('error', 'Orden cerrada.');
+
+        if ($order->details()->whereIn('status', ['draft', 'pending'])->exists()) {
+            return redirect()
+                ->route('pos.order', $order->table_id)
+                ->with('error', 'Cocina debe iniciar la preparación antes de cobrar.');
+        }
 
         $method = $request->input('payment_method', 'cash');
         $received = $method === 'cash' ? $request->input('received_amount') : $order->total;

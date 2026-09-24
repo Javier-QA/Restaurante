@@ -39,17 +39,58 @@
                                     @foreach($order->details as $detail)
                                     <tr>
                                         <td class="ps-4">
-                                            <input type="checkbox" name="selected_items[]" value="{{ $detail->id }}" class="form-check-input item-check" data-price="{{ $detail->price * $detail->quantity }}" onchange="calculateSplitTotal()">
+                                            <input type="checkbox"
+                                                   name="selected_items[]"
+                                                   value="{{ $detail->id }}"
+                                                   class="form-check-input item-check"
+                                                   data-detail-id="{{ $detail->id }}"
+                                                   data-unit-price="{{ $detail->price }}"
+                                                   onchange="toggleSplitItem(this)">
                                         </td>
+
                                         <td>
                                             <div class="fw-bold">{{ $detail->product->name }}</div>
-                                            @if($detail->note) <small class="text-muted">{{ $detail->note }}</small> @endif
+
+                                            @if($detail->note)
+                                                <small class="text-muted">{{ $detail->note }}</small>
+                                            @endif
+
+                                            <small class="d-block text-muted">
+                                                Disponible: {{ $detail->quantity }}
+                                            </small>
                                         </td>
+
                                         <td class="text-center">
-                                            <span class="badge bg-light text-dark border">{{ $detail->quantity }}</span>
+                                            <div class="input-group input-group-sm flex-nowrap justify-content-center"
+                                                 style="max-width: 105px; margin: auto;">
+
+                                                <button type="button"
+                                                        class="btn btn-outline-secondary px-2"
+                                                        onclick="changeSplitQty({{ $detail->id }}, -1)">
+                                                    -
+                                                </button>
+
+                                                <input type="text"
+                                                       id="splitQty{{ $detail->id }}"
+                                                       name="split_quantities[{{ $detail->id }}]"
+                                                       class="form-control text-center px-1 fw-bold split-qty"
+                                                       value="0"
+                                                       data-max="{{ $detail->quantity }}"
+                                                       data-price="{{ $detail->price }}"
+                                                       readonly>
+
+                                                <button type="button"
+                                                        class="btn btn-outline-primary px-2"
+                                                        onclick="changeSplitQty({{ $detail->id }}, 1)">
+                                                    +
+                                                </button>
+                                            </div>
                                         </td>
+
                                         <td class="text-end pe-4 fw-bold">
-                                            {{ number_format($detail->price * $detail->quantity, 2) }}
+                                            <span id="splitSubtotal{{ $detail->id }}">
+                                                0.00
+                                            </span>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -502,20 +543,93 @@ document.addEventListener('change', function(event) {
 
 });
 function toggleAll(source) {
-        checkboxes = document.querySelectorAll('.item-check');
-        for(var i=0, n=checkboxes.length;i<n;i++) {
-            checkboxes[i].checked = source.checked;
+    const checkboxes = document.querySelectorAll('.item-check');
+
+    checkboxes.forEach((checkbox) => {
+        const id = checkbox.dataset.detailId;
+        const qtyInput = document.getElementById('splitQty' + id);
+
+        checkbox.checked = source.checked;
+
+        if (qtyInput) {
+            qtyInput.value = source.checked
+                ? parseInt(qtyInput.dataset.max)
+                : 0;
         }
-        calculateSplitTotal();
+
+        updateSplitSubtotal(id);
+    });
+
+    calculateSplitTotal();
+}
+
+function toggleSplitItem(checkbox) {
+    const id = checkbox.dataset.detailId;
+    const qtyInput = document.getElementById('splitQty' + id);
+
+    if (!qtyInput) return;
+
+    if (checkbox.checked) {
+        if (parseInt(qtyInput.value) === 0) {
+            qtyInput.value = 1;
+        }
+    } else {
+        qtyInput.value = 0;
     }
 
-    function calculateSplitTotal() {
+    updateSplitSubtotal(id);
+    calculateSplitTotal();
+}
+
+function changeSplitQty(id, change) {
+    const qtyInput = document.getElementById('splitQty' + id);
+    const checkbox = document.querySelector(
+        '.item-check[data-detail-id="' + id + '"]'
+    );
+
+    if (!qtyInput || !checkbox) return;
+
+    const max = parseInt(qtyInput.dataset.max);
+    let qty = parseInt(qtyInput.value) || 0;
+
+    qty += change;
+
+    if (qty < 0) qty = 0;
+    if (qty > max) qty = max;
+
+    qtyInput.value = qty;
+    checkbox.checked = qty > 0;
+
+    updateSplitSubtotal(id);
+    calculateSplitTotal();
+}
+
+function updateSplitSubtotal(id) {
+    const qtyInput = document.getElementById('splitQty' + id);
+    const subtotal = document.getElementById('splitSubtotal' + id);
+
+    if (!qtyInput || !subtotal) return;
+
+    const qty = parseInt(qtyInput.value) || 0;
+    const price = parseFloat(qtyInput.dataset.price) || 0;
+
+    subtotal.innerText = (qty * price).toFixed(2);
+}
+function calculateSplitTotal() {
         let total = 0;
         let checks = document.querySelectorAll('.item-check:checked');
         let btn = document.getElementById('btnSplit');
 
         checks.forEach((checkbox) => {
-            total += parseFloat(checkbox.getAttribute('data-price'));
+            const id = checkbox.dataset.detailId;
+            const qtyInput = document.getElementById('splitQty' + id);
+
+            if (qtyInput) {
+                const qty = parseInt(qtyInput.value) || 0;
+                const price = parseFloat(qtyInput.dataset.price) || 0;
+
+                total += qty * price;
+            }
         });
 
         document.getElementById('splitTotalDisplay').innerText = total.toFixed(2);

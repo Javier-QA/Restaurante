@@ -104,6 +104,10 @@ Route::middleware(['auth'])->group(function () {
     )->name('pos.kitchen');
 
     Route::post(
+        '/pos/order/{order}/send-kitchen',
+        [PosController::class, 'sendToKitchen']
+    )->name('pos.send-kitchen');
+    Route::post(
         '/pos/order/{order}/discount',
         [PosController::class, 'applyDiscount']
     )->name('pos.discount');
@@ -241,6 +245,11 @@ Route::resource(
             '/delivery',
             [DeliveryController::class, 'store']
         )->name('delivery.store');
+
+        Route::get(
+            '/delivery/orders',
+            [DeliveryController::class, 'orders']
+        )->name('delivery.orders');
 
         Route::get(
             '/delivery/{delivery}',

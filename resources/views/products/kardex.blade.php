@@ -76,7 +76,67 @@
             </div>
         </div>
         <div class="card-footer bg-white border-0 py-3">
-            {{ $logs->links() }}
+            @if($logs->hasPages())
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+
+                    <small class="text-muted">
+                        Mostrando {{ $logs->firstItem() }} a {{ $logs->lastItem() }}
+                        de {{ $logs->total() }} registros
+                    </small>
+
+                    <nav aria-label="Paginación del Kardex">
+                        <ul class="pagination pagination-sm mb-0">
+
+                            {{-- Anterior --}}
+                            @if($logs->onFirstPage())
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        <i class="bi bi-chevron-left"></i> Anterior
+                                    </span>
+                                </li>
+                            @else
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="{{ $logs->previousPageUrl() }}">
+                                        <i class="bi bi-chevron-left"></i> Anterior
+                                    </a>
+                                </li>
+                            @endif
+
+                            {{-- Páginas --}}
+                            @foreach(range(1, $logs->lastPage()) as $page)
+                                <li class="page-item {{ $page == $logs->currentPage() ? 'active' : '' }}">
+                                    <a class="page-link"
+                                       href="{{ $logs->url($page) }}">
+                                        {{ $page }}
+                                    </a>
+                                </li>
+                            @endforeach
+
+                            {{-- Siguiente --}}
+                            @if($logs->hasMorePages())
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="{{ $logs->nextPageUrl() }}">
+                                        Siguiente <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        Siguiente <i class="bi bi-chevron-right"></i>
+                                    </span>
+                                </li>
+                            @endif
+
+                        </ul>
+                    </nav>
+                </div>
+            @else
+                <small class="text-muted">
+                    Mostrando {{ $logs->count() }} de {{ $logs->total() }} registros
+                </small>
+            @endif
         </div>
     </div>
 </div>
