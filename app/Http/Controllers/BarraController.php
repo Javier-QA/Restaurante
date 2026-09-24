@@ -5,15 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderDetail;
 
-class KitchenController extends Controller
+class BarraController extends Controller
 {
-    // Pantalla principal del KDS
     public function index()
     {
         $orders = Order::whereHas('details', function ($q) {
                 $q->whereIn('status', ['pending', 'cooking'])
                   ->whereHas('product', function ($p) {
-                      $p->where('preparation_area', 'kitchen');
+                      $p->where('preparation_area', 'barra');
                   });
             })
             ->with([
@@ -21,7 +20,7 @@ class KitchenController extends Controller
                 'details' => function ($q) {
                     $q->whereIn('status', ['pending', 'cooking'])
                       ->whereHas('product', function ($p) {
-                          $p->where('preparation_area', 'kitchen');
+                          $p->where('preparation_area', 'barra');
                       })
                       ->with('product');
                 }
@@ -29,16 +28,15 @@ class KitchenController extends Controller
             ->orderBy('created_at', 'asc')
             ->get();
 
-        return view('kitchen.index', compact('orders'));
+        return view('barra.index', compact('orders'));
     }
 
-    // Pedidos activos para actualización automática
     public function orders()
     {
         $orders = Order::whereHas('details', function ($q) {
                 $q->whereIn('status', ['pending', 'cooking'])
                   ->whereHas('product', function ($p) {
-                      $p->where('preparation_area', 'kitchen');
+                      $p->where('preparation_area', 'barra');
                   });
             })
             ->with([
@@ -46,7 +44,7 @@ class KitchenController extends Controller
                 'details' => function ($q) {
                     $q->whereIn('status', ['pending', 'cooking'])
                       ->whereHas('product', function ($p) {
-                          $p->where('preparation_area', 'kitchen');
+                          $p->where('preparation_area', 'barra');
                       })
                       ->with('product');
                 }
@@ -76,14 +74,13 @@ class KitchenController extends Controller
         ]);
     }
 
-    // Avanzar estado de un producto de Cocina
     public function updateStatus(OrderDetail $detail)
     {
-        // Seguridad: Cocina solamente puede modificar productos de Cocina
-        if (!$detail->product || $detail->product->preparation_area !== 'kitchen') {
+        // Seguridad: Barra solamente puede modificar productos de Barra
+        if (!$detail->product || $detail->product->preparation_area !== 'barra') {
             return redirect()
-                ->route('kitchen.index')
-                ->with('error', 'Este producto no pertenece a Cocina.');
+                ->route('barra.index')
+                ->with('error', 'Este producto no pertenece a Barra.');
         }
 
         if ($detail->status === 'pending') {
@@ -92,7 +89,7 @@ class KitchenController extends Controller
             $detail->update(['status' => 'served']);
         }
 
-        $order = $detail->order()->with('details')->first();
+        $order = $detail->order()->with('details.product')->first();
 
         if ($order) {
             $delivery = $order->delivery;
@@ -103,9 +100,7 @@ class KitchenController extends Controller
                     ->contains(fn ($item) => $item->status === 'cooking');
 
                 $allServed = $order->details->isNotEmpty()
-                    && $order->details->every(
-                        fn ($item) => $item->status === 'served'
-                    );
+                    && $order->details->every(fn ($item) => $item->status === 'served');
 
                 if ($allServed) {
                     $delivery->update(['status' => 'on_way']);
@@ -115,6 +110,6 @@ class KitchenController extends Controller
             }
         }
 
-        return redirect()->route('kitchen.index');
+        return redirect()->route('barra.index');
     }
 }

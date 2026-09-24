@@ -1645,6 +1645,19 @@
             Cocina (KDS)
 
         </a>
+        <a
+            href="{{ route('barra.index') }}"
+            class="
+                nav-link
+                {{ request()->routeIs('barra.*') ? 'active' : '' }}
+            "
+        >
+
+            <i class="bi bi-cup-straw"></i>
+
+            Barra
+
+        </a>
 
 
         {{-- =====================================================
@@ -3708,3 +3721,4 @@
 
 </body>
 </html>
+

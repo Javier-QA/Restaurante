@@ -201,12 +201,12 @@
     <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header py-2 pos-modal-note">
-                <h6 class="modal-title fw-bold text-dark">Nota del Plato</h6>
+                <h6 class="modal-title fw-bold text-dark">Nota del Producto</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="noteDetailId">
-                <label for="noteText" class="form-label fw-semibold">Indicaciones para cocina</label><textarea id="noteText" class="form-control" rows="3" maxlength="255" placeholder="Ejemplo: sin cebolla, sin picante..."></textarea>
+                <label id="noteAreaLabel" for="noteText" class="form-label fw-semibold">Indicaciones para cocina</label><textarea id="noteText" class="form-control" rows="3" maxlength="255" placeholder="Ejemplo: sin cebolla, sin picante..."></textarea>
             </div>
             <div class="modal-footer p-1">
                 <button type="button" class="btn btn-warning w-100 btn-sm text-dark fw-bold" onclick="saveNote()">Guardar Nota</button>
@@ -858,11 +858,11 @@
                             </div>
 
                             <div class="fw-bold mb-2">
-                                ¿Enviar pedido a Cocina?
+                                ¿Enviar pedido?
                             </div>
 
                             <div class="small text-muted">
-                                Los platos serán enviados a Cocina y ya no podrán modificarse.
+                                Los productos serán enviados a Cocina o Barra según corresponda y ya no podrán modificarse.
                             </div>
                         </div>
 
@@ -1014,6 +1014,9 @@
             var button = event.relatedTarget;
             document.getElementById('noteDetailId').value = button.getAttribute('data-detail-id');
             document.getElementById('noteText').value = button.getAttribute('data-note-content') || '';
+            var area = button.getAttribute('data-preparation-area') || 'kitchen';
+            document.getElementById('noteAreaLabel').textContent = area === 'barra' ? 'Indicaciones para barra' : 'Indicaciones para cocina';
+            document.getElementById('noteText').placeholder = area === 'barra' ? 'Ejemplo: poco hielo, sin azúcar...' : 'Ejemplo: sin cebolla, sin picante...';
             setTimeout(() => document.getElementById('noteText').focus(), 500);
         });
     }
@@ -3006,3 +3009,6 @@ window.lookupClientByDocument = async function() {
 
     .pos-move-table-arrow { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-muted); font-size: 0.85rem; z-index: 5; }
 </style>
+
+
+

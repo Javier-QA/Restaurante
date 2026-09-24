@@ -1,4 +1,4 @@
-<div class="p-2 pos-cart-body">
+﻿<div class="p-2 pos-cart-body">
     @if($order && $order->details->count() > 0)
         <div class="table-responsive" style="overflow-x: hidden;">
             <table class="table table-borderless align-middle mb-0" style="width: 100%; table-layout: fixed;">
@@ -22,7 +22,7 @@
                                     </button>
                                 @else
                                     <i class="bi bi-lock-fill text-muted"
-                                       title="Plato enviado a Cocina"></i>
+                                       title="Producto enviado a {{ $detail->product?->preparation_area === 'barra' ? 'Barra' : 'Cocina' }}"></i>
                                 @endif
                             </td>
 
@@ -45,7 +45,7 @@
                                            data-bs-toggle="modal"
                                            data-bs-target="#noteModal"
                                            data-detail-id="{{ $detail->id }}"
-                                           data-note-content="{{ $detail->note }}">
+                                           data-note-content="{{ $detail->note }}" data-preparation-area="{{ $detail->product?->preparation_area ?? 'kitchen' }}">
                                             <i class="bi bi-chat-left-text me-1"></i>{{ $detail->note ? 'Editar nota' : 'Agregar nota' }}
                                         </a>
                                     @else
@@ -59,7 +59,7 @@
 
                                         @if($detail->status === 'pending')
                                             <small class="fw-semibold text-primary" style="font-size: 0.7rem;">
-                                                <i class="bi bi-send-check me-1"></i>Enviado a cocina
+                                                <i class="bi bi-send-check me-1"></i>Enviado a {{ $detail->product?->preparation_area === 'barra' ? 'barra' : 'cocina' }}
                                             </small>
                                         @elseif($detail->status === 'cooking')
                                             <small class="fw-semibold text-warning" style="font-size: 0.7rem;">
@@ -307,4 +307,6 @@
     }
 
 </style>
+
+
 

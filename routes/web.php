@@ -8,6 +8,7 @@ use App\Http\Controllers\PosController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\KitchenController;
+use App\Http\Controllers\BarraController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SettingController;
@@ -162,6 +163,20 @@ Route::middleware(['auth'])->group(function () {
 
 
     // =========================================================
+
+    // Monitor de Barra
+    Route::get('/barra', [BarraController::class, 'index'])
+        ->name('barra.index');
+
+    Route::get(
+        '/barra/orders',
+        [BarraController::class, 'orders']
+    )->name('barra.orders');
+
+    Route::post(
+        '/barra/{detail}/status',
+        [BarraController::class, 'updateStatus']
+    )->name('barra.update');
     // RESERVAS Y AGENDA
     // =========================================================
 

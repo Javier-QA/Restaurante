@@ -1,11 +1,11 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold text-dark"><i class="bi bi-fire me-2" style="color:#000;"></i>Monitor de Cocina (KDS)</h2>
-            <p class="text-muted">Pedidos pendientes de preparación</p>
+            <h2 class="fw-bold text-dark"><i class="bi bi-cup-straw me-2" style="color:#000;"></i>Monitor de Barra</h2>
+            <p class="text-muted">Pedidos pendientes de preparación en Barra</p>
         </div>
         <div class="d-flex align-items-center gap-3">
             <span class="badge bg-white text-dark border"><i class="bi bi-circle-fill text-danger me-1"></i> Pendiente</span>
@@ -14,7 +14,7 @@
         </div>
     </div>
 
-    <div class="row g-3" id="kitchen-orders">
+    <div class="row g-3" id="bar-orders">
         @forelse($orders as $order)
             <div class="col-md-6 col-lg-4 col-xl-3">
                 <div class="card h-100 shadow-sm border-0">
@@ -50,7 +50,7 @@
                                         @endif
                                     </div>
                                     
-                                    <form action="{{ route('kitchen.update', $detail) }}" method="POST">
+                                    <form action="{{ route('barra.update', $detail) }}" method="POST">
                                         @csrf
                                         @if($detail->status == 'pending')
                                             <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -72,7 +72,7 @@
             <div class="col-12 text-center py-5">
                 <div class="opacity-50">
                     <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
-                    <h2 class="mt-3 text-muted">Todo en orden, Chef.</h2>
+                    <h2 class="mt-3 text-muted">Todo en orden, Barman.</h2>
                     <p>No hay pedidos pendientes en este momento.</p>
                 </div>
             </div>
@@ -81,11 +81,11 @@
 </div>
 
 <script>
-    const kitchenOrdersUrl = @json(route('kitchen.orders'));
-    const kitchenUpdateBaseUrl = @json(url('/kitchen'));
+    const barraOrdersUrl = @json(route('barra.orders'));
+    const barraUpdateBaseUrl = @json(url('/barra'));
     const csrfToken = @json(csrf_token());
 
-    let knownDetailIds = new Set(
+    let knownBarDetailIds = new Set(
         @json(
             $orders->flatMap(function ($order) {
                 return $order->details->pluck('id');
@@ -93,8 +93,8 @@
         )
     );
 
-    let firstKitchenCheck = true;
-    let kitchenRequestRunning = false;
+    let firstBarCheck = true;
+    let barRequestRunning = false;
 
     // Reloj
     function updateClock() {
@@ -119,8 +119,8 @@
             .replaceAll("'", '&#039;');
     }
 
-    function renderKitchenOrders(orders) {
-        const container = document.getElementById('kitchen-orders');
+    function renderBarOrders(orders) {
+        const container = document.getElementById('bar-orders');
 
         if (!orders.length) {
             container.innerHTML = `
@@ -129,7 +129,7 @@
                         <i class="bi bi-check-circle-fill text-success"
                            style="font-size: 5rem;"></i>
                         <h2 class="mt-3 text-muted">
-                            Todo en orden, Chef.
+                            Todo en orden, Barman.
                         </h2>
                         <p>
                             No hay pedidos pendientes en este momento.
@@ -161,7 +161,7 @@
                     ? `
                         <button
                             type="button"
-                            class="btn btn-sm btn-outline-danger kitchen-status-btn"
+                            class="btn btn-sm btn-outline-danger bar-status-btn"
                             data-detail="${detail.id}">
                             Empezar
                         </button>
@@ -169,7 +169,7 @@
                     : `
                         <button
                             type="button"
-                            class="btn btn-sm btn-warning kitchen-status-btn"
+                            class="btn btn-sm btn-warning bar-status-btn"
                             data-detail="${detail.id}">
                             <i class="bi bi-check-lg"></i> Listo
                         </button>
@@ -235,15 +235,15 @@
         }).join('');
     }
 
-    async function refreshKitchen() {
-        if (kitchenRequestRunning) {
+    async function refreshBar() {
+        if (barRequestRunning) {
             return;
         }
 
-        kitchenRequestRunning = true;
+        barRequestRunning = true;
 
         try {
-            const response = await fetch(kitchenOrdersUrl, {
+            const response = await fetch(barraOrdersUrl, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -270,31 +270,31 @@
             });
 
             const hasNewDetails = [...currentDetailIds].some(
-                id => !knownDetailIds.has(id)
+                id => !knownBarDetailIds.has(id)
             );
 
-            renderKitchenOrders(orders);
+            renderBarOrders(orders);
 
-            if (!firstKitchenCheck && hasNewDetails) {
-                console.log('Nuevo pedido recibido en cocina');
+            if (!firstBarCheck && hasNewDetails) {
+                console.log('Nuevo pedido recibido en Barra');
             }
 
-            knownDetailIds = currentDetailIds;
-            firstKitchenCheck = false;
+            knownBarDetailIds = currentDetailIds;
+            firstBarCheck = false;
 
         } catch (error) {
             console.error(
-                'No se pudo actualizar Cocina:',
+                'No se pudo actualizar Barra:',
                 error
             );
         } finally {
-            kitchenRequestRunning = false;
+            barRequestRunning = false;
         }
     }
 
     document.addEventListener('click', async function (event) {
         const button = event.target.closest(
-            '.kitchen-status-btn'
+            '.bar-status-btn'
         );
 
         if (!button) {
@@ -307,7 +307,7 @@
 
         try {
             const response = await fetch(
-                `${kitchenUpdateBaseUrl}/${detailId}/status`,
+                `${barraUpdateBaseUrl}/${detailId}/status`,
                 {
                     method: 'POST',
                     headers: {
@@ -324,7 +324,7 @@
                 );
             }
 
-            await refreshKitchen();
+            await refreshBar();
 
         } catch (error) {
             console.error(
@@ -337,9 +337,15 @@
     });
 
     // Primera sincronización
-    refreshKitchen();
+    refreshBar();
 
     // Actualización automática sin recargar la página
-    setInterval(refreshKitchen, 2000);
+    setInterval(refreshBar, 2000);
 </script>
 @endsection
+
+
+
+
+
+

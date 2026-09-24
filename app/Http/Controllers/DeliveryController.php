@@ -308,6 +308,17 @@ class DeliveryController extends Controller
             }
         }
 
+        // Vincular DNI/RUC consultado con la cartera de clientes.
+        $clientId = $delivery->client_id;
+
+        if ($clientDocument !== '') {
+            $matchedClient = Client::where('document_number', $clientDocument)->first();
+
+            if ($matchedClient) {
+                $clientId = $matchedClient->id;
+            }
+        }
+
         $paymentMethod = $request->input('payment_method', $delivery->payment_method);
         $received = $paymentMethod === 'cash'
             ? (float) $request->input('received_amount', 0)
@@ -332,6 +343,7 @@ class DeliveryController extends Controller
             $documentType,
             $clientDocument,
             $clientName,
+            $clientId,
             $received,
             $change,
             &$order
@@ -449,7 +461,7 @@ class DeliveryController extends Controller
                 'change_amount' => $change,
 
                 'document_type' => $documentType,
-                'client_id' => $delivery->client_id,
+                'client_id' => $clientId,
                 'client_name' => $clientName,
                 'client_document' => $clientDocument ?: null,
 
@@ -465,6 +477,12 @@ class DeliveryController extends Controller
 
                 'cash_register_id' =>
                     Auth::user()->activeCashRegister->id ?? null,
+            ]);
+
+            // Sincronizar los datos del cliente con Delivery.
+            $delivery->update([
+                'client_id' => $clientId,
+                'client_name' => $clientName !== '' ? $clientName : null,
             ]);
 
             // 5. Descontar stock.
