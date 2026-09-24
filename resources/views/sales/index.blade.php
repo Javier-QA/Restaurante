@@ -393,7 +393,19 @@
                                     <td class="ps-4 text-muted">{{ $order->created_at->format('H:i') }}</td>
                                     <td class="fw-bold">#{{ str_pad($order->id, 6, '0', STR_PAD_LEFT) }}</td>
                                     <td>{{ $order->client_name }} <br><small class="text-muted">{{ $order->document_type }}</small></td>
-                                    <td><span class="badge bg-light text-dark border">{{ $order->table->name ?? 'Barra' }}</span></td>
+                                    <td>
+                                        @if($order->delivery)
+                                            <span class="badge bg-primary">
+                                                <i class="bi bi-bicycle me-1"></i> Delivery
+                                            </span>
+                                        @elseif($order->table)
+                                            <span class="badge bg-light text-dark border">
+                                                {{ $order->table->name }}
+                                            </span>
+                                        @else
+                                            <span class="badge bg-light text-dark border">Barra</span>
+                                        @endif
+                                    </td>
                                     <td>
                                         @php
                                             $paymentStyles = [

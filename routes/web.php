@@ -194,7 +194,7 @@ Route::middleware(['auth'])->group(function () {
         )->name('pos.checkout');
     });
 
-    Route::middleware(['role:admin,cashier'])->group(function () {
+    Route::middleware(['role:admin,cashier,waiter'])->group(function () {
 
         // Ventas
         Route::get('/sales', [SaleController::class, 'index'])
@@ -295,6 +295,13 @@ Route::resource(
     // ZONA ADMINISTRATIVA (Solo Admin)
     // =========================================================
 
+    // Clientes: acceso para Administrador, Cajero y Mozo
+    Route::middleware(['role:admin,cashier,waiter'])->group(function () {
+        Route::resource(
+            'clients',
+            ClientController::class
+        );
+    });
     Route::middleware(['role:admin'])->group(function () {
 
         // =====================================================
@@ -449,10 +456,6 @@ Route::resource(
         // GESTIÓN
         // =====================================================
 
-        Route::resource(
-            'clients',
-            ClientController::class
-        );
 
         Route::resource(
             'categories',

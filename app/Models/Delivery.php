@@ -43,7 +43,7 @@ class Delivery extends Model
 
     public function getTotalWithFeeAttribute(): float
     {
-        return ($this->order->total ?? 0) + $this->delivery_fee;
+        return (float) ($this->order->total ?? 0) + (float) $this->delivery_fee;
     }
 
     /* ─── Relationships ─────────────────────────── */

@@ -21,7 +21,7 @@ class SaleController extends Controller
                        ->whereDate('created_at', '<=', $endDate)
                        ->where('status', 'completed')
                        ->orderBy('created_at', 'desc')
-                       ->with('user')
+                       ->with(['user', 'table', 'delivery'])
                        ->get();
 
         // 2. Totales Ventas
@@ -35,7 +35,7 @@ class SaleController extends Controller
         $expenses = Expense::whereDate('created_at', '>=', $startDate)
                            ->whereDate('created_at', '<=', $endDate)
                            ->orderBy('created_at', 'desc')
-                           ->with('user')
+                           ->with(['user', 'table', 'delivery'])
                            ->get();
 
         $totalExpenses = $expenses->sum('amount');

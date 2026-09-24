@@ -1579,7 +1579,7 @@
         </a>
 
 
-        @if(in_array($role, ['admin', 'cashier']))
+        @if(in_array($role, ['admin', 'cashier', 'waiter']))
 
             <a
                 href="{{ route('delivery.index') }}"

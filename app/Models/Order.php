@@ -57,6 +57,11 @@ class Order extends Model
         return $this->belongsTo(Table::class);
     }
 
+    public function delivery()
+    {
+        return $this->hasOne(Delivery::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
