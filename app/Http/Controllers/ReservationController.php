@@ -19,24 +19,76 @@ class ReservationController extends Controller
             
         $tables = Table::where('status', 'available')->get();
 
-        return view('reservations.index', compact('reservations', 'tables'));
+        // Indicadores para el panel de reservas
+        $todayReservations = $reservations->filter(function ($reservation) {
+            return $reservation->reservation_time->isToday();
+        });
+
+        $stats = [
+            'today' => $todayReservations->count(),
+            'pending' => $reservations->where('status', 'pending')->count(),
+            'confirmed' => $reservations->where('status', 'confirmed')->count(),
+            'people_today' => $todayReservations
+                ->where('status', '!=', 'cancelled')
+                ->sum('people'),
+        ];
+
+        return view('reservations.index', compact('reservations', 'tables', 'stats'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'client_name' => 'required',
-            // CORRECCIÓN: Quitamos 'after:now' para evitar problemas de zona horaria
-            'reservation_time' => 'required|date', 
+        $data = $request->validate([
+            'client_name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:30',
+            'reservation_date' => 'required|date',
+            'reservation_hour' => 'required|date_format:H:i',
+            'reservation_period' => 'required|in:AM,PM',
             'people' => 'required|integer|min:1',
-            'table_id' => 'nullable|exists:tables,id'
+            'table_id' => 'nullable|exists:tables,id',
+            'note' => 'nullable|string|max:500',
         ]);
 
-        Reservation::create($request->all());
+        $data['reservation_time'] = Carbon::createFromFormat(
+            'Y-m-d h:i A',
+            $data['reservation_date'] . ' ' . $data['reservation_hour'] . ' ' . $data['reservation_period']
+        );
 
-        return redirect()->back()->with('success', 'Reserva agendada correctamente.');
+        unset($data['reservation_date'], $data['reservation_hour'], $data['reservation_period']);
+
+        Reservation::create($data);
+
+        return redirect()
+            ->route('reservations.index')
+            ->with('success', 'Reserva agendada correctamente.');
     }
 
+    public function update(Request $request, Reservation $reservation)
+    {
+        $data = $request->validate([
+            'client_name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:30',
+            'reservation_date' => 'required|date',
+            'reservation_hour' => 'required|date_format:H:i',
+            'reservation_period' => 'required|in:AM,PM',
+            'people' => 'required|integer|min:1',
+            'table_id' => 'nullable|exists:tables,id',
+            'note' => 'nullable|string|max:500',
+        ]);
+
+        $data['reservation_time'] = Carbon::createFromFormat(
+            'Y-m-d h:i A',
+            $data['reservation_date'] . ' ' . $data['reservation_hour'] . ' ' . $data['reservation_period']
+        );
+
+        unset($data['reservation_date'], $data['reservation_hour'], $data['reservation_period']);
+
+        $reservation->update($data);
+
+        return redirect()
+            ->route('reservations.index')
+            ->with('success', 'Reserva actualizada correctamente.');
+    }
     public function updateStatus(Request $request, Reservation $reservation)
     {
         $request->validate(['status' => 'required|in:confirmed,cancelled']);

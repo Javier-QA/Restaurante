@@ -191,6 +191,11 @@ Route::middleware(['auth'])->group(function () {
     )->name('reservations.store');
 
     Route::put(
+        '/reservations/{reservation}',
+        [ReservationController::class, 'update']
+    )->name('reservations.update');
+
+    Route::put(
         '/reservations/{reservation}/status',
         [ReservationController::class, 'updateStatus']
     )->name('reservations.status');
