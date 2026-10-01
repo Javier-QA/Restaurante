@@ -636,62 +636,8 @@
 
             </table>
         </div>
+        <x-system-pagination :paginator="$registers" />
 
-        @if($registers->total() > 0)
-            <div class="history-pagination">
-                <div class="history-pagination-info">
-                    Mostrando
-                    <strong>{{ $registers->firstItem() }}</strong>
-                    a
-                    <strong>{{ $registers->lastItem() }}</strong>
-                    de
-                    <strong>{{ $registers->total() }}</strong>
-                    resultados
-                </div>
-
-                @if($registers->hasPages())
-                    <nav aria-label="Paginación del historial">
-                        <ul class="history-pages">
-
-                            <li class="{{ $registers->onFirstPage() ? 'disabled' : '' }}">
-                                @if($registers->onFirstPage())
-                                    <span>
-                                        <i class="bi bi-chevron-left"></i>
-                                    </span>
-                                @else
-                                    <a href="{{ $registers->previousPageUrl() }}">
-                                        <i class="bi bi-chevron-left"></i>
-                                    </a>
-                                @endif
-                            </li>
-
-                            @foreach($registers->getUrlRange(1, $registers->lastPage()) as $page => $url)
-                                <li class="{{ $page == $registers->currentPage() ? 'active' : '' }}">
-                                    @if($page == $registers->currentPage())
-                                        <span>{{ $page }}</span>
-                                    @else
-                                        <a href="{{ $url }}">{{ $page }}</a>
-                                    @endif
-                                </li>
-                            @endforeach
-
-                            <li class="{{ $registers->hasMorePages() ? '' : 'disabled' }}">
-                                @if($registers->hasMorePages())
-                                    <a href="{{ $registers->nextPageUrl() }}">
-                                        <i class="bi bi-chevron-right"></i>
-                                    </a>
-                                @else
-                                    <span>
-                                        <i class="bi bi-chevron-right"></i>
-                                    </span>
-                                @endif
-                            </li>
-
-                        </ul>
-                    </nav>
-                @endif
-            </div>
-        @endif
 
     </div>
 

@@ -49,7 +49,7 @@ class CreditNoteController extends Controller
             });
         }
 
-        $notes = $query->paginate(25)->withQueryString();
+        $notes = $query->paginate(10)->withQueryString();
         return view('credit_notes.index', compact('notes'));
     }
 

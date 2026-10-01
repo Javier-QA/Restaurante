@@ -612,7 +612,7 @@ class DeliveryController extends Controller
     ══════════════════════════════════════════════ */
     public function driversIndex()
     {
-        $drivers = DeliveryDriver::withCount('deliveries')->orderBy('name')->get();
+        $drivers = DeliveryDriver::withCount('deliveries')->orderBy('name')->paginate(10);
         return view('delivery.drivers', compact('drivers'));
     }
 

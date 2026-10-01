@@ -11,7 +11,7 @@ class CategoryController extends Controller
     // Mostrar lista de categorías
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::orderBy('name')->paginate(10);
         // Nota: Aún no tenemos la vista 'categories.index', la crearemos en el siguiente paso
         return view('categories.index', compact('categories'));
     }

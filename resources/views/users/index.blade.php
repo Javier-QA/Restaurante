@@ -71,6 +71,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                <x-system-pagination :paginator="$users" />
             </div>
         </div>
     </div>

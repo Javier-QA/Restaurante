@@ -538,7 +538,7 @@ Route::resource(
                 'user'
             )
                 ->orderBy('created_at', 'desc')
-                ->paginate(50);
+                ->paginate(10);
 
             return view(
                 'products.kardex',

@@ -12,7 +12,7 @@ class UserController extends Controller
     public function index()
     {
         // Ordenamos: Primero Admins, luego Cajeros, luego Mozos
-        $users = User::orderByRaw("FIELD(role, 'admin', 'cashier', 'waiter')")->get();
+        $users = User::orderByRaw("FIELD(role, 'admin', 'cashier', 'waiter')")->paginate(10);
         return view('users.index', compact('users'));
     }
 

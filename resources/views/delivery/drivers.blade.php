@@ -116,6 +116,7 @@
                         @endforelse
                     </tbody>
                 </table>
+                <x-system-pagination :paginator="$drivers" />
             </div>
         </div>
     </div>

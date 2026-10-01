@@ -12,7 +12,7 @@ class ClientController extends Controller
     public function index()
     {
         // Listamos clientes con conteo de órdenes
-        $clients = Client::withCount('orders')->orderBy('name')->get();
+        $clients = Client::withCount('orders')->orderBy('name')->paginate(10);
         return view('clients.index', compact('clients'));
     }
 

@@ -26,7 +26,7 @@ class DailySummaryController extends Controller
         $summaries = DailySummary::with('user')
             ->orderByDesc('reference_date')
             ->orderByDesc('correlativo')
-            ->paginate(25);
+            ->paginate(10);
 
         return view('daily_summaries.index', compact('summaries'));
     }

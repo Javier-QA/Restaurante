@@ -51,7 +51,7 @@ class BillingController extends Controller
             });
         }
 
-        $orders = $query->paginate(25)->withQueryString();
+        $orders = $query->paginate(10)->withQueryString();
 
         // Totales rápidos por estado (sin filtros)
         $stats = Order::whereIn('document_type', ['Boleta', 'Factura'])

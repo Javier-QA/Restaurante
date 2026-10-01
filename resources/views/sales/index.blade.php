@@ -195,13 +195,13 @@
     }
 </style>
 <div class="container-fluid">
-    
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold text-dark mb-0"><i class="bi bi-cash-coin me-2"></i>Caja y Movimientos</h2>
             <p class="text-muted mb-0">Control de Ingresos y Egresos</p>
         </div>
-        
+
         <div class="d-flex gap-2">
             <form action="{{ route('sales.index') }}" method="GET" class="d-flex align-items-center gap-2 bg-white p-2 rounded shadow-sm border">
                 <input type="date" name="start_date" class="form-control form-control-sm" value="{{ $startDate }}">
@@ -209,11 +209,11 @@
                 <input type="date" name="end_date" class="form-control form-control-sm" value="{{ $endDate }}">
                 <button type="submit" class="btn btn-primary btn-sm px-3 fw-bold"><i class="bi bi-search"></i></button>
             </form>
-            
+
             <a href="{{ route('sales.daily.report', ['start_date' => $startDate, 'end_date' => $endDate]) }}" target="_blank" class="sales-action-btn sales-action-report">
                 <i class="bi bi-printer"></i><span>Corte Z</span>
             </a>
-            
+
             <button class="sales-action-btn sales-action-expense" data-bs-toggle="modal" data-bs-target="#expenseModal">
                 <i class="bi bi-dash-circle"></i><span>Registrar Salida</span>
             </button>
@@ -247,8 +247,8 @@
         </div>
 
         {{-- MÉTODOS, GASTOS Y BALANCE --}}
-        
-            
+
+
 
                 {{-- EFECTIVO --}}
                 <div class="col-12 col-sm-6 col-xl-3">
@@ -369,10 +369,10 @@
                 </li>
             </ul>
         </div>
-        
+
         <div class="card-body p-0">
             <div class="tab-content" id="salesTabsContent">
-                
+
                 <div class="tab-pane fade show active" id="sales" role="tabpanel">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
@@ -436,6 +436,8 @@
                             </tbody>
                         </table>
                     </div>
+                    <x-system-pagination :paginator="$orders" />
+
                 </div>
 
                 <div class="tab-pane fade" id="expenses" role="tabpanel">
@@ -470,6 +472,8 @@
                             </tbody>
                         </table>
                     </div>
+                    <x-system-pagination :paginator="$expenses" />
+
                 </div>
             </div>
         </div>

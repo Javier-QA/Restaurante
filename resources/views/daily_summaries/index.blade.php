@@ -596,12 +596,7 @@
                 </tbody>
             </table>
         </div>
-
-        @if($summaries->hasPages())
-            <div class="ds-footer">
-                {{ $summaries->links() }}
-            </div>
-        @endif
+        <x-system-pagination :paginator="$summaries" />
     </div>
 </div>
 @endsection

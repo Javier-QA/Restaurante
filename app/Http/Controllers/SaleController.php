@@ -16,39 +16,68 @@ class SaleController extends Controller
         $startDate = $request->input('start_date', Carbon::today()->format('Y-m-d'));
         $endDate = $request->input('end_date', Carbon::today()->format('Y-m-d'));
 
-        // 1. Obtener Ventas
-        $orders = Order::whereDate('created_at', '>=', $startDate)
-                       ->whereDate('created_at', '<=', $endDate)
-                       ->where('status', 'completed')
-                       ->orderBy('created_at', 'desc')
-                       ->with(['user', 'table', 'delivery'])
-                       ->get();
+        // 1. Consulta base de ventas
+        $ordersQuery = Order::whereDate('created_at', '>=', $startDate)
+                            ->whereDate('created_at', '<=', $endDate)
+                            ->where('status', 'completed');
 
-        // 2. Totales Ventas
-        $totalCash = $orders->where('payment_method', 'cash')->sum('total');
-        $totalCard = $orders->where('payment_method', 'card')->sum('total');
-        $totalYape = $orders->where('payment_method', 'yape')->sum('total');
-        $totalPlin = $orders->where('payment_method', 'plin')->sum('total');
+        // 2. Totales generales de ventas
+        $totalCash = (clone $ordersQuery)
+            ->where('payment_method', 'cash')
+            ->sum('total');
+
+        $totalCard = (clone $ordersQuery)
+            ->where('payment_method', 'card')
+            ->sum('total');
+
+        $totalYape = (clone $ordersQuery)
+            ->where('payment_method', 'yape')
+            ->sum('total');
+
+        $totalPlin = (clone $ordersQuery)
+            ->where('payment_method', 'plin')
+            ->sum('total');
+
         $totalSales = $totalCash + $totalCard + $totalYape + $totalPlin;
 
-        // 3. Obtener Gastos (Lista y Total)
-        $expenses = Expense::whereDate('created_at', '>=', $startDate)
-                           ->whereDate('created_at', '<=', $endDate)
-                           ->orderBy('created_at', 'desc')
-                           ->with(['user', 'table', 'delivery'])
-                           ->get();
+        // 3. Ventas paginadas
+        $orders = (clone $ordersQuery)
+            ->with(['user', 'table', 'delivery'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10, ['*'], 'sales_page')
+            ->withQueryString();
 
-        $totalExpenses = $expenses->sum('amount');
+        // 4. Consulta base de gastos
+        $expensesQuery = Expense::whereDate('created_at', '>=', $startDate)
+                                ->whereDate('created_at', '<=', $endDate);
 
-        // 4. Balance Final
+        // Total general de gastos
+        $totalExpenses = (clone $expensesQuery)->sum('amount');
+
+        // 5. Gastos paginados
+        $expenses = (clone $expensesQuery)
+            ->with('user')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10, ['*'], 'expenses_page')
+            ->withQueryString();
+
+        // 6. Balance final
         $balance = $totalCash - $totalExpenses;
 
         return view('sales.index', compact(
-            'orders', 'expenses', 'startDate', 'endDate', 
-            'totalCash', 'totalCard', 'totalYape', 'totalPlin', 'totalSales', 'totalExpenses', 'balance'
+            'orders',
+            'expenses',
+            'startDate',
+            'endDate',
+            'totalCash',
+            'totalCard',
+            'totalYape',
+            'totalPlin',
+            'totalSales',
+            'totalExpenses',
+            'balance'
         ));
     }
-
     public function ticket(Order $order)
     {
         $settings = Setting::pluck('value', 'key')->toArray();

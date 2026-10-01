@@ -675,10 +675,7 @@
             </table>
         </div>
 
-        {{-- Paginación --}}
-        <div class="credit-pagination">
-            {{ $notes->links() }}
-        </div>
+        <x-system-pagination :paginator="$notes" />
 
     </div>
 

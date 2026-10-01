@@ -139,32 +139,6 @@
             </table>
         </div>
     </div>
-    <div class="card-footer bg-white border-0 py-3">
-        <div class="text-center">
-            <div class="text-muted small mb-2">
-                Mostrando <strong>{{ $products->firstItem() ?? 0 }}</strong> a <strong>{{ $products->lastItem() ?? 0 }}</strong> de <strong>{{ $products->total() }}</strong> resultados
-            </div>
-
-            @if($products->hasPages())
-                <nav aria-label="Paginación de inventario">
-                    <ul class="pagination pagination-sm justify-content-center mb-0">
-                        <li class="page-item {{ $products->onFirstPage() ? 'disabled' : '' }}">
-                            <a class="page-link" href="{{ $products->previousPageUrl() ?? '#' }}" aria-label="Anterior">&lsaquo;</a>
-                        </li>
-
-                        @foreach($products->getUrlRange(1, $products->lastPage()) as $page => $url)
-                            <li class="page-item {{ $page == $products->currentPage() ? 'active' : '' }}">
-                                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                            </li>
-                        @endforeach
-
-                        <li class="page-item {{ $products->hasMorePages() ? '' : 'disabled' }}">
-                            <a class="page-link" href="{{ $products->nextPageUrl() ?? '#' }}" aria-label="Siguiente">&rsaquo;</a>
-                        </li>
-                    </ul>
-                </nav>
-            @endif
-        </div>
-    </div>
+    <x-system-pagination :paginator="$products" />
 </div>
 @endsection

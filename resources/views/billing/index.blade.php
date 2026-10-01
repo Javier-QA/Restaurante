@@ -911,9 +911,7 @@
 
         </div>
 
-        <div class="billing-pagination">
-            {{ $orders->links() }}
-        </div>
+        <x-system-pagination :paginator="$orders" />
 
     </div>
 

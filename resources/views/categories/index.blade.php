@@ -66,6 +66,7 @@
                         @endforelse
                     </tbody>
                 </table>
+                <x-system-pagination :paginator="$categories" />
             </div>
         </div>
     </div>
