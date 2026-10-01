@@ -480,6 +480,26 @@ Route::resource(
             [App\Http\Controllers\CashRegisterController::class, 'index']
         )->name('cash_registers.index');
 
+        Route::get(
+            '/cash-registers/{cashRegister}',
+            [App\Http\Controllers\CashRegisterController::class, 'show']
+        )->name('cash_registers.show');
+
+        Route::get(
+            '/cash-registers/{cashRegister}/pdf',
+            [App\Http\Controllers\CashRegisterController::class, 'pdf']
+        )->name('cash_registers.pdf');
+
+        Route::delete(
+            '/cash-registers/reset-history/all',
+            [App\Http\Controllers\CashRegisterController::class, 'destroyAll']
+        )->name('cash_registers.destroy_all');
+
+        Route::delete(
+            '/cash-registers/{cashRegister}',
+            [App\Http\Controllers\CashRegisterController::class, 'destroy']
+        )->name('cash_registers.destroy');
+
 
         // =====================================================
         // GESTIÓN

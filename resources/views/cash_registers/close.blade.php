@@ -7,6 +7,10 @@
 
 <style>
     .cash-close-page {
+        width: 100%;
+    }
+
+    .cash-close-content {
         max-width: 1180px;
         margin: 0 auto;
     }
