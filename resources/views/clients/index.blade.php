@@ -211,6 +211,275 @@
     box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--primary) 12%, transparent);
 }
 
+/* =========================================================
+   MODAL EDITAR CLIENTE
+   ========================================================= */
+
+.client-edit-header {
+    position: relative;
+    padding: 22px 24px;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.client-edit-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 5px;
+    background: linear-gradient(
+        180deg,
+        #f59e0b 0%,
+        #fbbf24 50%,
+        #ffedd5 100%
+    );
+}
+
+.client-modal-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.client-modal-heading-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: #fff7e6;
+    color: #f59e0b;
+    font-size: 1.05rem;
+}
+
+.client-modal-title {
+    margin: 0;
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.client-modal-subtitle {
+    margin: 3px 0 0;
+    color: var(--text-muted);
+    font-size: .77rem;
+}
+
+.client-edit-body {
+    padding: 22px 24px 8px;
+}
+
+.client-field-label {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--text-main);
+    font-size: .76rem;
+    font-weight: 750;
+}
+
+.client-field-label .required {
+    color: #dc2626;
+}
+
+.client-input-group {
+    position: relative;
+}
+
+.client-input-icon {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+    z-index: 2;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: .92rem;
+    pointer-events: none;
+}
+
+.client-input-group .form-control {
+    min-height: 46px;
+    padding-left: 42px;
+    background: var(--card-bg);
+}
+
+.client-input-group .form-control:focus + .client-input-icon {
+    color: var(--primary);
+}
+
+.client-edit-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 24px 22px;
+    background: var(--card-bg);
+    border-top: 0;
+}
+
+.client-cancel-btn {
+    min-height: 42px;
+    padding: 0 18px;
+    border: 1px solid var(--border-soft);
+    border-radius: 11px;
+    background: var(--card-bg);
+    color: var(--text-main);
+    font-size: .82rem;
+    font-weight: 700;
+}
+
+.client-cancel-btn:hover {
+    background: var(--light-bg);
+    border-color: var(--border-soft);
+    color: var(--text-main);
+}
+
+.client-update-btn {
+    min-height: 42px;
+    padding: 0 19px;
+    border: 0;
+    border-radius: 11px;
+    background: var(--primary);
+    color: #fff;
+    font-size: .82rem;
+    font-weight: 750;
+    box-shadow: 0 5px 14px color-mix(in srgb, var(--primary) 22%, transparent);
+    transition: .18s ease;
+}
+
+.client-update-btn:hover {
+    background: var(--primary-hover);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   MODAL ELIMINAR CLIENTE
+   ========================================================= */
+
+.client-delete-modal {
+    max-width: 440px;
+}
+
+.client-delete-content {
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
+    border-radius: 20px;
+    background: var(--card-bg);
+    box-shadow: 0 24px 70px rgba(15, 23, 42, .20);
+}
+
+.client-delete-body {
+    position: relative;
+    padding: 30px 28px 22px;
+    text-align: center;
+}
+
+.client-delete-body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 4px;
+    background: linear-gradient(
+        90deg,
+        #dc2626 0%,
+        #fb7185 55%,
+        #fecdd3 100%
+    );
+}
+
+.client-delete-icon {
+    width: 66px;
+    height: 66px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 17px;
+    border: 1px solid #fecdd3;
+    border-radius: 20px;
+    background: #fff1f2;
+    color: #dc2626;
+    font-size: 1.55rem;
+}
+
+.client-delete-title {
+    margin-bottom: 8px;
+    color: var(--text-main);
+    font-size: 1.15rem;
+    font-weight: 800;
+}
+
+.client-delete-text {
+    max-width: 340px;
+    margin: 0 auto;
+    color: var(--text-muted);
+    font-size: .84rem;
+    line-height: 1.6;
+}
+
+.client-delete-name {
+    color: var(--text-main);
+    font-weight: 800;
+}
+
+.client-delete-warning {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin: 16px 0 0;
+    padding: 9px 12px;
+    border: 1px solid #fecdd3;
+    border-radius: 10px;
+    background: #fff7f7;
+    color: #b91c1c;
+    font-size: .75rem;
+    font-weight: 650;
+}
+
+.client-delete-footer {
+    display: flex;
+    gap: 10px;
+    padding: 0 28px 26px;
+}
+
+.client-delete-footer button {
+    flex: 1;
+    min-height: 43px;
+    border-radius: 11px;
+    font-size: .82rem;
+    font-weight: 750;
+}
+
+.client-delete-cancel {
+    border: 1px solid var(--border-soft);
+    background: var(--card-bg);
+    color: var(--text-main);
+}
+
+.client-delete-cancel:hover {
+    background: var(--light-bg);
+    color: var(--text-main);
+}
+
+.client-delete-confirm {
+    border: 1px solid #dc2626;
+    background: #dc2626;
+    color: #fff;
+    box-shadow: 0 5px 14px rgba(220, 38, 38, .18);
+}
+
+.client-delete-confirm:hover {
+    border-color: #b91c1c;
+    background: #b91c1c;
+    color: #fff;
+}
+
 @media (max-width: 767.98px) {
     .client-primary-btn {
         width: 100%;
@@ -382,18 +651,12 @@
                                             <i class="bi bi-pencil"></i>
                                         </button>
 
-                                        <form action="{{ route('clients.destroy', $client->id) }}"
-                                              method="POST"
-                                              class="d-inline"
-                                              onsubmit="return confirm('¿Eliminar cliente?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                    class="client-action delete"
-                                                    title="Eliminar cliente">
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
-                                        </form>
+                                        <button type="button"
+        class="client-action delete"
+        title="Eliminar cliente"
+        onclick='confirmDeleteClient(@json(["id" => $client->id, "name" => $client->name]))'>
+    <i class="bi bi-trash3"></i>
+</button>
                                     </div>
                                 </td>
                             </tr>
@@ -446,37 +709,341 @@
     </div>
 </div>
 
-<div class="modal fade" id="editClientModal" tabindex="-1">
+<div class="modal fade"
+     id="editClientModal"
+     tabindex="-1"
+     aria-labelledby="editClientModalLabel"
+     aria-hidden="true">
+
     <div class="modal-dialog modal-dialog-centered">
-        <form id="editClientForm" method="POST" class="modal-content client-modal-content">
-            @csrf @method('PUT')
-            <div class="modal-header bg-warning">
-                <h5 class="modal-title fw-bold">Editar Cliente</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <form id="editClientForm"
+              method="POST"
+              class="modal-content client-modal-content">
+
+            @csrf
+            @method('PUT')
+
+            {{-- Encabezado --}}
+            <div class="modal-header border-0 px-4 pt-4 pb-2">
+
+                <div class="d-flex align-items-center gap-3">
+
+                    <div class="d-flex align-items-center justify-content-center"
+                         style="
+                            width:46px;
+                            height:46px;
+                            border-radius:13px;
+                            background:color-mix(in srgb, var(--primary) 10%, var(--card-bg));
+                            color:var(--primary);
+                            font-size:1.05rem;
+                         ">
+                        <i class="bi bi-pencil-square"></i>
+                    </div>
+
+                    <div>
+                        <h5 id="editClientModalLabel"
+                            class="fw-bold mb-1"
+                            style="color:var(--text-main);font-size:1.05rem;">
+                            Editar cliente
+                        </h5>
+
+                        <p class="mb-0"
+                           style="color:var(--text-muted);font-size:.78rem;">
+                            Actualiza la información registrada
+                        </p>
+                    </div>
+
+                </div>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar">
+                </button>
+
             </div>
-            <div class="modal-body">
-                <div class="mb-3"><label class="form-label">Nombre</label><input type="text" name="name" id="edit_name" class="form-control" required></div>
-                <div class="mb-3"><label class="form-label">Doc</label><input type="text" name="document_number" id="edit_doc" class="form-control"></div>
-                <div class="mb-3"><label class="form-label">Teléfono</label><input type="text" name="phone" id="edit_phone" class="form-control"></div>
-                <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" id="edit_email" class="form-control"></div>
-                <div class="mb-3"><label class="form-label">Dirección</label><input type="text" name="address" id="edit_address" class="form-control"></div>
+
+
+            {{-- Cuerpo --}}
+            <div class="modal-body px-4 pt-3 pb-2">
+
+                <div class="row g-3">
+
+                    {{-- Nombre --}}
+                    <div class="col-12">
+
+                        <label for="edit_name"
+                               class="form-label fw-bold mb-2"
+                               style="font-size:.78rem;color:var(--text-main);">
+                            Nombre completo
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <div class="position-relative">
+
+                            <i class="bi bi-person position-absolute top-50 translate-middle-y"
+                               style="
+                                  left:14px;
+                                  z-index:3;
+                                  color:var(--text-muted);
+                               ">
+                            </i>
+
+                            <input type="text"
+                                   name="name"
+                                   id="edit_name"
+                                   class="form-control ps-5"
+                                   placeholder="Nombre del cliente"
+                                   required>
+
+                        </div>
+                    </div>
+
+
+                    {{-- Documento --}}
+                    <div class="col-md-6">
+
+                        <label for="edit_doc"
+                               class="form-label fw-bold mb-2"
+                               style="font-size:.78rem;color:var(--text-main);">
+                            DNI / RUC
+                        </label>
+
+                        <div class="position-relative">
+
+                            <i class="bi bi-person-vcard position-absolute top-50 translate-middle-y"
+                               style="
+                                  left:14px;
+                                  z-index:3;
+                                  color:var(--text-muted);
+                               ">
+                            </i>
+
+                            <input type="text"
+                                   name="document_number"
+                                   id="edit_doc"
+                                   class="form-control ps-5"
+                                   placeholder="Documento">
+
+                        </div>
+                    </div>
+
+
+                    {{-- Teléfono --}}
+                    <div class="col-md-6">
+
+                        <label for="edit_phone"
+                               class="form-label fw-bold mb-2"
+                               style="font-size:.78rem;color:var(--text-main);">
+                            Teléfono
+                        </label>
+
+                        <div class="position-relative">
+
+                            <i class="bi bi-telephone position-absolute top-50 translate-middle-y"
+                               style="
+                                  left:14px;
+                                  z-index:3;
+                                  color:var(--text-muted);
+                               ">
+                            </i>
+
+                            <input type="text"
+                                   name="phone"
+                                   id="edit_phone"
+                                   class="form-control ps-5"
+                                   placeholder="Número de teléfono">
+
+                        </div>
+                    </div>
+
+
+                    {{-- Email --}}
+                    <div class="col-12">
+
+                        <label for="edit_email"
+                               class="form-label fw-bold mb-2"
+                               style="font-size:.78rem;color:var(--text-main);">
+                            Correo electrónico
+                        </label>
+
+                        <div class="position-relative">
+
+                            <i class="bi bi-envelope position-absolute top-50 translate-middle-y"
+                               style="
+                                  left:14px;
+                                  z-index:3;
+                                  color:var(--text-muted);
+                               ">
+                            </i>
+
+                            <input type="email"
+                                   name="email"
+                                   id="edit_email"
+                                   class="form-control ps-5"
+                                   placeholder="correo@ejemplo.com">
+
+                        </div>
+                    </div>
+
+
+                    {{-- Dirección --}}
+                    <div class="col-12">
+
+                        <label for="edit_address"
+                               class="form-label fw-bold mb-2"
+                               style="font-size:.78rem;color:var(--text-main);">
+                            Dirección
+                        </label>
+
+                        <div class="position-relative">
+
+                            <i class="bi bi-geo-alt position-absolute top-50 translate-middle-y"
+                               style="
+                                  left:14px;
+                                  z-index:3;
+                                  color:var(--text-muted);
+                               ">
+                            </i>
+
+                            <input type="text"
+                                   name="address"
+                                   id="edit_address"
+                                   class="form-control ps-5"
+                                   placeholder="Dirección del cliente">
+
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-warning fw-bold">Actualizar</button>
+
+
+            {{-- Botones --}}
+            <div class="modal-footer border-0 px-4 pt-3 pb-4 gap-2">
+
+                <button type="button"
+                        class="btn px-4"
+                        data-bs-dismiss="modal"
+                        style="
+                           min-height:43px;
+                           border:1px solid var(--border-soft);
+                           border-radius:11px;
+                           background:var(--card-bg);
+                           color:var(--text-main);
+                           font-size:.82rem;
+                           font-weight:700;
+                        ">
+                    Cancelar
+                </button>
+
+                <button type="submit"
+                        class="btn text-white px-4"
+                        style="
+                           min-height:43px;
+                           border:0;
+                           border-radius:11px;
+                           background:var(--primary);
+                           font-size:.82rem;
+                           font-weight:700;
+                           box-shadow:0 5px 14px color-mix(in srgb, var(--primary) 20%, transparent);
+                        ">
+
+                    <i class="bi bi-check2-circle me-1"></i>
+                    Guardar cambios
+
+                </button>
+
             </div>
+
         </form>
     </div>
 </div>
 
+{{-- MODAL ELIMINAR CLIENTE --}}
+<div class="modal fade" id="deleteClientModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 430px;">
+        <div class="modal-content client-modal-content border-0">
+
+            <div class="modal-body text-center p-4">
+
+                <div class="d-flex align-items-center justify-content-center mx-auto mb-3"
+                     style="width:68px;height:68px;border-radius:20px;background:#fff1f2;border:1px solid #fecdd3;color:#dc2626;font-size:1.55rem;">
+                    <i class="bi bi-trash3"></i>
+                </div>
+
+                <h5 class="fw-bold mb-2" style="color:var(--text-main);">
+                    Eliminar cliente
+                </h5>
+
+                <p class="mb-3"
+                   style="color:var(--text-muted);font-size:.88rem;line-height:1.6;">
+                    ¿Estás seguro de eliminar a
+                    <strong id="deleteClientName" style="color:var(--text-main);"></strong>?
+                </p>
+
+                <div class="d-flex align-items-center justify-content-center gap-2 px-3 py-2 mb-4"
+                     style="background:#fff7f7;border:1px solid #fecdd3;border-radius:11px;color:#b91c1c;font-size:.77rem;font-weight:650;">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Esta acción no se puede deshacer.
+                </div>
+
+                <div class="d-flex gap-2">
+
+                    <button type="button"
+                            class="btn flex-fill"
+                            data-bs-dismiss="modal"
+                            style="min-height:43px;border:1px solid var(--border-soft);border-radius:11px;background:var(--card-bg);color:var(--text-main);font-weight:700;">
+                        Cancelar
+                    </button>
+
+                    <form id="deleteClientForm"
+                          method="POST"
+                          class="d-flex flex-fill">
+                        @csrf
+                        @method('DELETE')
+
+                        <button type="submit"
+                                class="btn text-white flex-fill"
+                                style="min-height:43px;border-radius:11px;background:#dc2626;border-color:#dc2626;font-weight:700;">
+                            <i class="bi bi-trash3 me-1"></i>
+                            Sí, eliminar
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 <script>
     function editClient(client) {
-        document.getElementById('edit_name').value = client.name;
-        document.getElementById('edit_doc').value = client.document_number;
-        document.getElementById('edit_phone').value = client.phone;
-        document.getElementById('edit_email').value = client.email;
-        document.getElementById('edit_address').value = client.address;
-        document.getElementById('editClientForm').action = "{{ url('/clients') }}/" + client.id;
-        new bootstrap.Modal(document.getElementById('editClientModal')).show();
+        document.getElementById('edit_name').value = client.name ?? '';
+        document.getElementById('edit_doc').value = client.document_number ?? '';
+        document.getElementById('edit_phone').value = client.phone ?? '';
+        document.getElementById('edit_email').value = client.email ?? '';
+        document.getElementById('edit_address').value = client.address ?? '';
+
+        document.getElementById('editClientForm').action =
+            "{{ url('/clients') }}/" + client.id;
+
+        bootstrap.Modal
+            .getOrCreateInstance(document.getElementById('editClientModal'))
+            .show();
+    }
+
+    function confirmDeleteClient(client) {
+        document.getElementById('deleteClientName').textContent =
+            client.name ?? 'este cliente';
+
+        document.getElementById('deleteClientForm').action =
+            "{{ url('/clients') }}/" + client.id;
+
+        bootstrap.Modal
+            .getOrCreateInstance(document.getElementById('deleteClientModal'))
+            .show();
     }
 </script>
 @endsection
