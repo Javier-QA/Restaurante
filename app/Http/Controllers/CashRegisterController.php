@@ -50,14 +50,48 @@ class CashRegisterController extends Controller
             return redirect()->route('dashboard')->with('error', 'No tienes ninguna caja abierta para cerrar.');
         }
 
-        // Calcular el esperado:
-        // Monto inicial + Total ventas efectivo - Total gastos
-        $totalSalesCash = $cashRegister->orders()->where('payment_method', 'cash')->where('status', 'completed')->sum('total');
-        $totalExpenses = $cashRegister->expenses()->sum('amount');
-        
-        $expectedAmount = $cashRegister->opening_amount + $totalSalesCash - $totalExpenses;
+        // Resumen del turno por método de pago
+        $completedOrders = $cashRegister->orders()
+            ->where('status', 'completed');
 
-        return view('cash_registers.close', compact('cashRegister', 'expectedAmount'));
+        $totalSalesCash = (clone $completedOrders)
+            ->where('payment_method', 'cash')
+            ->sum('total');
+
+        $totalSalesCard = (clone $completedOrders)
+            ->where('payment_method', 'card')
+            ->sum('total');
+
+        $totalSalesYape = (clone $completedOrders)
+            ->where('payment_method', 'yape')
+            ->sum('total');
+
+        $totalSalesPlin = (clone $completedOrders)
+            ->where('payment_method', 'plin')
+            ->sum('total');
+
+        $totalSales = $totalSalesCash
+            + $totalSalesCard
+            + $totalSalesYape
+            + $totalSalesPlin;
+
+        $totalExpenses = $cashRegister->expenses()->sum('amount');
+
+        // El efectivo esperado solo considera movimientos físicos de caja.
+        $expectedAmount = $cashRegister->opening_amount
+            + $totalSalesCash
+            - $totalExpenses;
+
+        return view('cash_registers.close', compact(
+            'cashRegister',
+            'expectedAmount',
+            'totalSalesCash',
+            'totalSalesCard',
+            'totalSalesYape',
+            'totalSalesPlin',
+            'totalSales',
+            'totalExpenses'
+        ));
     }
 
     public function processClose(Request $request)
