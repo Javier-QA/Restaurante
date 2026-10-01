@@ -55,6 +55,8 @@ class BillingController extends Controller
 
         // Totales rápidos por estado (sin filtros)
         $stats = Order::whereIn('document_type', ['Boleta', 'Factura'])
+            ->whereNotNull('serie')
+            ->whereNotNull('correlativo')
             ->selectRaw('sunat_status, COUNT(*) as total')
             ->groupBy('sunat_status')
             ->pluck('total', 'sunat_status')
@@ -84,6 +86,13 @@ class BillingController extends Controller
             return back()->with('error', 'La orden no tiene serie/correlativo asignados.');
         }
 
+        if ($order->isReceipt()) {
+            return back()->with(
+                'error',
+                'Las boletas se comunican a SUNAT mediante Resumen Diario. No corresponde realizar un reenvío individual.'
+            );
+        }
+
         try {
             (new SunatService())->sendInvoice($order->fresh('details.product'));
             $order->refresh();
@@ -105,7 +114,22 @@ class BillingController extends Controller
      */
     public function downloadXml(Order $order)
     {
-        return $this->streamSunatFile($order->xml_path, 'application/xml');
+        $path = $order->xml_path;
+
+        if (!$path) {
+            $detail = $order->dailySummaryDetails()
+                ->where('operation_status', '1')
+                ->whereHas('dailySummary', function ($query) {
+                    $query->whereIn('sunat_status', ['ACCEPTED', 'OBSERVED']);
+                })
+                ->with('dailySummary')
+                ->latest('id')
+                ->first();
+
+            $path = $detail?->dailySummary?->xml_path;
+        }
+
+        return $this->streamSunatFile($path, 'application/xml');
     }
 
     /**
@@ -113,7 +137,22 @@ class BillingController extends Controller
      */
     public function downloadCdr(Order $order)
     {
-        return $this->streamSunatFile($order->cdr_path, 'application/zip');
+        $path = $order->cdr_path;
+
+        if (!$path) {
+            $detail = $order->dailySummaryDetails()
+                ->where('operation_status', '1')
+                ->whereHas('dailySummary', function ($query) {
+                    $query->whereIn('sunat_status', ['ACCEPTED', 'OBSERVED']);
+                })
+                ->with('dailySummary')
+                ->latest('id')
+                ->first();
+
+            $path = $detail?->dailySummary?->cdr_path;
+        }
+
+        return $this->streamSunatFile($path, 'application/zip');
     }
 
     /**

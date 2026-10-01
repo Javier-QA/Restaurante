@@ -87,6 +87,11 @@ class Order extends Model
         return $this->hasMany(CreditNote::class);
     }
 
+    public function dailySummaryDetails()
+    {
+        return $this->hasMany(DailySummaryDetail::class);
+    }
+
     /**
      * "B001-15" / "F001-3" / null si aún no se ha numerado.
      */
@@ -102,5 +107,15 @@ class Order extends Model
     public function isElectronic(): bool
     {
         return in_array($this->document_type, ['Boleta', 'Factura'], true);
+    }
+
+    public function isInvoice(): bool
+    {
+        return $this->document_type === 'Factura';
+    }
+
+    public function isReceipt(): bool
+    {
+        return $this->document_type === 'Boleta';
     }
 }

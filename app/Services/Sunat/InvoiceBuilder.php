@@ -117,9 +117,24 @@ class InvoiceBuilder
         $client = new GClient();
 
         if ($isFactura) {
-            $client->setTipoDoc('6')                              // 6 = RUC
-                ->setNumDoc($order->client_document ?: '20000000001')
-                ->setRznSocial($order->client_name ?: 'CLIENTE GENERAL');
+            $ruc = trim((string) $order->client_document);
+            $razonSocial = trim((string) $order->client_name);
+
+            if (!preg_match('/^\d{11}$/', $ruc)) {
+                throw new \InvalidArgumentException(
+                    'La Factura requiere un RUC válido de 11 dígitos.'
+                );
+            }
+
+            if ($razonSocial === '') {
+                throw new \InvalidArgumentException(
+                    'La Factura requiere la razón social del cliente.'
+                );
+            }
+
+            $client->setTipoDoc('6') // 6 = RUC
+                ->setNumDoc($ruc)
+                ->setRznSocial($razonSocial);
         } else {
             // Boleta: DNI (1) si tiene 8 dígitos, sino "0" sin documento
             $doc = trim((string) $order->client_document);

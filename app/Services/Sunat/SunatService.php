@@ -279,7 +279,12 @@ class SunatService
             return file_get_contents($path);
         }
 
-        // Fallback: certificado demo auto-firmado en storage (solo BETA)
+        // Fallback permitido únicamente en ambiente BETA.
+        if ($this->config->isProduction()) {
+            throw new \RuntimeException('En PRODUCCIÓN es obligatorio configurar un certificado digital propio. El certificado DEMO no está permitido.');
+        }
+
+        // Certificado demo auto-firmado para pruebas en BETA
         $demo = storage_path('app/sunat/certs/demo.pem');
         if (file_exists($demo)) {
             return file_get_contents($demo);

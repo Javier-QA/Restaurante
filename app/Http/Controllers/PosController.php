@@ -311,6 +311,8 @@ class PosController extends Controller
                 ->with('error', 'Para emitir Factura debe ingresar un RUC de 11 dígitos.');
         }
 
+        $clientDocument = $doc;
+
         if ($clientName === '') {
             return redirect()
                 ->back()
@@ -493,7 +495,7 @@ class PosController extends Controller
 
     $message = 'Parte de la cuenta cobrada correctamente.';
 
-    if ($splitOrder && $splitOrder->isElectronic()) {
+    if ($splitOrder && $splitOrder->isInvoice()) {
 
         try {
 
@@ -552,6 +554,9 @@ class PosController extends Controller
             if (strlen($doc) !== 11) {
                 return redirect()->back()->with('error', 'Para emitir Factura el cliente debe tener RUC de 11 dígitos.');
             }
+
+            $clientDocument = $doc;
+
             if (empty(trim((string) $clientName)) || $clientName === 'Público') {
                 return redirect()->back()->with('error', 'Para emitir Factura debe indicar la razón social del cliente.');
             }
@@ -679,8 +684,9 @@ class PosController extends Controller
             }
         });
 
-        // 3. Envío a SUNAT (no bloqueante: si falla queda en ERROR y puede reintentarse desde Billing)
-        if ($order->isElectronic()) {
+        // 3. Factura: envío individual a SUNAT.
+        // Las boletas se comunicarán mediante Resumen Diario.
+        if ($order->isInvoice()) {
             try {
                 (new SunatService())->sendInvoice($order->fresh('details.product'));
             } catch (\Throwable $e) {

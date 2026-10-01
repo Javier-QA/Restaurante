@@ -290,6 +290,8 @@ class DeliveryController extends Controller
                     ->with('error', 'Para emitir Factura el cliente debe tener RUC de 11 dígitos.');
             }
 
+            $clientDocument = $doc;
+
             if ($clientName === '') {
                 return redirect()->back()
                     ->withInput()
@@ -546,8 +548,9 @@ class DeliveryController extends Controller
             ]);
         });
 
-        // 7. Enviar comprobante electrónico a SUNAT.
-        if ($order && $order->isElectronic()) {
+        // 7. Factura: envío individual a SUNAT.
+        // Las boletas se comunicarán mediante Resumen Diario.
+        if ($order && $order->isInvoice()) {
 
             try {
 

@@ -32,7 +32,7 @@ class SunatRetryCommand extends Command
         $statuses = $this->option('status') ?: ['PENDING', 'ERROR', 'REJECTED'];
 
         $query = Order::query()
-            ->whereIn('document_type', ['Boleta', 'Factura'])
+            ->where('document_type', 'Factura')
             ->whereNotNull('serie')
             ->whereNotNull('correlativo');
 

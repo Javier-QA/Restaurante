@@ -3,7 +3,9 @@
 namespace App\Services\Sunat;
 
 use App\Models\DailySummary;
+use App\Models\DailySummaryDetail;
 use App\Models\Order;
+use Illuminate\Support\Facades\DB;
 use Carbon\CarbonInterface;
 use Greenter\Model\Company\Address;
 use Greenter\Model\Company\Company;
@@ -27,11 +29,24 @@ class DailySummaryBuilder
      */
     public function build(CarbonInterface $referenceDate, ?int $userId = null): array
     {
-        // 1. Boletas (03) aceptadas o pendientes de incluir, de la fecha
+        // 1. Boletas (03) de la fecha que aún no han sido comunicadas
+        // como "Adicionar" en un Resumen Diario enviado a SUNAT.
         $orders = Order::where('document_type', 'Boleta')
             ->whereDate('created_at', $referenceDate->toDateString())
             ->whereNotNull('serie')
             ->whereNotNull('correlativo')
+            // Excluye boletas históricas que ya obtuvieron CDR por el flujo individual anterior.
+            ->whereNull('cdr_path')
+            ->whereDoesntHave('dailySummaryDetails', function ($query) {
+                $query->where('operation_status', '1')
+                    ->whereHas('dailySummary', function ($summaryQuery) {
+                        $summaryQuery->whereIn('sunat_status', [
+                            'TICKET',
+                            'ACCEPTED',
+                            'OBSERVED',
+                        ]);
+                    });
+            })
             ->orderBy('correlativo')
             ->get();
 
@@ -68,23 +83,48 @@ class DailySummaryBuilder
 
         // 4. Cabecera Summary
         $summary = (new Summary())
-            ->setFecGeneracion($today)
-            ->setFecResumen($referenceDate)
+            ->setFecGeneracion($referenceDate)
+            ->setFecResumen($today)
             ->setCorrelativo(str_pad((string) $correlNum, 3, '0', STR_PAD_LEFT))
             ->setCompany($this->buildCompany())
             ->setDetails($details);
 
-        // 5. Modelo persistente
-        $model = DailySummary::create([
-            'reference_date'  => $referenceDate->toDateString(),
-            'generation_date' => $today->toDateString(),
-            'correlativo'     => $correlNum,
-            'identifier'      => $identifier,
-            'total_documents' => $orders->count(),
-            'total_amount'    => $totalAmount,
-            'sunat_status'    => 'PENDING',
-            'user_id'         => $userId,
-        ]);
+        // 5. Guardar el Resumen Diario y las boletas incluidas.
+        // Todo se registra en una sola transacción para mantener la trazabilidad.
+        $model = DB::transaction(function () use (
+            $referenceDate,
+            $today,
+            $correlNum,
+            $identifier,
+            $orders,
+            $totalAmount,
+            $userId
+        ) {
+            $model = DailySummary::create([
+                'reference_date'  => $referenceDate->toDateString(),
+                'generation_date' => $today->toDateString(),
+                'correlativo'     => $correlNum,
+                'identifier'      => $identifier,
+                'total_documents' => $orders->count(),
+                'total_amount'    => $totalAmount,
+                'sunat_status'    => 'PENDING',
+                'user_id'         => $userId,
+            ]);
+
+            foreach ($orders as $order) {
+                DailySummaryDetail::create([
+                    'daily_summary_id' => $model->id,
+                    'order_id'         => $order->id,
+                    'operation_status' => '1',
+                    'document_type'    => '03',
+                    'serie'            => $order->serie,
+                    'correlativo'      => $order->correlativo,
+                    'total_amount'     => $order->total,
+                ]);
+            }
+
+            return $model;
+        });
 
         return ['summary' => $summary, 'model' => $model];
     }
