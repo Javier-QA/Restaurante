@@ -10,7 +10,7 @@
         padding: 20px 22px;
         min-height: 132px;
         border-radius: 16px;
-        background: #fff;
+        background: #ffffff;
         box-shadow: 0 2px 14px rgba(15, 23, 42, .07);
         position: relative;
         overflow: hidden;
@@ -112,12 +112,12 @@
     }
 
     .sales-history-tabs .nav-link:hover {
-        background: #fff;
+        background: #ffffff;
         color: #0f172a;
     }
 
     .sales-history-tabs .nav-link.active {
-        background: #fff !important;
+        background: #ffffff !important;
         color: #198754 !important;
         box-shadow: 0 2px 8px rgba(15, 23, 42, .10);
     }
@@ -512,4 +512,251 @@
         </form>
     </div>
 </div>
+
+<style>
+/* =========================================================
+   DARK MODE - CONTROLES CAJA Y MOVIMIENTOS
+   ========================================================= */
+
+/* CONTENEDOR DE LAS PESTAÑAS */
+html[data-color-mode="dark"] .sales-history-tabs {
+    background: #101e30 !important;
+    border-color: #2b4057 !important;
+}
+
+
+/* =========================================================
+   CORTE Z
+   ========================================================= */
+
+html[data-color-mode="dark"] .sales-action-report {
+    background: #14263a !important;
+    border-color: #304860 !important;
+    color: #dbe7f3 !important;
+}
+
+html[data-color-mode="dark"] .sales-action-report i {
+    color: #8eb8e5 !important;
+}
+
+html[data-color-mode="dark"] .sales-action-report:hover {
+    background: #1b3048 !important;
+    border-color: #41617f !important;
+    color: #ffffff !important;
+}
+
+
+/* =========================================================
+   REGISTRAR SALIDA
+   ========================================================= */
+
+html[data-color-mode="dark"] .sales-action-expense {
+    background: rgba(220, 38, 38, .12) !important;
+    border-color: rgba(248, 113, 113, .38) !important;
+    color: #fca5a5 !important;
+}
+
+html[data-color-mode="dark"] .sales-action-expense i {
+    color: #f87171 !important;
+}
+
+html[data-color-mode="dark"] .sales-action-expense:hover {
+    background: rgba(220, 38, 38, .20) !important;
+    border-color: rgba(248, 113, 113, .55) !important;
+    color: #fecaca !important;
+}
+
+
+/* =========================================================
+   HISTORIAL DE VENTAS / GASTOS
+   ========================================================= */
+
+/* Estado normal */
+html[data-color-mode="dark"] .sales-history-tabs .nav-link {
+    background: transparent !important;
+    border-color: transparent !important;
+    color: #9fb2c7 !important;
+}
+
+html[data-color-mode="dark"] .sales-history-tabs .nav-link i {
+    color: #8fa5bb !important;
+}
+
+
+/* Hover */
+html[data-color-mode="dark"] .sales-history-tabs .nav-link:hover {
+    background: #182b40 !important;
+    color: #ffffff !important;
+}
+
+
+/* Historial seleccionado */
+html[data-color-mode="dark"] .sales-history-tabs .nav-link.active {
+    background: #193629 !important;
+    border-color: #28563e !important;
+    color: #6ee7a0 !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .sales-history-tabs .nav-link.active i {
+    color: #4ade80 !important;
+}
+
+
+/* Historial de gastos seleccionado */
+html[data-color-mode="dark"] .sales-history-tabs .expenses-history-tab.active {
+    background: #351d25 !important;
+    border-color: #62313c !important;
+    color: #fca5a5 !important;
+}
+
+html[data-color-mode="dark"] .sales-history-tabs .expenses-history-tab.active i {
+    color: #f87171 !important;
+}
+
+
+/* =========================================================
+   CABECERA DE LA TARJETA DEL HISTORIAL
+   ========================================================= */
+
+html[data-color-mode="dark"] .card-header.bg-white {
+    background: #172a3f !important;
+    border-color: #2b4057 !important;
+}
+
+</style>
+
+<style>
+/* DARK MODE - KPI CAJA RESPETAR COLOR ORIGINAL */
+
+/* =========================================================
+   BADGES
+   TOTAL / CAJA / YAPE / PLIN / POS / SALIDA / BALANCE
+   ========================================================= */
+
+html[data-color-mode="dark"] .sales-kpi .sales-kpi-badge {
+    background: color-mix(
+        in srgb,
+        var(--kpi-color) 14%,
+        #132338
+    ) !important;
+
+    color: color-mix(
+        in srgb,
+        var(--kpi-color) 82%,
+        white
+    ) !important;
+
+    border-color: color-mix(
+        in srgb,
+        var(--kpi-color) 48%,
+        #30465d
+    ) !important;
+}
+
+
+/* =========================================================
+   RECUADROS DE LOS ICONOS
+   También respetan el color original de cada tarjeta
+   ========================================================= */
+
+html[data-color-mode="dark"] .sales-kpi .sales-kpi-icon {
+    background: color-mix(
+        in srgb,
+        var(--kpi-color) 16%,
+        #132338
+    ) !important;
+
+    border: 1px solid color-mix(
+        in srgb,
+        var(--kpi-color) 24%,
+        #30465d
+    ) !important;
+
+    color: var(--kpi-color) !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .sales-kpi .sales-kpi-icon i {
+    color: var(--kpi-color) !important;
+}
+
+
+/* =========================================================
+   FRANJA LATERAL
+   Conserva el degradado del color propio de cada KPI
+   ========================================================= */
+
+html[data-color-mode="dark"] .sales-kpi::before {
+    background: linear-gradient(
+        180deg,
+        var(--kpi-color) 0%,
+        color-mix(in srgb, var(--kpi-color) 55%, #132338) 60%,
+        #132338 100%
+    ) !important;
+}
+
+</style>
+
+
+<style>
+/* DARK MODE - ACCIONES CORTE Z Y SALIDA FINAL */
+
+/* =========================================================
+   CORTE Z - AZUL
+   ========================================================= */
+
+html[data-color-mode="dark"] .sales-action-report {
+    background: rgba(59, 130, 246, .10) !important;
+    border-color: rgba(96, 165, 250, .35) !important;
+    color: #bfdbfe !important;
+}
+
+html[data-color-mode="dark"] .sales-action-report i {
+    background: rgba(59, 130, 246, .18) !important;
+    border: 1px solid rgba(96, 165, 250, .28) !important;
+    color: #60a5fa !important;
+}
+
+html[data-color-mode="dark"] .sales-action-report:hover {
+    background: rgba(59, 130, 246, .18) !important;
+    border-color: #3b82f6 !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .sales-action-report:hover i {
+    background: rgba(59, 130, 246, .28) !important;
+    color: #93c5fd !important;
+}
+
+
+/* =========================================================
+   REGISTRAR SALIDA - ROJO
+   ========================================================= */
+
+html[data-color-mode="dark"] .sales-action-expense {
+    background: rgba(239, 68, 68, .11) !important;
+    border-color: rgba(248, 113, 113, .38) !important;
+    color: #fca5a5 !important;
+}
+
+html[data-color-mode="dark"] .sales-action-expense i {
+    background: rgba(239, 68, 68, .18) !important;
+    border: 1px solid rgba(248, 113, 113, .28) !important;
+    color: #f87171 !important;
+}
+
+html[data-color-mode="dark"] .sales-action-expense:hover {
+    background: rgba(239, 68, 68, .19) !important;
+    border-color: #ef4444 !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .sales-action-expense:hover i {
+    background: rgba(239, 68, 68, .28) !important;
+    color: #fca5a5 !important;
+}
+
+</style>
+
 @endsection

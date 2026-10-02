@@ -56,7 +56,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #fff;
+        background: #ffffff;
         color: var(--cn-primary);
         font-size: 1.2rem;
     }
@@ -71,7 +71,7 @@
     .credit-filter {
         border: 1px solid var(--cn-border);
         border-radius: 14px;
-        background: #fff;
+        background: #ffffff;
         box-shadow: 0 4px 18px rgba(15,23,42,.04);
         margin-bottom: 18px;
     }
@@ -114,14 +114,14 @@
 
     .credit-filter-btn:hover {
         background: #000;
-        border-color: #000;
+        border-color:var(--text-main);
     }
 
     .credit-table-card {
         border: 1px solid var(--cn-border);
         border-radius: 14px;
         overflow: hidden;
-        background: #fff;
+        background: #ffffff;
         box-shadow: 0 5px 20px rgba(15,23,42,.045);
     }
 
@@ -151,7 +151,7 @@
     }
 
     .credit-table thead th {
-        background: #f8fafc;
+        background: #ffffff;
         border-bottom: 1px solid var(--cn-border);
         color: #475569;
         font-size: .67rem;
@@ -177,13 +177,13 @@
     }
 
     .credit-table tbody tr:hover {
-        background: #fafafa;
+        background: #ffffff;
     }
 
     .credit-number {
         font-size: .82rem;
         font-weight: 800;
-        color: #111827;
+        color:var(--text-main);
         white-space: nowrap;
     }
 
@@ -197,7 +197,7 @@
         display: inline-flex;
         align-items: center;
         gap: 7px;
-        color: #111827;
+        color:var(--text-main);
         text-decoration: none;
         font-size: .78rem;
         font-weight: 700;
@@ -216,7 +216,7 @@
         justify-content: center;
         border: 1px solid var(--cn-border);
         border-radius: 7px;
-        background: #f8fafc;
+        background: #ffffff;
         color: #475569;
         font-size: .75rem;
     }
@@ -234,7 +234,7 @@
         padding: 2px 5px;
         border: 1px solid #dbe1e8;
         border-radius: 4px;
-        background: #f8fafc;
+        background: #ffffff;
         color: #334155;
         font-size: .65rem;
         font-weight: 800;
@@ -243,7 +243,7 @@
     .credit-total {
         font-size: .82rem;
         font-weight: 800;
-        color: #111827;
+        color:var(--text-main);
         white-space: nowrap;
     }
 
@@ -273,14 +273,14 @@
 
     .credit-status.pending {
         color: #475569;
-        background: #f8fafc;
+        background: #ffffff;
         border-color: #cbd5e1;
     }
 
     .credit-status.rejected,
     .credit-status.error {
         color: #991b1b;
-        background: #fef2f2;
+        background: #fff1f2;
         border-color: #fecaca;
     }
 
@@ -321,7 +321,7 @@
         align-items: center;
         justify-content: center;
         border-radius: 14px;
-        background: #f8fafc;
+        background: #ffffff;
         border: 1px solid var(--cn-border);
         color: #64748b;
         font-size: 1.25rem;
@@ -342,7 +342,7 @@
     .credit-pagination {
         padding: 14px 18px;
         border-top: 1px solid var(--cn-border);
-        background: #fff;
+        background: #ffffff;
     }
 
     @media (max-width: 992px) {
@@ -356,7 +356,265 @@
     }
 
 .credit-back { padding: 7px 12px !important; border: 1px solid #94a3b8 !important; border-radius: 8px !important; background: #ffffff !important; color: #475569 !important; }
-.credit-back:hover { background: #f8fafc !important; border-color: #64748b !important; color: #0f172a !important; }
+.credit-back:hover { background: #ffffff !important; border-color: #64748b !important; color: #0f172a !important; }
+
+    /* ===== Diseño unificado Notas de Crédito ===== */
+
+    .credit-page {
+        --cn-primary: var(--text-main);
+        --cn-muted: var(--text-muted);
+        --cn-border: var(--border-soft);
+        --cn-soft: var(--light-bg);
+        --cn-white: var(--card-bg);
+    }
+
+    .credit-header {
+        margin-bottom: 20px;
+    }
+
+    .credit-back {
+        min-height: 36px;
+        margin-bottom: 12px;
+        padding: 0 12px !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        border: 1px solid var(--border-soft) !important;
+        border-radius: 9px !important;
+        background: var(--card-bg) !important;
+        color: var(--text-main) !important;
+        font-size: .74rem;
+        font-weight: 700;
+        box-shadow: 0 2px 5px rgba(15,23,42,.03);
+        transition: .16s ease;
+    }
+
+    .credit-back:hover {
+        border-color: #94a3b8 !important;
+        background: var(--light-bg) !important;
+        color: var(--text-main) !important;
+        transform: translateY(-1px);
+    }
+
+    .credit-heading {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .credit-heading > i {
+        margin-top: 4px;
+        color:var(--text-main);
+        font-size: 1.25rem;
+    }
+
+    .credit-title {
+        color: var(--text-main);
+        font-size: 1.45rem;
+        line-height: 1.2;
+    }
+
+    .credit-subtitle {
+        color: var(--text-muted);
+        margin-top: 5px;
+    }
+
+    /* Filtros */
+    .credit-filter {
+        border-color: var(--border-soft);
+        border-radius: var(--radius-md);
+        background: var(--card-bg);
+        box-shadow: var(--shadow-soft);
+    }
+
+    .credit-filter-title {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text-main);
+    }
+
+    .credit-filter-title i {
+        color:var(--text-main);
+    }
+
+    .credit-filter .form-label {
+        color: var(--text-muted);
+    }
+
+    .credit-filter .form-control,
+    .credit-filter .form-select {
+        min-height: 39px;
+        border-color: var(--border-soft);
+        border-radius: 9px;
+        background: var(--card-bg);
+        color: var(--text-main);
+    }
+
+    .credit-filter .form-control:focus,
+    .credit-filter .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 10%, transparent);
+    }
+
+    .credit-filter-btn {
+        height: 39px;
+        border: 1px solid var(--primary);
+        border-radius: 9px;
+        background: var(--primary);
+        color: #fff;
+    }
+
+    .credit-filter-btn:hover {
+        border-color: var(--primary-hover);
+        background: var(--primary-hover);
+        color: #fff;
+    }
+
+    /* Tarjeta principal */
+    .credit-table-card {
+        border-color: var(--border-soft);
+        border-radius: var(--radius-md);
+        background: var(--card-bg);
+        box-shadow: var(--shadow-soft);
+    }
+
+    .credit-table-head {
+        padding: 17px 20px;
+        border-bottom-color: var(--border-soft);
+    }
+
+    .credit-table-title {
+        color: var(--text-main);
+    }
+
+    .credit-table-count {
+        margin-top: 3px;
+        color: var(--text-muted);
+    }
+
+    .credit-table-head .badge {
+        padding: 6px 10px;
+        border-color: var(--border-soft) !important;
+        border-radius: 8px;
+        background: var(--light-bg) !important;
+        color: var(--text-muted) !important;
+        font-size: .68rem;
+        font-weight: 700;
+    }
+
+    /* Tabla */
+    .credit-table thead th {
+        background: var(--light-bg);
+        border-bottom-color: var(--border-soft);
+        color: var(--text-muted);
+    }
+
+    .credit-table tbody td {
+        border-bottom-color: var(--border-soft);
+    }
+
+    .credit-table tbody tr:hover {
+        background: color-mix(in srgb, var(--primary) 2%, var(--card-bg));
+    }
+
+    .credit-number,
+    .credit-total {
+        color: var(--text-main);
+    }
+
+    .credit-date,
+    .credit-reason {
+        color: var(--text-muted);
+    }
+
+    .credit-document {
+        color: var(--text-main);
+    }
+
+    .credit-document:hover {
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    .credit-document-icon {
+        border-color: var(--border-soft);
+        background: var(--light-bg);
+        color: var(--text-muted);
+    }
+
+    /* Acciones */
+    .credit-actions {
+        gap: 7px;
+    }
+
+    .credit-actions .btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: var(--card-bg);
+        transition: .16s ease;
+    }
+
+    .credit-actions .btn-outline-secondary {
+        color: #475569;
+        border-color: var(--border-soft);
+    }
+
+    .credit-actions .btn-outline-secondary:hover {
+        color: #0f172a;
+        border-color: #94a3b8;
+        background: var(--light-bg);
+    }
+
+    .credit-actions .btn-outline-dark {
+        color: var(--primary);
+        border-color: color-mix(in srgb, var(--primary) 30%, var(--border-soft));
+    }
+
+    .credit-actions .btn-outline-dark:hover {
+        color: var(--primary);
+        border-color: var(--primary);
+        background: color-mix(in srgb, var(--primary) 7%, white);
+    }
+
+    .credit-actions .btn-outline-success {
+        color: #15803d;
+        border-color: #bbf7d0;
+    }
+
+    .credit-actions .btn-outline-success:hover {
+        color: #166534;
+        border-color: #86efac;
+        background: #f0fdf4;
+    }
+
+    .credit-actions .btn-outline-warning {
+        color: #b45309;
+        border-color: #fde68a;
+    }
+
+    .credit-actions .btn-outline-warning:hover {
+        color: #92400e;
+        border-color: #fcd34d;
+        background: #fffbeb;
+    }
+
+    /* Estado vacío */
+    .credit-empty-icon {
+        background: var(--light-bg);
+        border-color: var(--border-soft);
+        color: var(--text-muted);
+    }
+
+    .credit-empty-title {
+        color: var(--text-main);
+    }
+
+    .credit-empty-text {
+        color: var(--text-muted);
+    }
 </style>
 
 <div class="container-fluid credit-page">
@@ -366,24 +624,24 @@
         <div>
             <a href="{{ route('billing.index') }}" class="credit-back">
                 <i class="bi bi-arrow-left"></i>
-                Comprobantes
+                Volver a Comprobantes
             </a>
 
-            <h2 class="credit-title">
-                <i class="bi bi-arrow-counterclockwise me-2"></i>
-                Notas de Crédito
-            </h2>
+            <div class="credit-heading">
+                <i class="bi bi-arrow-counterclockwise"></i>
 
-            <p class="credit-subtitle">
-                Gestión y seguimiento de notas de crédito electrónicas.
-            </p>
-        </div>
+                <div>
+                    <h2 class="credit-title">
+                        Notas de Crédito
+                    </h2>
 
-        <div class="credit-header-icon">
-            <i class="bi bi-receipt"></i>
+                    <p class="credit-subtitle">
+                        Gestión y seguimiento de notas de crédito electrónicas.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
-
     {{-- Mensajes --}}
     @if(session('success'))
         <div class="alert alert-success credit-alert mb-3">

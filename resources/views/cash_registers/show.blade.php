@@ -198,7 +198,7 @@
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
             <h2 class="turn-detail-title mb-1">
-                <i class="bi bi-receipt-cutoff me-2" style="color:#000;"></i>
+                <i class="bi bi-receipt-cutoff me-2" style="color:var(--text-main);"></i>
                 Detalle del Turno #{{ $cashRegister->id }}
             </h2>
             <p class="text-muted mb-0">

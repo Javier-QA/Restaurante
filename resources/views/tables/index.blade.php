@@ -4,7 +4,7 @@
 <div class="container-fluid tables-page">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold mb-0" style="color: #000 !important;"><i class="bi bi-grid-3x3-gap-fill me-2" style="color: #000 !important;"></i> Diseño de Salón</h2>
+            <h2 class="fw-bold mb-0" style="color:var(--text-main) !important;"><i class="bi bi-grid-3x3-gap-fill me-2" style="color:var(--text-main) !important;"></i> Diseño de Salón</h2>
             <p class="text-muted mb-0">Arrastra las mesas y guarda la distribución</p>
         </div>
         <div class="d-flex gap-2">
@@ -450,4 +450,162 @@
         });
     }
 </script>
+
+<style>
+/* =========================================================
+   DARK MODE - DISENO DE SALON COMPLETO
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   VARIABLES DEL MODULO
+   --------------------------------------------------------- */
+
+html[data-color-mode="dark"] .tables-page {
+    --tables-card: #142438 !important;
+    --tables-muted: #9aafc4 !important;
+}
+
+
+/* ---------------------------------------------------------
+   PESTAÑAS DE ZONAS
+   --------------------------------------------------------- */
+
+html[data-color-mode="dark"] .tables-page #areaTabs .nav-link {
+    background: #122238 !important;
+    border-color: #263d56 !important;
+    color: #a9bdd0 !important;
+}
+
+html[data-color-mode="dark"] .tables-page #areaTabs .nav-link:hover {
+    background: #192d44 !important;
+    border-color: #3b5875 !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .tables-page #areaTabs .nav-link.active {
+    background: #1a3047 !important;
+    border-color: #456681 !important;
+    color: #ffffff !important;
+}
+
+
+/* ---------------------------------------------------------
+   BARRA DE INFORMACION
+   --------------------------------------------------------- */
+
+html[data-color-mode="dark"] .tables-page .tab-pane > .d-flex.bg-white {
+    background: #142438 !important;
+    border-color: #2c435b !important;
+    color: #dce7f2 !important;
+}
+
+html[data-color-mode="dark"] .tables-page .tab-pane > .d-flex.bg-white small,
+html[data-color-mode="dark"] .tables-page .tab-pane > .d-flex.bg-white .text-muted {
+    color: #9fb3c8 !important;
+}
+
+
+/* ---------------------------------------------------------
+   LIENZO DEL SALON
+   --------------------------------------------------------- */
+
+html[data-color-mode="dark"] .tables-page .salon-canvas {
+    background-color: #0f1d2e !important;
+
+    background-image:
+        radial-gradient(
+            circle,
+            rgba(148, 163, 184, .30) 1.15px,
+            transparent 1.15px
+        ) !important;
+
+    background-size: 22px 22px !important;
+
+    border-color: #2b4259 !important;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.015),
+        0 8px 24px rgba(0,0,0,.15) !important;
+}
+
+
+/* ---------------------------------------------------------
+   TARJETAS DE MESAS
+   --------------------------------------------------------- */
+
+html[data-color-mode="dark"] .tables-page .draggable-table {
+    background: #142438 !important;
+    color: #ffffff !important;
+    border-color: #304b63 !important;
+
+    box-shadow:
+        0 5px 14px rgba(0,0,0,.22) !important;
+}
+
+
+/* Nombre de la mesa */
+html[data-color-mode="dark"] .tables-page .draggable-table strong,
+html[data-color-mode="dark"] .tables-page .draggable-table .fw-bold {
+    color: #ffffff !important;
+}
+
+
+/* Líneas/separadores internos */
+html[data-color-mode="dark"] .tables-page .draggable-table hr {
+    border-color: #38536b !important;
+    opacity: 1 !important;
+}
+
+
+/* Textos secundarios */
+html[data-color-mode="dark"] .tables-page .draggable-table .text-muted {
+    color: #9fb3c8 !important;
+}
+
+
+/* ---------------------------------------------------------
+   MESA LIBRE
+   Mantener el significado verde
+   --------------------------------------------------------- */
+
+html[data-color-mode="dark"] .tables-page .draggable-table.border-success {
+    border-color: #22c55e !important;
+}
+
+
+/* ---------------------------------------------------------
+   MESA OCUPADA / PELIGRO
+   --------------------------------------------------------- */
+
+html[data-color-mode="dark"] .tables-page .draggable-table.border-danger {
+    border-color: #ef4444 !important;
+}
+
+
+/* ---------------------------------------------------------
+   BOTON ELIMINAR MESA
+   --------------------------------------------------------- */
+
+html[data-color-mode="dark"] .tables-page .draggable-table .text-danger {
+    color: #f87171 !important;
+}
+
+
+/* ---------------------------------------------------------
+   MODALES NUEVA ZONA / NUEVA MESA
+   --------------------------------------------------------- */
+
+html[data-color-mode="dark"] .tables-page .modal-header.bg-light,
+html[data-color-mode="dark"] #areaModal .modal-header.bg-light,
+html[data-color-mode="dark"] #tableModal .modal-header.bg-light {
+    background: #172a3f !important;
+    border-color: #304860 !important;
+}
+
+html[data-color-mode="dark"] #areaModal .modal-title,
+html[data-color-mode="dark"] #tableModal .modal-title {
+    color: #ffffff !important;
+}
+
+</style>
 @endsection

@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
 
@@ -60,7 +60,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #fff;
+        background: #ffffff;
         color: var(--cn-black);
         font-size: 1.15rem;
         flex-shrink: 0;
@@ -69,7 +69,7 @@
     .cn-card {
         border: 1px solid var(--cn-border);
         border-radius: 15px;
-        background: #fff;
+        background: #ffffff;
         box-shadow: 0 6px 22px rgba(15,23,42,.05);
         overflow: hidden;
     }
@@ -77,7 +77,7 @@
     .cn-card-header {
         padding: 17px 22px;
         border-bottom: 1px solid var(--cn-border);
-        background: #fff;
+        background: #ffffff;
     }
 
     .cn-card-header h6 {
@@ -105,7 +105,7 @@
         margin-bottom: 22px;
         border: 1px solid #dbe1e8;
         border-radius: 9px;
-        background: #f8fafc;
+        background: #ffffff;
         color: #475569;
         font-size: .76rem;
         line-height: 1.45;
@@ -167,7 +167,7 @@
 
     .cn-document-header {
         padding: 13px 16px;
-        background: #f8fafc;
+        background: #ffffff;
         border-bottom: 1px solid var(--cn-border);
         display: flex;
         align-items: center;
@@ -179,7 +179,7 @@
     }
 
     .cn-document-header span {
-        color: #111827;
+        color:var(--text-main);
         font-size: .78rem;
         font-weight: 800;
     }
@@ -208,7 +208,7 @@
     }
 
     .cn-document-value {
-        color: #111827;
+        color:var(--text-main);
         font-weight: 700;
         text-align: right;
     }
@@ -219,7 +219,7 @@
         padding: 5px 9px;
         border: 1px solid #dbe1e8;
         border-radius: 7px;
-        background: #f8fafc;
+        background: #ffffff;
         font-weight: 800;
     }
 
@@ -247,13 +247,13 @@
 
     .cn-submit {
         background: #111827;
-        border-color: #111827;
+        border-color:var(--text-main);
         color: #fff;
     }
 
     .cn-submit:hover {
         background: #000;
-        border-color: #000;
+        border-color:var(--text-main);
         color: #fff;
     }
 
@@ -491,5 +491,390 @@
     </div>
 
 </div>
+
+
+<style>
+/* DARK MODE - EMITIR NOTA DE CREDITO DEFINITIVO */
+
+/* ==========================================================
+   TARJETA PRINCIPAL
+   ========================================================== */
+
+html[data-color-mode="dark"] .cn-card {
+    background: #101f32 !important;
+    border-color: #30465d !important;
+    box-shadow: none !important;
+}
+
+
+/* CABECERA */
+html[data-color-mode="dark"] .cn-card-header {
+    background: #101f32 !important;
+    border-bottom-color: #30465d !important;
+}
+
+html[data-color-mode="dark"] .cn-card-header h6 {
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .cn-card-header p {
+    color: #8fa6bd !important;
+}
+
+
+/* CUERPO */
+html[data-color-mode="dark"] .cn-body {
+    background: #101f32 !important;
+    color: #ffffff !important;
+}
+
+
+/* ==========================================================
+   AVISO SUNAT
+   ========================================================== */
+
+html[data-color-mode="dark"] .cn-info {
+    background: rgba(59, 130, 246, .08) !important;
+    border-color: rgba(96, 165, 250, .25) !important;
+    color: #b9cce0 !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .cn-info i {
+    color: #60a5fa !important;
+    -webkit-text-fill-color: #60a5fa !important;
+}
+
+html[data-color-mode="dark"] .cn-info div {
+    color: #b9cce0 !important;
+}
+
+
+/* ==========================================================
+   LABELS
+   ========================================================== */
+
+html[data-color-mode="dark"] .cn-label {
+    color: #dbe7f3 !important;
+}
+
+html[data-color-mode="dark"] .cn-required {
+    color: #f87171 !important;
+}
+
+
+/* ==========================================================
+   SELECT Y TEXTAREA
+   Mantenerlos oscuros y uniformes
+   ========================================================== */
+
+html[data-color-mode="dark"] .cn-select,
+html[data-color-mode="dark"] .cn-textarea {
+    background-color: #132338 !important;
+    border-color: #30465d !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .cn-select:focus,
+html[data-color-mode="dark"] .cn-textarea:focus {
+    background-color: #132338 !important;
+    border-color: var(--primary) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 3px
+        color-mix(in srgb, var(--primary) 14%, transparent) !important;
+}
+
+html[data-color-mode="dark"] .cn-textarea::placeholder {
+    color: #7890a8 !important;
+    opacity: 1 !important;
+}
+
+
+/* ==========================================================
+   TARJETAS / BLOQUES INTERNOS
+   ========================================================== */
+
+html[data-color-mode="dark"] .cn-summary,
+html[data-color-mode="dark"] .cn-document,
+html[data-color-mode="dark"] .cn-document-card,
+html[data-color-mode="dark"] .cn-reference,
+html[data-color-mode="dark"] .cn-reference-card {
+    background: #132338 !important;
+    border-color: #30465d !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+
+/* Separadores internos */
+html[data-color-mode="dark"] .cn-card hr,
+html[data-color-mode="dark"] .cn-body hr {
+    border-color: #30465d !important;
+    opacity: 1 !important;
+}
+
+</style>
+
+
+<style>
+/* DARK MODE - DOCUMENTO AFECTADO DEFINITIVO */
+
+/* CONTENEDOR */
+html[data-color-mode="dark"] .cn-document {
+    background: #132338 !important;
+    border-color: #30465d !important;
+}
+
+
+/* CABECERA QUE ESTABA BLANCA */
+html[data-color-mode="dark"] .cn-document-header {
+    background: #101f32 !important;
+    border-bottom-color: #30465d !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .cn-document-header i {
+    color: var(--primary) !important;
+    -webkit-text-fill-color: var(--primary) !important;
+}
+
+html[data-color-mode="dark"] .cn-document-header span {
+    color: #ffffff !important;
+}
+
+
+/* CUERPO */
+html[data-color-mode="dark"] .cn-document-body {
+    background: #132338 !important;
+}
+
+
+/* FILAS */
+html[data-color-mode="dark"] .cn-document-row {
+    border-bottom-color: #30465d !important;
+}
+
+html[data-color-mode="dark"] .cn-document-label {
+    color: #8fa6bd !important;
+}
+
+html[data-color-mode="dark"] .cn-document-value {
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .cn-document-value .text-muted {
+    color: #8fa6bd !important;
+}
+
+
+/* COMPROBANTE: BOLETA / FACTURA */
+html[data-color-mode="dark"] .cn-number {
+    background: color-mix(
+        in srgb,
+        var(--primary) 14%,
+        #132338
+    ) !important;
+
+    border: 1px solid color-mix(
+        in srgb,
+        var(--primary) 32%,
+        #30465d
+    ) !important;
+
+    color: var(--primary) !important;
+    box-shadow: none !important;
+}
+
+
+/* IMPORTE A ANULAR */
+html[data-color-mode="dark"] .cn-total {
+    color: var(--primary) !important;
+}
+
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+/* NOTA CREDITO - ICONO IZQUIERDO FINAL */
+
+/* Cabecera normal */
+.cn-header {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+/* El icono vuelve a ser visible */
+.cn-header-icon {
+    position: static !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+
+    margin: 0 !important;
+
+    border-radius: 12px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Icono blanco en oscuro */
+html[data-color-mode="dark"] .cn-header-icon {
+    background: #132338 !important;
+    border: 1px solid #30465d !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .cn-header-icon i,
+html[data-color-mode="dark"] .cn-header-icon i::before {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+</style>
+
+
+<style>
+/* NOTA CREDITO - BORDES VOLVER Y CANCELAR */
+
+/* VOLVER AL COMPROBANTE */
+.cn-back {
+    border: 1px solid var(--border-soft) !important;
+    border-radius: 8px !important;
+    padding: 7px 11px !important;
+    background: var(--card-bg) !important;
+    text-decoration: none !important;
+    transition: all .2s ease !important;
+}
+
+/* CANCELAR */
+.cn-actions .btn-outline-secondary {
+    border: 1px solid var(--border-soft) !important;
+    background: var(--card-bg) !important;
+    color: var(--text-muted) !important;
+    box-shadow: none !important;
+}
+
+
+/* =========================================
+   MODO OSCURO
+   ========================================= */
+
+html[data-color-mode="dark"] .cn-back,
+html[data-color-mode="dark"] .cn-actions .btn-outline-secondary {
+    background: #132338 !important;
+    border: 1px solid #40566e !important;
+    color: #b9cce0 !important;
+}
+
+/* Iconos */
+html[data-color-mode="dark"] .cn-back i,
+html[data-color-mode="dark"] .cn-actions .btn-outline-secondary i {
+    color: #b9cce0 !important;
+    -webkit-text-fill-color: #b9cce0 !important;
+}
+
+/* Hover */
+html[data-color-mode="dark"] .cn-back:hover,
+html[data-color-mode="dark"] .cn-actions .btn-outline-secondary:hover {
+    background: color-mix(
+        in srgb,
+        var(--primary) 10%,
+        #132338
+    ) !important;
+
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+}
+
+html[data-color-mode="dark"] .cn-back:hover i,
+html[data-color-mode="dark"] .cn-actions .btn-outline-secondary:hover i {
+    color: var(--primary) !important;
+    -webkit-text-fill-color: var(--primary) !important;
+}
+
+</style>
+
+
+<style>
+/* NOTA CREDITO - CONTENEDORES A LA IZQUIERDA */
+
+/* Contenedor general */
+.cn-create {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+}
+
+/* Wrapper principal: eliminar centrado */
+.cn-wrapper {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* Cabecera */
+.cn-header {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Título y subtítulo */
+.cn-header > div:first-child,
+.cn-title,
+.cn-subtitle {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    text-align: left !important;
+}
+
+/* Contenedor principal del formulario */
+.cn-card {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Encabezado del formulario */
+.cn-card-header {
+    text-align: left !important;
+}
+
+/* Contenido del formulario */
+.cn-body {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+</style>
 
 @endsection

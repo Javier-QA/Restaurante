@@ -83,14 +83,14 @@
 
     .cn-status.pending {
         color: #475569;
-        background: #f8fafc;
+        background: #ffffff;
         border-color: #cbd5e1;
     }
 
     .cn-status.rejected,
     .cn-status.error {
         color: #991b1b;
-        background: #fef2f2;
+        background: #fff1f2;
         border-color: #fecaca;
     }
 
@@ -112,7 +112,7 @@
     .cn-card {
         border: 1px solid var(--cn-border);
         border-radius: 14px;
-        background: #fff;
+        background: #ffffff;
         box-shadow: 0 5px 20px rgba(15,23,42,.045);
         overflow: hidden;
         margin-bottom: 16px;
@@ -121,7 +121,7 @@
     .cn-card-header {
         padding: 15px 19px;
         border-bottom: 1px solid var(--cn-border);
-        background: #fff;
+        background: #ffffff;
     }
 
     .cn-card-header h6 {
@@ -166,7 +166,7 @@
         justify-content: center;
         border-radius: 9px;
         border: 1px solid #dbe1e8;
-        background: #fff;
+        background: #ffffff;
         color: #475569;
         font-size: 1rem;
     }
@@ -215,7 +215,7 @@
         margin-right: 5px;
         border: 1px solid #dbe1e8;
         border-radius: 5px;
-        background: #f8fafc;
+        background: #ffffff;
         color: #334155;
         font-size: .66rem;
         font-weight: 800;
@@ -225,7 +225,7 @@
         padding: 15px;
         border: 1px solid var(--cn-border);
         border-radius: 10px;
-        background: #fff;
+        background: #ffffff;
     }
 
     .cn-total-row {
@@ -254,13 +254,13 @@
     }
 
     .cn-total-final span {
-        color: #111827;
+        color:var(--text-main);
         font-size: .78rem;
         font-weight: 800;
     }
 
     .cn-total-final strong {
-        color: #111827;
+        color:var(--text-main);
         font-size: 1.15rem;
         font-weight: 800;
     }
@@ -283,7 +283,7 @@
         color: var(--cn-muted);
         font-size: .7rem;
         font-weight: 700;
-        background: #fafafa;
+        background: #ffffff;
         border-right: 1px solid #eef2f7;
     }
 
@@ -300,7 +300,7 @@
         padding: 4px 7px;
         border: 1px solid #e2e8f0;
         border-radius: 5px;
-        background: #f8fafc;
+        background: #ffffff;
         color: #475569;
         font-size: .66rem;
         word-break: break-all;

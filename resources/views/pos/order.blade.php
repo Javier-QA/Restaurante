@@ -43,14 +43,14 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background: #fff;
+        background: #ffffff;
         border-bottom: 1px solid #e5e7eb;
         padding: 10px 20px;
         flex-shrink: 0;
         box-shadow: 0 2px 8px rgba(45,27,94,0.06);
     ">
         <div style="display:flex;align-items:center;gap:12px;">
-            <a href="{{ route('pos.index') }}" class="btn btn-outline-secondary btn-sm">
+            <a href="{{ route('pos.index') }}" class="btn btn-outline-secondary btn-sm pos-back-btn">
                 <i class="bi bi-arrow-left"></i> Volver
             </a>
             <div>
@@ -93,9 +93,9 @@
         </div>
 
         {{-- Productos --}}
-        <div style="flex:1; min-width:0; background:#fff; overflow-y:auto; padding:12px 14px 20px;" id="products-container">
+        <div style="flex:1; min-width:0; background:#ffffff; overflow-y:auto; padding:12px 14px 20px;" id="products-container">
             {{-- Barra búsqueda --}}
-            <div style="position:sticky;top:0;background:#fff;padding-bottom:10px;z-index:10;">
+            <div style="position:sticky;top:0;background:#ffffff;padding-bottom:10px;z-index:10;">
                 <div class="input-group input-group-lg pos-search shadow-sm">
                     <span class="input-group-text border-end-0">
                         <i class="bi bi-search"></i>
@@ -179,14 +179,14 @@
         <div style="
             width: 280px;
             flex-shrink: 0;
-            background: #fff;
+            background: #ffffff;
             border-left: 1px solid #e5e7eb;
             display: flex;
             flex-direction: column;
             height: 100%;
             box-shadow: -4px 0 20px rgba(45,27,94,0.07);
         ">
-            <div style="padding: 14px 16px; background: #f8f7ff; border-bottom: 1px solid #e5e7eb; flex-shrink: 0;">
+            <div class="pos-cart-header" style="padding: 14px 16px; background: #20243a; border-bottom: 1px solid #e5e7eb; flex-shrink: 0;">
                 <h6 class="fw-bold mb-0"><i class="bi bi-cart"></i> Cuenta Actual</h6>
             </div>
             <div id="cart-container" style="flex: 1; display: flex; flex-direction: column; min-height: 0; overflow-y: auto;">
@@ -1609,7 +1609,7 @@ window.lookupClientByDocument = async function() {
         position: relative;
         border-radius: 16px;
         border: 2px solid var(--pal-border);
-        background: #fff;
+        background: #ffffff;
         cursor: pointer;
         overflow: hidden;
         transition: transform .18s, box-shadow .18s, border-color .18s;
@@ -2229,7 +2229,7 @@ window.lookupClientByDocument = async function() {
 
     .pos-client-clear:hover {
         color: #dc2626 !important;
-        background: #fef2f2 !important;
+        background: #fff1f2 !important;
     }
 
 
@@ -2733,7 +2733,7 @@ window.lookupClientByDocument = async function() {
     justify-content: center;
     gap: 8px;
     color: #64748b;
-    background: #f8fafc;
+    background: #ffffff;
     border-radius: 12px;
 }
 
@@ -2746,7 +2746,7 @@ window.lookupClientByDocument = async function() {
 .pos-qr-amount {
     padding: 10px 12px;
     border-radius: 12px;
-    background: #f8fafc;
+    background: #ffffff;
     border: 1px solid #e5e7eb;
 }
 
@@ -2777,7 +2777,7 @@ window.lookupClientByDocument = async function() {
 .pos-digital-payment-amount {
     padding: 12px 14px;
     text-align: center;
-    background: #f8fafc;
+    background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
 }
@@ -2984,6 +2984,325 @@ window.lookupClientByDocument = async function() {
     color: #ffffff !important;
 }
 </style>
+
+<style>
+/* DARK MODE - POS PRODUCTOS Y CUENTA FINAL */
+
+/* Tarjeta completa */
+html[data-color-mode="dark"] .pos-order-page .pos-product-card {
+    background: #132338 !important;
+    border-color: #38516b !important;
+}
+
+/* Parte inferior que actualmente aparece crema */
+html[data-color-mode="dark"] .pos-order-page .pos-product-footer {
+    background: #132338 !important;
+    border-top: 1px solid #30465d !important;
+}
+
+/* Nombre del producto */
+html[data-color-mode="dark"] .pos-order-page .pos-product-name {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Categoría: mantener su color */
+html[data-color-mode="dark"] .pos-order-page .pos-product-cat {
+    opacity: 1 !important;
+}
+
+/* Panel de Cuenta Actual */
+html[data-color-mode="dark"] #cart-container {
+    background: #132338 !important;
+    color: #ffffff !important;
+}
+
+/* Eliminar cualquier zona clara dentro de la cuenta vacía */
+html[data-color-mode="dark"] #cart-container > div {
+    border-color: #30465d !important;
+}
+
+/* Texto Cuenta vacía */
+html[data-color-mode="dark"] #cart-container .text-muted {
+    color: #8fa6bd !important;
+}
+
+</style>
+
+
+<style>
+/* DARK MODE - CUENTA ACTUAL DEFINITIVO */
+
+html[data-color-mode="dark"] .pos-cart-panel {
+    background: #132338 !important;
+    border-left-color: #30465d !important;
+    box-shadow: -4px 0 20px rgba(0,0,0,.20) !important;
+}
+
+html[data-color-mode="dark"] .pos-cart-header {
+    background: #101f32 !important;
+    border-bottom-color: #30465d !important;
+}
+
+html[data-color-mode="dark"] .pos-cart-header h6,
+html[data-color-mode="dark"] .pos-cart-header h6 i {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Área completa del carrito */
+html[data-color-mode="dark"] #cart-container {
+    background: #132338 !important;
+    color: #ffffff !important;
+}
+
+/* Elementos internos cuando la cuenta está vacía */
+html[data-color-mode="dark"] #cart-container > * {
+    background-color: transparent !important;
+}
+
+/* Texto secundario */
+html[data-color-mode="dark"] #cart-container .text-muted {
+    color: #8fa6bd !important;
+}
+
+/* Iconos secundarios */
+html[data-color-mode="dark"] #cart-container i {
+    color: #8fa6bd;
+}
+
+</style>
+
+
+<style>
+/* POS - CUENTA ACTUAL MODO CLARO */
+
+/* Panel derecho */
+html:not([data-color-mode="dark"]) .pos-cart-panel {
+    background: #ffffff !important;
+    border-left: 1px solid var(--border-soft) !important;
+}
+
+/* Cabecera Cuenta Actual */
+html:not([data-color-mode="dark"]) .pos-cart-header {
+    background: #ffffff !important;
+    border-bottom: 1px solid var(--border-soft) !important;
+}
+
+/* Título e icono */
+html:not([data-color-mode="dark"]) .pos-cart-header h6,
+html:not([data-color-mode="dark"]) .pos-cart-header h6 i {
+    color: var(--text-main) !important;
+    -webkit-text-fill-color: var(--text-main) !important;
+}
+
+/* Cuerpo de la cuenta */
+html:not([data-color-mode="dark"]) #cart-container {
+    background: #ffffff !important;
+    color: var(--text-main) !important;
+}
+
+/* Cuenta vacía */
+html:not([data-color-mode="dark"]) #cart-container .text-muted {
+    color: var(--text-muted) !important;
+}
+
+</style>
+
+
+<style>
+/* POS - BOTON VOLVER CON BORDE */
+
+.pos-back-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+
+    background: #ffffff !important;
+    color: var(--text-main) !important;
+
+    padding: 6px 11px !important;
+    box-shadow: none !important;
+}
+
+.pos-back-btn i {
+    color: inherit !important;
+}
+
+.pos-back-btn:hover {
+    border-color: var(--primary) !important;
+    background: color-mix(in srgb, var(--primary) 7%, white) !important;
+    color: var(--primary) !important;
+}
+
+
+/* MODO OSCURO */
+
+html[data-color-mode="dark"] .pos-back-btn {
+    background: #132338 !important;
+    border-color: #40566e !important;
+    color: #b9cce0 !important;
+}
+
+html[data-color-mode="dark"] .pos-back-btn:hover {
+    background: color-mix(in srgb, var(--primary) 12%, #132338) !important;
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+}
+
+</style>
+
+
+<style>
+/* POS AJUSTES - MODO OSCURO DEFINITIVO */
+
+/* =========================================
+   CONTENEDOR DEL MODAL
+   ========================================= */
+
+html[data-color-mode="dark"] #optionsModal .modal-content {
+    background: #122238 !important;
+    background-color: #122238 !important;
+    border: 1px solid #304861 !important;
+    color: #ffffff !important;
+    border-radius: 14px !important;
+    overflow: hidden;
+}
+
+
+/* =========================================
+   CABECERA
+   ========================================= */
+
+html[data-color-mode="dark"] #optionsModal .pos-modal-options {
+    background: #ff8c00 !important;
+    border-color: #ff8c00 !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] #optionsModal .pos-modal-options .modal-title {
+    color: #ffffff !important;
+}
+
+
+/* Botón X */
+html[data-color-mode="dark"] #optionsModal .pos-modal-options .btn-close {
+    filter: brightness(0) invert(1) !important;
+    opacity: 1 !important;
+}
+
+
+/* =========================================
+   CUERPO
+   ========================================= */
+
+html[data-color-mode="dark"] #optionsModal .modal-body {
+    background: #122238 !important;
+    color: #ffffff !important;
+}
+
+
+/* =========================================
+   TOTAL ACTUAL
+   ========================================= */
+
+html[data-color-mode="dark"] #optionsModal .pos-options-total {
+    background: #182b40 !important;
+    background-color: #182b40 !important;
+    border: 1px solid #38516a !important;
+    border-radius: 12px !important;
+    color: #9db2c7 !important;
+    padding: 14px !important;
+}
+
+html[data-color-mode="dark"] #optionsModal .pos-options-total span {
+    color: #9db2c7 !important;
+}
+
+html[data-color-mode="dark"] #optionsModal .pos-options-total strong {
+    color: #ff8c00 !important;
+    -webkit-text-fill-color: #ff8c00 !important;
+}
+
+
+/* =========================================
+   ETIQUETAS
+   ========================================= */
+
+html[data-color-mode="dark"] #optionsModal .form-label {
+    color: #aebfd0 !important;
+}
+
+html[data-color-mode="dark"] #optionsModal .text-muted {
+    color: #aebfd0 !important;
+}
+
+
+/* =========================================
+   DESCUENTO Y PROPINА
+   ========================================= */
+
+html[data-color-mode="dark"] #optionsModal .form-control {
+    background: #0d1b2b !important;
+    background-color: #0d1b2b !important;
+    border: 1px solid #38516a !important;
+    color: #ffffff !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] #optionsModal .form-control:focus {
+    background: #102238 !important;
+    background-color: #102238 !important;
+    border-color: #ff8c00 !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(255, 140, 0, .12) !important;
+}
+
+
+/* =========================================
+   FOOTER
+   ========================================= */
+
+html[data-color-mode="dark"] #optionsModal .modal-footer {
+    background: #0d1b2b !important;
+    border-top: 1px solid #304861 !important;
+}
+
+
+/* =========================================
+   APLICAR CAMBIOS
+   ========================================= */
+
+html[data-color-mode="dark"] #optionsModal .modal-footer .btn-primary {
+    background: #ff8c00 !important;
+    border-color: #ff8c00 !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] #optionsModal .modal-footer .btn-primary:hover {
+    background: #ff9d1a !important;
+    border-color: #ff9d1a !important;
+    color: #ffffff !important;
+}
+
+
+/* =========================================
+   PLACEHOLDER
+   ========================================= */
+
+html[data-color-mode="dark"] #optionsModal .form-control::placeholder {
+    color: #71869b !important;
+}
+
+</style>
+
 @endsection
 <style>
 .pos-move-table-btn {

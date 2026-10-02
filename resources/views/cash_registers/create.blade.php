@@ -22,7 +22,7 @@
     }
 
     .cash-open-title i {
-        color: #000;
+        color:var(--text-main);
     }
 
     .cash-open-subtitle {

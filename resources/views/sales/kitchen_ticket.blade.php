@@ -11,7 +11,7 @@
             width: 80mm;
             margin: 0 auto;
             padding: 5mm;
-            color: #000;
+            color:var(--text-main);
         }
         .header { text-align: center; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 10px; }
         .title { font-size: 20px; font-weight: 900; text-transform: uppercase; display: block; }
@@ -41,7 +41,7 @@
         }
         .note {
             font-size: 14px;
-            background-color: #000;
+            background-color:var(--text-main);
             color: #fff;
             padding: 2px 5px;
             border-radius: 3px;

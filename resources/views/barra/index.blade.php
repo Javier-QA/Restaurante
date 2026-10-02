@@ -4,12 +4,12 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold text-dark"><i class="bi bi-cup-straw me-2" style="color:#000;"></i>Monitor de Barra</h2>
+            <h2 class="fw-bold text-dark"><i class="bi bi-cup-straw me-2" style="color:var(--text-main);"></i>Monitor de Barra</h2>
             <p class="text-muted">Pedidos pendientes de preparación en Barra</p>
         </div>
         <div class="d-flex align-items-center gap-3">
-            <span class="badge bg-white text-dark border"><i class="bi bi-circle-fill text-danger me-1"></i> Pendiente</span>
-            <span class="badge bg-white text-dark border"><i class="bi bi-circle-fill text-warning me-1"></i> Preparando</span>
+            <span class="badge bg-white text-dark border bar-status-pending"><i class="bi bi-circle-fill me-1"></i> Pendiente</span>
+            <span class="badge bg-white text-dark border bar-status-preparing"><i class="bi bi-circle-fill me-1"></i> Preparando</span>
             <div id="reloj" class="fw-bold fs-5 ms-3">00:00:00</div>
         </div>
     </div>
@@ -342,6 +342,137 @@
     // Actualización automática sin recargar la página
     setInterval(refreshBar, 2000);
 </script>
+
+<style>
+/* DARK MODE - ESTADOS MONITOR BARRA */
+
+/* PENDIENTE - ROJO */
+html[data-color-mode="dark"] .bar-status-pending {
+    background: rgba(239, 68, 68, .12) !important;
+    border-color: rgba(239, 68, 68, .32) !important;
+    color: #f87171 !important;
+}
+
+html[data-color-mode="dark"] .bar-status-pending i {
+    color: #ef4444 !important;
+    -webkit-text-fill-color: #ef4444 !important;
+}
+
+
+/* PREPARANDO - AMARILLO */
+html[data-color-mode="dark"] .bar-status-preparing {
+    background: rgba(245, 158, 11, .12) !important;
+    border-color: rgba(245, 158, 11, .32) !important;
+    color: #fbbf24 !important;
+}
+
+html[data-color-mode="dark"] .bar-status-preparing i {
+    color: #f59e0b !important;
+    -webkit-text-fill-color: #f59e0b !important;
+}
+
+
+/* MODO CLARO */
+html:not([data-color-mode="dark"]) .bar-status-pending i {
+    color: #dc3545 !important;
+}
+
+html:not([data-color-mode="dark"]) .bar-status-preparing i {
+    color: #ffc107 !important;
+}
+
+</style>
+
+
+<style>
+/* BARRA - ESTADOS CABECERA DEFINITIVOS */
+
+/* =====================================
+   PENDIENTE = ROJO
+   ===================================== */
+
+#bar-orders .card-header.bg-danger,
+#barra-orders .card-header.bg-danger {
+    background: #e33446 !important;
+    border-color: #e33446 !important;
+    color: #ffffff !important;
+}
+
+#bar-orders .card-header.bg-danger *,
+#barra-orders .card-header.bg-danger * {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+
+/* =====================================
+   PREPARANDO = AMARILLO
+   ===================================== */
+
+#bar-orders .card-header.bg-warning,
+#barra-orders .card-header.bg-warning {
+    background: #fbbf24 !important;
+    border-color: #fbbf24 !important;
+    color: #1f2937 !important;
+}
+
+#bar-orders .card-header.bg-warning *,
+#barra-orders .card-header.bg-warning * {
+    color: #1f2937 !important;
+    -webkit-text-fill-color: #1f2937 !important;
+}
+
+
+/* =====================================
+   CANTIDAD
+   ===================================== */
+
+#bar-orders .badge.bg-secondary,
+#barra-orders .badge.bg-secondary {
+    background: #747d84 !important;
+    border-color: transparent !important;
+    color: #ffffff !important;
+}
+
+
+/* =====================================
+   EMPEZAR
+   ===================================== */
+
+#bar-orders .btn-outline-danger,
+#barra-orders .btn-outline-danger {
+    background: transparent !important;
+    border-color: transparent !important;
+    color: #e33446 !important;
+    font-weight: 700 !important;
+    box-shadow: none !important;
+}
+
+#bar-orders .btn-outline-danger:hover,
+#barra-orders .btn-outline-danger:hover {
+    background: rgba(227, 52, 70, .10) !important;
+    color: #e33446 !important;
+}
+
+
+/* =====================================
+   MODO OSCURO
+   ===================================== */
+
+html[data-color-mode="dark"] #bar-orders .card-header.bg-danger,
+html[data-color-mode="dark"] #barra-orders .card-header.bg-danger {
+    background: #e33446 !important;
+    border-color: #e33446 !important;
+}
+
+html[data-color-mode="dark"] #bar-orders .card-header.bg-warning,
+html[data-color-mode="dark"] #barra-orders .card-header.bg-warning {
+    background: #fbbf24 !important;
+    border-color: #fbbf24 !important;
+}
+
+</style>
+
 @endsection
 
 

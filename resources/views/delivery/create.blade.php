@@ -571,4 +571,212 @@
     }
 </script>
 <div class="modal fade" id="deliveryNoteModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title"><i class="bi bi-chat-left-text me-2"></i>Nota del Plato</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="deliveryNoteIndex"><label for="deliveryNoteText" class="form-label fw-semibold">Indicaciones para cocina</label><textarea id="deliveryNoteText" class="form-control" rows="3" maxlength="255" placeholder="Ejemplo: sin cebolla, sin picante..."></textarea></div><div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button><button type="button" class="btn btn-primary" onclick="saveDeliveryNote()">Guardar Nota</button></div></div></div></div>
+
+<style>
+/* =========================================================
+   DARK MODE - NUEVO PEDIDO DELIVERY DEFINITIVO
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   TARJETA PRINCIPAL DE PRODUCTOS
+   --------------------------------------------------------- */
+
+html[data-color-mode="dark"] .delivery-create-page .card {
+    border-color: #2c435b !important;
+}
+
+
+/* Encabezado Productos */
+html[data-color-mode="dark"] .delivery-create-page .card-header.bg-white {
+    background: #142438 !important;
+    border-color: #304860 !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .delivery-create-page .card-header h6,
+html[data-color-mode="dark"] .delivery-create-page .card-header i {
+    color: #ffffff !important;
+}
+
+
+/* ---------------------------------------------------------
+   PANEL IZQUIERDO DE PRODUCTOS
+   --------------------------------------------------------- */
+
+html[data-color-mode="dark"] #productGrid {
+    background: #101e30 !important;
+    border-color: #304860 !important;
+}
+
+
+/* Buscador */
+html[data-color-mode="dark"] #searchProduct {
+    background: #142438 !important;
+    color: #ffffff !important;
+    border-color: #304860 !important;
+}
+
+html[data-color-mode="dark"] #searchProduct::placeholder {
+    color: #7890a8 !important;
+    opacity: 1 !important;
+}
+
+html[data-color-mode="dark"] #searchProduct:focus {
+    background: #172a40 !important;
+    color: #ffffff !important;
+    border-color: var(--primary) !important;
+}
+
+
+/* ---------------------------------------------------------
+   TARJETAS DE PRODUCTOS
+   --------------------------------------------------------- */
+
+html[data-color-mode="dark"] #productGrid .product-card > .card {
+    background: #142438 !important;
+    border: 1px solid #2c435b !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] #productGrid .product-card > .card:hover {
+    background: #192d44 !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 6px 16px rgba(0,0,0,.20) !important;
+}
+
+html[data-color-mode="dark"] #productGrid .product-card h6 {
+    color: #ffffff !important;
+}
+
+
+/* Precio */
+html[data-color-mode="dark"] #productGrid .product-card .text-primary {
+    color: var(--primary) !important;
+}
+
+
+/* ---------------------------------------------------------
+   CARRITO
+   --------------------------------------------------------- */
+
+/* Contenedor bg-white que envuelve carrito + resumen */
+html[data-color-mode="dark"] .delivery-create-page #deliveryCartContainer,
+html[data-color-mode="dark"] .delivery-create-page #deliveryCartContainer.bg-white,
+html[data-color-mode="dark"] .delivery-create-page .card-body > .w-50.bg-white,
+html[data-color-mode="dark"] .delivery-create-page .card-body > .w-50.d-flex.flex-column.bg-white {
+    background: #142438 !important;
+}
+
+
+/* Tabla */
+html[data-color-mode="dark"] #deliveryCartContainer .table,
+html[data-color-mode="dark"] #deliveryCartContainer tbody,
+html[data-color-mode="dark"] #deliveryCartContainer tr,
+html[data-color-mode="dark"] #deliveryCartContainer td {
+    background: transparent !important;
+    color: #ffffff !important;
+    border-color: #304860 !important;
+}
+
+
+/* Mensaje carrito vacío */
+html[data-color-mode="dark"] #deliveryCartContainer .text-muted {
+    color: #7890a8 !important;
+}
+
+
+/* ---------------------------------------------------------
+   RESUMEN DEL PEDIDO
+   --------------------------------------------------------- */
+
+html[data-color-mode="dark"] .delivery-cart-summary {
+    background: #101e30 !important;
+    border-color: #304860 !important;
+    color: #ffffff !important;
+}
+
+
+/* Subtotal */
+html[data-color-mode="dark"] .delivery-cart-summary .text-muted {
+    color: #9fb3c8 !important;
+}
+
+
+/* TOTAL */
+html[data-color-mode="dark"] .delivery-cart-summary .fs-5,
+html[data-color-mode="dark"] .delivery-cart-summary .fs-5 > span:first-child {
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .delivery-cart-summary .text-primary,
+html[data-color-mode="dark"] #totalAmount {
+    color: var(--primary) !important;
+}
+
+
+/* ---------------------------------------------------------
+   BOTON CONFIRMAR
+   --------------------------------------------------------- */
+
+html[data-color-mode="dark"] #btnSubmitDelivery {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] #btnSubmitDelivery:hover:not(:disabled) {
+    background: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
+}
+
+html[data-color-mode="dark"] #btnSubmitDelivery:disabled {
+    background: color-mix(
+        in srgb,
+        var(--primary) 58%,
+        #142438
+    ) !important;
+
+    border-color: transparent !important;
+    color: rgba(255,255,255,.82) !important;
+    opacity: 1 !important;
+}
+
+
+/* ---------------------------------------------------------
+   SCROLLBARS
+   --------------------------------------------------------- */
+
+html[data-color-mode="dark"] #productGrid,
+html[data-color-mode="dark"] #deliveryCartContainer {
+    scrollbar-width: thin;
+    scrollbar-color: #3a536c #101e30;
+}
+
+html[data-color-mode="dark"] #productGrid::-webkit-scrollbar,
+html[data-color-mode="dark"] #deliveryCartContainer::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+html[data-color-mode="dark"] #productGrid::-webkit-scrollbar-track,
+html[data-color-mode="dark"] #deliveryCartContainer::-webkit-scrollbar-track {
+    background: #101e30;
+}
+
+html[data-color-mode="dark"] #productGrid::-webkit-scrollbar-thumb,
+html[data-color-mode="dark"] #deliveryCartContainer::-webkit-scrollbar-thumb {
+    background: #3a536c;
+    border-radius: 999px;
+}
+
+
+/* ---------------------------------------------------------
+   SEPARADOR PRODUCTOS / CARRITO
+   --------------------------------------------------------- */
+
+html[data-color-mode="dark"] #productGrid.border-end {
+    border-right-color: #304860 !important;
+}
+
+</style>
 @endsection

@@ -1,15 +1,15 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold text-dark"><i class="bi bi-fire me-2" style="color:#000;"></i>Monitor de Cocina (KDS)</h2>
+            <h2 class="fw-bold text-dark"><i class="bi bi-fire me-2" style="color:var(--text-main);"></i>Monitor de Cocina (KDS)</h2>
             <p class="text-muted">Pedidos pendientes de preparación</p>
         </div>
         <div class="d-flex align-items-center gap-3">
-            <span class="badge bg-white text-dark border"><i class="bi bi-circle-fill text-danger me-1"></i> Pendiente</span>
-            <span class="badge bg-white text-dark border"><i class="bi bi-circle-fill text-warning me-1"></i> Preparando</span>
+            <span class="badge bg-white text-dark border kitchen-status-pending"><i class="bi bi-circle-fill me-1"></i> Pendiente</span>
+            <span class="badge bg-white text-dark border kitchen-status-preparing"><i class="bi bi-circle-fill me-1"></i> Preparando</span>
             <div id="reloj" class="fw-bold fs-5 ms-3">00:00:00</div>
         </div>
     </div>
@@ -342,4 +342,200 @@
     // Actualización automática sin recargar la página
     setInterval(refreshKitchen, 2000);
 </script>
+
+<style>
+/* DARK MODE - ESTADOS MONITOR COCINA */
+
+/* PENDIENTE - ROJO */
+html[data-color-mode="dark"] .kitchen-status-pending {
+    background: rgba(239, 68, 68, .12) !important;
+    border-color: rgba(239, 68, 68, .32) !important;
+    color: #f87171 !important;
+}
+
+html[data-color-mode="dark"] .kitchen-status-pending i {
+    color: #ef4444 !important;
+    -webkit-text-fill-color: #ef4444 !important;
+}
+
+
+/* PREPARANDO - AMARILLO */
+html[data-color-mode="dark"] .kitchen-status-preparing {
+    background: rgba(245, 158, 11, .12) !important;
+    border-color: rgba(245, 158, 11, .32) !important;
+    color: #fbbf24 !important;
+}
+
+html[data-color-mode="dark"] .kitchen-status-preparing i {
+    color: #f59e0b !important;
+    -webkit-text-fill-color: #f59e0b !important;
+}
+
+
+/* MODO CLARO - conserva apariencia clara */
+html:not([data-color-mode="dark"]) .kitchen-status-pending i {
+    color: #dc3545 !important;
+}
+
+html:not([data-color-mode="dark"]) .kitchen-status-preparing i {
+    color: #ffc107 !important;
+}
+
+</style>
+
+
+
+
+
+<style>
+/* KDS - PEDIDO PENDIENTE ESTILO ROJO */
+
+/* Cabecera roja de la tarjeta */
+.card .card-header {
+    background: #e33446 !important;
+    border-bottom-color: #e33446 !important;
+    color: #ffffff !important;
+}
+
+/* Mesa, folio, reloj y hora */
+.card .card-header,
+.card .card-header h5,
+.card .card-header span,
+.card .card-header i,
+.card .card-header .text-end {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Cantidad: círculo gris como la referencia */
+.card .badge.bg-secondary {
+    background: #747d84 !important;
+    border: none !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Empezar: rojo, limpio y sin fondo */
+.card .btn-outline-danger {
+    background: transparent !important;
+    border-color: transparent !important;
+    color: #e33446 !important;
+    font-weight: 700 !important;
+    box-shadow: none !important;
+}
+
+.card .btn-outline-danger:hover {
+    background: rgba(227, 52, 70, .10) !important;
+    border-color: transparent !important;
+    color: #e33446 !important;
+}
+
+
+/* ==========================
+   MODO OSCURO
+   ========================== */
+
+/* La cabecera sigue ROJA */
+html[data-color-mode="dark"] .card .card-header {
+    background: #e33446 !important;
+    border-bottom-color: #e33446 !important;
+}
+
+/* Todo lo de la cabecera permanece blanco */
+html[data-color-mode="dark"] .card .card-header,
+html[data-color-mode="dark"] .card .card-header h5,
+html[data-color-mode="dark"] .card .card-header span,
+html[data-color-mode="dark"] .card .card-header i {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Cantidad gris */
+html[data-color-mode="dark"] .card .badge.bg-secondary {
+    background: #747d84 !important;
+    border-color: transparent !important;
+    color: #ffffff !important;
+}
+
+/* Empezar rojo */
+html[data-color-mode="dark"] .card .btn-outline-danger {
+    background: transparent !important;
+    border-color: transparent !important;
+    color: #fb4d60 !important;
+}
+
+html[data-color-mode="dark"] .card .btn-outline-danger:hover {
+    background: rgba(251, 77, 96, .12) !important;
+    color: #ff6b7b !important;
+}
+
+</style>
+
+
+<style>
+/* KDS - ESTADOS CABECERA DEFINITIVOS */
+
+/* =====================================
+   PENDIENTE = ROJO
+   ===================================== */
+
+#kitchen-orders .card-header.bg-danger {
+    background: #e33446 !important;
+    border-color: #e33446 !important;
+    color: #ffffff !important;
+}
+
+#kitchen-orders .card-header.bg-danger h5,
+#kitchen-orders .card-header.bg-danger small,
+#kitchen-orders .card-header.bg-danger span,
+#kitchen-orders .card-header.bg-danger i {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+
+/* =====================================
+   PREPARANDO = AMARILLO
+   ===================================== */
+
+#kitchen-orders .card-header.bg-warning {
+    background: #fbbf24 !important;
+    border-color: #fbbf24 !important;
+    color: #1f2937 !important;
+}
+
+#kitchen-orders .card-header.bg-warning h5,
+#kitchen-orders .card-header.bg-warning small,
+#kitchen-orders .card-header.bg-warning span,
+#kitchen-orders .card-header.bg-warning i {
+    color: #1f2937 !important;
+    -webkit-text-fill-color: #1f2937 !important;
+}
+
+
+/* =====================================
+   MODO OSCURO
+   Los colores de estado se conservan
+   ===================================== */
+
+html[data-color-mode="dark"] #kitchen-orders .card-header.bg-danger {
+    background: #e33446 !important;
+    border-color: #e33446 !important;
+}
+
+html[data-color-mode="dark"] #kitchen-orders .card-header.bg-warning {
+    background: #fbbf24 !important;
+    border-color: #fbbf24 !important;
+}
+
+html[data-color-mode="dark"] #kitchen-orders .card-header.bg-warning h5,
+html[data-color-mode="dark"] #kitchen-orders .card-header.bg-warning small,
+html[data-color-mode="dark"] #kitchen-orders .card-header.bg-warning span,
+html[data-color-mode="dark"] #kitchen-orders .card-header.bg-warning i {
+    color: #1f2937 !important;
+    -webkit-text-fill-color: #1f2937 !important;
+}
+
+</style>
+
 @endsection

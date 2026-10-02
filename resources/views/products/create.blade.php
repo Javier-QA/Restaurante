@@ -1,11 +1,54 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="d-flex justify-content-center">
-    <div class="col-md-10 col-lg-8">
-        <div class="d-flex align-items-center mb-4">
-            <a href="{{ route('products.index') }}" class="btn btn-outline-secondary btn-sm me-3"><i class="bi bi-arrow-left"></i></a>
-            <h2 class="fw-bold text-dark mb-0">Nuevo Producto</h2>
+
+<style>
+.product-back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 36px;
+    margin-bottom: 11px;
+    padding: 0 12px;
+    border: 1px solid var(--border-soft);
+    border-radius: 9px;
+    background: var(--card-bg);
+    color: var(--text-main);
+    font-size: .74rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 2px 5px rgba(15, 23, 42, .03);
+    transition: .16s ease;
+}
+
+.product-back-btn i {
+    font-size: .78rem;
+}
+
+.product-back-btn:hover {
+    border-color: #94a3b8;
+    background: var(--light-bg);
+    color: var(--text-main);
+    transform: translateY(-1px);
+}
+</style>
+
+<div class="container-fluid px-0">
+    <div class="col-12 col-xl-10">
+        <div class="mb-4">
+
+            <a href="{{ route('products.index') }}"
+               class="product-back-btn">
+                <i class="bi bi-arrow-left"></i>
+                Volver a Productos
+            </a>
+
+            <h2 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                <i class="bi bi-box-seam-fill text-dark"></i>
+                Nuevo Producto
+            </h2>
+
         </div>
 
         <div class="card border-0 shadow-sm">
@@ -28,13 +71,6 @@
                                 <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                             @endforeach
                         </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold small text-muted">Código de Barras (Opcional)</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-white"><i class="bi bi-upc-scan"></i></span>
-                            <input type="text" name="barcode" class="form-control" placeholder="Escanear o escribir...">
-                        </div>
                     </div>
                 </div>
 
@@ -77,7 +113,7 @@
         Actívalo para productos que se controlan por unidades. Si el producto tiene receta, se controlarán sus ingredientes.
     </small>
 </div>
-<div class="alert bg-primary bg-opacity-10 border border-primary border-opacity-25 rounded-3 mb-4 p-3">
+<div class="product-digital-options bg-primary bg-opacity-10 border border-primary border-opacity-25 rounded-3 mb-4 p-3">
                     <h6 class="text-primary fw-bold mb-3"><i class="bi bi-qr-code-scan me-2"></i>Opciones para Carta Digital (Menú QR)</h6>
                     
                     <div class="row g-3">

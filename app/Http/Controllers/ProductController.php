@@ -75,8 +75,13 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = Category::where('is_active', true)->get();
-        // Productos que pueden ser insumos (todos menos él mismo)
-        $ingredients = Product::where('id', '!=', $product->id)->where('is_active', true)->get();
+        // Solo productos configurados como insumos.
+        // Los productos disponibles para la venta no deben aparecer en la receta.
+        $ingredients = Product::where('id', '!=', $product->id)
+            ->where('is_active', true)
+            ->where('is_saleable', false)
+            ->orderBy('name')
+            ->get();
         
         return view('products.edit', compact('product', 'categories', 'ingredients'));
     }

@@ -890,7 +890,7 @@
 
     .status-critical {
         color: #dc2626;
-        background: #fef2f2;
+        background: #fff1f2;
         border-color: #fecaca;
     }
 
@@ -1340,5 +1340,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 </script>
+
+
+<style>
+/* DARK MODE - ICONOS CABECERA REPORTES */
+
+html[data-color-mode="dark"] .report-header-icon {
+    background: rgba(245, 158, 11, .14) !important;
+    color: #fb923c !important;
+    border: 1px solid rgba(251, 146, 60, .28) !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .report-header-icon i {
+    color: #fb923c !important;
+}
+
+</style>
 
 @endsection

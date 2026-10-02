@@ -24,7 +24,7 @@
     }
 
     .billing-title i {
-    color: #000 !important;
+    color:var(--text-main) !important;
 }
 
     .billing-subtitle {
@@ -1062,7 +1062,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     .billing-header-actions .btn-outline-info:hover {
-        background: #f0f9ff !important;
+        background: #eff6ff !important;
     }
 
     .billing-header-actions .btn i {
@@ -1083,13 +1083,46 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     .billing-kpi.accepted .billing-kpi-icon {
-        background: #ecfdf5 !important;
+        background: #f0fdf4 !important;
         color: #059669 !important;
     }
 
     .billing-kpi.accepted .billing-kpi-value {
         color: var(--text-main, #172033) !important;
     }
+</style>
+
+
+<style>
+/* DARK MODE - TIPO COMPROBANTE */
+
+/* BOLETA - AZUL */
+html[data-color-mode="dark"] .billing-document-type.boleta {
+    background: rgba(14, 165, 233, .14) !important;
+    border: 1px solid rgba(56, 189, 248, .28) !important;
+    color: #38bdf8 !important;
+    box-shadow: none !important;
+}
+
+
+/* FACTURA - COLOR PRINCIPAL DEL TEMA */
+html[data-color-mode="dark"] .billing-document-type.factura {
+    background: color-mix(
+        in srgb,
+        var(--primary) 14%,
+        #132338
+    ) !important;
+
+    border: 1px solid color-mix(
+        in srgb,
+        var(--primary) 32%,
+        #30465d
+    ) !important;
+
+    color: var(--primary) !important;
+    box-shadow: none !important;
+}
+
 </style>
 
 @endsection

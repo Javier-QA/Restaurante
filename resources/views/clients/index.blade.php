@@ -251,7 +251,7 @@
     justify-content: center;
     flex-shrink: 0;
     border-radius: 12px;
-    background: #fff7e6;
+    background: #fff7ed;
     color: #f59e0b;
     font-size: 1.05rem;
 }
@@ -436,7 +436,7 @@
     padding: 9px 12px;
     border: 1px solid #fecdd3;
     border-radius: 10px;
-    background: #fff7f7;
+    background: #fff1f2;
     color: #b91c1c;
     font-size: .75rem;
     font-weight: 650;
@@ -669,46 +669,238 @@
     </div>
 </div>
 
-<div class="modal fade" id="createClientModal" tabindex="-1">
+<div class="modal fade"
+     id="createClientModal"
+     tabindex="-1"
+     aria-labelledby="createClientModalLabel"
+     aria-hidden="true">
+
     <div class="modal-dialog modal-dialog-centered">
-        <form action="{{ route('clients.store') }}" method="POST" class="modal-content client-modal-content">
+        <form action="{{ route('clients.store') }}"
+              method="POST"
+              class="modal-content client-modal-content">
+
             @csrf
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title fw-bold">Registrar Cliente</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row g-3">
-                    <div class="col-12">
-                        <label class="fw-bold form-label">Nombre Completo *</label>
-                        <input type="text" name="name" class="form-control" required>
+
+            {{-- Encabezado --}}
+            <div class="modal-header border-0 px-4 pt-4 pb-2">
+
+                <div class="d-flex align-items-center gap-3">
+
+                    <div class="d-flex align-items-center justify-content-center"
+                         style="
+                            width:46px;
+                            height:46px;
+                            border-radius:13px;
+                            background:color-mix(in srgb, var(--primary) 10%, var(--card-bg));
+                            color:var(--primary);
+                            font-size:1.05rem;
+                         ">
+                        <i class="bi bi-person-plus-fill"></i>
                     </div>
-                    <div class="col-6">
-                        <label class="fw-bold form-label">DNI / RUC</label>
-                        <input type="text" name="document_number" class="form-control">
+
+                    <div>
+                        <h5 id="createClientModalLabel"
+                            class="fw-bold mb-1"
+                            style="color:var(--text-main);font-size:1.05rem;">
+                            Nuevo cliente
+                        </h5>
+
+                        <p class="mb-0"
+                           style="color:var(--text-muted);font-size:.78rem;">
+                            Registra la información del nuevo cliente
+                        </p>
                     </div>
-                    <div class="col-6">
-                        <label class="fw-bold form-label">Teléfono</label>
-                        <input type="text" name="phone" class="form-control">
-                    </div>
-                    <div class="col-12">
-                        <label class="fw-bold form-label">Email</label>
-                        <input type="email" name="email" class="form-control">
-                    </div>
-                    <div class="col-12">
-                        <label class="fw-bold form-label">Dirección</label>
-                        <input type="text" name="address" class="form-control">
-                    </div>
+
                 </div>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar">
+                </button>
+
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary fw-bold">Guardar</button>
+
+            {{-- Cuerpo --}}
+            <div class="modal-body px-4 pt-3 pb-2">
+
+                <div class="row g-3">
+
+                    {{-- Nombre --}}
+                    <div class="col-12">
+                        <label for="create_name"
+                               class="form-label fw-bold mb-2"
+                               style="font-size:.78rem;color:var(--text-main);">
+                            Nombre completo
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <div class="position-relative">
+                            <i class="bi bi-person position-absolute top-50 translate-middle-y"
+                               style="
+                                    left:14px;
+                                    z-index:3;
+                                    color:var(--text-muted);
+                               ">
+                            </i>
+
+                            <input type="text"
+                                   name="name"
+                                   id="create_name"
+                                   class="form-control ps-5"
+                                   placeholder="Nombre del cliente"
+                                   autocomplete="name"
+                                   required>
+                        </div>
+                    </div>
+
+                    {{-- DNI / RUC --}}
+                    <div class="col-md-6">
+                        <label for="create_document"
+                               class="form-label fw-bold mb-2"
+                               style="font-size:.78rem;color:var(--text-main);">
+                            DNI / RUC
+                        </label>
+
+                        <div class="position-relative">
+                            <i class="bi bi-card-text position-absolute top-50 translate-middle-y"
+                               style="
+                                    left:14px;
+                                    z-index:3;
+                                    color:var(--text-muted);
+                               ">
+                            </i>
+
+                            <input type="text"
+                                   name="document_number"
+                                   id="create_document"
+                                   class="form-control ps-5"
+                                   placeholder="Documento">
+                        </div>
+                    </div>
+
+                    {{-- Teléfono --}}
+                    <div class="col-md-6">
+                        <label for="create_phone"
+                               class="form-label fw-bold mb-2"
+                               style="font-size:.78rem;color:var(--text-main);">
+                            Teléfono
+                        </label>
+
+                        <div class="position-relative">
+                            <i class="bi bi-telephone position-absolute top-50 translate-middle-y"
+                               style="
+                                    left:14px;
+                                    z-index:3;
+                                    color:var(--text-muted);
+                               ">
+                            </i>
+
+                            <input type="text"
+                                   name="phone"
+                                   id="create_phone"
+                                   class="form-control ps-5"
+                                   placeholder="Número de teléfono"
+                                   autocomplete="tel">
+                        </div>
+                    </div>
+
+                    {{-- Correo --}}
+                    <div class="col-12">
+                        <label for="create_email"
+                               class="form-label fw-bold mb-2"
+                               style="font-size:.78rem;color:var(--text-main);">
+                            Correo electrónico
+                        </label>
+
+                        <div class="position-relative">
+                            <i class="bi bi-envelope position-absolute top-50 translate-middle-y"
+                               style="
+                                    left:14px;
+                                    z-index:3;
+                                    color:var(--text-muted);
+                               ">
+                            </i>
+
+                            <input type="email"
+                                   name="email"
+                                   id="create_email"
+                                   class="form-control ps-5"
+                                   placeholder="correo@ejemplo.com"
+                                   autocomplete="email">
+                        </div>
+                    </div>
+
+                    {{-- Dirección --}}
+                    <div class="col-12">
+                        <label for="create_address"
+                               class="form-label fw-bold mb-2"
+                               style="font-size:.78rem;color:var(--text-main);">
+                            Dirección
+                        </label>
+
+                        <div class="position-relative">
+                            <i class="bi bi-geo-alt position-absolute top-50 translate-middle-y"
+                               style="
+                                    left:14px;
+                                    z-index:3;
+                                    color:var(--text-muted);
+                               ">
+                            </i>
+
+                            <input type="text"
+                                   name="address"
+                                   id="create_address"
+                                   class="form-control ps-5"
+                                   placeholder="Dirección del cliente"
+                                   autocomplete="street-address">
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
+
+            {{-- Pie --}}
+            <div class="modal-footer border-0 px-4 pt-3 pb-4">
+
+                <button type="button"
+                        class="btn"
+                        data-bs-dismiss="modal"
+                        style="
+                            min-height:42px;
+                            padding:0 18px;
+                            border:1px solid var(--border-soft);
+                            border-radius:10px;
+                            background:var(--card-bg);
+                            color:var(--text-main);
+                            font-size:.78rem;
+                            font-weight:700;
+                        ">
+                    Cancelar
+                </button>
+
+                <button type="submit"
+                        class="btn text-white d-inline-flex align-items-center gap-2"
+                        style="
+                            min-height:42px;
+                            padding:0 19px;
+                            border-radius:10px;
+                            background:var(--primary);
+                            border-color:var(--primary);
+                            font-size:.78rem;
+                            font-weight:700;
+                        ">
+                    <i class="bi bi-person-check"></i>
+                    Guardar cliente
+                </button>
+
+            </div>
+
         </form>
     </div>
 </div>
-
 <div class="modal fade"
      id="editClientModal"
      tabindex="-1"
@@ -984,7 +1176,7 @@
                 </p>
 
                 <div class="d-flex align-items-center justify-content-center gap-2 px-3 py-2 mb-4"
-                     style="background:#fff7f7;border:1px solid #fecdd3;border-radius:11px;color:#b91c1c;font-size:.77rem;font-weight:650;">
+                     style="background:#fff1f2;border:1px solid #fecdd3;border-radius:11px;color:#b91c1c;font-size:.77rem;font-weight:650;">
                     <i class="bi bi-exclamation-triangle"></i>
                     Esta acción no se puede deshacer.
                 </div>
@@ -1046,4 +1238,77 @@
             .show();
     }
 </script>
+
+<style>
+/* DARK MODE - CLIENTES AVATAR Y VISITAS */
+
+/* ==========================================================
+   AVATAR DEL CLIENTE
+   ========================================================== */
+
+html[data-color-mode="dark"] .client-avatar {
+    background: color-mix(
+        in srgb,
+        var(--primary) 14%,
+        #132338
+    ) !important;
+
+    border: 1px solid color-mix(
+        in srgb,
+        var(--primary) 30%,
+        #30465d
+    ) !important;
+
+    color: var(--primary) !important;
+    box-shadow: none !important;
+}
+
+
+/* ==========================================================
+   VISITAS = 0
+   Estado neutro
+   ========================================================== */
+
+html[data-color-mode="dark"] .client-visits:not(.active) {
+    background: #17283d !important;
+    border-color: #30465d !important;
+    color: #8fa6bd !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .client-visits:not(.active) i {
+    color: #8fa6bd !important;
+    -webkit-text-fill-color: #8fa6bd !important;
+}
+
+
+/* ==========================================================
+   VISITAS > 0
+   Respeta el color principal del tema
+   ========================================================== */
+
+html[data-color-mode="dark"] .client-visits.active {
+    background: color-mix(
+        in srgb,
+        var(--primary) 14%,
+        #132338
+    ) !important;
+
+    border-color: color-mix(
+        in srgb,
+        var(--primary) 34%,
+        #30465d
+    ) !important;
+
+    color: var(--primary) !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .client-visits.active i {
+    color: var(--primary) !important;
+    -webkit-text-fill-color: var(--primary) !important;
+}
+
+</style>
+
 @endsection

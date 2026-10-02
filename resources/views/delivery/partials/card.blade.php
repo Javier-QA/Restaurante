@@ -79,15 +79,15 @@
 
         @elseif($delivery->status === 'pending')
 
-            <div class="delivery-pending">
-                <i class="bi bi-hourglass-split"></i>
+            <div class="delivery-pending" style="color:#ef4444 !important;">
+                <i class="bi bi-hourglass-split" style="color:#ef4444 !important;"></i>
                 <span>Pendiente</span>
             </div>
 
         @elseif($delivery->status === 'preparing')
 
-            <div class="delivery-preparing">
-                <i class="bi bi-fire"></i>
+            <div class="delivery-preparing" style="color:#fbbf24 !important;">
+                <i class="bi bi-fire" style="color:#fbbf24 !important;"></i>
                 <span>Preparando</span>
             </div>
 
@@ -110,3 +110,36 @@
     </div>
 
 </div>
+
+
+<style>
+/* ESTADOS DELIVERY - COLOR DEFINITIVO */
+
+/* PENDIENTE - ROJO */
+.delivery-pending,
+.delivery-pending span,
+.delivery-pending i {
+    color: #ef4444 !important;
+}
+
+html[data-color-mode="dark"] .delivery-pending,
+html[data-color-mode="dark"] .delivery-pending span,
+html[data-color-mode="dark"] .delivery-pending i {
+    color: #f87171 !important;
+}
+
+
+/* PREPARANDO - AMARILLO */
+.delivery-preparing,
+.delivery-preparing span,
+.delivery-preparing i {
+    color: #f59e0b !important;
+}
+
+html[data-color-mode="dark"] .delivery-preparing,
+html[data-color-mode="dark"] .delivery-preparing span,
+html[data-color-mode="dark"] .delivery-preparing i {
+    color: #fbbf24 !important;
+}
+
+</style>

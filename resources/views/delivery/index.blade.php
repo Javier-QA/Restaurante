@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold mb-0" style="color: #000 !important;"><i class="bi bi-bicycle me-2" style="color: #000 !important;"></i>Delivery (Pedidos a Domicilio)</h2>
+            <h2 class="fw-bold mb-0" style="color:var(--text-main) !important;"><i class="bi bi-bicycle me-2" style="color:var(--text-main) !important;"></i>Delivery (Pedidos a Domicilio)</h2>
             <p class="text-muted small mb-0 mt-1">Gestión de pedidos para enviar hoy.</p>
         </div>
         <div>
@@ -233,12 +233,12 @@
 }
 
 .delivery-pending {
-    color: var(--accent-3);
+    color: #ef4444;
     font-weight: 700;
 }
 
 .delivery-preparing {
-    color: var(--accent-1);
+    color: #f59e0b;
     font-weight: 700;
 }
 
@@ -385,5 +385,32 @@ document.addEventListener('DOMContentLoaded', function () {
     setInterval(refreshDeliveries, 2000);
 });
 </script>
+
+
+<style>
+/* DARK MODE - COLORES ESTADO DELIVERY FINAL */
+
+/* PENDIENTE - ROJO */
+html[data-color-mode="dark"] .delivery-pending {
+    color: #f87171 !important;
+}
+
+html[data-color-mode="dark"] .delivery-pending i,
+html[data-color-mode="dark"] .delivery-pending span {
+    color: #f87171 !important;
+}
+
+
+/* PREPARANDO - AMARILLO */
+html[data-color-mode="dark"] .delivery-preparing {
+    color: #fbbf24 !important;
+}
+
+html[data-color-mode="dark"] .delivery-preparing i,
+html[data-color-mode="dark"] .delivery-preparing span {
+    color: #fbbf24 !important;
+}
+
+</style>
 
 @endsection

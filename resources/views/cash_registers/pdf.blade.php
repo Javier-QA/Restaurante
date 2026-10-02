@@ -65,7 +65,7 @@
             border-left: 4px solid {{ $palette['primary'] }};
             padding: 5px 8px;
             margin-bottom: 9px;
-            background: #f8fafc;
+            background: #15263a;
         }
 
         .info-box {
@@ -164,7 +164,7 @@
         .total-box {
             margin-top: 10px;
             padding: 10px;
-            background: #f8fafc;
+            background: #15263a;
             border: 1px solid {{ $palette['primary'] }};
             color: {{ $palette['dark'] }};
             font-weight: bold;
@@ -183,19 +183,19 @@
         }
 
         .difference.exact {
-            background: #f0fdf4;
+            background: #123225;
             color: #15803d;
             border-color: #86efac;
         }
 
         .difference.surplus {
-            background: #eff6ff;
+            background: #142b3e;
             color: #1d4ed8;
             border-color: #93c5fd;
         }
 
         .difference.shortage {
-            background: #fff1f2;
+            background: #351b24;
             color: #dc2626;
             border-color: #fca5a5;
         }
@@ -225,7 +225,7 @@
         }
 
         .expenses-total td {
-            background: #f8fafc;
+            background: #15263a;
             font-weight: bold;
             border-top: 2px solid {{ $palette['primary'] }};
         }

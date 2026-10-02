@@ -31,7 +31,12 @@ class DashboardController extends Controller
                                  ->whereDate('created_at', $today)
                                  ->count();
 
-        $activeTables = Order::where('status', 'pending')->count();
+        // Mesas realmente ocupadas: pedidos pendientes asociados a una mesa.
+        // distinct evita contar dos veces la misma mesa.
+        $activeTables = Order::where('status', 'pending')
+            ->whereNotNull('table_id')
+            ->distinct()
+            ->count('table_id');
 
         $lowStockProducts = Product::where('is_active', true)
                                    ->where('stock', '<=', 5)

@@ -192,7 +192,7 @@
         border-radius: 17px;
         overflow: hidden;
         border: 1px solid #e2e8f0;
-        background: #f8fafc;
+        background: #ffffff;
     }
 
     .theme-live-preview-header {
@@ -277,29 +277,411 @@
 </style>
 
 
+
+<style>
+/* =========================================================
+   CONFIGURACION - DISEÑO DEL SISTEMA
+   ========================================================= */
+
+.settings-page-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.settings-page-header > i {
+    margin-top: 4px;
+    color:var(--text-main);
+    font-size: 1.22rem;
+}
+
+.settings-page-title {
+    margin: 0;
+    color: var(--text-main);
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -.35px;
+}
+
+.settings-page-subtitle {
+    margin: 4px 0 0;
+    color: var(--text-muted);
+    font-size: .8rem;
+}
+
+
+/* =========================================================
+   TARJETA PRINCIPAL
+   ========================================================= */
+
+.settings-page-header + .card {
+    border: 1px solid var(--border-soft) !important;
+    border-radius: 15px !important;
+    background: var(--card-bg) !important;
+    box-shadow: var(--shadow-soft) !important;
+    overflow: hidden;
+}
+
+.settings-page-header + .card > .card-body {
+    padding: 24px !important;
+}
+
+
+/* =========================================================
+   TITULOS DE SECCIONES
+   ========================================================= */
+
+.settings-page-header + .card form > h5,
+.settings-page-header + .card form > div > h5 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-top: 5px;
+    margin-bottom: 16px !important;
+
+    padding-bottom: 11px;
+
+    border-bottom: 1px solid var(--border-soft);
+
+    color: var(--text-main) !important;
+
+    font-size: .86rem;
+    font-weight: 800;
+}
+
+.settings-page-header + .card form h5 > i {
+    color: #111827 !important;
+    font-size: .9rem;
+}
+
+
+/* =========================================================
+   LABELS
+   ========================================================= */
+
+.settings-page-header + .card .form-label {
+    margin-bottom: 6px;
+
+    color: var(--text-main);
+
+    font-size: .71rem;
+    font-weight: 750 !important;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.settings-page-header + .card .form-control,
+.settings-page-header + .card .form-select {
+    min-height: 41px;
+
+    border: 1px solid var(--border-soft);
+    border-radius: 9px;
+
+    background-color: var(--card-bg);
+
+    color: var(--text-main);
+
+    font-size: .75rem;
+
+    box-shadow: none;
+}
+
+.settings-page-header + .card .form-control:focus,
+.settings-page-header + .card .form-select:focus {
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px
+        color-mix(in srgb, var(--primary) 10%, transparent);
+}
+
+.settings-page-header + .card input[type="file"] {
+    padding-top: 8px;
+}
+
+
+/* =========================================================
+   TEXTOS AUXILIARES
+   ========================================================= */
+
+.settings-page-header + .card small,
+.settings-page-header + .card .text-muted.small {
+    font-size: .64rem;
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   SEPARADORES
+   ========================================================= */
+
+.settings-page-header + .card hr {
+    margin-top: 25px;
+    margin-bottom: 22px;
+
+    border-color: var(--border-soft);
+
+    opacity: 1 !important;
+}
+
+
+/* =========================================================
+   SELECTOR DE TEMAS
+   ========================================================= */
+
+.theme-section {
+    padding: 18px !important;
+
+    border: 1px solid var(--border-soft) !important;
+    border-radius: 13px !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--primary) 2%,
+            var(--card-bg)
+        ) !important;
+}
+
+.theme-card {
+    min-height: 158px !important;
+
+    padding: 14px !important;
+
+    border: 1px solid var(--border-soft) !important;
+    border-radius: 11px !important;
+
+    background: var(--card-bg) !important;
+
+    box-shadow: none !important;
+}
+
+.theme-card:hover {
+    transform: translateY(-2px) !important;
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--primary) 30%,
+            var(--border-soft)
+        ) !important;
+
+    box-shadow: 0 6px 15px rgba(15,23,42,.06) !important;
+}
+
+.theme-radio:checked + .theme-card {
+    border-color: var(--primary) !important;
+
+    box-shadow:
+        0 0 0 2px
+        color-mix(
+            in srgb,
+            var(--primary) 10%,
+            transparent
+        ) !important;
+}
+
+.theme-radio:checked + .theme-card .theme-check {
+    background: var(--primary) !important;
+}
+
+.theme-current-label {
+    color: var(--primary) !important;
+}
+
+.theme-name {
+    color: var(--text-main) !important;
+
+    font-size: .8rem !important;
+}
+
+.theme-description {
+    color: var(--text-muted) !important;
+
+    font-size: .65rem !important;
+}
+
+
+/* =========================================================
+   VISTA PREVIA DEL TEMA
+   ========================================================= */
+
+.theme-live-preview {
+    margin-top: 17px !important;
+
+    border: 1px solid var(--border-soft) !important;
+    border-radius: 12px !important;
+
+    background: var(--light-bg) !important;
+}
+
+.theme-live-preview-header {
+    padding: 10px 14px !important;
+
+    border-bottom: 1px solid var(--border-soft) !important;
+
+    background: var(--card-bg) !important;
+
+    color: var(--text-main);
+}
+
+
+/* =========================================================
+   CONFIGURACION SUNAT
+   ========================================================= */
+
+.settings-page-header + .card
+select[name="sunat_environment"] {
+    font-weight: 700 !important;
+}
+
+.settings-page-header + .card
+input[name="sunat_sol_pass"],
+.settings-page-header + .card
+input[name="sunat_cert_password"] {
+    letter-spacing: .5px;
+}
+
+
+/* Certificado */
+
+.settings-page-header + .card
+input[name="sunat_cert_file"] {
+    background: var(--light-bg);
+}
+
+
+/* =========================================================
+   METODOS DE PAGO
+   ========================================================= */
+
+.settings-page-header + .card
+form .mb-4 > h5[style] {
+    color: var(--text-main) !important;
+}
+
+
+/* Yape y Plin */
+.settings-page-header + .card
+form .row.g-4 > .col-md-6 > .card {
+    border: 1px solid var(--border-soft) !important;
+    border-radius: 13px !important;
+
+    background: var(--card-bg);
+
+    box-shadow: 0 4px 12px rgba(15,23,42,.04) !important;
+}
+
+
+/* QR */
+.settings-page-header + .card
+img[alt="QR Yape"],
+.settings-page-header + .card
+img[alt="QR Plin"] {
+    width: 145px !important;
+    height: 145px !important;
+
+    border: 1px solid var(--border-soft) !important;
+    border-radius: 11px !important;
+
+    box-shadow: 0 3px 10px rgba(15,23,42,.05);
+}
+
+
+/* =========================================================
+   BOTON GUARDAR
+   ========================================================= */
+
+.settings-page-header + .card
+button[type="submit"].btn-primary {
+    min-height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+
+    border: 1px solid var(--primary);
+    border-radius: 9px;
+
+    background: var(--primary);
+
+    color: #fff;
+
+    font-size: .74rem;
+    font-weight: 750 !important;
+
+    box-shadow:
+        0 4px 10px
+        color-mix(
+            in srgb,
+            var(--primary) 17%,
+            transparent
+        ) !important;
+}
+
+.settings-page-header + .card
+button[type="submit"].btn-primary:hover {
+    border-color: var(--primary-hover);
+
+    background: var(--primary-hover);
+
+    color: #fff;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .settings-page-header + .card > .card-body {
+        padding: 17px !important;
+    }
+
+    .theme-section {
+        padding: 13px !important;
+    }
+
+    .settings-page-header + .card
+    button[type="submit"].btn-primary {
+        width: 100%;
+    }
+}
+</style>
 <div class="container-fluid">
 
-    <div class="row justify-content-center">
+    <div class="row">
 
-        <div class="col-xl-10 col-lg-11">
+        <div class="col-12">
 
             {{-- =====================================================
                  ENCABEZADO
             ====================================================== --}}
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="settings-page-header">
+                <i class="bi bi-gear-fill"></i>
 
                 <div>
-                    <h2 class="fw-bold text-dark mb-1">
-                        <i class="bi bi-gear-fill me-2"></i>
+                    <h2 class="settings-page-title">
                         Configuración
                     </h2>
 
-                    <p class="text-muted mb-0">
+                    <p class="settings-page-subtitle">
                         Personaliza la identidad, región, apariencia y facturación de tu negocio
                     </p>
                 </div>
-
             </div>
 
 
@@ -1758,7 +2140,7 @@
 
                                             <div class="d-flex align-items-center mb-3">
                                                 <div class="d-flex align-items-center justify-content-center me-3"
-                                                     style="width:46px;height:46px;border-radius:13px;background:#f5e9f8;color:#742284;font-size:1.4rem;">
+                                                     style="width:46px;height:46px;border-radius:13px;background:#faf5ff;color:#742284;font-size:1.4rem;">
                                                     <i class="bi bi-qr-code"></i>
                                                 </div>
 
@@ -1791,7 +2173,7 @@
 
                                                 <div class="text-center mb-3">
                                                     <span class="badge rounded-pill"
-                                                          style="background:#f5e9f8;color:#742284;">
+                                                          style="background:#faf5ff;color:#742284;">
                                                         <i class="bi bi-check-circle-fill me-1"></i>
                                                         QR configurado
                                                     </span>
@@ -1836,7 +2218,7 @@
 
                                             <div class="d-flex align-items-center mb-3">
                                                 <div class="d-flex align-items-center justify-content-center me-3"
-                                                     style="width:46px;height:46px;border-radius:13px;background:#e8f8f3;color:#00a884;font-size:1.4rem;">
+                                                     style="width:46px;height:46px;border-radius:13px;background:#f0fdfa;color:#00a884;font-size:1.4rem;">
                                                     <i class="bi bi-qr-code"></i>
                                                 </div>
 
@@ -1869,7 +2251,7 @@
 
                                                 <div class="text-center mb-3">
                                                     <span class="badge rounded-pill"
-                                                          style="background:#e8f8f3;color:#008b6d;">
+                                                          style="background:#f0fdfa;color:#008b6d;">
                                                         <i class="bi bi-check-circle-fill me-1"></i>
                                                         QR configurado
                                                     </span>
@@ -1952,6 +2334,194 @@
 
 </div>
 
+
+<style>
+/* =========================================================
+   ESTADO PERMANENTE SUNAT
+   ========================================================= */
+
+.sunat-environment-status {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    padding: 10px 13px;
+
+    border: 1px solid var(--border-soft);
+    border-left: 3px solid var(--primary);
+    border-radius: 9px;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--primary) 4%,
+            var(--card-bg)
+        );
+
+    color: var(--text-main);
+
+    font-size: .7rem;
+    line-height: 1.4;
+}
+
+.sunat-environment-status strong {
+    font-weight: 800;
+}
+
+.sunat-environment-status.sunat-beta {
+    border-left-color: #d97706;
+}
+
+.sunat-environment-status.sunat-production {
+    border-left-color: #dc2626;
+}
+
+.sunat-environment-status .badge {
+    padding: 4px 7px;
+
+    border-radius: 5px;
+
+    background: var(--light-bg) !important;
+    border: 1px solid var(--border-soft);
+
+    color: var(--text-muted) !important;
+
+    font-size: .58rem;
+    font-weight: 750;
+}
+</style>
+
+<style>
+/* DARK MODE - ICONOS CONFIGURACION */
+
+/* Icono principal y títulos de secciones */
+html[data-color-mode="dark"] .settings-page-header > i,
+html[data-color-mode="dark"] .settings-page-header h1 i,
+html[data-color-mode="dark"] .settings-page-header h2 i,
+html[data-color-mode="dark"] .card-header h1 i,
+html[data-color-mode="dark"] .card-header h2 i,
+html[data-color-mode="dark"] .card-header h3 i,
+html[data-color-mode="dark"] .card-header h4 i,
+html[data-color-mode="dark"] .card-header h5 i,
+html[data-color-mode="dark"] .card-title i {
+    color: #ffffff !important;
+}
+
+/* Iconos negros heredados dentro de Configuración */
+html[data-color-mode="dark"] .settings-page-header [style*="color:#000"],
+html[data-color-mode="dark"] .settings-page-header [style*="color: #000"],
+html[data-color-mode="dark"] .card [style*="color:#000"],
+html[data-color-mode="dark"] .card [style*="color: #000"],
+html[data-color-mode="dark"] .card [style*="color:#111827"],
+html[data-color-mode="dark"] .card [style*="color: #111827"],
+html[data-color-mode="dark"] .card [style*="color:#1f2937"],
+html[data-color-mode="dark"] .card [style*="color: #1f2937"] {
+    color: #ffffff !important;
+}
+
+/* Iconos que utilizan el color principal de texto */
+html[data-color-mode="dark"] .settings-page-header i[style*="var(--text-main)"],
+html[data-color-mode="dark"] .card i[style*="var(--text-main)"] {
+    color: #ffffff !important;
+}
+
+</style>
+
+<style>
+/* DARK MODE - TODOS LOS ICONOS ESTRUCTURALES CONFIGURACION */
+
+/* Encabezado principal */
+html[data-color-mode="dark"] .settings-page-header i {
+    color: #ffffff !important;
+}
+
+/* Iconos que acompañan títulos */
+html[data-color-mode="dark"] .settings-page-header i,
+html[data-color-mode="dark"] .settings-page-title i,
+html[data-color-mode="dark"] .card-header i,
+html[data-color-mode="dark"] .card-title i,
+html[data-color-mode="dark"] legend i,
+html[data-color-mode="dark"] h1 i,
+html[data-color-mode="dark"] h2 i,
+html[data-color-mode="dark"] h3 i,
+html[data-color-mode="dark"] h4 i,
+html[data-color-mode="dark"] h5 i,
+html[data-color-mode="dark"] h6 i {
+    color: #ffffff !important;
+}
+
+/* Iconos negros colocados manualmente */
+html[data-color-mode="dark"] i[style*="color:#000"],
+html[data-color-mode="dark"] i[style*="color: #000"],
+html[data-color-mode="dark"] i[style*="color:#111"],
+html[data-color-mode="dark"] i[style*="color: #111"],
+html[data-color-mode="dark"] i[style*="color:#111827"],
+html[data-color-mode="dark"] i[style*="color: #111827"],
+html[data-color-mode="dark"] i[style*="color:#1f2937"],
+html[data-color-mode="dark"] i[style*="color: #1f2937"],
+html[data-color-mode="dark"] i[style*="color:#212529"],
+html[data-color-mode="dark"] i[style*="color: #212529"],
+html[data-color-mode="dark"] i[style*="color:var(--text-main)"],
+html[data-color-mode="dark"] i[style*="color: var(--text-main)"] {
+    color: #ffffff !important;
+}
+
+/* Bootstrap text-dark aplicado a iconos */
+html[data-color-mode="dark"] i.text-dark,
+html[data-color-mode="dark"] .text-dark > i {
+    color: #ffffff !important;
+}
+
+/* Iconos dentro de encabezados personalizados */
+html[data-color-mode="dark"] [class*="section-title"] i,
+html[data-color-mode="dark"] [class*="section-header"] i,
+html[data-color-mode="dark"] [class*="settings-"] h3 i,
+html[data-color-mode="dark"] [class*="settings-"] h4 i,
+html[data-color-mode="dark"] [class*="settings-"] h5 i {
+    color: #ffffff !important;
+}
+
+</style>
+
+<style>
+/* DARK MODE - ICONOS REALES SETTINGS */
+
+/* Iconos estructurales de las secciones de Configuración */
+html[data-color-mode="dark"] .bi-gear-fill,
+html[data-color-mode="dark"] .bi-shop,
+html[data-color-mode="dark"] .bi-globe-americas,
+html[data-color-mode="dark"] .bi-clock,
+html[data-color-mode="dark"] .bi-bullseye,
+html[data-color-mode="dark"] .bi-bell-fill,
+html[data-color-mode="dark"] .bi-stars,
+html[data-color-mode="dark"] .bi-palette-fill,
+html[data-color-mode="dark"] .bi-brush,
+html[data-color-mode="dark"] .bi-image,
+html[data-color-mode="dark"] .bi-receipt-cutoff,
+html[data-color-mode="dark"] .bi-shield-lock,
+html[data-color-mode="dark"] .bi-qr-code {
+    color: #ffffff !important;
+}
+
+/* También cubre pseudo-elementos de Bootstrap Icons */
+html[data-color-mode="dark"] .bi-gear-fill::before,
+html[data-color-mode="dark"] .bi-shop::before,
+html[data-color-mode="dark"] .bi-globe-americas::before,
+html[data-color-mode="dark"] .bi-clock::before,
+html[data-color-mode="dark"] .bi-bullseye::before,
+html[data-color-mode="dark"] .bi-bell-fill::before,
+html[data-color-mode="dark"] .bi-stars::before,
+html[data-color-mode="dark"] .bi-palette-fill::before,
+html[data-color-mode="dark"] .bi-brush::before,
+html[data-color-mode="dark"] .bi-image::before,
+html[data-color-mode="dark"] .bi-receipt-cutoff::before,
+html[data-color-mode="dark"] .bi-shield-lock::before,
+html[data-color-mode="dark"] .bi-qr-code::before {
+    color: #ffffff !important;
+}
+
+</style>
 @endsection
 
 

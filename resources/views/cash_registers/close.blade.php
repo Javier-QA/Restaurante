@@ -31,7 +31,7 @@
     }
 
     .cash-close-title i {
-        color: #000;
+        color:var(--text-main);
     }
 
     .cash-close-subtitle {
@@ -128,7 +128,7 @@
     }
 
     .digital .cash-kpi-icon {
-        background: #f5f3ff;
+        background: #faf5ff;
         color: #7c3aed;
     }
 
@@ -759,4 +759,72 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+
+<style>
+/* DARK MODE - CIERRE DE CAJA */
+
+html[data-color-mode="dark"] .expected-box {
+    background: #15263a !important;
+    border: 1px solid #304860 !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .expected-box .expected-label {
+    color: #a9bdd0 !important;
+}
+
+html[data-color-mode="dark"] .expected-box .expected-value {
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .expected-box .expected-help {
+    color: #9fb4c9 !important;
+}
+
+</style>
+
+<style>
+/* DARK MODE - CIERRE CAJA DETALLES FINALES */
+
+/* ==========================================================
+   RESUMEN DE VENTAS + ARQUEO DE CAJA
+   ========================================================== */
+
+html[data-color-mode="dark"] .cash-panel-header > i {
+    background: rgba(249, 115, 22, .14) !important;
+    border: 1px solid rgba(249, 115, 22, .25) !important;
+    color: #fb923c !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .cash-panel-header > i::before {
+    color: #fb923c !important;
+    -webkit-text-fill-color: #fb923c !important;
+}
+
+
+/* ==========================================================
+   CAJA ABIERTA
+   ========================================================== */
+
+html[data-color-mode="dark"] .cash-turn-badge {
+    background: rgba(34, 197, 94, .12) !important;
+    border: 1px solid rgba(34, 197, 94, .28) !important;
+    color: #4ade80 !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .cash-turn-badge::before {
+    background: #22c55e !important;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, .12) !important;
+}
+
+
+/* Texto secundario de los paneles */
+html[data-color-mode="dark"] .cash-panel-header .text-muted {
+    color: #9fb2c6 !important;
+}
+
+</style>
+
 @endsection

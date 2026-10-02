@@ -16,7 +16,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background: #fff;
+        background: #15263a;
         border-bottom: 1px solid #e5e7eb;
         padding: 10px 20px;
         flex-shrink: 0;
@@ -66,9 +66,9 @@
         </div>
 
         {{-- Productos --}}
-        <div style="flex:1; min-width:0; background:#fff; overflow-y:auto; padding:12px 14px 20px;" id="products-container">
+        <div style="flex:1; min-width:0; background:#15263a; overflow-y:auto; padding:12px 14px 20px;" id="products-container">
             {{-- Barra búsqueda --}}
-            <div style="position:sticky;top:0;background:#fff;padding-bottom:10px;z-index:10;">
+            <div style="position:sticky;top:0;background:#15263a;padding-bottom:10px;z-index:10;">
                 <div class="input-group input-group-lg pos-search shadow-sm">
                     <span class="input-group-text border-end-0">
                         <i class="bi bi-search"></i>
@@ -152,14 +152,14 @@
         <div style="
             width: 280px;
             flex-shrink: 0;
-            background: #fff;
+            background: #15263a;
             border-left: 1px solid #e5e7eb;
             display: flex;
             flex-direction: column;
             height: 100%;
             box-shadow: -4px 0 20px rgba(45,27,94,0.07);
         ">
-            <div style="padding: 14px 16px; background: #f8f7ff; border-bottom: 1px solid #e5e7eb; flex-shrink: 0;">
+            <div style="padding: 14px 16px; background: #20243a; border-bottom: 1px solid #e5e7eb; flex-shrink: 0;">
                 <h6 class="fw-bold mb-0"><i class="bi bi-cart"></i> Cuenta Actual</h6>
             </div>
             <div id="cart-container" style="flex: 1; display: flex; flex-direction: column; min-height: 0; overflow-y: auto;">
@@ -519,7 +519,7 @@
         position: relative;
         border-radius: 16px;
         border: 2px solid var(--pal-border);
-        background: #fff;
+        background: #15263a;
         cursor: pointer;
         overflow: hidden;
         transition: transform .18s, box-shadow .18s, border-color .18s;
@@ -933,7 +933,7 @@
 
     .pos-payment-btn {
         border: 1px solid var(--pos-border, #dce7f1) !important;
-        background: #ffffff !important;
+        background: #15263a !important;
         color: var(--pos-text, #172033) !important;
         padding: 10px 8px;
         border-radius: 10px;
@@ -979,7 +979,7 @@
     .pos-payment-yape {
         color: #742284 !important;
         border-color: #742284 !important;
-        background: #ffffff !important;
+        background: #15263a !important;
     }
 
     .pos-payment-yape:hover {
@@ -1002,7 +1002,7 @@
     .pos-payment-plin {
         color: #00a884 !important;
         border-color: #00a884 !important;
-        background: #ffffff !important;
+        background: #15263a !important;
     }
 
     .pos-payment-plin:hover {
@@ -1028,7 +1028,7 @@
     .pos-payment-cash {
         color: #198754 !important;
         border-color: #198754 !important;
-        background: #ffffff !important;
+        background: #15263a !important;
     }
 
     .pos-payment-cash:hover {
@@ -1051,7 +1051,7 @@
     .pos-payment-card {
         color: #0d6efd !important;
         border-color: #0d6efd !important;
-        background: #ffffff !important;
+        background: #15263a !important;
     }
 
     .pos-payment-card:hover {

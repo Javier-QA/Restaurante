@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold mb-0" style="color: #000 !important;"><i class="bi bi-person-vcard me-2" style="color: #000 !important;"></i>Delivery</h2>
+            <h2 class="fw-bold mb-0" style="color:var(--text-main) !important;"><i class="bi bi-person-vcard me-2" style="color:var(--text-main) !important;"></i>Delivery</h2>
             <p class="text-muted small mb-0 mt-1">Gestión de delivery.</p>
         </div>
         <div>

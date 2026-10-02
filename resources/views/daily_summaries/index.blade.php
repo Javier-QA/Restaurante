@@ -21,7 +21,7 @@
         margin-bottom: 12px;
         border: 1px solid #94a3b8;
         border-radius: 8px;
-        background: #fff;
+        background: #ffffff;
         color: #475569;
         font-size: .78rem;
         font-weight: 700;
@@ -30,7 +30,7 @@
     }
 
     .ds-back:hover {
-        background: #f8fafc;
+        background: #ffffff;
         border-color: #64748b;
         color: #0f172a;
     }
@@ -53,7 +53,7 @@
         height: 38px;
         border-radius: 10px;
         background: transparent;
-        color: #111827;
+        color:var(--text-main);
         font-size: 1.65rem;
     }
 
@@ -79,7 +79,7 @@
     .ds-create-head {
         padding: 15px 18px;
         border-bottom: 1px solid var(--ds-border);
-        background: #f8fafc;
+        background: #ffffff;
     }
 
     .ds-create-head strong {
@@ -183,7 +183,7 @@
     .ds-table thead th {
         padding: 11px 14px;
         border-bottom: 1px solid var(--ds-border);
-        background: #f8fafc;
+        background: #ffffff;
         color: #64748b;
         font-size: .66rem;
         font-weight: 800;
@@ -201,11 +201,11 @@
     }
 
     .ds-table tbody tr.ds-main-row:hover td {
-        background: #fcfcfd;
+        background: #ffffff;
     }
 
     .ds-identifier {
-        color: #111827;
+        color:var(--text-main);
         font-weight: 800;
     }
 
@@ -245,19 +245,19 @@
 
     .ds-status.ticket {
         color: #075985;
-        background: #f0f9ff;
+        background: #eff6ff;
         border-color: #bae6fd;
     }
 
     .ds-status.pending {
         color: #475569;
-        background: #f8fafc;
+        background: #ffffff;
         border-color: #cbd5e1;
     }
 
     .ds-status.error {
         color: #991b1b;
-        background: #fef2f2;
+        background: #fff1f2;
         border-color: #fecaca;
     }
 
@@ -269,19 +269,19 @@
         height: 34px;
         padding: 0;
         border-radius: 7px !important;
-        background: #fff;
+        background: #ffffff;
     }
 
     .ds-detail-row td {
         padding: 0 14px 14px !important;
-        background: #fff !important;
+        background: #ffffff !important;
     }
 
     .ds-detail-box {
         padding: 12px 14px;
         border: 1px solid #e2e8f0;
         border-radius: 9px;
-        background: #f8fafc;
+        background: #ffffff;
     }
 
     .ds-response {
@@ -310,7 +310,7 @@
         padding: 5px 8px;
         border: 1px solid #dbe1e8;
         border-radius: 6px;
-        background: #fff;
+        background: #ffffff;
         color: #475569;
         font-size: .67rem;
         font-weight: 700;
@@ -332,7 +332,7 @@
     .ds-footer {
         padding: 12px 16px;
         border-top: 1px solid var(--ds-border);
-        background: #fff;
+        background: #ffffff;
     }
 
     @media (max-width: 768px) {
@@ -599,4 +599,247 @@
         <x-system-pagination :paginator="$summaries" />
     </div>
 </div>
+
+<style>
+/* DARK MODE - RESUMEN DIARIO SUNAT DEFINITIVO */
+
+/* Botón volver */
+html[data-color-mode="dark"] .ds-back {
+    background: #17283d !important;
+    border-color: #29445f !important;
+    color: #dce8f4 !important;
+}
+
+html[data-color-mode="dark"] .ds-back:hover {
+    background: #20364e !important;
+    border-color: #3b5874 !important;
+    color: #ffffff !important;
+}
+
+
+/* =========================================================
+   TARJETA GENERAR RESUMEN
+   ========================================================= */
+
+html[data-color-mode="dark"] .ds-create-card {
+    background: #111f32 !important;
+    border-color: #29445f !important;
+}
+
+html[data-color-mode="dark"] .ds-create-head {
+    background: #17283d !important;
+    border-color: #29445f !important;
+}
+
+html[data-color-mode="dark"] .ds-create-head strong {
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .ds-create-head span {
+    color: #8fa7bd !important;
+}
+
+html[data-color-mode="dark"] .ds-create-body {
+    background: #111f32 !important;
+}
+
+
+/* Aviso de envío asíncrono */
+html[data-color-mode="dark"] .ds-info {
+    background: rgba(59, 130, 246, .12) !important;
+    border-color: rgba(96, 165, 250, .32) !important;
+    color: #bfdbfe !important;
+}
+
+html[data-color-mode="dark"] .ds-info i {
+    color: #60a5fa !important;
+}
+
+html[data-color-mode="dark"] .ds-info span {
+    color: #bfdbfe !important;
+}
+
+
+/* =========================================================
+   HISTORIAL
+   ========================================================= */
+
+html[data-color-mode="dark"] .ds-table-card {
+    background: #111f32 !important;
+    border-color: #29445f !important;
+}
+
+html[data-color-mode="dark"] .ds-table thead th {
+    background: #17283d !important;
+    color: #9fc1df !important;
+    border-color: #29445f !important;
+}
+
+html[data-color-mode="dark"] .ds-table tbody td {
+    border-color: #29445f !important;
+}
+
+html[data-color-mode="dark"] .ds-table tbody tr.ds-main-row:hover td {
+    background: #17283d !important;
+}
+
+
+/* =========================================================
+   ESTADOS SUNAT
+   ========================================================= */
+
+html[data-color-mode="dark"] .ds-status.accepted {
+    background: rgba(34, 197, 94, .14) !important;
+    color: #86efac !important;
+    border-color: rgba(74, 222, 128, .34) !important;
+}
+
+html[data-color-mode="dark"] .ds-status.observed {
+    background: rgba(245, 158, 11, .14) !important;
+    color: #fcd34d !important;
+    border-color: rgba(251, 191, 36, .34) !important;
+}
+
+html[data-color-mode="dark"] .ds-status.ticket {
+    background: rgba(59, 130, 246, .14) !important;
+    color: #93c5fd !important;
+    border-color: rgba(96, 165, 250, .34) !important;
+}
+
+html[data-color-mode="dark"] .ds-status.pending {
+    background: #17283d !important;
+    color: #c7d7e7 !important;
+    border-color: #36516d !important;
+}
+
+html[data-color-mode="dark"] .ds-status.error {
+    background: rgba(239, 68, 68, .14) !important;
+    color: #fca5a5 !important;
+    border-color: rgba(248, 113, 113, .34) !important;
+}
+
+
+/* =========================================================
+   BOTONES DE ACCIÓN
+   ========================================================= */
+
+html[data-color-mode="dark"] .ds-action {
+    background: #17283d !important;
+    border-color: #29445f !important;
+}
+
+html[data-color-mode="dark"] .ds-action.btn-outline-info {
+    color: #7dd3fc !important;
+}
+
+html[data-color-mode="dark"] .ds-action.btn-outline-secondary {
+    color: #cbd5e1 !important;
+}
+
+html[data-color-mode="dark"] .ds-action.btn-outline-success {
+    color: #86efac !important;
+}
+
+html[data-color-mode="dark"] .ds-action:hover {
+    background: #20364e !important;
+    border-color: #496785 !important;
+}
+
+
+/* =========================================================
+   RESPUESTA DE SUNAT
+   ========================================================= */
+
+html[data-color-mode="dark"] .ds-detail-row td {
+    background: #111f32 !important;
+    border-color: #29445f !important;
+}
+
+html[data-color-mode="dark"] .ds-detail-box {
+    background: #17283d !important;
+    border-color: #29445f !important;
+    color: #dce8f4 !important;
+}
+
+html[data-color-mode="dark"] .ds-response {
+    color: #c7d7e7 !important;
+}
+
+html[data-color-mode="dark"] .ds-response strong {
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .ds-response > .d-flex > i {
+    color: #93c5fd !important;
+}
+
+html[data-color-mode="dark"] .ds-response .text-muted {
+    color: #8fa7bd !important;
+}
+
+
+/* Código SUNAT */
+html[data-color-mode="dark"] .ds-response .badge.text-bg-light {
+    background: #20364e !important;
+    border-color: #36516d !important;
+    color: #c7d7e7 !important;
+}
+
+
+/* =========================================================
+   BOLETAS INCLUIDAS
+   ========================================================= */
+
+html[data-color-mode="dark"] .ds-included-title {
+    color: #dce8f4 !important;
+}
+
+html[data-color-mode="dark"] .ds-included-title i {
+    color: #93c5fd !important;
+}
+
+html[data-color-mode="dark"] .ds-document {
+    background: #111f32 !important;
+    border-color: #36516d !important;
+    color: #dce8f4 !important;
+}
+
+html[data-color-mode="dark"] .ds-document span {
+    color: #7892aa !important;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+html[data-color-mode="dark"] .ds-footer {
+    background: #17283d !important;
+    border-color: #29445f !important;
+}
+
+
+/* Inputs de esta pantalla */
+html[data-color-mode="dark"] .ds-create-card .form-control,
+html[data-color-mode="dark"] .ds-create-card .form-select {
+    background-color: #111f32 !important;
+    border-color: #36516d !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .ds-create-card .form-control:focus,
+html[data-color-mode="dark"] .ds-create-card .form-select:focus {
+    background-color: #111f32 !important;
+    color: #ffffff !important;
+    border-color: var(--primary) !important;
+}
+
+
+/* Evitar textos negros heredados */
+html[data-color-mode="dark"] .ds-table-card .text-dark {
+    color: #ffffff !important;
+}
+
+</style>
+
 @endsection

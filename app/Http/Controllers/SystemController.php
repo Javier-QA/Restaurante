@@ -66,15 +66,48 @@ class SystemController extends Controller
             $fileName = 'backup_' . date('Y-m-d_H-i-s') . '.sql';
             $filePath = storage_path('app/' . $fileName);
 
-            $passwordParam = empty($dbPass) ? '' : '--password="' . $dbPass . '"';
-            $command = "mysqldump --user=\"{$dbUser}\" {$passwordParam} --host=\"{$dbHost}\" {$dbName} > \"{$filePath}\"";
+            /*
+             * Ruta de mysqldump.
+             * En Laragon buscamos automáticamente el ejecutable para no
+             * depender de que MySQL esté agregado al PATH de Windows.
+             */
+            $mysqldump = 'mysqldump';
+
+            if (PHP_OS_FAMILY === 'Windows') {
+                $laragonPaths = glob('C:/laragon/bin/mysql/*/bin/mysqldump.exe');
+
+                if (!empty($laragonPaths)) {
+                    $mysqldump = $laragonPaths[0];
+                }
+            }
+
+            $passwordParam = empty($dbPass)
+                ? ''
+                : '--password=' . escapeshellarg($dbPass);
+
+            $command =
+                escapeshellarg($mysqldump)
+                . ' --user=' . escapeshellarg($dbUser)
+                . ' ' . $passwordParam
+                . ' --host=' . escapeshellarg($dbHost)
+                . ' ' . escapeshellarg($dbName)
+                . ' > ' . escapeshellarg($filePath);
 
             $output = [];
             $returnVar = null;
+
             exec($command, $output, $returnVar);
 
-            if ($returnVar !== 0) {
-                return back()->with('error', 'No se pudo generar el backup. Verifica que mysqldump esté en el PATH.');
+            if ($returnVar !== 0 || !file_exists($filePath) || filesize($filePath) === 0) {
+
+                if (file_exists($filePath)) {
+                    @unlink($filePath);
+                }
+
+                return back()->with(
+                    'error',
+                    'No se pudo generar la copia de seguridad de la base de datos.'
+                );
             }
 
             return response()->download($filePath)->deleteFileAfterSend(true);

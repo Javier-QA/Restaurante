@@ -4,7 +4,7 @@
 <div class="container-fluid pos-page">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold mb-0" style="color: #000 !important;"><i class="bi bi-shop me-2" style="color: #000 !important;"></i>Punto de Venta</h2>
+            <h2 class="fw-bold mb-0" style="color:var(--text-main) !important;"><i class="bi bi-shop me-2" style="color:var(--text-main) !important;"></i>Punto de Venta</h2>
             <p class="text-muted mb-0">Selecciona una mesa para comenzar</p>
         </div>
         <div class="d-flex gap-3">
@@ -516,4 +516,148 @@
     }
 </style>
 
+
+<style>
+/* =========================================================
+   DARK MODE - MAPA POS DEFINITIVO
+   ========================================================= */
+
+/* LIENZO */
+html[data-color-mode="dark"] .pos-floor {
+    background-color: #0f1d2e !important;
+
+    background-image:
+        radial-gradient(
+            rgba(148, 163, 184, .28) 1px,
+            transparent 1px
+        ) !important;
+
+    background-size: 22px 22px !important;
+    border-color: #2b4259 !important;
+
+    box-shadow:
+        inset 0 0 35px rgba(0, 0, 0, .15),
+        0 6px 20px rgba(0, 0, 0, .12) !important;
+}
+
+
+/* =========================================================
+   TARJETA BASE DE MESA
+   ========================================================= */
+
+html[data-color-mode="dark"] .pos-table-card {
+    background: #142438 !important;
+    color: #ffffff !important;
+    border-color: #304b63 !important;
+
+    box-shadow:
+        0 5px 14px rgba(0, 0, 0, .22) !important;
+}
+
+
+/* Nombre: MESA 1, MESA 2... */
+html[data-color-mode="dark"] .pos-table-card > div:first-child,
+html[data-color-mode="dark"] .pos-table-card > div:first-child span {
+    color: #ffffff !important;
+}
+
+
+/* =========================================================
+   MESA LIBRE
+   ========================================================= */
+
+html[data-color-mode="dark"] .pos-table-free {
+    background: #142438 !important;
+    border-color: #22c55e !important;
+}
+
+html[data-color-mode="dark"] .pos-table-free::before {
+    background: #22c55e !important;
+}
+
+html[data-color-mode="dark"] .pos-table-free .bi-display,
+html[data-color-mode="dark"] .pos-table-free .bi-display-fill {
+    color: #4ade80 !important;
+}
+
+
+/* Badge LIBRE */
+html[data-color-mode="dark"] .pos-table-card .bg-success {
+    background: rgba(22, 163, 74, .18) !important;
+    color: #86efac !important;
+    border: 1px solid rgba(74, 222, 128, .35) !important;
+}
+
+
+/* =========================================================
+   MESA OCUPADA
+   ========================================================= */
+
+html[data-color-mode="dark"] .pos-table-busy {
+    background: #142438 !important;
+    border-color: #ef4444 !important;
+}
+
+html[data-color-mode="dark"] .pos-table-busy::before {
+    background: #ef4444 !important;
+}
+
+html[data-color-mode="dark"] .pos-table-busy .bi-display,
+html[data-color-mode="dark"] .pos-table-busy .bi-display-fill {
+    color: #f87171 !important;
+}
+
+html[data-color-mode="dark"] .pos-table-card .bg-danger {
+    background: rgba(220, 38, 38, .18) !important;
+    color: #fca5a5 !important;
+    border: 1px solid rgba(248, 113, 113, .35) !important;
+}
+
+
+/* =========================================================
+   MESA RESERVADA
+   ========================================================= */
+
+html[data-color-mode="dark"] .pos-table-reserved {
+    background: #142438 !important;
+    border-color: #f59e0b !important;
+}
+
+html[data-color-mode="dark"] .pos-table-reserved::before {
+    background: #f59e0b !important;
+}
+
+html[data-color-mode="dark"] .pos-table-reserved .bi-display,
+html[data-color-mode="dark"] .pos-table-reserved .bi-display-fill {
+    color: #fbbf24 !important;
+}
+
+html[data-color-mode="dark"] .pos-table-card .bg-warning {
+    background: rgba(245, 158, 11, .17) !important;
+    color: #fcd34d !important;
+    border: 1px solid rgba(251, 191, 36, .35) !important;
+}
+
+
+/* =========================================================
+   TEXTO DE LOS BADGES
+   ========================================================= */
+
+html[data-color-mode="dark"] .pos-table-card .badge span,
+html[data-color-mode="dark"] .pos-table-card .badge small {
+    color: inherit !important;
+}
+
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
+html[data-color-mode="dark"] .pos-table-card:hover {
+    background: #1a2d43 !important;
+    box-shadow:
+        0 9px 22px rgba(0, 0, 0, .30) !important;
+}
+
+</style>
 @endsection

@@ -21,7 +21,7 @@
     }
 
     .reservations-title i {
-        color: #000;
+        color:var(--text-main);
     }
 
     .reservations-subtitle {
@@ -1917,4 +1917,277 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 }
 </style>
+
+<style>
+/* =========================================================
+   DARK MODE - BADGES KPI RESERVAS
+   ========================================================= */
+
+/* HOY - Azul */
+html[data-color-mode="dark"]
+.reservation-kpi-today .reservation-kpi-badge {
+    background: rgba(37, 99, 235, .16) !important;
+    border: 1px solid rgba(96, 165, 250, .30) !important;
+    color: #93c5fd !important;
+}
+
+/* PENDIENTES - Naranja */
+html[data-color-mode="dark"]
+.reservation-kpi-pending .reservation-kpi-badge {
+    background: rgba(245, 158, 11, .15) !important;
+    border: 1px solid rgba(251, 191, 36, .30) !important;
+    color: #fbbf24 !important;
+}
+
+/* CONFIRMADAS - Verde */
+html[data-color-mode="dark"]
+.reservation-kpi-confirmed .reservation-kpi-badge {
+    background: rgba(22, 163, 74, .16) !important;
+    border: 1px solid rgba(74, 222, 128, .30) !important;
+    color: #86efac !important;
+}
+
+/* PERSONAS PARA HOY - Violeta */
+html[data-color-mode="dark"]
+.reservation-kpi-people .reservation-kpi-badge {
+    background: rgba(147, 51, 234, .16) !important;
+    border: 1px solid rgba(192, 132, 252, .30) !important;
+    color: #d8b4fe !important;
+}
+
+</style>
 @endsection
+<style>
+.reservation-card {
+    background: #111f33 !important;
+    border: 1px solid #9fb0c4 !important;
+    border-radius: 22px !important;
+    overflow: hidden;
+}
+
+.reservation-card .reservation-info {
+    background: #202632 !important;
+    border: 1px solid #9fb0c4 !important;
+    border-radius: 15px !important;
+    overflow: hidden;
+}
+
+.reservation-card .reservation-detail {
+    border-right: 1px solid #9fb0c4 !important;
+}
+
+.reservation-card .reservation-detail-icon {
+    color: #ff8c00 !important;
+}
+
+.reservation-card .reservation-info-label {
+    color: #6f8eaf !important;
+}
+
+.reservation-card .reservation-info-value {
+    color: #ffffff !important;
+}
+
+.reservation-card .reservation-time {
+    color: #ff263f !important;
+}
+
+.reservation-card .reservation-table {
+    color: #ff8c00 !important;
+}
+
+.reservation-card .reservation-edit-btn {
+    background: #202632 !important;
+    border: 1px solid #d8c59a !important;
+    color: #ff8c00 !important;
+    border-radius: 12px !important;
+}
+
+.reservation-card .reservation-confirm-btn {
+    background: #effff4 !important;
+    border: 1px solid #b7e8c7 !important;
+    color: #16803d !important;
+    border-radius: 12px !important;
+}
+
+.reservation-card .reservation-cancel-btn {
+    background: #fff1f2 !important;
+    border: 1px solid #f3b8c0 !important;
+    color: #dc2626 !important;
+    border-radius: 12px !important;
+}
+
+.reservation-card .status-pending {
+    background: rgba(255, 140, 0, .14) !important;
+    border: 1px solid rgba(255, 140, 0, .35) !important;
+    color: #ffb13b !important;
+}
+
+.reservation-card .status-confirmed {
+    background: rgba(22, 163, 74, .14) !important;
+    border: 1px solid rgba(34, 197, 94, .35) !important;
+    color: #4ade80 !important;
+}
+
+.reservation-card .status-cancelled {
+    background: rgba(220, 38, 38, .14) !important;
+    border: 1px solid rgba(239, 68, 68, .35) !important;
+    color: #ff6b6b !important;
+}
+</style>
+
+
+<style>
+/* ===== RESERVAS - DISEÑO OSCURO ===== */
+
+.reservation-card,
+.reservation-card .card-body {
+    background: #111f33 !important;
+    color: #ffffff !important;
+    border: 0 !important;
+}
+
+.reservation-card {
+    border: 1px solid #9fb0c4 !important;
+    border-radius: 22px !important;
+    overflow: hidden !important;
+}
+
+/* Cliente */
+.reservation-card .reservation-client {
+    color: #ffffff !important;
+}
+
+.reservation-card .reservation-phone {
+    color: #6f8eaf !important;
+}
+
+/* Icono del cliente */
+.reservation-card .reservation-client-icon {
+    background: #202632 !important;
+    color: #ff8c00 !important;
+    border: 1px solid #303f54 !important;
+}
+
+/* Información de reserva */
+.reservation-card .reservation-info {
+    background: #202632 !important;
+    border: 1px solid #9fb0c4 !important;
+    border-radius: 15px !important;
+    overflow: hidden !important;
+}
+
+.reservation-card .reservation-detail {
+    border-right: 1px solid #9fb0c4 !important;
+}
+
+.reservation-card .reservation-detail:last-child {
+    border-right: 0 !important;
+}
+
+.reservation-card .reservation-detail-icon {
+    color: #ff8c00 !important;
+}
+
+.reservation-card .reservation-info-label {
+    color: #6f8eaf !important;
+}
+
+.reservation-card .reservation-info-value {
+    color: #ffffff !important;
+}
+
+.reservation-card .reservation-time {
+    color: #ff263f !important;
+}
+
+.reservation-card .reservation-table {
+    color: #ff8c00 !important;
+}
+
+/* Editar */
+.reservation-card .reservation-edit-btn {
+    background: #202632 !important;
+    border: 1px solid #d8c59a !important;
+    color: #ff8c00 !important;
+    border-radius: 12px !important;
+}
+
+/* Confirmar */
+.reservation-card .reservation-confirm-btn {
+    background: #effff4 !important;
+    border: 1px solid #b7e8c7 !important;
+    color: #16803d !important;
+    border-radius: 12px !important;
+}
+
+/* Cancelar */
+.reservation-card .reservation-cancel-btn {
+    background: #fff1f2 !important;
+    border: 1px solid #f3b8c0 !important;
+    color: #dc2626 !important;
+    border-radius: 12px !important;
+}
+
+/* Estados */
+.reservation-card .status-pending {
+    background: rgba(255, 140, 0, .14) !important;
+    border: 1px solid rgba(255, 140, 0, .35) !important;
+    color: #ffb13b !important;
+}
+
+.reservation-card .status-confirmed {
+    background: rgba(22, 163, 74, .14) !important;
+    border: 1px solid rgba(34, 197, 94, .35) !important;
+    color: #4ade80 !important;
+}
+
+.reservation-card .status-cancelled {
+    background: rgba(220, 38, 38, .14) !important;
+    border: 1px solid rgba(239, 68, 68, .35) !important;
+    color: #ff6b6b !important;
+}
+
+/* Nota */
+.reservation-card .reservation-note {
+    background: #202632 !important;
+    border: 1px solid #9fb0c4 !important;
+    color: #ffffff !important;
+    border-radius: 10px !important;
+}
+</style>
+
+
+
+<style>
+/* ===== BOTONES DE RESERVAS ===== */
+
+.reservation-card .reservation-confirm-btn,
+.reservation-card .reservation-confirm-btn:hover,
+.reservation-card .reservation-confirm-btn:focus,
+.reservation-card .reservation-confirm-btn:active {
+    background-color: #16803d !important;
+    background-image: none !important;
+    border: 1px solid #16803d !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+.reservation-card .reservation-cancel-btn,
+.reservation-card .reservation-cancel-btn:hover,
+.reservation-card .reservation-cancel-btn:focus,
+.reservation-card .reservation-cancel-btn:active {
+    background-color: #dc2626 !important;
+    background-image: none !important;
+    border: 1px solid #dc2626 !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+/* Iconos */
+.reservation-card .reservation-confirm-btn i,
+.reservation-card .reservation-cancel-btn i {
+    color: #ffffff !important;
+}
+</style>
+

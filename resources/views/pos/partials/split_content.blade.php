@@ -799,10 +799,414 @@ window.lookupSplitClientByDocument = async function() {
     }
 };
 </script>
+
+<style>
+/* DIVIDIR CUENTA - MODO OSCURO DEFINITIVO */
+
+/* Contenedor inferior */
+html[data-color-mode="dark"] .card-footer.bg-light {
+    background: #132338 !important;
+    border-color: #30465d !important;
+    color: #ffffff !important;
+}
+
+/* Etiquetas */
+html[data-color-mode="dark"] .card-footer.bg-light .form-label {
+    color: #dbe7f3 !important;
+}
+
+/* =====================================
+   COMPROBANTES
+   ===================================== */
+
+html[data-color-mode="dark"] .split-doc-btn {
+    background: #182b40 !important;
+    border: 1px solid #466078 !important;
+    color: #dbe7f3 !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .split-doc-btn:hover {
+    border-color: #ff8c00 !important;
+    color: #ffb04a !important;
+}
+
+html[data-color-mode="dark"] .btn-check:checked + .split-doc-ticket {
+    background: rgba(255, 140, 0, .18) !important;
+    border-color: #ff8c00 !important;
+    color: #ffb04a !important;
+}
+
+html[data-color-mode="dark"] .btn-check:checked + .split-doc-boleta {
+    background: rgba(2, 132, 199, .18) !important;
+    border-color: #38bdf8 !important;
+    color: #7dd3fc !important;
+}
+
+html[data-color-mode="dark"] .btn-check:checked + .split-doc-factura {
+    background: rgba(34, 197, 94, .18) !important;
+    border-color: #22c55e !important;
+    color: #4ade80 !important;
+}
+
+
+/* =====================================
+   MÉTODOS DE PAGO
+   ===================================== */
+
+html[data-color-mode="dark"] .split-payment-btn {
+    background: #182b40 !important;
+    border: 1px solid #466078 !important;
+    color: #dbe7f3 !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .btn-check:checked + .split-payment-cash {
+    background: rgba(22, 163, 74, .16) !important;
+    border-color: #22c55e !important;
+    color: #4ade80 !important;
+}
+
+html[data-color-mode="dark"] .btn-check:checked + .split-payment-card {
+    background: rgba(59, 130, 246, .16) !important;
+    border-color: #60a5fa !important;
+    color: #93c5fd !important;
+}
+
+html[data-color-mode="dark"] .btn-check:checked + .split-payment-yape {
+    background: rgba(132, 56, 255, .18) !important;
+    border-color: #a78bfa !important;
+    color: #c4b5fd !important;
+}
+
+html[data-color-mode="dark"] .btn-check:checked + .split-payment-plin {
+    background: rgba(6, 182, 212, .16) !important;
+    border-color: #22d3ee !important;
+    color: #67e8f9 !important;
+}
+
+
+/* =====================================
+   INPUTS
+   ===================================== */
+
+html[data-color-mode="dark"] .card-footer.bg-light .form-control {
+    background: #0f1f32 !important;
+    border: 1px solid #40566e !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .card-footer.bg-light .form-control::placeholder {
+    color: #8196aa !important;
+}
+
+html[data-color-mode="dark"] .card-footer.bg-light .form-control:focus {
+    background: #10243a !important;
+    border-color: var(--primary) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 .2rem rgba(59,130,246,.12) !important;
+}
+
+
+/* =====================================
+   RECIBIDO / CAMBIO
+   ===================================== */
+
+html[data-color-mode="dark"] .split-cash-group {
+    background: #182b40 !important;
+    border: 1px solid #30465d !important;
+    border-radius: 10px !important;
+    padding: 12px !important;
+}
+
+html[data-color-mode="dark"] .split-cash-group .fw-bold,
+html[data-color-mode="dark"] .split-cash-group label {
+    color: #dbe7f3 !important;
+}
+
+html[data-color-mode="dark"] #splitChangeAmount {
+    color: #4ade80 !important;
+}
+
+
+/* =====================================
+   MONTOS DE TARJETA / QR
+   ===================================== */
+
+html[data-color-mode="dark"] .split-card-amount,
+html[data-color-mode="dark"] .split-qr-box {
+    background: #182b40 !important;
+    border-color: #30465d !important;
+    color: #dbe7f3 !important;
+}
+
+html[data-color-mode="dark"] .split-card-amount strong,
+html[data-color-mode="dark"] .split-qr-amount strong {
+    color: #ffffff !important;
+}
+
+
+/* =====================================
+   COBRAR SELECCIÓN
+   ===================================== */
+
+html[data-color-mode="dark"] #btnSplit {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] #btnSplit:disabled {
+    background: #34465a !important;
+    border-color: #465a70 !important;
+    color: #91a2b3 !important;
+    opacity: 1 !important;
+}
+
+
+/* =====================================
+   TEXTOS GENERALES
+   ===================================== */
+
+html[data-color-mode="dark"] .card-footer.bg-light .text-muted {
+    color: #8fa6bd !important;
+}
+
+</style>
+
+
+<style>
+/* DIVIDIR CUENTA - COLORES DE PAGO Y RECIBIDO V2 */
+
+/* =====================================================
+   MÉTODOS DE PAGO
+   Cada método conserva su color incluso sin seleccionar
+   ===================================================== */
+
+html[data-color-mode="dark"] .split-payment-cash {
+    background: rgba(22, 163, 74, .18) !important;
+    border: 1px solid #22c55e !important;
+    color: #4ade80 !important;
+}
+
+html[data-color-mode="dark"] .split-payment-card {
+    background: rgba(59, 130, 246, .18) !important;
+    border: 1px solid #60a5fa !important;
+    color: #93c5fd !important;
+}
+
+html[data-color-mode="dark"] .split-payment-yape {
+    background: rgba(168, 85, 247, .18) !important;
+    border: 1px solid #c084fc !important;
+    color: #d8b4fe !important;
+}
+
+html[data-color-mode="dark"] .split-payment-plin {
+    background: rgba(20, 184, 166, .18) !important;
+    border: 1px solid #2dd4bf !important;
+    color: #5eead4 !important;
+}
+
+
+/* =====================================================
+   MÉTODO SELECCIONADO
+   Un poco más intenso
+   ===================================================== */
+
+html[data-color-mode="dark"] .btn-check:checked + .split-payment-cash {
+    background: #168c50 !important;
+    border-color: #22c55e !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .btn-check:checked + .split-payment-card {
+    background: #2563eb !important;
+    border-color: #60a5fa !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .btn-check:checked + .split-payment-yape {
+    background: #9333ea !important;
+    border-color: #c084fc !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .btn-check:checked + .split-payment-plin {
+    background: #0f9f91 !important;
+    border-color: #2dd4bf !important;
+    color: #ffffff !important;
+}
+
+
+/* =====================================================
+   RECIBIDO
+   ===================================================== */
+
+html[data-color-mode="dark"] #splitCashGroup {
+    background: #182b40 !important;
+    border: 1px solid #38516a !important;
+    border-radius: 10px !important;
+    padding: 12px !important;
+}
+
+html[data-color-mode="dark"] #splitCashGroup label,
+html[data-color-mode="dark"] #splitCashGroup span {
+    color: #dbe7f3 !important;
+}
+
+
+/* El input 0.00 NO debe quedar blanco */
+
+html[data-color-mode="dark"] #splitReceivedAmount,
+html[data-color-mode="dark"] input#splitReceivedAmount,
+html[data-color-mode="dark"] #splitCashGroup input[type="number"] {
+    background: #0d1b2b !important;
+    background-color: #0d1b2b !important;
+    color: #ffffff !important;
+    border: 2px solid #22a05a !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] #splitReceivedAmount:focus,
+html[data-color-mode="dark"] input#splitReceivedAmount:focus {
+    background: #102238 !important;
+    background-color: #102238 !important;
+    color: #ffffff !important;
+    border-color: #22c55e !important;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, .12) !important;
+}
+
+
+/* =====================================================
+   CAMBIO
+   ===================================================== */
+
+html[data-color-mode="dark"] #splitChangeAmount {
+    color: #22c55e !important;
+    -webkit-text-fill-color: #22c55e !important;
+}
+
+
+/* =====================================================
+   EVITAR QUE BOOTSTRAP .bg-light VUELVA A PINTAR BLANCO
+   ===================================================== */
+
+html[data-color-mode="dark"] #splitCashGroup,
+html[data-color-mode="dark"] #splitCashGroup * {
+    --bs-bg-opacity: 1;
+}
+
+</style>
+
+
+<style>
+/* DIVIDIR CUENTA - MONTOS A PAGAR V2 */
+
+/* =========================================
+   TARJETA - MONTO A PAGAR
+   ========================================= */
+
+html[data-color-mode="dark"] #splitCardAmount {
+    display: none;
+    background: #182b40 !important;
+    background-color: #182b40 !important;
+    border: 1px solid #38516a !important;
+    border-radius: 10px !important;
+    color: #dbe7f3 !important;
+    padding: 12px 14px !important;
+}
+
+html[data-color-mode="dark"] #splitCardAmount span {
+    color: #9db2c7 !important;
+}
+
+html[data-color-mode="dark"] #splitCardAmount strong {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+
+/* =========================================
+   YAPE - MONTO A PAGAR
+   ========================================= */
+
+html[data-color-mode="dark"] #splitYapeQr {
+    background: #182b40 !important;
+    background-color: #182b40 !important;
+    border-color: #a78bfa !important;
+    color: #dbe7f3 !important;
+}
+
+html[data-color-mode="dark"] #splitYapeQr .split-qr-title {
+    color: #c4b5fd !important;
+}
+
+html[data-color-mode="dark"] #splitYapeQr .split-qr-amount {
+    background: #0d1b2b !important;
+    border: 1px solid #6d28d9 !important;
+    color: #dbe7f3 !important;
+}
+
+html[data-color-mode="dark"] #splitYapeQr .split-qr-amount span {
+    color: #b8a8d8 !important;
+}
+
+html[data-color-mode="dark"] #splitYapeQr .split-qr-amount strong {
+    color: #d8b4fe !important;
+    -webkit-text-fill-color: #d8b4fe !important;
+}
+
+
+/* =========================================
+   PLIN - MONTO A PAGAR
+   ========================================= */
+
+html[data-color-mode="dark"] #splitPlinQr {
+    background: #182b40 !important;
+    background-color: #182b40 !important;
+    border-color: #2dd4bf !important;
+    color: #dbe7f3 !important;
+}
+
+html[data-color-mode="dark"] #splitPlinQr .split-qr-title {
+    color: #5eead4 !important;
+}
+
+html[data-color-mode="dark"] #splitPlinQr .split-qr-amount {
+    background: #0d1b2b !important;
+    border: 1px solid #0f9f91 !important;
+    color: #dbe7f3 !important;
+}
+
+html[data-color-mode="dark"] #splitPlinQr .split-qr-amount span {
+    color: #9bc9c4 !important;
+}
+
+html[data-color-mode="dark"] #splitPlinQr .split-qr-amount strong {
+    color: #5eead4 !important;
+    -webkit-text-fill-color: #5eead4 !important;
+}
+
+
+/* =========================================
+   EVITAR FONDOS BLANCOS INTERNOS
+   ========================================= */
+
+html[data-color-mode="dark"] #splitCardAmount *,
+html[data-color-mode="dark"] #splitYapeQr *,
+html[data-color-mode="dark"] #splitPlinQr * {
+    box-shadow: none;
+}
+
+</style>
+
 @endsection
 <style>
 .split-payment-btn {
-    background: #fff;
+    background: #ffffff;
     border: 2px solid #dee2e6;
     border-radius: 9px;
     padding: 9px 6px;
@@ -1023,7 +1427,7 @@ window.lookupSplitClientByDocument = async function() {
 #splitReceivedAmount {
     border: 2px solid #198754 !important;
     color: #198754 !important;
-    background: #fff !important;
+    background: #ffffff !important;
     border-radius: 10px;
 }
 
@@ -1095,7 +1499,7 @@ window.lookupSplitClientByDocument = async function() {
     height: 170px;
     object-fit: contain;
     margin: 8px auto 12px;
-    background: #fff;
+    background: #ffffff;
     padding: 6px;
     border-radius: 10px;
 }
@@ -1116,7 +1520,7 @@ window.lookupSplitClientByDocument = async function() {
     justify-content: space-between;
     align-items: center;
     padding: 10px 12px;
-    background: #fff;
+    background: #ffffff;
     border-radius: 9px;
     font-weight: 700;
 }
@@ -1265,7 +1669,7 @@ window.lookupSplitClientByDocument = async function() {
 
 <style>
 .split-doc-btn {
-    background: #fff;
+    background: #ffffff;
     border: 1px solid #dce7f1;
     border-radius: 9px;
     padding: 8px 5px;

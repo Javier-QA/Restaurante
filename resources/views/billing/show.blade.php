@@ -431,7 +431,7 @@
     }
 
     .billing-detail-title > i {
-        color: #000 !important;
+        color:var(--text-main) !important;
         font-size: 1.55rem;
     }
 
@@ -1243,6 +1243,117 @@ document.addEventListener('DOMContentLoaded', function () {
             margin: 12px;
         }
     }
+</style>
+
+
+<style>
+/* DARK MODE - DETALLE COMPROBANTE DEFINITIVO */
+
+/* =========================================================
+   CANTIDAD DE PRODUCTOS
+   ========================================================= */
+
+html[data-color-mode="dark"] .billing-qty,
+html[data-color-mode="dark"] .billing-quantity,
+html[data-color-mode="dark"] .billing-detail-table tbody td:first-child span,
+html[data-color-mode="dark"] .billing-detail-table tbody td:first-child .badge {
+    background: #17283d !important;
+    border-color: #30465d !important;
+    color: #c7d7e7 !important;
+    box-shadow: none !important;
+}
+
+
+/* =========================================================
+   RESUMEN DE IMPORTES
+   ========================================================= */
+
+html[data-color-mode="dark"] .billing-totals {
+    background: #101f32 !important;
+    border-color: #30465d !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .billing-total-row {
+    color: #8fa6bd !important;
+}
+
+html[data-color-mode="dark"] .billing-total-row strong {
+    color: #ffffff !important;
+}
+
+
+/* TOTAL FINAL */
+html[data-color-mode="dark"] .billing-grand-total {
+    background: color-mix(
+        in srgb,
+        var(--primary) 13%,
+        #132338
+    ) !important;
+
+    border: 1px solid color-mix(
+        in srgb,
+        var(--primary) 28%,
+        #30465d
+    ) !important;
+
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .billing-grand-total span {
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .billing-grand-total strong {
+    color: var(--primary) !important;
+}
+
+
+/* =========================================================
+   HASH / XML / CDR
+   ========================================================= */
+
+html[data-color-mode="dark"] .billing-trace-block code {
+    display: block !important;
+    background: #101f32 !important;
+    border: 1px solid #30465d !important;
+    color: #a9bfd3 !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .billing-trace-block > span {
+    color: #8fa6bd !important;
+}
+
+
+/* =========================================================
+   ICONOS DE CABECERA DE LAS TARJETAS
+   ========================================================= */
+
+html[data-color-mode="dark"] .billing-section-icon,
+html[data-color-mode="dark"] .billing-info-icon {
+    background: color-mix(
+        in srgb,
+        var(--primary) 13%,
+        #132338
+    ) !important;
+
+    border-color: color-mix(
+        in srgb,
+        var(--primary) 24%,
+        #30465d
+    ) !important;
+
+    color: var(--primary) !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .billing-section-icon i,
+html[data-color-mode="dark"] .billing-info-icon i {
+    color: var(--primary) !important;
+    -webkit-text-fill-color: var(--primary) !important;
+}
+
 </style>
 
 @endsection

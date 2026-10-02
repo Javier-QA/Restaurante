@@ -51,6 +51,10 @@ class CategoryController extends Controller
 
         $data = $request->only('name');
 
+        if ($request->has('is_active')) {
+            $data['is_active'] = $request->boolean('is_active');
+        }
+
         if ($request->hasFile('image')) {
             // Borrar imagen anterior si existe
             if ($category->image) {

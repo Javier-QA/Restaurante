@@ -607,7 +607,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     {{-- Stat --}}
                     <div class="text-center">
-                        <div style="font-size:.72rem;color:var(--text-muted);">Meta mensual: <strong style="color:var(--dark-bg);">{{ $currency ?? 'S/' }} {{ number_format($monthlyGoal ?? 5000, 0,'.',',') }}</strong></div>
+                        <div class="current-income-stat">Meta mensual: <strong class="current-income-value">{{ $currency ?? 'S/' }} {{ number_format($monthlyGoal ?? 5000, 0,'.',',') }}</strong></div>
                         <div style="font-size:.7rem;color:var(--text-muted);margin-top:2px;">Logrado: {{ $currency ?? 'S/' }} {{ number_format($totalSalesMonth ?? 0, 0,'.',',') }}</div>
                     </div>
 
@@ -1538,6 +1538,985 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </style>
 
+
+<style>
+/* ============================================================
+   MAS VENDIDOS - MODO OSCURO
+============================================================ */
+
+html[data-color-mode="dark"]
+.dashboard-top-header {
+
+    background:
+        #111e30 !important;
+
+    border-bottom:
+        1px solid #26384d !important;
+}
+
+
+html[data-color-mode="dark"]
+.dashboard-top-header h6 {
+
+    color:
+        #f3f7fb !important;
+}
+
+
+html[data-color-mode="dark"]
+.dashboard-top-header
+.bi-trophy-fill {
+
+    color:
+        var(--dash-primary) !important;
+}
+
+
+/* ------------------------------------------------------------
+   CONTENEDOR DE LA LISTA
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"]
+.dashboard-top-header
++ .card-body {
+
+    background:
+        #111e30 !important;
+}
+
+
+html[data-color-mode="dark"]
+.dashboard-top-header
++ .card-body
+.list-group {
+
+    background:
+        transparent !important;
+}
+
+
+/* ------------------------------------------------------------
+   CADA PRODUCTO
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"]
+.top-product-item {
+
+    position:
+        relative;
+
+    background:
+        transparent !important;
+
+    border:
+        0 !important;
+
+    border-radius:
+        0 !important;
+
+    color:
+        #dce7f2 !important;
+
+    transition:
+        background-color .18s ease,
+        transform .18s ease !important;
+}
+
+
+/*
+ * Separador entre productos.
+ */
+
+html[data-color-mode="dark"]
+.top-product-item:not(:last-child)::after {
+
+    content: "";
+
+    position:
+        absolute;
+
+    left:
+        84px;
+
+    right:
+        22px;
+
+    bottom:
+        0;
+
+    height:
+        1px;
+
+    background:
+        #22354b;
+}
+
+
+/* Hover */
+
+html[data-color-mode="dark"]
+.top-product-item:hover {
+
+    background:
+        #16263a !important;
+
+    transform:
+        translateX(2px);
+}
+
+
+/* ------------------------------------------------------------
+   NOMBRE DEL PRODUCTO
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"]
+.top-product-item
+.fw-bold {
+
+    color:
+        #eef5fb !important;
+
+    font-weight:
+        700 !important;
+}
+
+
+/* ------------------------------------------------------------
+   CANTIDAD
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"]
+.top-product-item
+.text-muted {
+
+    color:
+        #8ea4ba !important;
+}
+
+
+/* ------------------------------------------------------------
+   IMAGEN
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"]
+.top-product-item img {
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    box-shadow:
+        0 5px 13px
+        rgba(0,0,0,.18) !important;
+}
+
+
+/*
+ * Placeholder si el producto no tiene imagen.
+ */
+
+html[data-color-mode="dark"]
+.top-product-item
+.rounded-3.d-flex {
+
+    background:
+        #192a3e !important;
+
+    color:
+        var(--dash-accent-1) !important;
+
+    border:
+        1px solid #293d54;
+}
+
+
+/* ------------------------------------------------------------
+   NUMERO DE POSICION
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"]
+.top-product-item
+.badge {
+
+    border-color:
+        #111e30 !important;
+
+    color:
+        #ffffff !important;
+
+    box-shadow:
+        0 3px 8px
+        rgba(0,0,0,.16);
+}
+
+
+/* #1 */
+
+html[data-color-mode="dark"]
+.top-product-item:nth-child(1)
+.badge {
+
+    background:
+        var(--dash-primary) !important;
+}
+
+
+/* #2 */
+
+html[data-color-mode="dark"]
+.top-product-item:nth-child(2)
+.badge {
+
+    background:
+        var(--dash-accent-1) !important;
+}
+
+
+/* #3 */
+
+html[data-color-mode="dark"]
+.top-product-item:nth-child(3)
+.badge {
+
+    background:
+        var(--dash-accent-2) !important;
+}
+
+
+/* #4 */
+
+html[data-color-mode="dark"]
+.top-product-item:nth-child(4)
+.badge {
+
+    background:
+        var(--dash-accent-4) !important;
+}
+
+
+/* #5 */
+
+html[data-color-mode="dark"]
+.top-product-item:nth-child(5)
+.badge {
+
+    background:
+        #1686bb !important;
+}
+
+
+/* ------------------------------------------------------------
+   MEDALLAS / POSICION DERECHA
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"]
+.top-product-item
+.ms-auto {
+
+    color:
+        #8da4ba !important;
+}
+
+
+/* ------------------------------------------------------------
+   PRIMEROS TRES PUESTOS
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"]
+.top-product-item:nth-child(1)
+.ms-auto {
+
+    color:
+        #e0b229 !important;
+}
+
+
+html[data-color-mode="dark"]
+.top-product-item:nth-child(2)
+.ms-auto {
+
+    color:
+        #aeb9c5 !important;
+}
+
+
+html[data-color-mode="dark"]
+.top-product-item:nth-child(3)
+.ms-auto {
+
+    color:
+        #d98232 !important;
+}
+
+</style>
+
+<style>
+/* ============================================================
+   DASHBOARD DARK - LEGIBILIDAD FINAL
+============================================================ */
+
+/* Superficies */
+
+html[data-color-mode="dark"] .card,
+html[data-color-mode="dark"] .kpi-panel,
+html[data-color-mode="dark"] .goal-bar-panel {
+
+    background:
+        #111f32 !important;
+
+    border-color:
+        #2a3e55 !important;
+}
+
+
+/* ============================================================
+   KPI
+============================================================ */
+
+html[data-color-mode="dark"] .kpi-label {
+
+    color:
+        #8fb4d5 !important;
+
+    opacity:
+        1 !important;
+}
+
+
+html[data-color-mode="dark"] .kpi-value {
+
+    color:
+        #ffffff !important;
+
+    opacity:
+        1 !important;
+}
+
+
+html[data-color-mode="dark"] .kpi-sub {
+
+    color:
+        #9fb3c8 !important;
+
+    opacity:
+        1 !important;
+}
+
+
+html[data-color-mode="dark"] .kpi-sub strong {
+
+    color:
+        #dce8f3 !important;
+}
+
+
+/* ============================================================
+   META MENSUAL
+============================================================ */
+
+html[data-color-mode="dark"] .goal-bar-title {
+
+    color:
+        #ffffff !important;
+}
+
+
+html[data-color-mode="dark"] .goal-bar-sub {
+
+    color:
+        #a5b9cc !important;
+}
+
+
+html[data-color-mode="dark"] .goal-bar-sub strong {
+
+    color:
+        #e5eef7 !important;
+}
+
+
+html[data-color-mode="dark"] .goal-bar-scale {
+
+    color:
+        #9bb0c4 !important;
+
+    opacity:
+        1 !important;
+}
+
+
+html[data-color-mode="dark"] .goal-progress-message {
+
+    color:
+        #9fb3c6 !important;
+
+    opacity:
+        1 !important;
+}
+
+
+/* ============================================================
+   ENCABEZADOS DE CARDS
+============================================================ */
+
+html[data-color-mode="dark"] .card-header {
+
+    background:
+        #111f32 !important;
+
+    border-bottom:
+        1px solid #2a3e55 !important;
+}
+
+
+html[data-color-mode="dark"] .card-header h6,
+html[data-color-mode="dark"] .card-header .fw-bold {
+
+    color:
+        #f8fbff !important;
+
+    opacity:
+        1 !important;
+}
+
+
+/* ============================================================
+   TEXTOS SECUNDARIOS
+============================================================ */
+
+html[data-color-mode="dark"]
+.container-fluid .text-muted {
+
+    color:
+        #9db2c7 !important;
+
+    opacity:
+        1 !important;
+}
+
+
+html[data-color-mode="dark"]
+.card-body small {
+
+    color:
+        #9db2c7;
+}
+
+
+/* ============================================================
+   ESTADO DE SALONES
+============================================================ */
+
+html[data-color-mode="dark"]
+.card-body .fw-semibold {
+
+    color:
+        #eef5fb !important;
+}
+
+
+html[data-color-mode="dark"]
+.card-body .small.text-muted {
+
+    color:
+        #9fb4c9 !important;
+
+    opacity:
+        1 !important;
+}
+
+
+/* Tabs Salón Principal / Terraza */
+
+html[data-color-mode="dark"]
+.nav-pills .nav-link:not(.active) {
+
+    color:
+        #d5e1ec !important;
+
+    border-color:
+        #6f879e !important;
+
+    background:
+        #15263a !important;
+}
+
+
+html[data-color-mode="dark"]
+.nav-pills .nav-link:not(.active):hover {
+
+    background:
+        #1b3048 !important;
+
+    color:
+        #ffffff !important;
+
+    border-color:
+        #8ca3b8 !important;
+}
+
+
+/* ============================================================
+   INGRESO ACTUAL
+============================================================ */
+
+html[data-color-mode="dark"]
+#donutChart {
+
+    filter:
+        brightness(1.18);
+}
+
+
+/*
+ * Textos cercanos al donut.
+ */
+
+html[data-color-mode="dark"]
+#donutChart ~ * {
+
+    color:
+        #a8bccf;
+}
+
+
+/* ============================================================
+   MAS VENDIDOS
+   Mantener lo que ya funciona
+============================================================ */
+
+html[data-color-mode="dark"]
+.top-product-item .fw-bold {
+
+    color:
+        #f4f8fc !important;
+}
+
+
+html[data-color-mode="dark"]
+.top-product-item .text-muted {
+
+    color:
+        #a6bbcf !important;
+}
+
+
+/* ============================================================
+   CONTRASTE DE ICONOS
+============================================================ */
+
+html[data-color-mode="dark"]
+.bi-check-circle-fill {
+
+    filter:
+        brightness(1.08);
+}
+
+
+/* ============================================================
+   GRÁFICOS
+   Canvas conserva sus colores pero gana visibilidad.
+============================================================ */
+
+html[data-color-mode="dark"]
+canvas {
+
+    opacity:
+        1 !important;
+}
+
+
+/* ============================================================
+   BOTONES
+============================================================ */
+
+html[data-color-mode="dark"]
+.dashboard-primary-btn,
+html[data-color-mode="dark"]
+.dashboard-export-btn,
+html[data-color-mode="dark"]
+.goal-bar-btn {
+
+    color:
+        #ffffff !important;
+
+    opacity:
+        1 !important;
+}
+
+
+/* ============================================================
+   NO OSCURECER EXCESIVAMENTE ELEMENTOS INTERNOS
+============================================================ */
+
+html[data-color-mode="dark"]
+.card-body {
+
+    color:
+        #dce7f2;
+}
+
+</style>
+
+<style>
+/* ============================================================
+   MESAS DASHBOARD - CONTRASTE DARK
+============================================================ */
+
+/*
+ * Nombre: Mesa 1, Mesa 2...
+ */
+html[data-color-mode="dark"]
+.table-item .fw-semibold,
+html[data-color-mode="dark"]
+.table-item .fw-bold {
+
+    color: #f5f9fd !important;
+    opacity: 1 !important;
+}
+
+
+/*
+ * Estado: Libre / Ocupada
+ */
+html[data-color-mode="dark"]
+.table-item .text-muted,
+html[data-color-mode="dark"]
+.table-item small {
+
+    color: #a9bed2 !important;
+    opacity: 1 !important;
+}
+
+
+/*
+ * Cada mesa gana una superficie muy sutil para
+ * distinguirse del fondo sin convertirla en una tarjeta pesada.
+ */
+html[data-color-mode="dark"]
+.table-item {
+
+    border-radius: 14px;
+
+    transition:
+        background-color .18s ease,
+        transform .18s ease;
+}
+
+
+html[data-color-mode="dark"]
+.table-item:hover {
+
+    background: rgba(255,255,255,.035);
+
+    transform: translateY(-1px);
+}
+
+
+/*
+ * Icono disponible.
+ */
+html[data-color-mode="dark"]
+.table-item .text-success {
+
+    color: #32d583 !important;
+}
+
+
+/*
+ * Icono ocupado.
+ */
+html[data-color-mode="dark"]
+.table-item .text-danger {
+
+    color: #fb7185 !important;
+}
+
+
+/*
+ * Texto disponible.
+ */
+html[data-color-mode="dark"]
+.table-item .text-success + small,
+html[data-color-mode="dark"]
+.table-item .status-available {
+
+    color: #8de7b5 !important;
+}
+
+
+/*
+ * Texto ocupado.
+ */
+html[data-color-mode="dark"]
+.table-item .text-danger + small,
+html[data-color-mode="dark"]
+.table-item .status-occupied {
+
+    color: #fda4af !important;
+}
+
+
+/*
+ * Encabezado Estado de Salones.
+ */
+html[data-color-mode="dark"]
+.rooms-card .card-header h6,
+html[data-color-mode="dark"]
+.tables-card .card-header h6 {
+
+    color: #ffffff !important;
+}
+
+
+/*
+ * Leyenda Disponible / Ocupada.
+ */
+html[data-color-mode="dark"]
+.rooms-card .badge,
+html[data-color-mode="dark"]
+.tables-card .badge {
+
+    opacity: 1 !important;
+}
+
+</style>
+
+<style>
+/* ============================================================
+   MESAS DASHBOARD - BORDES DARK
+============================================================ */
+
+/*
+ * Panel completo de Estado de Salones.
+ * Borde más visible, similar al resto del dashboard.
+ */
+html[data-color-mode="dark"] .rooms-card,
+html[data-color-mode="dark"] .tables-card {
+
+    border:
+        1px solid #38516b !important;
+
+    box-shadow:
+        0 10px 25px
+        rgba(0,0,0,.14) !important;
+}
+
+
+/*
+ * Si Estado de Salones utiliza una card normal,
+ * reforzamos únicamente el panel que contiene las mesas.
+ */
+html[data-color-mode="dark"] .dashboard-tables-card {
+
+    border:
+        1px solid #38516b !important;
+}
+
+
+/*
+ * Separación del encabezado.
+ */
+html[data-color-mode="dark"] .rooms-card .card-header,
+html[data-color-mode="dark"] .tables-card .card-header,
+html[data-color-mode="dark"] .dashboard-tables-card .card-header {
+
+    border-bottom:
+        1px solid #31485f !important;
+}
+
+
+/*
+ * Cada mesa:
+ * borde discreto para que su espacio pueda apreciarse
+ * sin convertirlo en una tarjeta pesada.
+ */
+html[data-color-mode="dark"] .table-item {
+
+    border:
+        1px solid rgba(112, 143, 172, .24) !important;
+
+    border-radius:
+        12px !important;
+
+    background:
+        rgba(255,255,255,.015) !important;
+
+    padding:
+        12px 14px !important;
+
+    transition:
+        border-color .18s ease,
+        background-color .18s ease,
+        transform .18s ease;
+}
+
+
+/*
+ * Al pasar el mouse se aprecia un poco más.
+ */
+html[data-color-mode="dark"] .table-item:hover {
+
+    border-color:
+        rgba(132, 165, 195, .48) !important;
+
+    background:
+        rgba(255,255,255,.035) !important;
+
+    transform:
+        translateY(-1px);
+}
+
+</style>
+
+<style>
+/* ============================================================
+   MESAS DASHBOARD - TARJETA REAL DARK
+============================================================ */
+
+/*
+ * Contenedor REAL de cada mesa.
+ */
+html[data-color-mode="dark"] .table-hover-card {
+
+    background:
+        #15263a !important;
+
+    border:
+        1px solid #38536d !important;
+
+    border-radius:
+        14px !important;
+
+    box-shadow:
+        0 5px 14px
+        rgba(0, 0, 0, .12) !important;
+
+    transition:
+        transform .18s ease,
+        border-color .18s ease,
+        background-color .18s ease,
+        box-shadow .18s ease !important;
+}
+
+
+/*
+ * Hover de la mesa.
+ */
+html[data-color-mode="dark"] .table-hover-card:hover {
+
+    background:
+        #192d43 !important;
+
+    border-color:
+        #587694 !important;
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 9px 20px
+        rgba(0, 0, 0, .20) !important;
+}
+
+
+/*
+ * Nombre de la mesa.
+ */
+html[data-color-mode="dark"]
+.table-hover-card h6 {
+
+    color:
+        #f4f8fc !important;
+
+    opacity:
+        1 !important;
+}
+
+
+/*
+ * Estado Libre.
+ */
+html[data-color-mode="dark"]
+.table-hover-card small.text-muted {
+
+    color:
+        #a9bed2 !important;
+
+    opacity:
+        1 !important;
+}
+
+
+/*
+ * El icono verde permanece claramente visible.
+ */
+html[data-color-mode="dark"]
+.table-hover-card .bi-check-circle-fill {
+
+    color:
+        #22d36f !important;
+}
+
+
+/*
+ * Mesa ocupada.
+ * El fondo inline #fff1f2 también queda sustituido
+ * por una superficie oscura con matiz rojo.
+ */
+html[data-color-mode="dark"]
+.table-hover-card:has(.bi-person-workspace) {
+
+    background:
+        #291b29 !important;
+
+    border-color:
+        #71394a !important;
+}
+
+
+html[data-color-mode="dark"]
+.table-hover-card:has(.bi-person-workspace):hover {
+
+    background:
+        #32202e !important;
+
+    border-color:
+        #985064 !important;
+}
+
+
+/*
+ * Icono de mesa ocupada.
+ */
+html[data-color-mode="dark"]
+.table-hover-card .bi-person-workspace {
+
+    color:
+        #fb7185 !important;
+}
+
+
+/*
+ * Evitar que Bootstrap vuelva a ocultar el borde.
+ * La vista utiliza originalmente border-0.
+ */
+html[data-color-mode="dark"]
+.card.border-0.table-hover-card {
+
+    border:
+        1px solid #38536d !important;
+}
+
+
+html[data-color-mode="dark"]
+.card.border-0.table-hover-card:has(.bi-person-workspace) {
+
+    border-color:
+        #71394a !important;
+}
+
+</style>
 @includeIf('products.create_modal')
 
 <script>
@@ -1833,4 +2812,915 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
+
+<style>
+/* ============================================================
+   DASHBOARD - MODO OSCURO PROFESIONAL
+   Solo se activa con data-color-mode="dark"
+============================================================ */
+
+/* ------------------------------------------------------------
+   VARIABLES PROPIAS DEL DASHBOARD OSCURO
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"] {
+
+    --dashboard-dark-bg: #091321;
+    --dashboard-dark-surface: #111e30;
+    --dashboard-dark-surface-2: #162438;
+
+    --dashboard-dark-border: #26384d;
+
+    --dashboard-dark-title: #f3f7fb;
+    --dashboard-dark-text: #d7e2ee;
+    --dashboard-dark-muted: #8298af;
+
+    --dashboard-dark-track: #25374b;
+}
+
+
+/* ------------------------------------------------------------
+   CARDS GENERALES
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"] .dashboard-card,
+html[data-color-mode="dark"] .dashboard-card.card {
+
+    background:
+        var(--dashboard-dark-surface) !important;
+
+    border-color:
+        var(--dashboard-dark-border) !important;
+
+    color:
+        var(--dashboard-dark-text) !important;
+
+    box-shadow:
+        0 12px 28px
+        rgba(0, 0, 0, .15) !important;
+}
+
+
+/* ------------------------------------------------------------
+   KPI
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"] .kpi-panel {
+
+    background:
+        var(--dashboard-dark-surface) !important;
+
+    border-color:
+        var(--dashboard-dark-border) !important;
+
+    box-shadow:
+        0 10px 24px
+        rgba(0,0,0,.12) !important;
+}
+
+
+html[data-color-mode="dark"] .kpi-panel:hover {
+
+    background:
+        #142338 !important;
+
+    border-color:
+        #31465e !important;
+
+    box-shadow:
+        0 14px 30px
+        rgba(0,0,0,.20) !important;
+}
+
+
+/*
+ * Etiqueta superior:
+ * conserva un tono azulado, pero ahora es legible.
+ */
+
+html[data-color-mode="dark"] .kpi-label {
+
+    color:
+        #8eabc7 !important;
+}
+
+
+/*
+ * Número principal.
+ */
+
+html[data-color-mode="dark"] .kpi-value {
+
+    color:
+        var(--dashboard-dark-title) !important;
+}
+
+
+/*
+ * Descripción inferior.
+ */
+
+html[data-color-mode="dark"] .kpi-sub {
+
+    color:
+        var(--dashboard-dark-muted) !important;
+}
+
+
+html[data-color-mode="dark"] .kpi-sub strong {
+
+    color:
+        #c9d8e7 !important;
+}
+
+
+/*
+ * Badges HOY / LIVE / MES / VER.
+ */
+
+html[data-color-mode="dark"] .kpi-badge {
+
+    background:
+        #eaf4fc !important;
+
+    color:
+        #183b5c !important;
+
+    border-color:
+        rgba(255,255,255,.10) !important;
+}
+
+
+html[data-color-mode="dark"] .kpi-badge-link:hover {
+
+    background:
+        #15263a !important;
+
+    color:
+        var(--primary) !important;
+}
+
+
+/* ------------------------------------------------------------
+   ICONOS KPI
+   Se mantienen sus colores funcionales.
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"] .kpi-icon-wrap {
+
+    box-shadow:
+        0 7px 18px
+        rgba(0,0,0,.13);
+}
+
+
+/* ------------------------------------------------------------
+   META MENSUAL
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"] .goal-bar-panel {
+
+    background:
+        var(--dashboard-dark-surface) !important;
+
+    border-color:
+        var(--dashboard-dark-border) !important;
+
+    box-shadow:
+        0 10px 24px
+        rgba(0,0,0,.12) !important;
+}
+
+
+html[data-color-mode="dark"] .goal-bar-title {
+
+    color:
+        var(--dashboard-dark-title) !important;
+}
+
+
+html[data-color-mode="dark"] .goal-bar-sub {
+
+    color:
+        var(--dashboard-dark-muted) !important;
+}
+
+
+html[data-color-mode="dark"] .goal-bar-sub strong {
+
+    color:
+        #dbe6f1 !important;
+}
+
+
+html[data-color-mode="dark"] .goal-bar-scale {
+
+    color:
+        #71879e !important;
+}
+
+
+html[data-color-mode="dark"] .goal-bar-track {
+
+    background:
+        #d9e7f2 !important;
+
+    box-shadow:
+        inset 0 1px 2px
+        rgba(0,0,0,.10) !important;
+}
+
+
+html[data-color-mode="dark"] .goal-progress-message {
+
+    color:
+        #8fa3b8 !important;
+}
+
+
+/* ------------------------------------------------------------
+   TARJETAS DE GRAFICOS
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"] .card {
+
+    background:
+        var(--dashboard-dark-surface) !important;
+
+    border-color:
+        var(--dashboard-dark-border) !important;
+}
+
+
+html[data-color-mode="dark"] .card-header {
+
+    background:
+        var(--dashboard-dark-surface) !important;
+
+    border-bottom-color:
+        var(--dashboard-dark-border) !important;
+}
+
+
+html[data-color-mode="dark"] .card-header .fw-bold {
+
+    color:
+        var(--dashboard-dark-title) !important;
+}
+
+
+/* ------------------------------------------------------------
+   TEXTOS INLINE DEL DONUT
+   Sobrescribe color:var(--dark-bg)
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"] #donutChart ~ div,
+html[data-color-mode="dark"] #donutChart + div {
+
+    color:
+        var(--dashboard-dark-title) !important;
+}
+
+
+/*
+ * En esta vista hay elementos con estilos inline usando
+ * var(--dark-bg). En modo oscuro hacemos que esa variable
+ * represente texto claro SOLO dentro del dashboard.
+ */
+
+html[data-color-mode="dark"] .dashboard-wrapper {
+
+    --dark-bg:
+        #eef5fb;
+}
+
+
+/* Fallback por si el dashboard no usa dashboard-wrapper */
+
+html[data-color-mode="dark"] main {
+
+    --dashboard-inline-title:
+        #eef5fb;
+}
+
+
+/* ------------------------------------------------------------
+   BOTONES
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"] .dashboard-export-btn {
+
+    color:
+        #ffffff !important;
+}
+
+
+html[data-color-mode="dark"] .dashboard-primary-btn,
+html[data-color-mode="dark"] .goal-bar-btn {
+
+    color:
+        #ffffff !important;
+}
+
+
+/* ------------------------------------------------------------
+   TOAST DE META
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"] .goal-toast {
+
+    background:
+        var(--dashboard-dark-surface) !important;
+
+    border-color:
+        var(--dashboard-dark-border) !important;
+
+    color:
+        var(--dashboard-dark-text) !important;
+}
+
+
+html[data-color-mode="dark"] .goal-toast-header {
+
+    background:
+        var(--dashboard-dark-surface-2) !important;
+
+    border-color:
+        var(--dashboard-dark-border) !important;
+
+    color:
+        var(--dashboard-dark-title) !important;
+}
+
+
+html[data-color-mode="dark"] .goal-toast .toast-body {
+
+    color:
+        var(--dashboard-dark-text) !important;
+}
+
+
+/* ------------------------------------------------------------
+   MEJOR CONTRASTE DE TEXTOS BOOTSTRAP DEL DASHBOARD
+------------------------------------------------------------ */
+
+html[data-color-mode="dark"] .text-muted {
+
+    color:
+        var(--dashboard-dark-muted) !important;
+}
+
+
+/* ------------------------------------------------------------
+   TRANSICION SUAVE ENTRE MODOS
+------------------------------------------------------------ */
+
+.kpi-panel,
+.goal-bar-panel,
+.card,
+.card-header,
+.kpi-label,
+.kpi-value,
+.kpi-sub,
+.goal-bar-title,
+.goal-bar-sub,
+.goal-progress-message {
+
+    transition:
+        background-color .22s ease,
+        border-color .22s ease,
+        color .22s ease,
+        box-shadow .22s ease;
+}
+
+</style>
+
+<style>
+/* DARK MODE - INDICADOR META MENSUAL */
+
+/* Indicador porcentual situado sobre la barra */
+html[data-color-mode="dark"] .goal-progress-message {
+    color: #94a3b8 !important;
+}
+
+/* Elementos claros dentro del progreso */
+html[data-color-mode="dark"] .goal-progress-message span {
+    color: inherit;
+}
+
+/*
+ * El porcentaje flotante de la barra conserva el naranja
+ * pero elimina el fondo crema del modo claro.
+ */
+html[data-color-mode="dark"] .progress-bar > span,
+html[data-color-mode="dark"] .goal-progress > span,
+html[data-color-mode="dark"] [class*="goal-progress"] > span {
+    background: rgba(245, 158, 11, .16) !important;
+    color: #fbbf24 !important;
+    border-color: rgba(251, 191, 36, .30) !important;
+    box-shadow: none !important;
+}
+
+</style>
+
+
+<style>
+/* DARK MODE - PORCENTAJE BARRA META */
+
+html[data-color-mode="dark"] .goal-bar-pct {
+    background: rgba(245, 158, 11, .18) !important;
+    color: #fbbf24 !important;
+    border: 1px solid rgba(251, 191, 36, .32) !important;
+    box-shadow: none !important;
+}
+
+/* Cuando la meta ya fue alcanzada */
+html[data-color-mode="dark"] .goal-fill-complete .goal-bar-pct {
+    background: rgba(34, 197, 94, .16) !important;
+    color: #86efac !important;
+    border-color: rgba(74, 222, 128, .32) !important;
+}
+
+</style>
+
+
+<style>
+/* DARK MODE - BARRA META MENSUAL DEFINITIVA */
+
+/* Pista completa */
+html[data-color-mode="dark"] .goal-bar-track {
+    background: #20344a !important;
+    border: 1px solid #304b66 !important;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.22) !important;
+}
+
+/* Porcentajes superiores */
+html[data-color-mode="dark"] .goal-bar-scale {
+    color: #7892aa !important;
+}
+
+/* Marcas verticales internas */
+html[data-color-mode="dark"] .goal-bar-track::before,
+html[data-color-mode="dark"] .goal-bar-track::after {
+    border-color: #49647e !important;
+    background-color: #49647e !important;
+    opacity: .65 !important;
+}
+
+/* Progreso real */
+html[data-color-mode="dark"] .goal-bar-fill {
+    box-shadow: none !important;
+}
+
+/* Porcentaje flotante */
+html[data-color-mode="dark"] .goal-bar-pct {
+    background: rgba(245,158,11,.18) !important;
+    color: #fbbf24 !important;
+    border: 1px solid rgba(251,191,36,.32) !important;
+}
+
+</style>
+
+
+<style>
+/* DARK MODE - LEGIBILIDAD BARRA META */
+
+/* Fondo de la barra */
+html[data-color-mode="dark"] .goal-bar-track {
+    background: #263b50 !important;
+    border: 1px solid #3d5872 !important;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,.30) !important;
+}
+
+/* Progreso alcanzado */
+html[data-color-mode="dark"] .goal-bar-fill {
+    background: linear-gradient(
+        90deg,
+        #f59e0b,
+        #fb923c
+    ) !important;
+
+    box-shadow: 0 0 10px rgba(245,158,11,.22) !important;
+}
+
+/* 0%, 25%, 50%, 75%, 100% */
+html[data-color-mode="dark"] .goal-bar-scale {
+    color: #a9bdd0 !important;
+    font-weight: 700 !important;
+}
+
+/* Porcentaje actual */
+html[data-color-mode="dark"] .goal-bar-pct {
+    background: #f59e0b !important;
+    color: #ffffff !important;
+    border: 1px solid #fbbf24 !important;
+    font-weight: 800 !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,.25) !important;
+}
+
+</style>
+
+
+
+<style>
+/* DARK MODE - FRANJAS KPI DASHBOARD REAL */
+
+/*
+ * IMPORTANTE:
+ * No se cambia el color de cada KPI.
+ * Solo se elimina el blanco del degradado.
+ */
+
+/* VENTAS DE HOY */
+html[data-color-mode="dark"] .kpi-sales::before {
+    background: linear-gradient(
+        180deg,
+        var(--dash-primary) 0%,
+        color-mix(in srgb, var(--dash-primary) 65%, #132338) 58%,
+        color-mix(in srgb, var(--dash-primary) 12%, #132338) 100%
+    ) !important;
+}
+
+/* MESAS EN SERVICIO */
+html[data-color-mode="dark"] .kpi-tables::before {
+    background: linear-gradient(
+        180deg,
+        var(--dash-accent-1) 0%,
+        color-mix(in srgb, var(--dash-accent-1) 65%, #132338) 58%,
+        color-mix(in srgb, var(--dash-accent-1) 12%, #132338) 100%
+    ) !important;
+}
+
+/* VENTAS DEL MES */
+html[data-color-mode="dark"] .kpi-month::before {
+    background: linear-gradient(
+        180deg,
+        var(--dash-accent-2) 0%,
+        color-mix(in srgb, var(--dash-accent-2) 65%, #132338) 58%,
+        color-mix(in srgb, var(--dash-accent-2) 12%, #132338) 100%
+    ) !important;
+}
+
+/* ALERTA DE STOCK */
+html[data-color-mode="dark"] .kpi-stock.kpi-alert::before {
+    background: linear-gradient(
+        180deg,
+        #ef4444 0%,
+        color-mix(in srgb, #ef4444 65%, #132338) 58%,
+        color-mix(in srgb, #ef4444 12%, #132338) 100%
+    ) !important;
+}
+
+/* STOCK CORRECTO */
+html[data-color-mode="dark"] .kpi-stock.kpi-ok::before {
+    background: linear-gradient(
+        180deg,
+        var(--dash-accent-4) 0%,
+        color-mix(in srgb, var(--dash-accent-4) 65%, #132338) 58%,
+        color-mix(in srgb, var(--dash-accent-4) 12%, #132338) 100%
+    ) !important;
+}
+
+</style>
+
+
+<style>
+/* DARK MODE - INGRESO ACTUAL LEGIBILIDAD FINAL */
+
+/* Tarjeta */
+html[data-color-mode="dark"] #donutChart {
+    filter: brightness(1.35) saturate(1.15);
+}
+
+/* 0% central */
+html[data-color-mode="dark"] #donutChart + div > div:first-child {
+    color: #ffffff !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .30);
+}
+
+/* "de meta" */
+html[data-color-mode="dark"] #donutChart + div > div:last-child {
+    color: #a9bdd0 !important;
+}
+
+/* Meta mensual */
+html[data-color-mode="dark"] #donutChart
+    + div
+    + div {
+    color: #a9bdd0 !important;
+}
+
+/*
+ * Corrige específicamente los textos inline de la tarjeta
+ * que actualmente usan --dark-bg.
+ */
+html[data-color-mode="dark"] #donutChart
+    ~ div strong {
+    color: #60a5fa !important;
+}
+
+/* Textos secundarios dentro del cuerpo */
+html[data-color-mode="dark"] #donutChart
+    ~ div {
+    color: #9fb3c8 !important;
+}
+
+/* Pie explicativo */
+html[data-color-mode="dark"] #donutChart
+    ~ p {
+    color: #8fa7bd !important;
+}
+
+</style>
+
+
+<style>
+/* DARK MODE - VALORES INGRESO ACTUAL */
+
+/* Modo claro conserva el aspecto del sistema */
+.current-income-stat {
+    font-size: .76rem;
+    color: var(--text-muted);
+}
+
+.current-income-achieved {
+    margin-top: 4px;
+}
+
+.current-income-value {
+    color: var(--dark-bg);
+    font-weight: 800;
+}
+
+/* Modo oscuro */
+html[data-color-mode="dark"] .current-income-stat {
+    color: #a9bdd0 !important;
+    font-weight: 600;
+}
+
+html[data-color-mode="dark"] .current-income-value {
+    color: #38aaf0 !important;
+    font-weight: 800 !important;
+}
+
+html[data-color-mode="dark"] .current-income-achieved {
+    color: #c7d5e2 !important;
+}
+
+/* El importe de Logrado también debe destacar */
+html[data-color-mode="dark"] .current-income-achieved {
+    font-weight: 600 !important;
+}
+
+</style>
+
+
+
+<style>
+/* DARK MODE - FRANJAS KPI DEGRADADO RESTAURADO */
+
+/* Ventas de hoy */
+html[data-color-mode="dark"] .kpi-sales::before {
+    background: linear-gradient(
+        180deg,
+        var(--dash-primary) 0%,
+        color-mix(in srgb, var(--dash-primary) 55%, #132338) 60%,
+        #132338 100%
+    ) !important;
+}
+
+/* Mesas en servicio */
+html[data-color-mode="dark"] .kpi-tables::before {
+    background: linear-gradient(
+        180deg,
+        var(--dash-accent-1) 0%,
+        color-mix(in srgb, var(--dash-accent-1) 55%, #132338) 60%,
+        #132338 100%
+    ) !important;
+}
+
+/* Ventas del mes */
+html[data-color-mode="dark"] .kpi-month::before {
+    background: linear-gradient(
+        180deg,
+        var(--dash-accent-2) 0%,
+        color-mix(in srgb, var(--dash-accent-2) 55%, #132338) 60%,
+        #132338 100%
+    ) !important;
+}
+
+/* Stock con alerta */
+html[data-color-mode="dark"] .kpi-stock.kpi-alert::before {
+    background: linear-gradient(
+        180deg,
+        #ef4444 0%,
+        color-mix(in srgb, #ef4444 55%, #132338) 60%,
+        #132338 100%
+    ) !important;
+}
+
+/* Stock correcto */
+html[data-color-mode="dark"] .kpi-stock.kpi-ok::before {
+    background: linear-gradient(
+        180deg,
+        var(--dash-accent-4) 0%,
+        color-mix(in srgb, var(--dash-accent-4) 55%, #132338) 60%,
+        #132338 100%
+    ) !important;
+}
+
+</style>
+
+
+<style>
+/* DARK MODE - FRANJA MAS VENDIDOS */
+
+/* Mantener el degradado naranja, pero sin terminar en blanco */
+html[data-color-mode="dark"] .dashboard-top-header {
+    position: relative;
+    overflow: hidden;
+}
+
+html[data-color-mode="dark"] .dashboard-top-header::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+
+    background: linear-gradient(
+        180deg,
+        var(--primary) 0%,
+        color-mix(in srgb, var(--primary) 55%, #132338) 60%,
+        #132338 100%
+    ) !important;
+}
+
+/* Evitar que otra regla deje una segunda franja clara */
+html[data-color-mode="dark"] .dashboard-top-header {
+    border-left-color: transparent !important;
+}
+
+/* Título e icono permanecen por encima de la franja */
+html[data-color-mode="dark"] .dashboard-top-header h6 {
+    position: relative;
+    z-index: 1;
+}
+
+</style>
+
+
+<style>
+/* DARK MODE - ICONO META MENSUAL NARANJA */
+
+html[data-color-mode="dark"] .goal-icon-wrap {
+    background: rgba(255, 136, 0, .16) !important;
+    border: 1px solid rgba(255, 136, 0, .25) !important;
+    color: #ff8800 !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .goal-icon-wrap i {
+    color: #ff8800 !important;
+}
+
+</style>
+
 @endsection
+
+
+
+
+
+
+
+
+
+
+<style id="dashboard-kpi-badge-final">
+
+/* =========================================================
+   BADGES KPI - COLORES Y BORDES
+   ========================================================= */
+
+.kpi-panel .kpi-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    min-width: 40px !important;
+    height: 22px !important;
+    padding: 2px 9px !important;
+
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 999px !important;
+
+    font-size: .68rem !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+
+    box-sizing: border-box !important;
+}
+
+/* =========================
+   HOY - VENTAS
+   ========================= */
+
+.kpi-panel.kpi-sales .kpi-badge {
+    background: #fff1df !important;
+    color: #ff8c00 !important;
+    border-color: #ffb45c !important;
+}
+
+/* =========================
+   LIVE - MESAS
+   ========================= */
+
+.kpi-panel.kpi-tables .kpi-badge {
+    background: #e8f3ff !important;
+    color: #1683c7 !important;
+    border-color: #75bde8 !important;
+}
+
+/* =========================
+   MES - VENTAS DEL MES
+   ========================= */
+
+.kpi-panel.kpi-month .kpi-badge {
+    background: #e8f8ee !important;
+    color: #16a05d !important;
+    border-color: #70cf94 !important;
+}
+
+/* =========================
+   VER - STOCK
+   ========================= */
+
+.kpi-panel.kpi-stock .kpi-badge {
+    background: #fff1df !important;
+    color: #ff8c00 !important;
+    border-color: #ffb45c !important;
+}
+
+
+/* =========================================================
+   MODO OSCURO
+   ========================================================= */
+
+html[data-color-mode="dark"] .kpi-panel.kpi-sales .kpi-badge {
+    background: rgba(255, 140, 0, .14) !important;
+    color: #ffb45c !important;
+    border-color: rgba(255, 180, 92, .55) !important;
+}
+
+html[data-color-mode="dark"] .kpi-panel.kpi-tables .kpi-badge {
+    background: rgba(22, 131, 199, .16) !important;
+    color: #75bde8 !important;
+    border-color: rgba(117, 189, 232, .55) !important;
+}
+
+html[data-color-mode="dark"] .kpi-panel.kpi-month .kpi-badge {
+    background: rgba(22, 160, 93, .16) !important;
+    color: #70cf94 !important;
+    border-color: rgba(112, 207, 148, .55) !important;
+}
+
+html[data-color-mode="dark"] .kpi-panel.kpi-stock .kpi-badge {
+    background: rgba(255, 140, 0, .14) !important;
+    color: #ffb45c !important;
+    border-color: rgba(255, 180, 92, .55) !important;
+}
+
+
+/* =========================================================
+   SIN CAMBIO DE COLOR POR HOVER
+   ========================================================= */
+
+.kpi-panel.kpi-sales .kpi-badge:hover {
+    background: #fff1df !important;
+    color: #ff8c00 !important;
+    border-color: #ffb45c !important;
+}
+
+.kpi-panel.kpi-tables .kpi-badge:hover {
+    background: #e8f3ff !important;
+    color: #1683c7 !important;
+    border-color: #75bde8 !important;
+}
+
+.kpi-panel.kpi-month .kpi-badge:hover {
+    background: #e8f8ee !important;
+    color: #16a05d !important;
+    border-color: #70cf94 !important;
+}
+
+.kpi-panel.kpi-stock .kpi-badge:hover {
+    background: #fff1df !important;
+    color: #ff8c00 !important;
+    border-color: #ffb45c !important;
+}
+
+</style>
+

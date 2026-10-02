@@ -11,8 +11,8 @@
             width: 80mm;
             margin: 0 auto;
             padding: 5mm;
-            background: #fff;
-            color: #000;
+            background: #ffffff;
+            color:var(--text-main);
             font-size: 12px;
         }
         .text-center { text-align: center; }

@@ -297,7 +297,7 @@
         justify-content: center;
         margin-left: -1px;
         border: 1px solid var(--border-soft);
-        background: #fff;
+        background: #ffffff;
         color: var(--primary);
         text-decoration: none;
         font-size: .82rem;
@@ -333,7 +333,7 @@
 
     .history-pages li.disabled span {
         color: #94a3b8;
-        background: #f8fafc;
+        background: #ffffff;
         cursor: default;
     }
 
@@ -358,7 +358,7 @@
     <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap mb-4">
         <div>
             <h2 class="history-title mb-1">
-                <i class="bi bi-clock-history me-2" style="color:#000;"></i>
+                <i class="bi bi-clock-history me-2" style="color:var(--text-main);"></i>
                 Historial de Turnos de Caja
             </h2>
 
@@ -837,5 +837,63 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+
+
+<style>
+/* DARK MODE - REGISTRO DE TURNOS COMPONENTES */
+
+/* ==========================================================
+   AVATAR DEL CAJERO
+   ========================================================== */
+
+html[data-color-mode="dark"] .cashier-avatar {
+    background: color-mix(in srgb, var(--primary) 16%, #132338) !important;
+    border: 1px solid color-mix(in srgb, var(--primary) 30%, #30465d) !important;
+    color: var(--primary) !important;
+    box-shadow: none !important;
+}
+
+
+/* ==========================================================
+   ESTADO - CAJA ABIERTA
+   ========================================================== */
+
+html[data-color-mode="dark"] .status-pill.status-open {
+    background: color-mix(in srgb, var(--primary) 14%, #132338) !important;
+    border: 1px solid color-mix(in srgb, var(--primary) 30%, #30465d) !important;
+    color: var(--primary) !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .status-pill.status-open i {
+    color: var(--primary) !important;
+    -webkit-text-fill-color: var(--primary) !important;
+}
+
+
+/* ==========================================================
+   ACCIÓN - VER DETALLE
+   ========================================================== */
+
+html[data-color-mode="dark"] .history-action.history-action-view {
+    background: color-mix(in srgb, var(--primary) 14%, #132338) !important;
+    border: 1px solid color-mix(in srgb, var(--primary) 30%, #30465d) !important;
+    color: var(--primary) !important;
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .history-action.history-action-view i {
+    color: var(--primary) !important;
+    -webkit-text-fill-color: var(--primary) !important;
+}
+
+html[data-color-mode="dark"] .history-action.history-action-view:hover {
+    background: color-mix(in srgb, var(--primary) 23%, #132338) !important;
+    border-color: color-mix(in srgb, var(--primary) 48%, #30465d) !important;
+    color: var(--primary) !important;
+    transform: translateY(-1px);
+}
+
+</style>
 
 @endsection
