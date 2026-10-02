@@ -261,13 +261,21 @@
         <div class="col-lg-7">
             <div class="card report-card">
 
-                <div class="card-header report-card-header report-star-header"><div><h6 class="fw-bold mb-1"><i class="bi bi-trophy-fill me-2"></i>
-                            Top 5: Platos Estrella
-                        </h6>
+                <div class="card-header report-card-header report-star-header report-ranking-header">
+                    <div class="report-ranking-heading">
+                        <div class="report-heading-icon">
+                            <i class="bi bi-trophy-fill"></i>
+                        </div>
 
-                        <small class="text-muted">
-                            Productos con mayor cantidad vendida
-                        </small>
+                        <div>
+                            <h6 class="fw-bold mb-1">
+                                Top 5: Platos Estrella
+                            </h6>
+
+                            <small class="text-muted">
+                                Productos con mayor cantidad vendida
+                            </small>
+                        </div>
                     </div>
                 </div>
 
@@ -343,16 +351,21 @@
         <div class="col-lg-5">
     <div class="card report-card">
 
-        <div class="card-header report-card-header report-low-header">
-            <div>
-                <h6 class="fw-bold mb-1">
-                    <i class="bi bi-exclamation-circle-fill me-2"></i>
-                    Menos Vendidos
-                </h6>
+        <div class="card-header report-card-header report-low-header report-ranking-header">
+            <div class="report-ranking-heading">
+                <div class="report-heading-icon">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                </div>
 
-                <small class="text-muted">
-                    Productos que requieren atención comercial
-                </small>
+                <div>
+                    <h6 class="fw-bold mb-1">
+                        Menos Vendidos
+                    </h6>
+
+                    <small class="text-muted">
+                        Productos que requieren atención comercial
+                    </small>
+                </div>
             </div>
         </div>
 
@@ -1342,18 +1355,586 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 
-<style>
-/* DARK MODE - ICONOS CABECERA REPORTES */
+<style id="reports-header-icons-theme-dark">
+/* ============================================================
+   DARK MODE - ICONOS CABECERA REPORTES
+   Respeta automáticamente la paleta seleccionada
+   ============================================================ */
 
 html[data-color-mode="dark"] .report-header-icon {
-    background: rgba(245, 158, 11, .14) !important;
-    color: #fb923c !important;
-    border: 1px solid rgba(251, 146, 60, .28) !important;
+
+    color: var(--report-primary) !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--report-primary) 12%,
+            #111e30
+        ) !important;
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--report-primary) 42%,
+            #30465d
+        ) !important;
+
     box-shadow: none !important;
 }
 
 html[data-color-mode="dark"] .report-header-icon i {
+    color: var(--report-primary) !important;
+}
+
+</style>
+
+
+<style id="reports-ranking-redesign-final">
+
+/* ============================================================
+   TOP 5 + MENOS VENDIDOS
+   Rediseño visual final
+   ============================================================ */
+
+
+/* ------------------------------------------------------------
+   TARJETAS
+   ------------------------------------------------------------ */
+
+.report-star-header,
+.report-low-header {
+    border-left: 0 !important;
+}
+
+.report-star-header::before,
+.report-low-header::before {
+    display: none !important;
+    content: none !important;
+}
+
+
+/* ------------------------------------------------------------
+   ENCABEZADOS
+   ------------------------------------------------------------ */
+
+.report-ranking-header {
+    padding: 18px 24px !important;
+
+    background: var(--card-bg) !important;
+
+    border-bottom:
+        1px solid var(--border-soft) !important;
+}
+
+.report-ranking-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+/* Icono con identidad del sistema */
+.report-heading-icon {
+    width: 34px;
+    height: 34px;
+
+    flex: 0 0 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    color: var(--report-primary);
+
+    background:
+        color-mix(
+            in srgb,
+            var(--report-primary) 7%,
+            var(--card-bg)
+        );
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--report-primary) 35%,
+            var(--border-soft)
+        );
+}
+
+.report-heading-icon i {
+    color: var(--report-primary) !important;
+
+    font-size: 15px;
+
+    line-height: 1;
+}
+
+
+/* Título */
+.report-ranking-header h6 {
+    margin: 0;
+
+    color: var(--text-main);
+
+    font-size: .93rem;
+
+    font-weight: 800 !important;
+}
+
+
+/* Subtítulo */
+.report-ranking-header small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--text-muted) !important;
+
+    font-size: .77rem;
+}
+
+
+/* ------------------------------------------------------------
+   TABLAS
+   ------------------------------------------------------------ */
+
+.report-ranking-header + .card-body
+.report-table {
+    margin: 0;
+}
+
+
+/* Cabecera */
+.report-ranking-header + .card-body
+.report-table thead th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+
+    color: var(--text-muted);
+
+    background:
+        color-mix(
+            in srgb,
+            var(--light-bg) 78%,
+            var(--card-bg)
+        );
+
+    border-bottom:
+        1px solid var(--border-soft);
+
+    font-size: .70rem;
+
+    font-weight: 800;
+
+    letter-spacing: .025em;
+
+    text-transform: uppercase;
+
+    vertical-align: middle;
+}
+
+
+/* Filas */
+.report-ranking-header + .card-body
+.report-table tbody td {
+    padding-top: 14px;
+    padding-bottom: 14px;
+
+    color: var(--text-main);
+
+    border-bottom:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--border-soft) 75%,
+            transparent
+        );
+
+    vertical-align: middle;
+}
+
+
+/* Última fila */
+.report-ranking-header + .card-body
+.report-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+/* Hover más sutil */
+.report-ranking-header + .card-body
+.report-table tbody tr {
+    transition:
+        background-color .18s ease;
+}
+
+.report-ranking-header + .card-body
+.report-table tbody tr:hover {
+    background:
+        color-mix(
+            in srgb,
+            var(--report-primary) 3.5%,
+            var(--card-bg)
+        );
+}
+
+
+/* Evitar desplazamiento lateral antiguo */
+.report-ranking-header + .card-body
+.report-table tbody tr:hover {
+    transform: none !important;
+}
+
+
+/* ------------------------------------------------------------
+   RANKING 1 - 5
+   ------------------------------------------------------------ */
+
+.report-ranking-header + .card-body
+.rank-badge {
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+
+    padding: 0;
+
+    border-radius: 9px;
+
+    font-size: .72rem;
+    font-weight: 800;
+
+    box-shadow: none;
+}
+
+
+/* Primer puesto */
+.report-ranking-header + .card-body
+.report-table tbody tr:nth-child(1) .rank-badge {
+    background:
+        color-mix(
+            in srgb,
+            var(--report-primary) 15%,
+            var(--card-bg)
+        ) !important;
+
+    color: var(--report-primary) !important;
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--report-primary) 30%,
+            transparent
+        );
+}
+
+
+/* Segundo puesto */
+.report-ranking-header + .card-body
+.report-table tbody tr:nth-child(2) .rank-badge {
+    background: #eff6ff !important;
+    color: #0284c7 !important;
+    border: 1px solid #bae6fd;
+}
+
+
+/* Tercer puesto */
+.report-ranking-header + .card-body
+.report-table tbody tr:nth-child(3) .rank-badge {
+    background: #ecfdf5 !important;
+    color: #059669 !important;
+    border: 1px solid #a7f3d0;
+}
+
+
+/* Cuarto puesto */
+.report-ranking-header + .card-body
+.report-table tbody tr:nth-child(4) .rank-badge {
+    background: #fff7ed !important;
+    color: #ea580c !important;
+    border: 1px solid #fed7aa;
+}
+
+
+/* Quinto puesto */
+.report-ranking-header + .card-body
+.report-table tbody tr:nth-child(5) .rank-badge {
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    border: 1px solid #cbd5e1;
+}
+
+
+/* ------------------------------------------------------------
+   CANTIDAD VENDIDA
+   ------------------------------------------------------------ */
+
+.report-ranking-header + .card-body
+.qty-badge {
+    min-width: 34px;
+    height: 28px;
+
+    padding: 0 10px;
+
+    border-radius: 8px;
+
+    color: #15803d;
+
+    background: #f0fdf4;
+
+    border: 1px solid #bbf7d0;
+
+    font-size: .72rem;
+    font-weight: 800;
+}
+
+
+/* ------------------------------------------------------------
+   INGRESOS
+   ------------------------------------------------------------ */
+
+.report-ranking-header + .card-body
+.report-money {
+    color: var(--text-main) !important;
+
+    font-weight: 800 !important;
+
+    white-space: nowrap;
+}
+
+
+/* ------------------------------------------------------------
+   ESTADOS DE MENOS VENDIDOS
+   ------------------------------------------------------------ */
+
+.report-ranking-header + .card-body
+.report-status {
+    min-width: 78px;
+
+    padding: 5px 11px;
+
+    border-radius: 999px;
+
+    font-size: .68rem;
+
+    font-weight: 800;
+}
+
+
+/* Crítico */
+.report-ranking-header + .card-body
+.status-critical {
+    color: #dc2626 !important;
+    background: #fff1f2 !important;
+    border-color: #fecaca !important;
+}
+
+
+/* Bajo */
+.report-ranking-header + .card-body
+.status-low {
+    color: #65a30d !important;
+    background: #f7fee7 !important;
+    border-color: #d9f99d !important;
+}
+
+
+/* Regular */
+.report-ranking-header + .card-body
+.status-regular {
+    color: #0369a1 !important;
+    background: #f0f9ff !important;
+    border-color: #bae6fd !important;
+}
+
+
+/* ============================================================
+   MODO OSCURO
+   ============================================================ */
+
+html[data-color-mode="dark"]
+.report-ranking-header {
+    background: #111e30 !important;
+
+    border-bottom-color:
+        rgba(255,255,255,.09) !important;
+}
+
+
+html[data-color-mode="dark"]
+.report-heading-icon {
+    color: var(--report-primary);
+
+    background:
+        color-mix(
+            in srgb,
+            var(--report-primary) 12%,
+            #111e30
+        );
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--report-primary) 42%,
+            #30465d
+        );
+}
+
+
+html[data-color-mode="dark"]
+.report-ranking-header h6 {
+    color: #f3f7fb !important;
+}
+
+
+html[data-color-mode="dark"]
+.report-ranking-header small {
+    color: #91a8bd !important;
+}
+
+
+html[data-color-mode="dark"]
+.report-ranking-header + .card-body
+.report-table thead th {
+    color: #a8bdd0 !important;
+
+    background: #17283c !important;
+
+    border-bottom-color:
+        rgba(255,255,255,.08) !important;
+}
+
+
+html[data-color-mode="dark"]
+.report-ranking-header + .card-body
+.report-table tbody td {
+    color: #edf4fa !important;
+
+    border-bottom-color:
+        rgba(255,255,255,.07) !important;
+}
+
+
+html[data-color-mode="dark"]
+.report-ranking-header + .card-body
+.report-table tbody tr:hover {
+    background: #16283b !important;
+}
+
+
+/* Ranking oscuro */
+html[data-color-mode="dark"]
+.report-ranking-header + .card-body
+.report-table tbody tr:nth-child(1) .rank-badge {
+    background:
+        color-mix(
+            in srgb,
+            var(--report-primary) 18%,
+            #132338
+        ) !important;
+
+    color: var(--report-primary) !important;
+}
+
+
+html[data-color-mode="dark"]
+.report-ranking-header + .card-body
+.report-table tbody tr:nth-child(2) .rank-badge {
+    background: #102d43 !important;
+    color: #38bdf8 !important;
+    border-color: #155e75;
+}
+
+
+html[data-color-mode="dark"]
+.report-ranking-header + .card-body
+.report-table tbody tr:nth-child(3) .rank-badge {
+    background: #0f302b !important;
+    color: #34d399 !important;
+    border-color: #166534;
+}
+
+
+html[data-color-mode="dark"]
+.report-ranking-header + .card-body
+.report-table tbody tr:nth-child(4) .rank-badge {
+    background: #382414 !important;
     color: #fb923c !important;
+    border-color: #7c2d12;
+}
+
+
+html[data-color-mode="dark"]
+.report-ranking-header + .card-body
+.report-table tbody tr:nth-child(5) .rank-badge {
+    background: #263548 !important;
+    color: #cbd5e1 !important;
+    border-color: #475569;
+}
+
+
+/* Cantidad */
+html[data-color-mode="dark"]
+.report-ranking-header + .card-body
+.qty-badge {
+    color: #86efac;
+
+    background: #123226;
+
+    border-color: #166534;
+}
+
+
+/* Estados */
+html[data-color-mode="dark"]
+.report-ranking-header + .card-body
+.status-critical {
+    color: #fca5a5 !important;
+    background: #3b1920 !important;
+    border-color: #7f1d1d !important;
+}
+
+
+html[data-color-mode="dark"]
+.report-ranking-header + .card-body
+.status-low {
+    color: #bef264 !important;
+    background: #263414 !important;
+    border-color: #4d7c0f !important;
+}
+
+
+html[data-color-mode="dark"]
+.report-ranking-header + .card-body
+.status-regular {
+    color: #7dd3fc !important;
+    background: #102d43 !important;
+    border-color: #075985 !important;
+}
+
+
+/* Responsive */
+@media (max-width: 767.98px) {
+
+    .report-ranking-header {
+        padding: 15px 17px !important;
+    }
+
+    .report-heading-icon {
+        width: 32px;
+        height: 32px;
+        flex-basis: 32px;
+    }
+
+    .report-ranking-header + .card-body
+    .report-table tbody td {
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
 }
 
 </style>

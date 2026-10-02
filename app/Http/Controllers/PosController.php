@@ -707,6 +707,66 @@ class PosController extends Controller
         return redirect()->route('pos.index')->with('success', $msg);
     }
 
+    /**
+     * Productos listos para recoger del mozo autenticado.
+     */
+    public function readyItems()
+    {
+        $orders = Order::query()
+            ->where('user_id', auth()->id())
+            ->where('status', 'pending')
+            ->whereHas('details', function ($query) {
+                $query->where('status', 'served');
+            })
+            ->with([
+                'table',
+                'details' => function ($query) {
+                    $query
+                        ->where('status', 'served')
+                        ->with('product');
+                },
+            ])
+            ->orderByDesc('updated_at')
+            ->get();
+
+        $items = [];
+
+        foreach ($orders as $order) {
+
+            foreach ($order->details as $detail) {
+
+                $area = $detail->product?->preparation_area;
+
+                if (!in_array($area, ['kitchen', 'barra'], true)) {
+                    continue;
+                }
+
+                $items[] = [
+                    'id' => $detail->id,
+                    'order_id' => $order->id,
+
+                    'table' => $order->table
+                        ? $order->table->name
+                        : 'Para Llevar',
+
+                    'product' => $detail->product?->name
+                        ?? 'Producto',
+
+                    'quantity' => $detail->quantity,
+
+                    'area' => $area,
+
+                    'area_name' => $area === 'kitchen'
+                        ? 'Cocina'
+                        : 'Barra',
+                ];
+            }
+        }
+
+        return response()->json([
+            'items' => $items,
+        ]);
+    }
     private function recalculateTotal(Order $order)
     {
         $subtotal = $order->details->sum(fn($d) => $d->price * $d->quantity);

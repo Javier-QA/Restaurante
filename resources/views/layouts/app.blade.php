@@ -6506,6 +6506,109 @@ html[data-color-mode="dark"] .kpi-stock .kpi-badge-link:hover {
 
 </style>
 
+<style id="system-sound-toggle-style">
+
+.system-sound-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    padding: 0;
+
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+
+    background: var(--card-bg);
+    color: var(--text-main);
+
+    font-size: 13px;
+    font-weight: 700;
+
+    transition:
+        background-color .2s ease,
+        border-color .2s ease,
+        color .2s ease,
+        transform .2s ease;
+}
+
+.system-sound-toggle:hover {
+    border-color:
+        color-mix(
+            in srgb,
+            var(--primary) 45%,
+            var(--border-soft)
+        );
+
+    color: var(--primary);
+
+    transform: translateY(-1px);
+}
+
+.system-sound-toggle.is-active {
+    color: #198754;
+
+    background:
+        color-mix(
+            in srgb,
+            #198754 9%,
+            var(--card-bg)
+        );
+
+    border-color:
+        color-mix(
+            in srgb,
+            #198754 38%,
+            var(--border-soft)
+        );
+}
+
+.system-sound-toggle i {
+    font-size: 15px;
+}
+
+html[data-color-mode="dark"]
+.system-sound-toggle {
+    background: #132338;
+    border-color: #30465d;
+}
+
+html[data-color-mode="dark"]
+.system-sound-toggle.is-active {
+    color: #65d99b;
+
+    background:
+        color-mix(
+            in srgb,
+            #198754 17%,
+            #132338
+        );
+
+    border-color:
+        color-mix(
+            in srgb,
+            #198754 50%,
+            #30465d
+        );
+}
+
+@media (max-width: 768px) {
+
+    .system-sound-toggle span {
+        display: none;
+    }
+
+    .system-sound-toggle {
+        width: 38px;
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+</style>
 </head>
 
 
@@ -7173,6 +7276,23 @@ html[data-color-mode="dark"] .kpi-stock .kpi-badge-link:hover {
                         class="bi bi-moon-stars-fill"
                         id="systemThemeIcon"
                     ></i>
+                </button>
+                <button
+                    type="button"
+                    class="btn system-sound-toggle"
+                    id="systemSoundToggle"
+                    title="Activar sonidos"
+                    aria-label="Activar sonidos"
+                    aria-pressed="false"
+                >
+                    <i
+                        class="bi bi-bell-fill"
+                        id="systemSoundIcon"
+                    ></i>
+
+                    <span id="systemSoundText" class="visually-hidden">
+                        Activar sonidos
+                    </span>
                 </button>
 
                 <div
@@ -10167,6 +10287,561 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 });
+</script>
+<script id="waiter-ready-notifications-script">
+(function () {
+
+    const readyItemsUrl = @json(route('pos.ready-items'));
+
+    let knownReadyIds = new Set();
+    let firstReadyCheck = true;
+    let readyRequestRunning = false;
+
+    let readyAudioContext = null;
+    let readyAudioUnlocked = false;
+
+
+    /* ========================================================
+       AUDIO DEL USUARIO RESPONSABLE DEL PEDIDO
+       ======================================================== */
+
+    function createReadyAudioContext() {
+
+        if (readyAudioContext) {
+            return readyAudioContext;
+        }
+
+        const AudioContextClass =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+        if (!AudioContextClass) {
+            console.warn(
+                'Este navegador no soporta notificaciones de audio.'
+            );
+
+            return null;
+        }
+
+        readyAudioContext =
+            new AudioContextClass();
+
+        return readyAudioContext;
+    }
+
+
+    async function unlockReadyAudio() {
+
+        const ctx =
+            createReadyAudioContext();
+
+        if (!ctx) {
+            return;
+        }
+
+        try {
+
+            if (ctx.state === 'suspended') {
+                await ctx.resume();
+            }
+
+            const oscillator =
+                ctx.createOscillator();
+
+            const gain =
+                ctx.createGain();
+
+            gain.gain.value = 0.00001;
+
+            oscillator.connect(gain);
+            gain.connect(ctx.destination);
+
+            oscillator.start();
+
+            oscillator.stop(
+                ctx.currentTime + 0.01
+            );
+
+            readyAudioUnlocked =
+                ctx.state === 'running';
+
+            if (readyAudioUnlocked) {
+                console.log(
+                    '🔊 Avisos de pedidos listos habilitados'
+                );
+            }
+
+        } catch (error) {
+
+            console.warn(
+                'No se pudo habilitar el sonido de pedidos listos:',
+                error
+            );
+        }
+    }
+
+
+    document.addEventListener(
+        'pointerdown',
+        unlockReadyAudio,
+        { once: true }
+    );
+
+    document.addEventListener(
+        'keydown',
+        unlockReadyAudio,
+        { once: true }
+    );
+
+
+    /* ========================================================
+       SONIDO "PEDIDO LISTO"
+       Distinto a la campana de Cocina / Barra
+       ======================================================== */
+
+    function playReadySound() {
+
+        if (window.systemSoundsEnabled !== true) {
+            return;
+        }
+
+        if (
+            !readyAudioContext ||
+            !readyAudioUnlocked ||
+            readyAudioContext.state !== 'running'
+        ) {
+            console.warn(
+                '🔇 Aviso de pedido listo pendiente de habilitación.'
+            );
+
+            return;
+        }
+
+        const ctx = readyAudioContext;
+        const now = ctx.currentTime;
+
+        /*
+         * Dos notas ascendentes.
+         * Se diferencia claramente de la campana de preparación.
+         */
+        const notes = [
+            {
+                frequency: 659.25,
+                start: 0,
+                duration: 0.55,
+                volume: 0.28
+            },
+            {
+                frequency: 987.77,
+                start: 0.32,
+                duration: 1.15,
+                volume: 0.34
+            }
+        ];
+
+        notes.forEach(function (note) {
+
+            const oscillator =
+                ctx.createOscillator();
+
+            const gain =
+                ctx.createGain();
+
+            const noteStart =
+                now + note.start;
+
+            const noteEnd =
+                noteStart + note.duration;
+
+            oscillator.type = 'sine';
+
+            oscillator.frequency.setValueAtTime(
+                note.frequency,
+                noteStart
+            );
+
+            gain.gain.setValueAtTime(
+                0.0001,
+                noteStart
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                note.volume,
+                noteStart + 0.015
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.0001,
+                noteEnd
+            );
+
+            oscillator.connect(gain);
+            gain.connect(ctx.destination);
+
+            oscillator.start(noteStart);
+            oscillator.stop(noteEnd + 0.05);
+        });
+    }
+
+
+    /* ========================================================
+       NOTIFICACIÓN VISUAL
+       ======================================================== */
+
+    function showReadyNotification(items) {
+
+        if (!items.length) {
+            return;
+        }
+
+        playReadySound();
+
+        if (!window.SystemNotify) {
+            return;
+        }
+
+        if (items.length === 1) {
+
+            const item = items[0];
+
+            SystemNotify.success(
+                item.table +
+                ' · ' +
+                item.product +
+                ' x' +
+                item.quantity +
+                ' · ' +
+                item.area_name,
+                'Pedido listo',
+                6500
+            );
+
+            return;
+        }
+
+        const tables = [
+            ...new Set(
+                items.map(function (item) {
+                    return item.table;
+                })
+            )
+        ];
+
+        let message =
+            items.length +
+            ' productos están listos para recoger';
+
+        if (tables.length === 1) {
+            message += ' · ' + tables[0];
+        } else {
+            message += ' · ' +
+                tables.length +
+                ' mesas';
+        }
+
+        SystemNotify.success(
+            message,
+            'Pedidos listos',
+            7000
+        );
+    }
+
+
+    /* ========================================================
+       CONSULTAR PRODUCTOS SERVED DEL USUARIO ACTUAL
+       ======================================================== */
+
+    async function refreshReadyItems() {
+
+        if (readyRequestRunning) {
+            return;
+        }
+
+        readyRequestRunning = true;
+
+        try {
+
+            const response =
+                await fetch(
+                    readyItemsUrl,
+                    {
+                        headers: {
+                            'Accept':
+                                'application/json',
+                            'X-Requested-With':
+                                'XMLHttpRequest'
+                        },
+                        credentials:
+                            'same-origin',
+                        cache:
+                            'no-store'
+                    }
+                );
+
+            if (!response.ok) {
+
+                /*
+                 * Si la sesión terminó, no llenamos
+                 * la consola de errores cada 2 segundos.
+                 */
+                if (
+                    response.status === 401 ||
+                    response.status === 419
+                ) {
+                    return;
+                }
+
+                throw new Error(
+                    'HTTP ' + response.status
+                );
+            }
+
+            const data =
+                await response.json();
+
+            const items =
+                Array.isArray(data.items)
+                    ? data.items
+                    : [];
+
+            const currentReadyIds =
+                new Set(
+                    items.map(function (item) {
+                        return Number(item.id);
+                    })
+                );
+
+
+            /*
+             * Primera consulta:
+             * solo memoriza lo que ya estaba listo.
+             * No genera sonidos ni notificaciones.
+             */
+            if (firstReadyCheck) {
+
+                knownReadyIds =
+                    currentReadyIds;
+
+                firstReadyCheck =
+                    false;
+
+                return;
+            }
+
+
+            const newReadyItems =
+                items.filter(function (item) {
+
+                    return !knownReadyIds.has(
+                        Number(item.id)
+                    );
+                });
+
+
+            if (newReadyItems.length > 0) {
+
+                console.log(
+                    '🔔 Producto listo para recoger:',
+                    newReadyItems
+                );
+
+                showReadyNotification(
+                    newReadyItems
+                );
+            }
+
+
+            knownReadyIds =
+                currentReadyIds;
+
+        } catch (error) {
+
+            console.error(
+                'No se pudieron actualizar los pedidos listos:',
+                error
+            );
+
+        } finally {
+
+            readyRequestRunning =
+                false;
+        }
+    }
+
+
+    /* Primera consulta inmediata */
+    refreshReadyItems();
+
+    /* Después, cada 2 segundos */
+    setInterval(
+        refreshReadyItems,
+        2000
+    );
+
+})();
+</script>
+<script id="system-sound-toggle-script">
+(function () {
+
+    const STORAGE_KEY =
+        'restaurant-system-sounds';
+
+    /*
+     * La preferencia permanece entre:
+     * - módulos
+     * - recargas
+     * - navegación del sistema
+     */
+    window.systemSoundsEnabled =
+        localStorage.getItem(STORAGE_KEY) === 'enabled';
+
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        function () {
+
+            const button =
+                document.getElementById('systemSoundToggle');
+
+            const icon =
+                document.getElementById('systemSoundIcon');
+
+            const text =
+                document.getElementById('systemSoundText');
+
+            if (!button || !icon || !text) {
+                return;
+            }
+
+
+            function renderSoundState() {
+
+                const enabled =
+                    window.systemSoundsEnabled === true;
+
+                button.classList.toggle(
+                    'is-active',
+                    enabled
+                );
+
+                button.setAttribute(
+                    'aria-pressed',
+                    enabled ? 'true' : 'false'
+                );
+
+                if (enabled) {
+
+                    button.title =
+                        'Desactivar sonidos';
+
+                    button.setAttribute(
+                        'aria-label',
+                        'Desactivar sonidos'
+                    );
+
+                    icon.className =
+                        'bi bi-volume-up-fill';
+
+                    text.textContent =
+                        'Sonidos activados';
+
+                } else {
+
+                    button.title =
+                        'Activar sonidos';
+
+                    button.setAttribute(
+                        'aria-label',
+                        'Activar sonidos'
+                    );
+
+                    icon.className =
+                        'bi bi-volume-mute-fill';
+
+                    text.textContent =
+                        'Sonidos desactivados';
+                }
+            }
+
+
+            button.addEventListener(
+                'click',
+                function () {
+
+                    window.systemSoundsEnabled =
+                        !window.systemSoundsEnabled;
+
+                    localStorage.setItem(
+                        STORAGE_KEY,
+                        window.systemSoundsEnabled
+                            ? 'enabled'
+                            : 'disabled'
+                    );
+
+                    renderSoundState();
+
+                    if (window.systemSoundsEnabled) {
+
+                        console.log(
+                            '🔊 Sonidos del sistema activados'
+                        );
+
+                    } else {
+
+                        console.log(
+                            '🔇 Sonidos del sistema desactivados'
+                        );
+                    }
+                }
+            );
+
+
+            /*
+             * Al entrar a otro módulo o actualizar:
+             *
+             * Si el usuario ya había elegido tener sonidos,
+             * conservamos esa preferencia.
+             *
+             * La primera interacción normal con la página
+             * permitirá que Chrome reanude los AudioContext
+             * correspondientes.
+             */
+            if (window.systemSoundsEnabled) {
+
+                const restoreAudio = function () {
+
+                    document.dispatchEvent(
+                        new CustomEvent(
+                            'system-audio-restore'
+                        )
+                    );
+                };
+
+                document.addEventListener(
+                    'pointerdown',
+                    restoreAudio,
+                    {
+                        once: true,
+                        capture: true
+                    }
+                );
+
+                document.addEventListener(
+                    'keydown',
+                    restoreAudio,
+                    {
+                        once: true,
+                        capture: true
+                    }
+                );
+            }
+
+
+            renderSoundState();
+        }
+    );
+
+})();
 </script>
 @stack('scripts')
 

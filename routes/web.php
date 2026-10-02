@@ -72,7 +72,9 @@ Route::middleware(['auth'])->group(function () {
     // POS (Punto de Venta)
     Route::middleware(['cash_register'])->group(function () {
 
-        Route::get('/pos', [PosController::class, 'index'])
+        Route::get('/pos/ready-items', [PosController::class, 'readyItems'])
+    ->name('pos.ready-items');
+Route::get('/pos', [PosController::class, 'index'])
             ->name('pos.index');
 
         Route::get('/pos/table/{table}', [PosController::class, 'order'])

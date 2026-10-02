@@ -575,10 +575,10 @@ document.addEventListener('DOMContentLoaded', function () {
         <div class="col-12 col-xl-8">
             <div class="card h-100">
                 <div class="card-header d-flex align-items-center justify-content-between py-2 px-3">
-                    <span class="fw-bold" style="font-size:.85rem;">Actividad del Año</span>
-                    <div style="background:var(--primary);width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;">
-                        <span style="color:white;font-size:13px;line-height:1;">—</span>
-                    </div>
+                    <span class="dashboard-section-title">
+                        <i class="bi bi-bar-chart-line-fill"></i>
+                        <span>Actividad del Año</span>
+                    </span>
                 </div>
                 <div class="card-body p-3" style="height:280px;">
                     <canvas id="lineChart"></canvas>
@@ -590,10 +590,10 @@ document.addEventListener('DOMContentLoaded', function () {
         <div class="col-12 col-xl-4">
             <div class="card h-100">
                 <div class="card-header d-flex align-items-center justify-content-between py-2 px-3">
-                    <span class="fw-bold" style="font-size:.85rem;">Ingreso Actual</span>
-                    <div style="background:var(--primary);width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;">
-                        <span style="color:white;font-size:13px;line-height:1;">—</span>
-                    </div>
+                    <span class="dashboard-section-title">
+                        <i class="bi bi-wallet2"></i>
+                        <span>Ingreso Actual</span>
+                    </span>
                 </div>
                 <div class="card-body d-flex flex-column align-items-center justify-content-center p-3 gap-3">
                     {{-- Donut --}}
@@ -641,71 +641,184 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class="row g-3 mt-0">
 
         <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center py-3 px-4">
-                    <h6 class="fw-bold mb-0">Estado de Salones</h6>
-                    <div class="d-flex gap-2">
-                        <span class="badge" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;font-size:.72rem;">● Disponible</span>
-                        <span class="badge" style="background:#fff1f2;color:#e11d48;border:1px solid #fecdd3;font-size:.72rem;">● Ocupada</span>
+            <div class="card dashboard-rooms-card">
+
+                {{-- Encabezado --}}
+                <div class="card-header dashboard-rooms-header">
+                    <div class="dashboard-rooms-title dashboard-section-title">
+                        <i class="bi bi-grid-3x3-gap-fill"></i>
+
+                        <div>
+                            <h6>Estado de Salones</h6>
+                            <small>Disponibilidad actual de las mesas</small>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-rooms-legend">
+                        <span class="rooms-legend-item is-available">
+                            <span class="rooms-legend-dot"></span>
+                            Disponible
+                        </span>
+
+                        <span class="rooms-legend-item is-busy">
+                            <span class="rooms-legend-dot"></span>
+                            Ocupada
+                        </span>
                     </div>
                 </div>
-                <div class="card-body px-4 pb-4 pt-2">
+
+                <div class="card-body dashboard-rooms-body">
+
                     @if(isset($areas) && count($areas) > 0)
-                        <ul class="nav nav-pills mb-4 gap-2" id="pills-tab" role="tablist">
+
+                        {{-- Salones --}}
+                        <ul
+                            class="nav nav-pills dashboard-room-tabs"
+                            id="pills-tab"
+                            role="tablist"
+                        >
                             @foreach($areas as $index => $area)
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link {{ $index == 0 ? 'active' : '' }} rounded-pill px-4 fw-bold border"
-                                            id="pills-{{ $area->id }}-tab" data-bs-toggle="pill"
-                                            data-bs-target="#pills-{{ $area->id }}" type="button">
+
+                                <li
+                                    class="nav-item"
+                                    role="presentation"
+                                >
+                                    <button
+                                        class="nav-link {{ $index == 0 ? 'active' : '' }}"
+                                        id="pills-{{ $area->id }}-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#pills-{{ $area->id }}"
+                                        type="button"
+                                    >
                                         {{ $area->name }}
+
+                                        <span class="room-table-count">
+                                            {{ $area->tables->count() }}
+                                        </span>
                                     </button>
                                 </li>
+
                             @endforeach
                         </ul>
 
+
+                        {{-- Mesas --}}
                         <div class="tab-content">
+
                             @foreach($areas as $index => $area)
-                                <div class="tab-pane fade {{ $index == 0 ? 'show active' : '' }}" id="pills-{{ $area->id }}">
-                                    <div class="row row-cols-2 row-cols-sm-3 row-cols-xl-5 g-3">
+
+                                <div
+                                    class="tab-pane fade {{ $index == 0 ? 'show active' : '' }}"
+                                    id="pills-{{ $area->id }}"
+                                >
+
+                                    <div class="row row-cols-2 row-cols-sm-3 row-cols-xl-4 g-3">
+
                                         @foreach($area->tables as $table)
-                                            @php $isBusy = $table->orders->count() > 0; @endphp
+
+                                            @php
+                                                $isBusy = $table->orders->count() > 0;
+                                            @endphp
+
                                             <div class="col">
-                                                <a href="{{ route('pos.order', $table->id) }}" class="text-decoration-none">
-                                                    <div class="card border-0 text-center py-3 table-hover-card"
-                                                         style="background:{{ $isBusy ? '#fff1f2' : 'var(--light-bg)' }};">
-                                                        <div class="card-body p-2">
-                                                            <div class="mb-2">
-                                                                <i class="bi {{ $isBusy ? 'bi-person-workspace' : 'bi-check-circle-fill' }} fs-1"
-                                                                   style="color:{{ $isBusy ? '#e11d48' : '#22c55e' }};"></i>
+
+                                                <a
+                                                    href="{{ route('pos.order', $table->id) }}"
+                                                    class="dashboard-table-link"
+                                                >
+
+                                                    <div
+                                                        class="dashboard-table-card {{ $isBusy ? 'is-busy' : 'is-available' }}"
+                                                    >
+
+                                                        <div class="dashboard-table-top">
+
+                                                            <div class="dashboard-table-icon">
+                                                                <i class="bi {{ $isBusy ? 'bi-person-fill' : 'bi-check-lg' }}"></i>
                                                             </div>
-                                                            <h6 class="fw-bold text-dark mb-1" style="font-size:.82rem;">{{ $table->name }}</h6>
-                                                            @if($isBusy)
-                                                                <span class="badge rounded-pill" style="background:#e11d48;font-size:.7rem;">
-                                                                    {{ $currency ?? 'S/' }} {{ number_format($table->orders->first()->total, 2) }}
-                                                                </span>
-                                                            @else
-                                                                <small class="text-muted" style="font-size:.7rem;">Libre</small>
-                                                            @endif
+
+                                                            <span class="dashboard-table-status">
+                                                                {{ $isBusy ? 'Ocupada' : 'Disponible' }}
+                                                            </span>
+
                                                         </div>
+
+
+                                                        <div class="dashboard-table-info">
+
+                                                            <h6>
+                                                                {{ $table->name }}
+                                                            </h6>
+
+                                                            @if($isBusy)
+
+                                                                <div class="dashboard-table-detail">
+                                                                    <span>Consumo actual</span>
+
+                                                                    <strong>
+                                                                        {{ $currency ?? 'S/' }}
+                                                                        {{ number_format($table->orders->first()->total, 2) }}
+                                                                    </strong>
+                                                                </div>
+
+                                                            @else
+
+                                                                <div class="dashboard-table-detail">
+                                                                    <span>Estado</span>
+                                                                    <strong>Libre</strong>
+                                                                </div>
+
+                                                            @endif
+
+                                                        </div>
+
+                                                        <div class="dashboard-table-arrow">
+                                                            <i class="bi bi-chevron-right"></i>
+                                                        </div>
+
                                                     </div>
+
                                                 </a>
+
                                             </div>
+
                                         @endforeach
+
                                     </div>
+
                                 </div>
+
                             @endforeach
+
                         </div>
+
                     @else
-                        <div class="text-center py-5 text-muted">No hay áreas configuradas.</div>
+
+                        <div class="dashboard-rooms-empty">
+                            <i class="bi bi-grid-3x3-gap"></i>
+
+                            <strong>
+                                No hay áreas configuradas
+                            </strong>
+
+                            <span>
+                                Las áreas y mesas aparecerán aquí.
+                            </span>
+                        </div>
+
                     @endif
+
                 </div>
+
             </div>
         </div>
-
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-header py-3 px-4 dashboard-top-header">
-                    <h6 class="fw-bold mb-0"><i class="bi bi-trophy-fill me-2"></i>Más Vendidos</h6>
+                    <h6 class="fw-bold mb-0 dashboard-section-title">
+                        <i class="bi bi-trophy-fill"></i>
+                        <span>Más Vendidos</span>
+                    </h6>
                 </div>
                 <div class="card-body px-0 py-2">
                     <div class="list-group list-group-flush">
@@ -3583,6 +3696,1071 @@ html[data-color-mode="dark"] .goal-icon-wrap {
 
 html[data-color-mode="dark"] .goal-icon-wrap i {
     color: #ff8800 !important;
+}
+
+</style>
+
+
+<style id="dashboard-rooms-redesign">
+
+/* ============================================================
+   ESTADO DE SALONES
+   ============================================================ */
+
+.dashboard-rooms-card {
+    overflow: hidden;
+}
+
+
+/* ------------------------------------------------------------
+   ENCABEZADO
+   ------------------------------------------------------------ */
+
+.dashboard-rooms-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    padding: 17px 22px !important;
+
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border-soft);
+}
+
+
+.dashboard-rooms-title {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+
+.dashboard-rooms-title > i {
+    color: var(--text-main);
+    font-size: 18px;
+}
+
+
+.dashboard-rooms-title h6 {
+    margin: 0;
+
+    color: var(--text-main);
+
+    font-size: .92rem;
+    font-weight: 800;
+}
+
+
+.dashboard-rooms-title small {
+    display: block;
+
+    margin-top: 2px;
+
+    color: var(--text-muted);
+
+    font-size: .68rem;
+    font-weight: 500;
+}
+
+
+/* ------------------------------------------------------------
+   LEYENDA
+   ------------------------------------------------------------ */
+
+.dashboard-rooms-legend {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+.rooms-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 5px 9px;
+
+    border: 1px solid var(--border-soft);
+    border-radius: 999px;
+
+    background: var(--card-bg);
+
+    font-size: .67rem;
+    font-weight: 700;
+}
+
+
+.rooms-legend-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+}
+
+
+.rooms-legend-item.is-available {
+    color: #15803d;
+}
+
+
+.rooms-legend-item.is-available
+.rooms-legend-dot {
+    background: #22c55e;
+}
+
+
+.rooms-legend-item.is-busy {
+    color: #e11d48;
+}
+
+
+.rooms-legend-item.is-busy
+.rooms-legend-dot {
+    background: #f43f5e;
+}
+
+
+/* ------------------------------------------------------------
+   CONTENIDO
+   ------------------------------------------------------------ */
+
+.dashboard-rooms-body {
+    padding: 18px 22px 22px !important;
+}
+
+
+/* ------------------------------------------------------------
+   PESTAÑAS DE SALONES
+   ------------------------------------------------------------ */
+
+.dashboard-room-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    margin-bottom: 18px;
+}
+
+
+.dashboard-room-tabs .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 13px;
+
+    border: 1px solid var(--border-soft) !important;
+    border-radius: 10px !important;
+
+    background: var(--card-bg);
+
+    color: var(--text-muted);
+
+    font-size: .73rem;
+    font-weight: 750;
+
+    transition:
+        background-color .18s ease,
+        border-color .18s ease,
+        color .18s ease,
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+
+.dashboard-room-tabs .nav-link:hover {
+    color: var(--text-main);
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--primary) 30%,
+            var(--border-soft)
+        ) !important;
+
+    transform: translateY(-1px);
+}
+
+
+.dashboard-room-tabs .nav-link.active {
+    color: #fff !important;
+
+    background: var(--primary) !important;
+
+    border-color: var(--primary) !important;
+
+    box-shadow:
+        0 5px 12px
+        color-mix(
+            in srgb,
+            var(--primary) 20%,
+            transparent
+        );
+}
+
+
+.room-table-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 20px;
+    height: 20px;
+
+    padding: 0 5px;
+
+    border-radius: 6px;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--text-muted) 9%,
+            transparent
+        );
+
+    font-size: .62rem;
+    font-weight: 800;
+}
+
+
+.dashboard-room-tabs
+.nav-link.active
+.room-table-count {
+    background: rgba(255,255,255,.18);
+    color: #fff;
+}
+
+
+/* ------------------------------------------------------------
+   TARJETAS DE MESAS
+   ------------------------------------------------------------ */
+
+.dashboard-table-link {
+    display: block;
+
+    height: 100%;
+
+    color: inherit;
+    text-decoration: none;
+}
+
+
+.dashboard-table-card {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    min-height: 132px;
+    height: 100%;
+
+    padding: 15px;
+
+    overflow: hidden;
+
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+
+    background: var(--card-bg);
+
+    box-shadow:
+        0 3px 10px
+        rgba(15, 23, 42, .035);
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+}
+
+
+.dashboard-table-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+
+    width: 3px;
+
+    border-radius:
+        14px 0 0 14px;
+}
+
+
+.dashboard-table-card.is-available::before {
+    background: #22c55e;
+}
+
+
+.dashboard-table-card.is-busy::before {
+    background: #f43f5e;
+}
+
+
+.dashboard-table-card.is-available {
+    border-color:
+        color-mix(
+            in srgb,
+            #22c55e 18%,
+            var(--border-soft)
+        );
+}
+
+
+.dashboard-table-card.is-busy {
+    border-color:
+        color-mix(
+            in srgb,
+            #f43f5e 20%,
+            var(--border-soft)
+        );
+
+    background:
+        color-mix(
+            in srgb,
+            #f43f5e 3%,
+            var(--card-bg)
+        );
+}
+
+
+.dashboard-table-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 18px
+        rgba(15, 23, 42, .08);
+}
+
+
+.dashboard-table-card.is-available:hover {
+    border-color:
+        color-mix(
+            in srgb,
+            #22c55e 45%,
+            var(--border-soft)
+        );
+}
+
+
+.dashboard-table-card.is-busy:hover {
+    border-color:
+        color-mix(
+            in srgb,
+            #f43f5e 45%,
+            var(--border-soft)
+        );
+}
+
+
+/* ------------------------------------------------------------
+   PARTE SUPERIOR DE CADA MESA
+   ------------------------------------------------------------ */
+
+.dashboard-table-top {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+.dashboard-table-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 31px;
+    height: 31px;
+
+    flex: 0 0 31px;
+
+    border-radius: 9px;
+
+    font-size: 14px;
+}
+
+
+.is-available
+.dashboard-table-icon {
+    color: #16a34a;
+    background: #ecfdf3;
+}
+
+
+.is-busy
+.dashboard-table-icon {
+    color: #e11d48;
+    background: #fff1f2;
+}
+
+
+.dashboard-table-status {
+    font-size: .65rem;
+    font-weight: 750;
+}
+
+
+.is-available
+.dashboard-table-status {
+    color: #16a34a;
+}
+
+
+.is-busy
+.dashboard-table-status {
+    color: #e11d48;
+}
+
+
+/* ------------------------------------------------------------
+   INFORMACIÓN
+   ------------------------------------------------------------ */
+
+.dashboard-table-info {
+    margin-top: 13px;
+}
+
+
+.dashboard-table-info h6 {
+    margin: 0 0 7px;
+
+    color: var(--text-main);
+
+    font-size: .84rem;
+    font-weight: 800;
+}
+
+
+.dashboard-table-detail {
+    display: flex;
+    flex-direction: column;
+
+    gap: 1px;
+}
+
+
+.dashboard-table-detail span {
+    color: var(--text-muted);
+
+    font-size: .61rem;
+    font-weight: 500;
+}
+
+
+.dashboard-table-detail strong {
+    color: var(--text-main);
+
+    font-size: .70rem;
+    font-weight: 750;
+}
+
+
+.is-available
+.dashboard-table-detail strong {
+    color: #15803d;
+}
+
+
+.is-busy
+.dashboard-table-detail strong {
+    color: #e11d48;
+}
+
+
+/* ------------------------------------------------------------
+   FLECHA
+   ------------------------------------------------------------ */
+
+.dashboard-table-arrow {
+    position: absolute;
+
+    right: 12px;
+    bottom: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 23px;
+    height: 23px;
+
+    border-radius: 7px;
+
+    color: var(--text-muted);
+
+    background:
+        color-mix(
+            in srgb,
+            var(--text-muted) 6%,
+            transparent
+        );
+
+    font-size: 10px;
+
+    transition:
+        transform .18s ease,
+        color .18s ease,
+        background-color .18s ease;
+}
+
+
+.dashboard-table-card:hover
+.dashboard-table-arrow {
+    transform: translateX(2px);
+
+    color: var(--primary);
+
+    background:
+        color-mix(
+            in srgb,
+            var(--primary) 9%,
+            transparent
+        );
+}
+
+
+/* ------------------------------------------------------------
+   SIN ÁREAS
+   ------------------------------------------------------------ */
+
+.dashboard-rooms-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 180px;
+
+    color: var(--text-muted);
+
+    text-align: center;
+}
+
+
+.dashboard-rooms-empty i {
+    margin-bottom: 8px;
+
+    font-size: 25px;
+}
+
+
+.dashboard-rooms-empty strong {
+    color: var(--text-main);
+
+    font-size: .82rem;
+}
+
+
+.dashboard-rooms-empty span {
+    margin-top: 3px;
+
+    font-size: .68rem;
+}
+
+
+/* ============================================================
+   DARK MODE
+   ============================================================ */
+
+html[data-color-mode="dark"]
+.dashboard-rooms-card {
+    border-color: #38516b !important;
+}
+
+
+html[data-color-mode="dark"]
+.dashboard-rooms-header {
+    border-bottom-color: #31485f;
+}
+
+
+html[data-color-mode="dark"]
+.rooms-legend-item {
+    border-color: #30465d;
+
+    background: #132338;
+}
+
+
+html[data-color-mode="dark"]
+.rooms-legend-item.is-available {
+    color: #75dfa3;
+}
+
+
+html[data-color-mode="dark"]
+.rooms-legend-item.is-busy {
+    color: #fda4af;
+}
+
+
+html[data-color-mode="dark"]
+.dashboard-room-tabs .nav-link {
+    color: #c6d5e3 !important;
+
+    background: #15263a !important;
+
+    border-color: #38516b !important;
+}
+
+
+html[data-color-mode="dark"]
+.dashboard-room-tabs .nav-link:hover {
+    color: #fff !important;
+
+    background: #1a2d43 !important;
+
+    border-color: #55718d !important;
+}
+
+
+html[data-color-mode="dark"]
+.dashboard-room-tabs .nav-link.active {
+    color: #fff !important;
+
+    background: var(--primary) !important;
+
+    border-color: var(--primary) !important;
+}
+
+
+html[data-color-mode="dark"]
+.dashboard-table-card {
+    background: #15263a;
+
+    border-color: #314b64;
+
+    box-shadow:
+        0 5px 14px
+        rgba(0,0,0,.13);
+}
+
+
+html[data-color-mode="dark"]
+.dashboard-table-card.is-available {
+    border-color:
+        color-mix(
+            in srgb,
+            #22c55e 25%,
+            #314b64
+        );
+}
+
+
+html[data-color-mode="dark"]
+.dashboard-table-card.is-busy {
+    border-color:
+        color-mix(
+            in srgb,
+            #f43f5e 28%,
+            #314b64
+        );
+
+    background:
+        color-mix(
+            in srgb,
+            #f43f5e 5%,
+            #15263a
+        );
+}
+
+
+html[data-color-mode="dark"]
+.is-available
+.dashboard-table-icon {
+    color: #75dfa3;
+
+    background:
+        rgba(34,197,94,.12);
+}
+
+
+html[data-color-mode="dark"]
+.is-busy
+.dashboard-table-icon {
+    color: #fda4af;
+
+    background:
+        rgba(244,63,94,.12);
+}
+
+
+html[data-color-mode="dark"]
+.is-available
+.dashboard-table-status,
+html[data-color-mode="dark"]
+.is-available
+.dashboard-table-detail strong {
+    color: #75dfa3;
+}
+
+
+html[data-color-mode="dark"]
+.is-busy
+.dashboard-table-status,
+html[data-color-mode="dark"]
+.is-busy
+.dashboard-table-detail strong {
+    color: #fda4af;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 767.98px) {
+
+    .dashboard-rooms-header {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+    .dashboard-rooms-legend {
+        width: 100%;
+    }
+
+    .dashboard-rooms-body {
+        padding:
+            15px 16px 18px !important;
+    }
+
+    .dashboard-table-card {
+        min-height: 125px;
+
+        padding: 13px;
+    }
+}
+
+</style>
+
+
+<style id="dashboard-top-products-clean-header">
+
+/* ============================================================
+   MÁS VENDIDOS - ENCABEZADO LIMPIO
+   Sin franja lateral
+   ============================================================ */
+
+.dashboard-top-header::before {
+    display: none !important;
+    content: none !important;
+}
+
+.dashboard-top-header {
+    border-left: 0 !important;
+    overflow: visible;
+}
+
+html[data-color-mode="dark"]
+.dashboard-top-header::before {
+    display: none !important;
+    content: none !important;
+}
+
+html[data-color-mode="dark"]
+.dashboard-top-header {
+    border-left: 0 !important;
+}
+
+</style>
+
+
+
+
+
+<style id="dashboard-section-icons-final">
+
+/* ============================================================
+   ENCABEZADOS DEL DASHBOARD
+   Iconos con el color principal de la paleta
+   ============================================================ */
+
+.dashboard-section-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    color: var(--text-main);
+
+    font-weight: 800;
+}
+
+
+/* Iconos */
+.dashboard-section-title > i,
+.dashboard-rooms-title.dashboard-section-title > i,
+.dashboard-top-header .dashboard-section-title > i {
+    color: var(--dash-primary) !important;
+
+    font-size: 15px;
+
+    line-height: 1;
+
+    opacity: 1;
+}
+
+
+/* Actividad e Ingreso */
+.card-header > .dashboard-section-title {
+    font-size: .85rem;
+}
+
+
+/* Más Vendidos */
+.dashboard-top-header
+.dashboard-section-title {
+    font-size: .92rem;
+}
+
+
+/* Estado de Salones conserva su estructura */
+.dashboard-rooms-title.dashboard-section-title {
+    gap: 10px;
+}
+
+
+/* ============================================================
+   MODO OSCURO
+   Mantener el color de la paleta
+   ============================================================ */
+
+html[data-color-mode="dark"]
+.dashboard-section-title > i,
+
+html[data-color-mode="dark"]
+.dashboard-rooms-title.dashboard-section-title > i,
+
+html[data-color-mode="dark"]
+.dashboard-top-header
+.dashboard-section-title > i {
+    color: var(--dash-primary) !important;
+}
+
+</style>
+
+
+<style id="dashboard-section-icons-bordered-final">
+
+/* ============================================================
+   ICONOS DE ENCABEZADOS
+   Borde + fondo suave con color de la paleta
+   ============================================================ */
+
+.dashboard-section-title > i,
+.dashboard-rooms-title.dashboard-section-title > i,
+.dashboard-top-header .dashboard-section-title > i {
+
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+
+    width: 30px;
+    height: 30px;
+
+    flex: 0 0 30px;
+
+    margin: 0 !important;
+
+    border: 1px solid
+        color-mix(
+            in srgb,
+            var(--dash-primary) 35%,
+            var(--border-soft)
+        );
+
+    border-radius: 9px;
+
+    color: var(--dash-primary) !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--dash-primary) 7%,
+            var(--card-bg)
+        );
+
+    font-size: 14px !important;
+    line-height: 1;
+
+    transition:
+        background-color .2s ease,
+        border-color .2s ease,
+        color .2s ease;
+}
+
+
+/* ------------------------------------------------------------
+   MODO OSCURO
+   ------------------------------------------------------------ */
+
+html[data-color-mode="dark"]
+.dashboard-section-title > i,
+
+html[data-color-mode="dark"]
+.dashboard-rooms-title.dashboard-section-title > i,
+
+html[data-color-mode="dark"]
+.dashboard-top-header
+.dashboard-section-title > i {
+
+    color: var(--dash-primary) !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--dash-primary) 12%,
+            #132338
+        );
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--dash-primary) 42%,
+            #30465d
+        );
+}
+
+</style>
+
+
+<style id="dashboard-goal-theme-dark-final">
+
+/* META MENSUAL - respetar paleta activa en modo oscuro */
+
+/* Icono */
+html[data-color-mode="dark"] .goal-bar-icon {
+    color: var(--dash-primary) !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--dash-primary) 12%,
+            #132338
+        ) !important;
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--dash-primary) 42%,
+            #30465d
+        ) !important;
+}
+
+html[data-color-mode="dark"] .goal-bar-icon i {
+    color: var(--dash-primary) !important;
+}
+
+/* Barra de progreso */
+html[data-color-mode="dark"] .goal-bar-fill {
+    background: var(--dash-primary) !important;
+}
+
+/* Porcentaje dentro de la barra */
+html[data-color-mode="dark"] .goal-bar-percent {
+    background: var(--dash-primary) !important;
+}
+
+</style>
+
+
+<style id="dashboard-goal-icon-theme-fix">
+
+/* META MENSUAL - icono según paleta activa */
+
+html[data-color-mode="dark"] .goal-icon-wrap {
+    color: var(--dash-primary) !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--dash-primary) 12%,
+            #132338
+        ) !important;
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--dash-primary) 42%,
+            #30465d
+        ) !important;
+
+    box-shadow: none !important;
+}
+
+html[data-color-mode="dark"] .goal-icon-wrap i {
+    color: var(--dash-primary) !important;
+}
+
+</style>
+
+
+<style id="dashboard-goal-percent-theme-fix">
+
+/* Porcentaje de Meta Mensual según paleta activa */
+html[data-color-mode="dark"] .goal-bar-panel .goal-percent,
+html[data-color-mode="dark"] .goal-bar-panel .goal-bar-percent,
+html[data-color-mode="dark"] .goal-bar-panel .goal-progress-label {
+    background: var(--dash-primary) !important;
+    border-color: var(--dash-primary) !important;
+    color: #fff !important;
+}
+
+</style>
+
+
+<style id="dashboard-goal-pct-theme-final">
+
+/* Porcentaje dentro de la barra según paleta activa */
+html[data-color-mode="dark"] .goal-bar-pct {
+    background: var(--dash-primary) !important;
+    border-color: var(--dash-primary) !important;
+    color: #fff !important;
+}
+
+</style>
+
+
+<style id="dashboard-goal-pct-clean-final">
+
+/* Porcentaje integrado dentro de la barra */
+html[data-color-mode="dark"] .goal-bar-pct {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+
+    color: #fff !important;
+
+    padding: 0 6px !important;
+    border-radius: 0 !important;
+
+    font-weight: 800;
+}
+
+</style>
+
+
+<style id="dashboard-goal-gradient-dark-final">
+
+/* Meta mensual - degradado dinámico según paleta */
+html[data-color-mode="dark"] .goal-bar-fill {
+
+    background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--dash-primary) 22%, #07111c) 0%,
+        color-mix(in srgb, var(--dash-primary) 70%, #07111c) 28%,
+        var(--dash-primary) 58%,
+        color-mix(in srgb, var(--dash-primary) 38%, white) 100%
+    ) !important;
+
 }
 
 </style>

@@ -276,6 +276,8 @@
             renderKitchenOrders(orders);
 
             if (!firstKitchenCheck && hasNewDetails) {
+                playKitchenNewOrderSound();
+
                 console.log('Nuevo pedido recibido en cocina');
             }
 
@@ -538,4 +540,202 @@ html[data-color-mode="dark"] #kitchen-orders .card-header.bg-warning i {
 
 </style>
 
+
+<script id="kitchen-order-sound">
+(function () {
+
+    let audioContext = null;
+    let audioUnlocked = false;
+
+    function createAudioContext() {
+
+        if (audioContext) {
+            return audioContext;
+        }
+
+        const AudioContextClass =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+        if (!AudioContextClass) {
+            console.warn('Este navegador no soporta Web Audio.');
+            return null;
+        }
+
+        audioContext = new AudioContextClass();
+
+        return audioContext;
+    }
+
+
+    /*
+     * Chrome exige que el audio sea creado/reanudado
+     * directamente durante una interacción del usuario.
+     */
+    async function unlockOrderAudio() {
+
+        const ctx = createAudioContext();
+
+        if (!ctx) {
+            return;
+        }
+
+        try {
+
+            if (ctx.state === 'suspended') {
+                await ctx.resume();
+            }
+
+            /*
+             * Reproducimos un tono prácticamente inaudible.
+             * Esto deja habilitado el contexto de audio para
+             * futuras notificaciones automáticas.
+             */
+            const oscillator =
+                ctx.createOscillator();
+
+            const gain =
+                ctx.createGain();
+
+            gain.gain.value = 0.00001;
+
+            oscillator.connect(gain);
+            gain.connect(ctx.destination);
+
+            oscillator.start();
+            oscillator.stop(
+                ctx.currentTime + 0.01
+            );
+
+            audioUnlocked =
+                ctx.state === 'running';
+
+            if (audioUnlocked) {
+                console.log(
+                    '🔊 Sonido de pedidos habilitado'
+                );
+            }
+
+        } catch (error) {
+
+            console.warn(
+                'No se pudo habilitar el sonido:',
+                error
+            );
+        }
+    }
+
+
+    /*
+     * La PRIMERA interacción real habilita el audio.
+     */
+    document.addEventListener(
+        'pointerdown',
+        unlockOrderAudio,
+        { once: true }
+    );
+
+    document.addEventListener(
+        'keydown',
+        unlockOrderAudio,
+        { once: true }
+    );
+
+
+    window.playKitchenNewOrderSound = function () {
+
+        if (window.systemSoundsEnabled !== true) {
+            return;
+        }
+
+        if (
+            !audioContext ||
+            !audioUnlocked ||
+            audioContext.state !== 'running'
+        ) {
+            console.warn(
+                '🔇 Sonido pendiente de habilitación. Haz clic una vez en la pantalla.'
+            );
+            return;
+        }
+
+        const now = audioContext.currentTime;
+
+        /*
+         * Campana larga tipo restaurante.
+         * Ataque rápido + resonancia prolongada.
+         */
+        const harmonics = [
+            {
+                frequency: 784,
+                volume: 0.42,
+                duration: 3.8
+            },
+            {
+                frequency: 1568,
+                volume: 0.20,
+                duration: 3.1
+            },
+            {
+                frequency: 1882,
+                volume: 0.11,
+                duration: 2.5
+            },
+            {
+                frequency: 2391,
+                volume: 0.055,
+                duration: 1.8
+            }
+        ];
+
+        harmonics.forEach(function (tone) {
+
+            const oscillator =
+                audioContext.createOscillator();
+
+            const gain =
+                audioContext.createGain();
+
+            oscillator.type = 'sine';
+
+            oscillator.frequency.setValueAtTime(
+                tone.frequency,
+                now
+            );
+
+            gain.gain.setValueAtTime(
+                0.0001,
+                now
+            );
+
+            // Golpe inicial de la campana
+            gain.gain.exponentialRampToValueAtTime(
+                tone.volume,
+                now + 0.006
+            );
+
+            // Resonancia larga
+            gain.gain.exponentialRampToValueAtTime(
+                tone.volume * 0.30,
+                now + 0.55
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.0001,
+                now + tone.duration
+            );
+
+            oscillator.connect(gain);
+            gain.connect(audioContext.destination);
+
+            oscillator.start(now);
+
+            oscillator.stop(
+                now + tone.duration + 0.1
+            );
+        });
+    };
+
+})();
+</script>
 @endsection
