@@ -366,13 +366,9 @@
         </p>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
 
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
+
+
 
     <div class="ds-create-card">
         <div class="ds-create-head">
@@ -399,7 +395,7 @@
                     <button
                         type="submit"
                         class="btn ds-send w-100"
-                        onclick="return confirm('¿Generar y enviar resumen a SUNAT? Esta operación no se puede deshacer.')"
+                        onclick="event.preventDefault(); const form=this.closest('form'); SystemNotify.confirm({type:'warning', title:'Generar resumen SUNAT', text:'El resumen será generado y enviado a SUNAT. Esta operación no se puede deshacer.', confirmText:'Generar y enviar', icon:'bi-send', onConfirm:()=>form.submit()})"
                     >
                         <i class="bi bi-send"></i>
                         Generar y enviar

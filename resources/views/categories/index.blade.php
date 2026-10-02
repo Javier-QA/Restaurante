@@ -972,86 +972,30 @@
 {{-- ======================================================
      ELIMINAR CATEGORÍA
 ====================================================== --}}
-<div class="modal fade"
-     id="deleteCategoryModal"
-     tabindex="-1"
-     aria-hidden="true">
 
-    <div class="modal-dialog modal-dialog-centered"
-         style="max-width:430px;">
-
-        <div class="modal-content category-delete-content">
-
-            <div class="category-delete-body">
-
-                <div class="category-delete-icon">
-                    <i class="bi bi-trash3"></i>
-                </div>
-
-                <h5 class="category-delete-title">
-                    Eliminar categoría
-                </h5>
-
-                <p class="category-delete-text">
-                    ¿Estás seguro de eliminar
-                    <span id="deleteCategoryName"
-                          class="category-delete-name"></span>?
-                </p>
-
-                <div class="category-delete-warning">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    Esta acción no se puede deshacer.
-                </div>
-
-            </div>
-
-
-            <div class="category-delete-footer">
-
-                <button type="button"
-                        class="category-delete-cancel"
-                        data-bs-dismiss="modal">
-                    Cancelar
-                </button>
-
-                <form id="deleteCategoryForm"
-                      method="POST"
-                      class="d-flex">
-
-                    @csrf
-                    @method('DELETE')
-
-                    <button type="submit"
-                            class="category-delete-confirm">
-                        <i class="bi bi-trash3 me-1"></i>
-                        Sí, eliminar
-                    </button>
-
-                </form>
-
-            </div>
-
-        </div>
-    </div>
-</div>
 
 
 <script>
 function confirmDeleteCategory(button) {
     const categoryId = button.dataset.categoryId;
-    const categoryName = button.dataset.categoryName;
+    const categoryName = button.dataset.categoryName || 'esta categoría';
 
-    document.getElementById('deleteCategoryName').textContent =
-        categoryName || 'esta categoría';
+    const form = document.getElementById('deleteCategoryForm');
 
-    document.getElementById('deleteCategoryForm').action =
-        "{{ url('/categories') }}/" + categoryId;
+    if (!form || !categoryId) return;
 
-    bootstrap.Modal
-        .getOrCreateInstance(
-            document.getElementById('deleteCategoryModal')
-        )
-        .show();
+    form.action = "{{ url('/categories') }}/" + categoryId;
+
+    SystemNotify.confirm({
+        type: 'danger',
+        title: 'Eliminar categoría',
+        text: '¿Deseas eliminar la categoría "' + categoryName + '" del sistema?',
+        confirmText: 'Eliminar categoría',
+        icon: 'bi-trash3',
+        onConfirm: function () {
+            form.submit();
+        }
+    });
 }
 </script>
 
@@ -1079,4 +1023,11 @@ html[data-color-mode="dark"] .category-count {
 
 </style>
 
+
+<form id="deleteCategoryForm"
+      method="POST"
+      style="display:none;">
+    @csrf
+    @method('DELETE')
+</form>
 @endsection

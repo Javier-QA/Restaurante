@@ -417,7 +417,7 @@
 
                         <button type="submit"
                                 class="btn btn-outline-warning cn-retry-btn"
-                                onclick="return confirm('¿Reintentar envío a SUNAT?')">
+                                onclick="event.preventDefault(); const form=this.closest('form'); SystemNotify.confirm({type:'warning', title:'Reintentar envío a SUNAT', text:'Se volverá a intentar el envío de esta Nota de Crédito.', confirmText:'Reintentar envío', icon:'bi-arrow-repeat', onConfirm:()=>form.submit()})">
                             <i class="bi bi-arrow-repeat me-1"></i>
                             Reintentar
                         </button>
@@ -430,19 +430,9 @@
         </div>
 
         {{-- Mensajes --}}
-        @if(session('success'))
-            <div class="alert alert-success cn-alert mb-3">
-                <i class="bi bi-check-circle me-2"></i>
-                {{ session('success') }}
-            </div>
-        @endif
 
-        @if(session('error'))
-            <div class="alert alert-danger cn-alert mb-3">
-                <i class="bi bi-exclamation-circle me-2"></i>
-                {{ session('error') }}
-            </div>
-        @endif
+
+
 
         {{-- Documento afectado --}}
         <div class="cn-card">

@@ -229,12 +229,7 @@
 
                     <div class="cash-open-body">
 
-                        @if(session('warning'))
-                            <div class="alert alert-warning border-0 mb-4">
-                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                {{ session('warning') }}
-                            </div>
-                        @endif
+
 
                         <div class="cash-info-box">
                             <div class="cash-info-icon">

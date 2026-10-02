@@ -23,10 +23,10 @@
     <ul class="nav nav-tabs mb-3" id="areaTabs" role="tablist">
         @foreach($areas as $index => $area)
             <li class="nav-item" role="presentation">
-                <button class="nav-link {{ $index == 0 ? 'active' : '' }} fw-bold" 
-                        id="tab-{{ $area->id }}" 
-                        data-bs-toggle="tab" 
-                        data-bs-target="#area-{{ $area->id }}" 
+                <button class="nav-link {{ $index == 0 ? 'active' : '' }} fw-bold"
+                        id="tab-{{ $area->id }}"
+                        data-bs-toggle="tab"
+                        data-bs-target="#area-{{ $area->id }}"
                         type="button" role="tab">
                     {{ $area->name }}
                 </button>
@@ -37,10 +37,10 @@
     <div class="tab-content" id="areaTabsContent">
         @foreach($areas as $index => $area)
             <div class="tab-pane fade {{ $index == 0 ? 'show active' : '' }}" id="area-{{ $area->id }}" role="tabpanel">
-                
+
                 <div class="d-flex justify-content-between align-items-center mb-2 bg-white p-2 border rounded">
                     <small class="text-muted"><i class="bi bi-info-circle me-1"></i> Arrastra las mesas y luego presiona <b>Guardar Diseño</b>.</small>
-                    <form action="{{ route('tables.destroyArea', $area->id) }}" method="POST" onsubmit="return confirm('¿Eliminar esta zona y sus mesas?')">
+                    <form action="{{ route('tables.destroyArea', $area->id) }}" method="POST" onsubmit="event.preventDefault(); const form=this; SystemNotify.confirm({type:'danger', title:'Eliminar zona', text:'Se eliminará esta zona junto con sus mesas. ¿Deseas continuar?', confirmText:'Eliminar zona', icon:'bi-trash3', onConfirm:()=>form.submit()});">
                         @csrf @method('DELETE')
                         <button class="btn btn-sm tables-delete-zone"><i class="bi bi-trash3 me-1"></i> Eliminar Zona</button>
                     </form>
@@ -51,18 +51,18 @@
                         <div class="draggable-table position-absolute d-flex flex-column align-items-center justify-content-center bg-white border shadow-sm rounded-3"
                              id="table-{{ $table->id }}"
                              data-id="{{ $table->id }}"
-                             style="width: 155px; height: 155px; 
-                                    left: {{ $table->x_pos }}px; 
-                                    top: {{ $table->y_pos }}px; 
+                             style="width: 155px; height: 155px;
+                                    left: {{ $table->x_pos }}px;
+                                    top: {{ $table->y_pos }}px;
                                     cursor: grab; z-index: 10;
                                     transition: box-shadow 0.2s;">
-                            
+
                             <i class="bi bi-display fs-3 {{ $table->status == 'available' ? 'text-success' : 'text-danger' }} mb-1"></i>
                             <span class="fw-bold small text-center text-truncate w-100 px-1">{{ $table->name }}</span>
-                            
+
                             <form action="{{ route('tables.destroyTable', $table->id) }}" method="POST" class="position-absolute top-0 end-0 m-1">
                                 @csrf @method('DELETE')
-                                <button class="btn btn-sm p-0 text-danger opacity-25 hover-opacity-100" onclick="return confirm('¿Borrar mesa?')">
+                                <button class="btn btn-sm p-0 text-danger opacity-25 hover-opacity-100" onclick="event.preventDefault(); const form=this.closest('form'); SystemNotify.confirm({type:'danger', title:'Eliminar mesa', text:'¿Deseas eliminar esta mesa del sistema?', confirmText:'Eliminar mesa', icon:'bi-trash3', onConfirm:()=>form.submit()})">
                                     <i class="bi bi-x-circle-fill"></i>
                                 </button>
                             </form>
@@ -363,11 +363,11 @@
         function dragStart(e) {
             if (e.target.closest('form')) return; // No arrastrar si clickea en borrar
             activeDrag = e.currentTarget;
-            
+
             // Obtener posición actual real
             let rect = activeDrag.getBoundingClientRect();
             let parentRect = activeDrag.parentElement.getBoundingClientRect();
-            
+
             // Calculamos la posición relativa al contenedor
             let styleLeft = activeDrag.offsetLeft;
             let styleTop = activeDrag.offsetTop;
@@ -435,14 +435,14 @@
         })
         .then(data => {
             if(data.status === 'success') {
-                alert('¡Diseño guardado con éxito! ✅');
+                SystemNotify.success('El diseño de las mesas se guardó correctamente.', 'Diseño guardado');
             } else {
-                alert('Error al guardar: ' + data.message);
+                SystemNotify.error('No se pudo guardar el diseño: ' + data.message, 'Error al guardar');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('¡Ocurrió un error al guardar! \nVerifica que hayas ejecutado "php artisan migrate". \nDetalle: ' + error.message);
+            SystemNotify.error('No se pudo guardar el diseño. Detalle: ' + error.message, 'Error inesperado');
         })
         .finally(() => {
             btn.innerHTML = originalText;

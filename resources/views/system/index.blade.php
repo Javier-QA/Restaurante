@@ -443,6 +443,99 @@
             min-height: auto;
         }
     }
+
+    /* =========================================================
+       CONTROLES DE ARCHIVO Y CONTRASEÑA
+    ========================================================= */
+
+    .maintenance-password-control,
+    .maintenance-file-control {
+        position: relative;
+        width: 100%;
+    }
+
+    .maintenance-password-control .form-control {
+        padding-right: 52px;
+    }
+
+    .maintenance-input-action {
+        position: absolute;
+        top: 50%;
+        right: 8px;
+        transform: translateY(-50%);
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        border: 1px solid var(--border-soft);
+        border-radius: 10px;
+        background: var(--card-bg);
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 5;
+        transition:
+            color .18s ease,
+            border-color .18s ease,
+            background .18s ease,
+            transform .18s ease;
+    }
+
+    .maintenance-input-action:hover {
+        color: var(--primary);
+        border-color:
+            color-mix(
+                in srgb,
+                var(--primary) 45%,
+                var(--border-soft)
+            );
+        background:
+            color-mix(
+                in srgb,
+                var(--primary) 7%,
+                var(--card-bg)
+            );
+    }
+
+    .maintenance-password-control .maintenance-input-action:active {
+        transform: translateY(-50%) scale(.94);
+    }
+
+    .maintenance-file-clear {
+        display: none;
+        color: #dc2626;
+    }
+
+    .maintenance-file-clear.is-visible {
+        display: flex;
+    }
+
+    .maintenance-file-clear:hover {
+        color: #dc2626;
+        border-color: rgba(220, 38, 38, .35);
+        background: rgba(220, 38, 38, .07);
+    }
+
+    .maintenance-file-control.has-file .form-control {
+        padding-right: 54px;
+    }
+
+    html[data-color-mode="dark"] .maintenance-input-action {
+        background: var(--card-bg);
+        border-color: var(--border-soft);
+        color: var(--text-muted);
+    }
+
+    html[data-color-mode="dark"] .maintenance-input-action:hover {
+        color: var(--primary);
+        background:
+            color-mix(
+                in srgb,
+                var(--primary) 12%,
+                var(--card-bg)
+            );
+    }
 </style>
 
 
@@ -640,64 +733,10 @@
     id="maintenanceNotifications"
 >
 
-    @if(session('success'))
-        <div class="maintenance-toast success">
-
-            <div class="maintenance-toast-icon">
-                <i class="bi bi-check-lg"></i>
-            </div>
-
-            <div class="maintenance-toast-content">
-                <p class="maintenance-toast-title">
-                    Operación completada
-                </p>
-
-                <p class="maintenance-toast-message">
-                    {{ session('success') }}
-                </p>
-            </div>
-
-            <button
-                type="button"
-                class="maintenance-toast-close"
-                onclick="closeMaintenanceToast(this)"
-                aria-label="Cerrar"
-            >
-                <i class="bi bi-x-lg"></i>
-            </button>
-
-        </div>
-    @endif
 
 
-    @if(session('error'))
-        <div class="maintenance-toast error">
 
-            <div class="maintenance-toast-icon">
-                <i class="bi bi-exclamation-lg"></i>
-            </div>
 
-            <div class="maintenance-toast-content">
-                <p class="maintenance-toast-title">
-                    No se pudo completar
-                </p>
-
-                <p class="maintenance-toast-message">
-                    {{ session('error') }}
-                </p>
-            </div>
-
-            <button
-                type="button"
-                class="maintenance-toast-close"
-                onclick="closeMaintenanceToast(this)"
-                aria-label="Cerrar"
-            >
-                <i class="bi bi-x-lg"></i>
-            </button>
-
-        </div>
-    @endif
 
 </div>
 <div class="maintenance-page">
@@ -822,24 +861,49 @@
 
                     <div class="mb-3">
 
-                        <input
-                            type="file"
-                            id="restoreBackupFile"
-                            class="form-control"
-                            accept=".sql"
-                        >
+                        <div class="maintenance-file-control">
+                            <input
+                                type="file"
+                                id="restoreBackupFile"
+                                class="form-control"
+                                accept=".sql"
+                            >
+
+                            <button
+                                type="button"
+                                id="clearRestoreFile"
+                                class="maintenance-input-action maintenance-file-clear"
+                                onclick="clearRestoreBackupFile()"
+                                title="Quitar archivo seleccionado"
+                                aria-label="Quitar archivo seleccionado"
+                            >
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
 
                     </div>
 
 
                     <div class="mb-3">
 
-                        <input
-                            type="password"
-                            id="restorePassword"
-                            class="form-control"
-                            placeholder="Confirma tu contraseña"
-                        >
+                        <div class="maintenance-password-control">
+                            <input
+                                type="password"
+                                id="restorePassword"
+                                class="form-control"
+                                placeholder="Confirma tu contraseña"
+                            >
+
+                            <button
+                                type="button"
+                                class="maintenance-input-action"
+                                onclick="toggleMaintenancePassword('restorePassword', this)"
+                                title="Mostrar contraseña"
+                                aria-label="Mostrar contraseña"
+                            >
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
 
                     </div>
 
@@ -930,12 +994,24 @@
 
                     <div class="mb-3">
 
-                        <input
-                            type="password"
-                            id="resetPassword"
-                            class="form-control"
-                            placeholder="Confirma tu contraseña"
-                        >
+                        <div class="maintenance-password-control">
+                            <input
+                                type="password"
+                                id="resetPassword"
+                                class="form-control"
+                                placeholder="Confirma tu contraseña"
+                            >
+
+                            <button
+                                type="button"
+                                class="maintenance-input-action"
+                                onclick="toggleMaintenancePassword('resetPassword', this)"
+                                title="Mostrar contraseña"
+                                aria-label="Mostrar contraseña"
+                            >
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
 
                     </div>
 
@@ -1012,262 +1088,126 @@
      MODAL RESTAURAR
 ========================================================= --}}
 
-<div
-    class="modal fade maintenance-modal"
-    id="restoreConfirmModal"
-    tabindex="-1"
-    aria-hidden="true"
->
-    <div class="modal-dialog modal-dialog-centered">
 
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <div class="maintenance-modal-title">
-
-                    <div class="maintenance-modal-icon warning">
-                        <i class="bi bi-arrow-repeat"></i>
-                    </div>
-
-                    <div>
-                        <h5>Confirmar restauración</h5>
-
-                        <div class="maintenance-modal-subtitle">
-                            Esta operación modificará la información actual
-                        </div>
-                    </div>
-
-                </div>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Cerrar"
-                ></button>
-
-            </div>
-
-
-            <div class="modal-body">
-
-                <div class="maintenance-warning-box warning">
-                    <strong>Importante:</strong>
-                    los datos actuales serán reemplazados por la información
-                    contenida en el archivo de respaldo seleccionado.
-                </div>
-
-            </div>
-
-
-            <div class="modal-footer">
-
-                <button
-                    type="button"
-                    class="btn btn-light border"
-                    data-bs-dismiss="modal"
-                >
-                    Cancelar
-                </button>
-
-                <button
-                    type="button"
-                    class="btn maintenance-action warning px-3"
-                    onclick="submitRestore()"
-                >
-                    <i class="bi bi-arrow-repeat"></i>
-                    Sí, restaurar
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-</div>
 
 
 {{-- =========================================================
      MODAL REINICIO
 ========================================================= --}}
 
-<div
-    class="modal fade maintenance-modal"
-    id="resetConfirmModal"
-    tabindex="-1"
-    aria-hidden="true"
->
-    <div class="modal-dialog modal-dialog-centered">
 
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <div class="maintenance-modal-title">
-
-                    <div class="maintenance-modal-icon danger">
-                        <i class="bi bi-exclamation-octagon-fill"></i>
-                    </div>
-
-                    <div>
-                        <h5>Confirmar reinicio maestro</h5>
-
-                        <div class="maintenance-modal-subtitle">
-                            Esta acción no se puede deshacer
-                        </div>
-                    </div>
-
-                </div>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Cerrar"
-                ></button>
-
-            </div>
-
-
-            <div class="modal-body">
-
-                <div class="maintenance-warning-box danger">
-                    <strong>Advertencia:</strong>
-                    se eliminarán los datos operativos de prueba indicados.
-                    Los productos y la configuración principal se mantendrán.
-                </div>
-
-            </div>
-
-
-            <div class="modal-footer">
-
-                <button
-                    type="button"
-                    class="btn btn-light border"
-                    data-bs-dismiss="modal"
-                >
-                    Cancelar
-                </button>
-
-                <button
-                    type="button"
-                    class="btn maintenance-action danger px-3"
-                    onclick="submitReset()"
-                >
-                    <i class="bi bi-trash3"></i>
-                    Sí, borrar datos
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-</div>
 
 
 <script>
     function openRestoreModal() {
 
-        const fileInput =
-            document.getElementById('restoreBackupFile');
+    const fileInput =
+        document.getElementById('restoreBackupFile');
 
-        const password =
-            document.getElementById('restorePassword').value;
+    const passwordInput =
+        document.getElementById('restorePassword');
 
-        if (!fileInput.files.length) {
-            fileInput.reportValidity();
-            return;
-        }
-
-        if (!password.trim()) {
-            document
-                .getElementById('restorePassword')
-                .reportValidity();
-
-            return;
-        }
-
-        new bootstrap.Modal(
-            document.getElementById('restoreConfirmModal')
-        ).show();
+    if (!fileInput || !passwordInput) {
+        return;
     }
+
+    if (!fileInput.files.length) {
+        fileInput.reportValidity();
+        return;
+    }
+
+    if (!passwordInput.value.trim()) {
+        passwordInput.reportValidity();
+        return;
+    }
+
+    SystemNotify.confirm({
+        type: 'warning',
+        title: 'Confirmar restauración',
+        text: 'Los datos actuales serán reemplazados por la información contenida en el archivo de respaldo seleccionado.',
+        confirmText: 'Sí, restaurar',
+        icon: 'bi-arrow-repeat',
+        onConfirm: function () {
+            submitRestore();
+        }
+    });
+}
+
 
 
     function submitRestore() {
 
-        const sourceFile =
-            document.getElementById('restoreBackupFile');
+    const sourceFile =
+        document.getElementById('restoreBackupFile');
 
-        const realFile =
-            document.getElementById('restoreRealFile');
+    const realFile =
+        document.getElementById('restoreRealFile');
 
-        const transfer =
-            new DataTransfer();
-
-        transfer.items.add(sourceFile.files[0]);
-
-        realFile.files = transfer.files;
-
-        document.getElementById('restoreRealPassword').value =
-            document.getElementById('restorePassword').value;
-
-        document.getElementById('restoreForm').submit();
+    if (!sourceFile || !realFile || !sourceFile.files.length) {
+        return;
     }
+
+    const transfer = new DataTransfer();
+
+    transfer.items.add(sourceFile.files[0]);
+
+    realFile.files = transfer.files;
+
+    document.getElementById('restoreRealPassword').value =
+        document.getElementById('restorePassword').value;
+
+    document.getElementById('restoreForm').submit();
+}
 
 
     function openResetModal() {
 
-        const passwordInput =
-            document.getElementById('resetPassword');
+    const passwordInput =
+        document.getElementById('resetPassword');
 
-        if (!passwordInput.value.trim()) {
-
-            passwordInput.setCustomValidity(
-                'Ingresa tu contraseña para continuar.'
-            );
-
-            passwordInput.reportValidity();
-
-            setTimeout(() => {
-                passwordInput.setCustomValidity('');
-            }, 100);
-
-            return;
-        }
-
-        const modalElement =
-            document.getElementById('resetConfirmModal');
-
-        const modal =
-            bootstrap.Modal.getOrCreateInstance(modalElement);
-
-        modal.show();
+    if (!passwordInput) {
+        return;
     }
+
+    if (!passwordInput.value.trim()) {
+
+        passwordInput.setCustomValidity(
+            'Ingresa tu contraseña para continuar.'
+        );
+
+        passwordInput.reportValidity();
+
+        setTimeout(function () {
+            passwordInput.setCustomValidity('');
+        }, 100);
+
+        return;
+    }
+
+    SystemNotify.confirm({
+        type: 'danger',
+        title: 'Confirmar reinicio maestro',
+        text: 'Se eliminarán los datos operativos de prueba indicados. Los productos y la configuración principal se mantendrán. Esta acción no se puede deshacer.',
+        confirmText: 'Borrar datos',
+        icon: 'bi-exclamation-octagon-fill',
+        onConfirm: function () {
+            submitReset();
+        }
+    });
+}
+
 
 
     function submitReset() {
 
-        const password =
-            document.getElementById('resetPassword').value;
+    const password =
+        document.getElementById('resetPassword').value;
 
-        document.getElementById('resetRealPassword').value =
-            password;
+    document.getElementById('resetRealPassword').value =
+        password;
 
-        const modalElement =
-            document.getElementById('resetConfirmModal');
-
-        const modal =
-            bootstrap.Modal.getInstance(modalElement);
-
-        if (modal) {
-            modal.hide();
-        }
-
-        document.getElementById('resetForm').submit();
-    }
+    document.getElementById('resetForm').submit();
+}
 </script>
 
 
@@ -1514,4 +1454,101 @@ html[data-color-mode="dark"] .reset-summary-title {
 
 </style>
 
+
+<script id="maintenance-input-controls">
+document.addEventListener('DOMContentLoaded', function () {
+
+    const visibleFile = document.getElementById('restoreBackupFile');
+    const clearButton = document.getElementById('clearRestoreFile');
+
+    if (visibleFile && clearButton) {
+
+        const updateFileControl = function () {
+
+            const wrapper = visibleFile.closest('.maintenance-file-control');
+            const hasFile =
+                visibleFile.files &&
+                visibleFile.files.length > 0;
+
+            clearButton.classList.toggle(
+                'is-visible',
+                hasFile
+            );
+
+            if (wrapper) {
+                wrapper.classList.toggle(
+                    'has-file',
+                    hasFile
+                );
+            }
+        };
+
+        visibleFile.addEventListener(
+            'change',
+            updateFileControl
+        );
+
+        updateFileControl();
+    }
+});
+
+
+window.toggleMaintenancePassword = function(inputId, button) {
+
+    const input = document.getElementById(inputId);
+
+    if (!input || !button) {
+        return;
+    }
+
+    const icon = button.querySelector('i');
+    const showing = input.type === 'text';
+
+    input.type = showing ? 'password' : 'text';
+
+    if (icon) {
+        icon.classList.toggle('bi-eye', showing);
+        icon.classList.toggle('bi-eye-slash', !showing);
+    }
+
+    const label = showing
+        ? 'Mostrar contraseña'
+        : 'Ocultar contraseña';
+
+    button.setAttribute('title', label);
+    button.setAttribute('aria-label', label);
+};
+
+
+window.clearRestoreBackupFile = function() {
+
+    const visibleFile =
+        document.getElementById('restoreBackupFile');
+
+    const realFile =
+        document.getElementById('restoreRealFile');
+
+    const clearButton =
+        document.getElementById('clearRestoreFile');
+
+    if (visibleFile) {
+        visibleFile.value = '';
+
+        const wrapper =
+            visibleFile.closest('.maintenance-file-control');
+
+        if (wrapper) {
+            wrapper.classList.remove('has-file');
+        }
+    }
+
+    if (realFile) {
+        realFile.value = '';
+    }
+
+    if (clearButton) {
+        clearButton.classList.remove('is-visible');
+    }
+};
+</script>
 @endsection

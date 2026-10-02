@@ -1154,62 +1154,7 @@
 </div>
 
 {{-- MODAL ELIMINAR CLIENTE --}}
-<div class="modal fade" id="deleteClientModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 430px;">
-        <div class="modal-content client-modal-content border-0">
 
-            <div class="modal-body text-center p-4">
-
-                <div class="d-flex align-items-center justify-content-center mx-auto mb-3"
-                     style="width:68px;height:68px;border-radius:20px;background:#fff1f2;border:1px solid #fecdd3;color:#dc2626;font-size:1.55rem;">
-                    <i class="bi bi-trash3"></i>
-                </div>
-
-                <h5 class="fw-bold mb-2" style="color:var(--text-main);">
-                    Eliminar cliente
-                </h5>
-
-                <p class="mb-3"
-                   style="color:var(--text-muted);font-size:.88rem;line-height:1.6;">
-                    ¿Estás seguro de eliminar a
-                    <strong id="deleteClientName" style="color:var(--text-main);"></strong>?
-                </p>
-
-                <div class="d-flex align-items-center justify-content-center gap-2 px-3 py-2 mb-4"
-                     style="background:#fff1f2;border:1px solid #fecdd3;border-radius:11px;color:#b91c1c;font-size:.77rem;font-weight:650;">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    Esta acción no se puede deshacer.
-                </div>
-
-                <div class="d-flex gap-2">
-
-                    <button type="button"
-                            class="btn flex-fill"
-                            data-bs-dismiss="modal"
-                            style="min-height:43px;border:1px solid var(--border-soft);border-radius:11px;background:var(--card-bg);color:var(--text-main);font-weight:700;">
-                        Cancelar
-                    </button>
-
-                    <form id="deleteClientForm"
-                          method="POST"
-                          class="d-flex flex-fill">
-                        @csrf
-                        @method('DELETE')
-
-                        <button type="submit"
-                                class="btn text-white flex-fill"
-                                style="min-height:43px;border-radius:11px;background:#dc2626;border-color:#dc2626;font-weight:700;">
-                            <i class="bi bi-trash3 me-1"></i>
-                            Sí, eliminar
-                        </button>
-                    </form>
-
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
 <script>
     function editClient(client) {
         document.getElementById('edit_name').value = client.name ?? '';
@@ -1227,16 +1172,25 @@
     }
 
     function confirmDeleteClient(client) {
-        document.getElementById('deleteClientName').textContent =
-            client.name ?? 'este cliente';
+    const form = document.getElementById('deleteClientForm');
 
-        document.getElementById('deleteClientForm').action =
-            "{{ url('/clients') }}/" + client.id;
+    if (!form || !client || !client.id) return;
 
-        bootstrap.Modal
-            .getOrCreateInstance(document.getElementById('deleteClientModal'))
-            .show();
-    }
+    const clientName = client.name ?? 'este cliente';
+
+    form.action = "{{ url('/clients') }}/" + client.id;
+
+    SystemNotify.confirm({
+        type: 'danger',
+        title: 'Eliminar cliente',
+        text: '¿Deseas eliminar a "' + clientName + '" de la cartera de clientes?',
+        confirmText: 'Eliminar cliente',
+        icon: 'bi-person-x',
+        onConfirm: function () {
+            form.submit();
+        }
+    });
+}
 </script>
 
 <style>
@@ -1311,4 +1265,11 @@ html[data-color-mode="dark"] .client-visits.active i {
 
 </style>
 
+
+<form id="deleteClientForm"
+      method="POST"
+      style="display:none;">
+    @csrf
+    @method('DELETE')
+</form>
 @endsection

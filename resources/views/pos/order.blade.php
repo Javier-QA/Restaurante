@@ -2,31 +2,9 @@
 
 @section('content')
 {{-- Notificaciones del POS --}}
-@if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show pos-session-alert shadow"
-         role="alert">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-        <strong>Atención:</strong> {{ session('error') }}
 
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="alert"
-                aria-label="Cerrar"></button>
-    </div>
-@endif
 
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show pos-session-alert shadow"
-         role="alert">
-        <i class="bi bi-check-circle-fill me-2"></i>
-        {{ session('success') }}
 
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="alert"
-                aria-label="Cerrar"></button>
-    </div>
-@endif
 
 {{-- POS ocupa 100% del viewport independiente del layout --}}
 <div id="pos-wrap" class="pos-order-page" style="
@@ -300,7 +278,7 @@
             placeholder="Buscar cliente..."
             autocomplete="off"
             oninput="filterClientDropdown(this.value)"
-            
+
         >
 
         <button
@@ -688,15 +666,32 @@
     };
 
     window.updateQty = function(id, qty) {
-        if(qty < 1 && !confirm('¿Eliminar producto?')) return;
-        fetch(`{{ url('/pos/detail') }}/${id}/update`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-            body: JSON.stringify({ quantity: qty })
-        }).then(r => r.text()).then(html => {
-            document.getElementById('cart-container').innerHTML = html;
-            updateCheckoutTotal();
-        });
+
+        const updateQuantity = function() {
+            fetch(`{{ url('/pos/detail') }}/${id}/update`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                body: JSON.stringify({ quantity: qty })
+            }).then(r => r.text()).then(html => {
+                document.getElementById('cart-container').innerHTML = html;
+                updateCheckoutTotal();
+            });
+        };
+
+        if (qty < 1) {
+            SystemNotify.confirm({
+                type: 'danger',
+                title: 'Eliminar producto',
+                text: '¿Deseas retirar este producto de la cuenta actual?',
+                confirmText: 'Eliminar producto',
+                icon: 'bi-trash3',
+                onConfirm: updateQuantity
+            });
+
+            return;
+        }
+
+        updateQuantity();
     };
 
     window.removeItem = function(id) {

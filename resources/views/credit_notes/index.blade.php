@@ -643,19 +643,9 @@
         </div>
     </div>
     {{-- Mensajes --}}
-    @if(session('success'))
-        <div class="alert alert-success credit-alert mb-3">
-            <i class="bi bi-check-circle me-2"></i>
-            {{ session('success') }}
-        </div>
-    @endif
 
-    @if(session('error'))
-        <div class="alert alert-danger credit-alert mb-3">
-            <i class="bi bi-exclamation-circle me-2"></i>
-            {{ session('error') }}
-        </div>
-    @endif
+
+
 
     {{-- Filtros --}}
     <div class="credit-filter">
@@ -896,7 +886,7 @@
                                                 type="submit"
                                                 class="btn btn-outline-warning"
                                                 title="Reintentar envío"
-                                                onclick="return confirm('¿Deseas reintentar el envío de esta Nota de Crédito a SUNAT?')">
+                                                onclick="event.preventDefault(); const form=this.closest('form'); SystemNotify.confirm({type:'warning', title:'Reintentar envío a SUNAT', text:'Se volverá a intentar el envío de esta Nota de Crédito a SUNAT.', confirmText:'Reintentar envío', icon:'bi-arrow-repeat', onConfirm:()=>form.submit()})">
                                                 <i class="bi bi-arrow-repeat"></i>
                                             </button>
 

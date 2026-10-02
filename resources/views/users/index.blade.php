@@ -1147,66 +1147,7 @@
 {{-- =========================================================
      MODAL ELIMINAR USUARIO
      ========================================================= --}}
-<div class="modal fade"
-     id="deleteUserModal"
-     tabindex="-1"
-     aria-labelledby="deleteUserModalLabel"
-     aria-hidden="true">
 
-    <div class="modal-dialog modal-dialog-centered"
-         style="max-width:430px;">
-
-        <form id="deleteUserForm"
-              method="POST"
-              class="modal-content user-modal-content">
-
-            @csrf
-            @method('DELETE')
-
-
-            <div class="modal-body px-4 pt-4 pb-2">
-
-                <div class="user-delete-icon">
-                    <i class="bi bi-trash3"></i>
-                </div>
-
-                <h5 id="deleteUserModalLabel"
-                    class="user-delete-title">
-                    Eliminar usuario
-                </h5>
-
-                <p class="user-delete-text">
-                    ¿Estás seguro de eliminar a
-                    <span id="deleteUserName"
-                          class="user-delete-name"></span>?
-                    Esta persona ya no podrá acceder al sistema.
-                </p>
-
-            </div>
-
-
-            <div class="user-modal-footer justify-content-center">
-
-                <button type="button"
-                        class="btn user-cancel-btn"
-                        data-bs-dismiss="modal">
-                    Cancelar
-                </button>
-
-                <button type="submit"
-                        class="btn user-delete-btn">
-
-                    <i class="bi bi-trash3"></i>
-                    Eliminar usuario
-                </button>
-
-            </div>
-
-        </form>
-
-    </div>
-
-</div>
 
 
 
@@ -1226,15 +1167,23 @@
 
 
     function openDeleteUserModal(id, name) {
-        document.getElementById('deleteUserName').textContent = name;
+    const form = document.getElementById('deleteUserForm');
 
-        document.getElementById('deleteUserForm').action =
-            "{{ url('/users') }}/" + id;
+    if (!form || !id) return;
 
-        new bootstrap.Modal(
-            document.getElementById('deleteUserModal')
-        ).show();
-    }
+    form.action = "{{ url('/users') }}/" + id;
+
+    SystemNotify.confirm({
+        type: 'danger',
+        title: 'Eliminar usuario',
+        text: '¿Deseas eliminar al usuario "' + name + '" del sistema?',
+        confirmText: 'Eliminar usuario',
+        icon: 'bi-person-x',
+        onConfirm: function () {
+            form.submit();
+        }
+    });
+}
 </script>
 
 
@@ -1422,4 +1371,11 @@ html[data-color-mode="dark"] .user-action-disabled i {
 
 </style>
 
+
+<form id="deleteUserForm"
+      method="POST"
+      style="display:none;">
+    @csrf
+    @method('DELETE')
+</form>
 @endsection

@@ -26,10 +26,10 @@
     <ul class="nav nav-tabs nav-pills mb-3" id="posTabs" role="tablist">
         @foreach($areas as $index => $area)
             <li class="nav-item me-2" role="presentation">
-                <button class="nav-link {{ $index == 0 ? 'active' : '' }} fw-bold px-4 border" 
-                        id="tab-{{ $area->id }}" 
-                        data-bs-toggle="tab" 
-                        data-bs-target="#area-{{ $area->id }}" 
+                <button class="nav-link {{ $index == 0 ? 'active' : '' }} fw-bold px-4 border"
+                        id="tab-{{ $area->id }}"
+                        data-bs-toggle="tab"
+                        data-bs-target="#area-{{ $area->id }}"
                         type="button" role="tab">
                     {{ $area->name }}
                 </button>
@@ -40,44 +40,44 @@
     <div class="tab-content">
         @foreach($areas as $index => $area)
             <div class="tab-pane fade {{ $index == 0 ? 'show active' : '' }}" id="area-{{ $area->id }}" role="tabpanel">
-                
-                <div class="pos-floor position-relative border rounded-3 shadow-sm" 
+
+                <div class="pos-floor position-relative border rounded-3 shadow-sm"
                      style="height: 720px; overflow: auto; background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 20px 20px;">
-                    
+
                     @foreach($area->tables as $table)
                         @php
                             $order = $table->orders->first(); // Orden activa
                             $reservations = $table->reservations; // TODAS las reservas confirmadas de hoy
-                            
+
                             $isBusy = $order ? true : false;
                             $hasReservations = $reservations->count() > 0;
-                            
+
                             // Estilos dinámicos
-                            $cardClass = $isBusy 
-                                ? 'pos-table-busy' 
+                            $cardClass = $isBusy
+                                ? 'pos-table-busy'
                                 : ($hasReservations ? 'pos-table-reserved' : 'pos-table-free');
-                                
+
                             $icon = $isBusy ? 'bi-display-fill' : 'bi-display';
                         @endphp
 
                         <a href="{{ route('pos.order', $table->id) }}" class="text-decoration-none text-dark">
                             <div class="pos-table-card position-absolute d-flex flex-column align-items-center justify-content-between p-2 rounded-3 {{ $cardClass }}"
-                                 style="width: 155px; height: 155px; 
-                                        left: {{ $table->x_pos }}px; 
-                                        top: {{ $table->y_pos }}px; 
+                                 style="width: 155px; height: 155px;
+                                        left: {{ $table->x_pos }}px;
+                                        top: {{ $table->y_pos }}px;
                                         transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-                                
+
                                 <div class="w-100 text-center border-bottom pb-1 mb-1">
                                     <span class="fw-bold small text-uppercase" style="font-size: 0.75rem;">{{ $table->name }}</span>
                                 </div>
 
                                 <div class="flex-grow-1 d-flex align-items-center justify-content-center position-relative w-100">
                                     <i class="bi {{ $icon }} fs-1 {{ $isBusy ? 'text-danger' : 'text-secondary opacity-50' }}"></i>
-                                    
+
                                     @if($hasReservations && !$isBusy)
-                                        <div class="position-absolute top-50 start-50 translate-middle badge bg-warning text-dark border border-dark shadow-sm" 
+                                        <div class="position-absolute top-50 start-50 translate-middle badge bg-warning text-dark border border-dark shadow-sm"
                                              style="font-size: 0.6rem; width: 100%; white-space: normal; line-height: 1.1; z-index: 2; max-height: 60px; overflow-y: auto;">
-                                            
+
                                             @foreach($reservations as $res)
                                                 <div class="{{ !$loop->last ? 'border-bottom border-dark pb-1 mb-1' : '' }}">
                                                     <i class="bi bi-clock-fill"></i> <strong>{{ $res->reservation_time->format('H:i') }}</strong>
@@ -120,7 +120,7 @@
 
 <style>
     .pos-table-card:hover {
-        transform: scale(1.1) translateY(-5px); 
+        transform: scale(1.1) translateY(-5px);
         z-index: 100 !important;
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
         cursor: pointer;
@@ -350,26 +350,7 @@
 
 </style>
 
-@if(session('success'))
-    <div id="paymentSuccessToast" class="payment-success-toast">
-        <div class="payment-success-icon">
-            <i class="bi bi-check-circle-fill"></i>
-        </div>
 
-        <div class="payment-success-content">
-            <strong>Pago completado</strong>
-            <span>{{ session('success') }}</span>
-        </div>
-
-        <button
-            type="button"
-            class="payment-success-close"
-            onclick="closePaymentSuccess()"
-        >
-            <i class="bi bi-x-lg"></i>
-        </button>
-    </div>
-@endif
 
 <script>
     window.closePaymentSuccess = function() {

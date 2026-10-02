@@ -370,9 +370,7 @@
         @if($stats['total'] > 0)
             <button type="button"
                     class="btn btn-danger fw-semibold px-3 py-2"
-                    style="border-radius:10px;"
-                    data-bs-toggle="modal"
-                    data-bs-target="#deleteAllCashRegistersModal">
+                    style="border-radius:10px;" onclick="confirmDeleteAllCashRegisters()">
                 <i class="bi bi-trash3 me-2"></i>
                 Eliminar historial
             </button>
@@ -608,9 +606,7 @@
 
                                         <button type="button"
                                                 class="history-action history-action-delete"
-                                                title="Eliminar turno"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteCashRegisterModal"
+                                                title="Eliminar turno" onclick="confirmDeleteCashRegister(this)"
                                                 data-id="{{ $reg->id }}"
                                                 data-action="{{ route('cash_registers.destroy', $reg) }}">
                                             <i class="bi bi-trash3"></i>
@@ -642,179 +638,51 @@
     </div>
 
 </div>
-<div class="modal fade"
-     id="deleteAllCashRegistersModal"
-     tabindex="-1"
-     aria-labelledby="deleteAllCashRegistersModalLabel"
-     aria-hidden="true">
 
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg"
-             style="border-radius:var(--radius-md, 14px); overflow:hidden;">
 
-            <div class="modal-header border-0"
-                 style="background:#dc2626; color:#fff;">
 
-                <h6 class="modal-title fw-bold"
-                    id="deleteAllCashRegistersModalLabel">
-                    <i class="bi bi-trash3 me-2"></i>
-                    Eliminar historial de caja
-                </h6>
 
-                <button type="button"
-                        class="btn-close btn-close-white"
-                        data-bs-dismiss="modal"
-                        aria-label="Cerrar">
-                </button>
-            </div>
 
-            <div class="modal-body p-4 text-center">
+<script id="cash-register-system-confirmations">
+function confirmDeleteAllCashRegisters() {
+    const form = if (!form) return;
 
-                <div class="mx-auto mb-3 d-flex align-items-center justify-content-center"
-                     style="width:64px; height:64px; border-radius:18px; background:#fff1f2; color:#dc2626; font-size:1.6rem;">
-                    <i class="bi bi-exclamation-triangle"></i>
-                </div>
+    SystemNotify.confirm({
+        type: 'danger',
+        title: 'Eliminar historial de caja',
+        text: 'Se eliminarán todos los turnos de caja. Las ventas y gastos se conservarán y el próximo turno comenzará desde #1. Esta acción no se puede deshacer.',
+        confirmText: 'Eliminar todo',
+        icon: 'bi-trash3',
+        onConfirm: function () {
+            form.submit();
+        }
+    });
+}
 
-                <h5 class="fw-bold mb-2">
-                    ¿Eliminar todo el historial?
-                </h5>
+function confirmDeleteCashRegister(button) {
+    const action = button.dataset.action;
+    const id = button.dataset.id;
 
-                <p class="text-muted small mb-3">
-                    Se eliminarán todos los turnos de caja registrados.
-                    Esta acción no se puede deshacer.
-                </p>
+    const form = document.getElementById('deleteCashRegisterForm');
 
-                <div class="p-3 rounded border text-start small mb-2"
-                     style="background:var(--light-bg, #f8fafc);">
+    if (!form || !action) return;
 
-                    <div class="mb-2">
-                        <i class="bi bi-check-circle me-1 text-success"></i>
-                        Las ventas se conservarán.
-                    </div>
+    form.action = action;
 
-                    <div class="mb-2">
-                        <i class="bi bi-check-circle me-1 text-success"></i>
-                        Los gastos se conservarán.
-                    </div>
-
-                    <div>
-                        <i class="bi bi-arrow-counterclockwise me-1"
-                           style="color:var(--primary);"></i>
-                        El próximo turno comenzará desde
-                        <strong>#1</strong>.
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="modal-footer border-0 pt-0 px-4 pb-4">
-
-                <button type="button"
-                        class="btn btn-light border flex-fill fw-semibold"
-                        data-bs-dismiss="modal">
-                    Cancelar
-                </button>
-
-                <form method="POST"
-                      action="{{ route('cash_registers.destroy_all') }}"
-                      class="flex-fill">
-                    @csrf
-                    @method('DELETE')
-
-                    <button type="submit"
-                            class="btn btn-danger w-100 fw-bold">
-                        Sí, eliminar todo
-                    </button>
-                </form>
-
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<div class="modal fade"
-     id="deleteCashRegisterModal"
-     tabindex="-1"
-     aria-labelledby="deleteCashRegisterModalLabel"
-     aria-hidden="true">
-
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 shadow-lg"
-             style="border-radius:var(--radius-md, 14px); overflow:hidden;">
-
-            <div class="modal-header border-0"
-                 style="background:#dc2626; color:#fff;">
-
-                <h6 class="modal-title fw-bold"
-                    id="deleteCashRegisterModalLabel">
-                    <i class="bi bi-trash3 me-2"></i>
-                    Eliminar turno
-                </h6>
-
-                <button type="button"
-                        class="btn-close btn-close-white"
-                        data-bs-dismiss="modal"
-                        aria-label="Cerrar">
-                </button>
-            </div>
-
-            <div class="modal-body p-4 text-center">
-
-                <div class="mx-auto mb-3 d-flex align-items-center justify-content-center"
-                     style="width:58px; height:58px; border-radius:16px; background:#fff1f2; color:#dc2626; font-size:1.5rem;">
-                    <i class="bi bi-exclamation-triangle"></i>
-                </div>
-
-                <h6 class="fw-bold mb-2">
-                    ¿Eliminar este turno de caja?
-                </h6>
-
-                <p class="text-muted small mb-3">
-                    Estás por eliminar el
-                    <strong id="deleteCashRegisterNumber"></strong>
-                    del historial.
-                </p>
-
-                <div class="p-3 rounded border text-start small"
-                     style="background:var(--light-bg, #f8fafc);">
-                    <i class="bi bi-info-circle me-1"></i>
-                    Las ventas y gastos registrados se conservarán.
-                    Solo se eliminará el registro del turno de caja.
-                </div>
-
-            </div>
-
-            <div class="modal-footer border-0 pt-0 px-4 pb-4">
-
-                <button type="button"
-                        class="btn btn-light border flex-fill fw-semibold"
-                        data-bs-dismiss="modal">
-                    Cancelar
-                </button>
-
-                <form id="deleteCashRegisterForm"
-                      method="POST"
-                      class="flex-fill">
-                    @csrf
-                    @method('DELETE')
-
-                    <button type="submit"
-                            class="btn btn-danger w-100 fw-bold">
-                        Sí, eliminar
-                    </button>
-                </form>
-
-            </div>
-
-        </div>
-    </div>
-</div>
-
+    SystemNotify.confirm({
+        type: 'danger',
+        title: 'Eliminar turno',
+        text: 'Se eliminará el turno #' + id + ' del historial. Las ventas y gastos registrados se conservarán.',
+        confirmText: 'Eliminar turno',
+        icon: 'bi-trash3',
+        onConfirm: function () {
+            form.submit();
+        }
+    });
+}
+</script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const modal = document.getElementById('deleteCashRegisterModal');
 
     if (!modal) {
         return;
@@ -896,4 +764,11 @@ html[data-color-mode="dark"] .history-action.history-action-view:hover {
 
 </style>
 
+
+<form id="deleteCashRegisterForm"
+      method="POST"
+      style="display:none;">
+    @csrf
+    @method('DELETE')
+</form>
 @endsection

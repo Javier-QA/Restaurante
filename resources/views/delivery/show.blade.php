@@ -14,7 +14,7 @@
                 <i class="bi bi-arrow-left"></i> Volver
             </a>
             @if(!in_array($delivery->status, ['delivered', 'cancelled']))
-                <button class="btn btn-danger me-2" onclick="if(confirm('¿Seguro que desea cancelar este pedido?')) document.getElementById('cancel-form').submit();">
+                <button class="btn btn-danger me-2" onclick="SystemNotify.confirm({type:'danger', title:'Cancelar pedido', text:'¿Deseas cancelar este pedido? Esta acción cambiará su estado en el sistema.', confirmText:'Cancelar pedido', icon:'bi-x-circle', onConfirm:()=>document.getElementById('cancel-form').submit()})">
                     <i class="bi bi-x-circle me-1"></i> Cancelar
                 </button>
                 <form id="cancel-form" action="{{ route('delivery.cancel', $delivery) }}" method="POST" class="d-none">@csrf</form>
@@ -22,19 +22,9 @@
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-            <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-    
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
+
+
+
 
     <div class="row">
         {{-- Detalles del Cliente y Estado --}}
@@ -173,7 +163,7 @@
                                     <span>TOTAL:</span>
                                     <span class="text-primary">{{ $currency }}{{ number_format($delivery->total_with_fee, 2) }}</span>
                                 </div>
-                                
+
                                 @if($delivery->status === 'on_way')
                                     <button class="btn btn-success btn-lg w-100 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#checkoutModal">
                                         <i class="bi bi-check-circle me-2"></i> MARCAR COMO ENTREGADO Y COBRAR

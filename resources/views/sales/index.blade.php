@@ -460,7 +460,7 @@
                                     <td><small class="text-muted"><i class="bi bi-person"></i> {{ $expense->user->name }}</small></td>
                                     <td class="text-end fw-bold text-danger">-{{ number_format($expense->amount, 2) }}</td>
                                     <td class="text-end pe-4">
-                                        <form action="{{ route('expenses.destroy', $expense->id) }}" method="POST" onsubmit="return confirm('¿Eliminar este gasto?')">
+                                        <form action="{{ route('expenses.destroy', $expense->id) }}" method="POST" onsubmit="event.preventDefault(); const form=this; SystemNotify.confirm({type:'danger', title:'Eliminar gasto', text:'¿Deseas eliminar este gasto del historial?', confirmText:'Eliminar gasto', icon:'bi-trash3', onConfirm:()=>form.submit()});">
                                             @csrf @method('DELETE')
                                             <button class="btn btn-sm text-danger p-0"><i class="bi bi-trash"></i></button>
                                         </form>

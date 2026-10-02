@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -1412,7 +1412,7 @@
             }
         }
 
-    
+
 </style>
 
 
@@ -1976,292 +1976,6 @@
             flex: 1;
         }
     }
-</style>
-
-<style>
-/* ============================================================
-   CERRAR SESION - DISEÑO FINAL
-============================================================ */
-
-#logoutConfirmModal .modal-dialog {
-    width: calc(100% - 32px);
-    max-width: 430px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-#logoutConfirmModal .modal-content {
-    overflow: hidden !important;
-
-    border: 1px solid var(--border-soft) !important;
-    border-radius: 18px !important;
-
-    background: var(--card-bg) !important;
-
-    box-shadow:
-        0 24px 70px rgba(15, 23, 42, .20) !important;
-}
-
-
-/* CUERPO */
-
-#logoutConfirmModal .logout-confirm-body {
-    position: relative;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    padding: 30px 32px 23px !important;
-
-    background: var(--card-bg) !important;
-
-    text-align: center;
-}
-
-
-/* BOTON X */
-
-#logoutConfirmModal .logout-confirm-close {
-    position: absolute !important;
-
-    top: 15px !important;
-    right: 15px !important;
-    left: auto !important;
-
-    width: 30px;
-    height: 30px;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    border-radius: 8px;
-
-    font-size: .65rem;
-
-    opacity: .55;
-
-    box-shadow: none !important;
-}
-
-#logoutConfirmModal .logout-confirm-close:hover {
-    background-color: var(--light-bg);
-
-    opacity: .85;
-}
-
-
-/* ICONO */
-
-#logoutConfirmModal .logout-confirm-icon {
-    width: 58px !important;
-    height: 58px !important;
-
-    flex: 0 0 58px;
-
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    margin: 0 auto 17px !important;
-
-    border: 1px solid #fecaca !important;
-    border-radius: 15px !important;
-
-    background: #fef2f2 !important;
-
-    color: #dc2626 !important;
-
-    box-shadow:
-        0 8px 20px rgba(220, 38, 38, .08);
-}
-
-#logoutConfirmModal .logout-confirm-icon i {
-    display: block;
-
-    margin: 0 !important;
-
-    color: #dc2626 !important;
-
-    font-size: 1.35rem !important;
-    line-height: 1 !important;
-}
-
-
-/* TITULO */
-
-#logoutConfirmModal .logout-confirm-title {
-    width: 100%;
-
-    margin: 0 0 8px !important;
-
-    color: var(--text-main) !important;
-
-    font-size: 1.02rem !important;
-    font-weight: 800 !important;
-    line-height: 1.3 !important;
-
-    letter-spacing: -.25px;
-}
-
-
-/* DESCRIPCION */
-
-#logoutConfirmModal .logout-confirm-text {
-    width: 100%;
-    max-width: 330px;
-
-    margin: 0 auto !important;
-
-    color: var(--text-muted) !important;
-
-    font-size: .72rem !important;
-    font-weight: 500;
-    line-height: 1.55 !important;
-}
-
-
-/* PIE */
-
-#logoutConfirmModal .logout-confirm-footer {
-    display: grid !important;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 10px !important;
-
-    padding: 15px 20px 18px !important;
-
-    border-top: 1px solid var(--border-soft) !important;
-
-    background:
-        color-mix(
-            in srgb,
-            var(--light-bg) 50%,
-            var(--card-bg)
-        ) !important;
-}
-
-
-/* BOTONES */
-
-#logoutConfirmModal .logout-confirm-footer .btn {
-    width: 100% !important;
-    min-height: 42px !important;
-
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    margin: 0 !important;
-    padding: 0 14px !important;
-
-    border-radius: 9px !important;
-
-    font-size: .7rem !important;
-    font-weight: 750 !important;
-
-    box-shadow: none !important;
-}
-
-
-/* CANCELAR */
-
-#logoutConfirmModal .logout-confirm-cancel {
-    border: 1px solid var(--border-soft) !important;
-
-    background: var(--card-bg) !important;
-
-    color: var(--text-main) !important;
-}
-
-#logoutConfirmModal .logout-confirm-cancel:hover {
-    border-color:
-        color-mix(
-            in srgb,
-            var(--text-muted) 25%,
-            var(--border-soft)
-        ) !important;
-
-    background: var(--light-bg) !important;
-
-    color: var(--text-main) !important;
-}
-
-
-/* CONFIRMAR */
-
-#logoutConfirmModal .logout-confirm-action {
-    gap: 7px !important;
-
-    border: 1px solid #dc2626 !important;
-
-    background: #dc2626 !important;
-
-    color: #ffffff !important;
-
-    box-shadow:
-        0 7px 16px rgba(220, 38, 38, .17) !important;
-}
-
-#logoutConfirmModal .logout-confirm-action i {
-    color: #ffffff !important;
-
-    font-size: .78rem !important;
-}
-
-#logoutConfirmModal .logout-confirm-action:hover,
-#logoutConfirmModal .logout-confirm-action:focus {
-    border-color: #b91c1c !important;
-
-    background: #b91c1c !important;
-
-    color: #ffffff !important;
-
-    transform: translateY(-1px);
-}
-
-
-/* FONDO DEL MODAL */
-
-.modal-backdrop.show {
-    opacity: .42;
-}
-
-
-/* MOVIL */
-
-@media (max-width: 575.98px) {
-
-    #logoutConfirmModal .modal-dialog {
-        width: calc(100% - 24px);
-    }
-
-    #logoutConfirmModal .logout-confirm-body {
-        padding:
-            28px
-            20px
-            21px !important;
-    }
-
-    #logoutConfirmModal .logout-confirm-footer {
-        grid-template-columns: 1fr;
-
-        padding:
-            13px
-            16px
-            16px !important;
-    }
-
-    #logoutConfirmModal .logout-confirm-action {
-        grid-row: 1;
-    }
-
-    #logoutConfirmModal .logout-confirm-cancel {
-        grid-row: 2;
-    }
-}
-
 </style>
 
 <style>
@@ -7556,7 +7270,7 @@ html[data-color-mode="dark"] .kpi-stock .kpi-badge-link:hover {
                             @csrf
 
                             <button
-                                type="button" data-bs-toggle="modal" data-bs-target="#logoutConfirmModal"
+                                type="button" onclick="openSystemLogoutConfirm()"
                                 class="
                                     dropdown-item
                                     account-dropdown-item
@@ -7595,183 +7309,12 @@ html[data-color-mode="dark"] .kpi-stock .kpi-badge-link:hover {
     @endif
 
 
-    {{-- =====================================================
-         MENSAJES
-    ====================================================== --}}
-
-    @if(session('success'))
-
-        <div
-            class="
-                alert
-                border-0
-                shadow-sm
-                rounded-4
-                mb-4
-                d-flex
-                align-items-center
-            "
-            style="
-                background:#f0fdf4;
-                border-left:
-                    4px solid #22c55e !important;
-            "
-        >
-
-            <i
-                class="
-                    bi
-                    bi-check-circle-fill
-                    fs-4
-                    me-3
-                    text-success
-                "
-            ></i>
-
-
-            <div>
-
-                <strong>¡Éxito!</strong>
-
-                {{ session('success') }}
-
-            </div>
-
-
-            <button
-                type="button"
-                class="btn-close ms-auto"
-                data-bs-dismiss="alert"
-            ></button>
-
-        </div>
-
-    @endif
-
-
-    @if(session('error'))
-
-        <div
-            class="
-                alert
-                border-0
-                shadow-sm
-                rounded-4
-                mb-4
-                d-flex
-                align-items-center
-            "
-            style="
-                background:#fff1f2;
-                border-left:
-                    4px solid #f43f5e !important;
-            "
-        >
-
-            <i
-                class="
-                    bi
-                    bi-exclamation-triangle-fill
-                    fs-4
-                    me-3
-                    text-danger
-                "
-            ></i>
-
-
-            <div>
-
-                <strong>Error:</strong>
-
-                {{ session('error') }}
-
-            </div>
-
-
-            <button
-                type="button"
-                class="btn-close ms-auto"
-                data-bs-dismiss="alert"
-            ></button>
-
-        </div>
-
-    @endif
-
-
-    @yield('content')
+@yield('content')
 
 </div>
 
 
 
-{{-- =============================================================
-     CONFIRMACION CERRAR SESION
-============================================================= --}}
-
-<div
-    class="modal fade logout-confirm-modal"
-    id="logoutConfirmModal"
-    tabindex="-1"
-    aria-labelledby="logoutConfirmModalLabel"
-    aria-hidden="true"
->
-    <div class="modal-dialog modal-dialog-centered logout-confirm-dialog">
-
-        <div class="modal-content logout-confirm-content">
-
-            <div class="logout-confirm-body">
-
-                <button
-                    type="button"
-                    class="btn-close logout-confirm-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Cerrar"
-                ></button>
-
-                <div class="logout-confirm-icon">
-                    <i class="bi bi-box-arrow-right"></i>
-                </div>
-
-                <h5
-                    class="logout-confirm-title"
-                    id="logoutConfirmModalLabel"
-                >
-                    ¿Seguro que quieres cerrar sesión?
-                </h5>
-
-                <p class="logout-confirm-text">
-                    Tu sesión actual finalizará y tendrás que
-                    iniciar sesión nuevamente.
-                </p>
-
-            </div>
-
-            <div class="logout-confirm-footer">
-
-                <button
-                    type="button"
-                    class="btn logout-confirm-cancel"
-                    data-bs-dismiss="modal"
-                >
-                    Cancelar
-                </button>
-
-                <button
-                    type="button"
-                    class="btn logout-confirm-action"
-                    onclick="confirmSystemLogout()"
-                >
-                    <i class="bi bi-box-arrow-right"></i>
-                    Sí, cerrar sesión
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-</div>
 {{-- =============================================================
      PERFIL
 ============================================================= --}}
@@ -9193,6 +8736,1438 @@ html[data-color-mode="dark"] .kpi-stock .kpi-badge-link:hover {
 @endauth
 
 
+<!-- ======================================================
+     SISTEMA GLOBAL DE NOTIFICACIONES - EL CAPITAN
+     ====================================================== -->
+
+
+<style id="system-confirm-design-final">
+/* ============================================================
+   SYSTEM NOTIFY - DISEÑO UNIFICADO DEFINITIVO
+   ============================================================ */
+
+.system-confirm-modal .modal-dialog {
+    width: calc(100% - 32px) !important;
+    max-width: 430px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.system-confirm-modal .modal-content {
+    overflow: hidden !important;
+    border: 1px solid var(--border-soft) !important;
+    border-radius: 18px !important;
+    background: var(--card-bg) !important;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, .20) !important;
+}
+
+
+/* FRANJA SUPERIOR */
+
+.system-confirm-strip {
+    height: 4px !important;
+    background: var(--sys-color) !important;
+}
+
+
+/* CUERPO */
+
+.system-confirm-body {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+
+    padding: 29px 32px 23px !important;
+
+    background: var(--card-bg) !important;
+    text-align: center !important;
+}
+
+
+/* BOTON CERRAR */
+
+.system-confirm-close {
+    top: 15px !important;
+    right: 15px !important;
+
+    width: 32px !important;
+    height: 32px !important;
+
+    padding: 0 !important;
+
+    border: 1px solid var(--border-soft) !important;
+    border-radius: 9px !important;
+
+    background: var(--card-bg) !important;
+    color: var(--text-muted) !important;
+
+    font-size: .85rem !important;
+
+    box-shadow: none !important;
+}
+
+.system-confirm-close:hover {
+    border-color:
+        color-mix(
+            in srgb,
+            var(--sys-color) 35%,
+            var(--border-soft)
+        ) !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--sys-color) 7%,
+            var(--card-bg)
+        ) !important;
+
+    color: var(--sys-color) !important;
+}
+
+
+/* ICONO */
+
+.system-confirm-icon {
+    width: 62px !important;
+    height: 62px !important;
+
+    flex: 0 0 62px !important;
+
+    margin: 0 auto 17px !important;
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--sys-color) 30%,
+            transparent
+        ) !important;
+
+    border-radius: 16px !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--sys-color) 10%,
+            var(--card-bg)
+        ) !important;
+
+    color: var(--sys-color) !important;
+
+    box-shadow:
+        0 8px 20px
+        color-mix(
+            in srgb,
+            var(--sys-color) 9%,
+            transparent
+        ) !important;
+}
+
+.system-confirm-icon i {
+    color: var(--sys-color) !important;
+    font-size: 1.45rem !important;
+    line-height: 1 !important;
+}
+
+
+/* TITULO */
+
+.system-confirm-title {
+    width: 100% !important;
+
+    margin: 0 42px 9px !important;
+
+    color: var(--text-main) !important;
+
+    font-size: 1.03rem !important;
+    font-weight: 800 !important;
+    line-height: 1.3 !important;
+
+    letter-spacing: -.2px !important;
+}
+
+
+/* MENSAJE */
+
+.system-confirm-text {
+    width: 100% !important;
+    max-width: 345px !important;
+
+    margin: 0 auto !important;
+
+    color: var(--text-muted) !important;
+
+    font-size: .76rem !important;
+    font-weight: 500 !important;
+    line-height: 1.55 !important;
+}
+
+
+/* PIE */
+
+.system-confirm-footer {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+
+    gap: 10px !important;
+
+    padding: 15px 20px 18px !important;
+
+    border-top: 1px solid var(--border-soft) !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--light-bg) 50%,
+            var(--card-bg)
+        ) !important;
+}
+
+
+/* BOTONES */
+
+.system-confirm-btn {
+    width: 100% !important;
+    min-height: 42px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 14px !important;
+
+    border-radius: 9px !important;
+
+    font-size: .72rem !important;
+    font-weight: 750 !important;
+
+    box-shadow: none !important;
+}
+
+
+/* CANCELAR */
+
+.system-confirm-cancel {
+    border: 1px solid var(--border-soft) !important;
+
+    background: var(--card-bg) !important;
+
+    color: var(--text-main) !important;
+}
+
+.system-confirm-cancel:hover {
+    background: var(--light-bg) !important;
+    color: var(--text-main) !important;
+}
+
+
+/* ACCION PRINCIPAL */
+
+.system-confirm-accept {
+    border: 1px solid var(--sys-color) !important;
+
+    background: var(--sys-color) !important;
+
+    color: #ffffff !important;
+
+    box-shadow:
+        0 7px 16px
+        color-mix(
+            in srgb,
+            var(--sys-color) 18%,
+            transparent
+        ) !important;
+}
+
+.system-confirm-accept:hover,
+.system-confirm-accept:focus {
+    border-color:
+        color-mix(
+            in srgb,
+            var(--sys-color) 84%,
+            black
+        ) !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--sys-color) 84%,
+            black
+        ) !important;
+
+    color: #ffffff !important;
+
+    transform: translateY(-1px);
+}
+
+
+/* BACKDROP */
+
+.modal-backdrop.show {
+    opacity: .42;
+}
+
+
+/* ============================================================
+   MODO OSCURO
+   ============================================================ */
+
+html[data-color-mode="dark"]
+.system-confirm-modal .modal-content,
+
+html[data-color-mode="dark"]
+.system-confirm-body {
+    background: #132338 !important;
+}
+
+html[data-color-mode="dark"]
+.system-confirm-footer {
+    background: #17283d !important;
+    border-color: #30465d !important;
+}
+
+html[data-color-mode="dark"]
+.system-confirm-close,
+
+html[data-color-mode="dark"]
+.system-confirm-cancel {
+    background: #17283d !important;
+    border-color: #36516d !important;
+}
+
+html[data-color-mode="dark"]
+.system-confirm-icon {
+    background:
+        color-mix(
+            in srgb,
+            var(--sys-color) 14%,
+            #132338
+        ) !important;
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--sys-color) 38%,
+            #30465d
+        ) !important;
+}
+
+
+/* MOVIL */
+
+@media (max-width: 575.98px) {
+
+    .system-confirm-modal .modal-dialog {
+        width: calc(100% - 24px) !important;
+    }
+
+    .system-confirm-body {
+        padding: 28px 20px 21px !important;
+    }
+
+    .system-confirm-footer {
+        grid-template-columns: 1fr !important;
+        padding: 13px 16px 16px !important;
+    }
+
+    .system-confirm-accept {
+        grid-row: 1;
+    }
+
+    .system-confirm-cancel {
+        grid-row: 2;
+    }
+}
+</style>
+
+<style id="system-confirm-reference-finish">
+/* ============================================================
+   SYSTEM CONFIRM - ACABADO DE REFERENCIA
+   Degradado superior + boton X
+   ============================================================ */
+
+/* El cuerpo recibe el degradado segun el color de la accion */
+.system-confirm-modal .system-confirm-body {
+    background:
+        radial-gradient(
+            ellipse 85% 55% at 50% 0%,
+            color-mix(
+                in srgb,
+                var(--sys-color) 9%,
+                var(--card-bg)
+            ) 0%,
+            color-mix(
+                in srgb,
+                var(--sys-color) 4%,
+                var(--card-bg)
+            ) 42%,
+            transparent 72%
+        ),
+        var(--card-bg) !important;
+}
+
+
+/* Franja superior */
+.system-confirm-modal .system-confirm-strip {
+    height: 4px !important;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--sys-color) 0%,
+            color-mix(
+                in srgb,
+                var(--sys-color) 70%,
+                white
+            ) 100%
+        ) !important;
+}
+
+
+/* X exactamente como control independiente */
+.system-confirm-modal .system-confirm-close {
+    position: absolute !important;
+
+    top: 18px !important;
+    right: 16px !important;
+    z-index: 5 !important;
+
+    width: 38px !important;
+    height: 38px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--text-muted) 38%,
+            var(--border-soft)
+        ) !important;
+
+    border-radius: 11px !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--light-bg) 68%,
+            var(--card-bg)
+        ) !important;
+
+    color: var(--text-muted) !important;
+
+    font-size: 1rem !important;
+    line-height: 1 !important;
+
+    opacity: 1 !important;
+
+    box-shadow: none !important;
+
+    transition:
+        background-color .2s ease,
+        border-color .2s ease,
+        color .2s ease,
+        transform .2s ease !important;
+}
+
+.system-confirm-modal .system-confirm-close i {
+    display: block !important;
+    margin: 0 !important;
+
+    color: inherit !important;
+
+    font-size: 1rem !important;
+    line-height: 1 !important;
+}
+
+
+/* Hover de la X */
+.system-confirm-modal .system-confirm-close:hover {
+    border-color:
+        color-mix(
+            in srgb,
+            var(--sys-color) 38%,
+            var(--border-soft)
+        ) !important;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--sys-color) 8%,
+            var(--card-bg)
+        ) !important;
+
+    color: var(--sys-color) !important;
+
+    transform: translateY(-1px);
+}
+
+
+/* ============================================================
+   MODO OSCURO
+   ============================================================ */
+
+html[data-color-mode="dark"]
+.system-confirm-modal .system-confirm-body {
+    background:
+        linear-gradient(
+            180deg,
+            color-mix(
+                in srgb,
+                var(--sys-color) 16%,
+                #132338
+            ) 0%,
+            color-mix(
+                in srgb,
+                var(--sys-color) 9%,
+                #132338
+            ) 42%,
+            color-mix(
+                in srgb,
+                var(--sys-color) 3%,
+                #132338
+            ) 76%,
+            #132338 100%
+        ) !important;
+}
+
+html[data-color-mode="dark"]
+.system-confirm-modal .system-confirm-close {
+    background: #17283d !important;
+    border-color: #46617c !important;
+    color: #9fb1c5 !important;
+}
+
+html[data-color-mode="dark"]
+.system-confirm-modal .system-confirm-close:hover {
+    background:
+        color-mix(
+            in srgb,
+            var(--sys-color) 12%,
+            #17283d
+        ) !important;
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--sys-color) 42%,
+            #46617c
+        ) !important;
+
+    color:
+        color-mix(
+            in srgb,
+            var(--sys-color) 78%,
+            white
+        ) !important;
+}
+</style>
+<style id="system-notifications-style">
+:root {
+    --sys-danger: #ef3340;
+    --sys-success: #16a34a;
+    --sys-warning: #f59e0b;
+    --sys-info: #1683c7;
+}
+
+.system-confirm-modal {
+    --sys-color: var(--primary, #ff8c00);
+    --sys-soft: color-mix(in srgb, var(--sys-color) 10%, white);
+    --sys-border: color-mix(in srgb, var(--sys-color) 28%, white);
+}
+
+.system-confirm-modal.type-danger {
+    --sys-color: var(--sys-danger);
+}
+
+.system-confirm-modal.type-success {
+    --sys-color: var(--sys-success);
+}
+
+.system-confirm-modal.type-warning {
+    --sys-color: var(--sys-warning);
+}
+
+.system-confirm-modal.type-info {
+    --sys-color: var(--sys-info);
+}
+
+.system-confirm-modal .modal-dialog {
+    max-width: 550px;
+}
+
+.system-confirm-modal .modal-content {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-soft, #dbe4ee);
+    border-radius: 22px;
+    background: var(--card-bg, #fff);
+    color: var(--text-main, #0f172a);
+    box-shadow: 0 24px 70px rgba(15, 23, 42, .22);
+}
+
+.system-confirm-strip {
+    height: 5px;
+    background: linear-gradient(
+        90deg,
+        var(--sys-color),
+        color-mix(in srgb, var(--sys-color) 50%, white)
+    );
+}
+
+.system-confirm-close {
+    position: absolute;
+    top: 19px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-soft, #dbe4ee);
+    border-radius: 13px;
+    background: var(--light-bg, #f8fafc);
+    color: var(--text-muted, #64748b);
+    font-size: 1.25rem;
+    transition: .2s ease;
+}
+
+.system-confirm-close:hover {
+    color: var(--sys-color);
+    border-color: color-mix(in srgb, var(--sys-color) 45%, transparent);
+    background: var(--sys-soft);
+}
+
+.system-confirm-body {
+    padding: 29px 36px 25px;
+    text-align: center;
+}
+
+.system-confirm-icon {
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 25px;
+    background: var(--sys-soft);
+    border: 5px solid var(--sys-border);
+    color: var(--sys-color);
+    font-size: 2rem;
+}
+
+.system-confirm-title {
+    margin: 0 45px 12px;
+    color: var(--text-main, #0f172a);
+    font-size: 1.35rem;
+    font-weight: 800;
+}
+
+.system-confirm-text {
+    max-width: 440px;
+    margin: 0 auto;
+    color: var(--text-muted, #64748b);
+    font-size: .96rem;
+    line-height: 1.65;
+}
+
+.system-confirm-footer {
+    display: flex;
+    gap: 12px;
+    padding: 19px 25px 23px;
+    border-top: 1px solid var(--border-soft, #e2e8f0);
+}
+
+.system-confirm-btn {
+    min-height: 49px;
+    flex: 1;
+    border-radius: 12px;
+    font-weight: 750;
+    transition: .2s ease;
+}
+
+.system-confirm-cancel {
+    border: 1px solid var(--border-soft, #cbd5e1);
+    background: var(--light-bg, #f8fafc);
+    color: var(--text-main, #0f172a);
+}
+
+.system-confirm-cancel:hover {
+    border-color: #94a3b8;
+    transform: translateY(-1px);
+}
+
+.system-confirm-accept {
+    border: 1px solid var(--sys-color);
+    background: var(--sys-color);
+    color: #fff;
+}
+
+.system-confirm-accept:hover {
+    background: color-mix(in srgb, var(--sys-color) 86%, black);
+    border-color: color-mix(in srgb, var(--sys-color) 86%, black);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+
+/* TOAST PROPIO DEL SISTEMA */
+
+#systemToastContainer {
+    position: fixed;
+    top: 82px;
+    right: 22px;
+    z-index: 10950;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: min(380px, calc(100vw - 30px));
+    pointer-events: none;
+}
+
+.system-toast {
+    --sys-color: var(--primary, #ff8c00);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid color-mix(in srgb, var(--sys-color) 30%, var(--border-soft, #e2e8f0));
+    border-left: 4px solid var(--sys-color);
+    border-radius: 14px;
+    background: var(--card-bg, #fff);
+    color: var(--text-main, #0f172a);
+    box-shadow: 0 15px 40px rgba(15, 23, 42, .16);
+    pointer-events: auto;
+    animation: systemToastIn .28s ease both;
+}
+
+.system-toast.type-success { --sys-color: var(--sys-success); }
+.system-toast.type-danger  { --sys-color: var(--sys-danger); }
+.system-toast.type-warning { --sys-color: var(--sys-warning); }
+.system-toast.type-info    { --sys-color: var(--sys-info); }
+
+.system-toast-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    color: var(--sys-color);
+    background: color-mix(in srgb, var(--sys-color) 12%, var(--card-bg, white));
+    font-size: 1.05rem;
+}
+
+.system-toast-content {
+    min-width: 0;
+    flex: 1;
+}
+
+.system-toast-title {
+    margin-bottom: 2px;
+    font-size: .84rem;
+    font-weight: 800;
+}
+
+.system-toast-text {
+    color: var(--text-muted, #64748b);
+    font-size: .78rem;
+    line-height: 1.45;
+}
+
+.system-toast-close {
+    border: 0;
+    background: transparent;
+    color: var(--text-muted, #64748b);
+    padding: 1px 2px;
+}
+
+.system-toast.system-toast-out {
+    animation: systemToastOut .22s ease both;
+}
+
+@keyframes systemToastIn {
+    from {
+        opacity: 0;
+        transform: translateX(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes systemToastOut {
+    to {
+        opacity: 0;
+        transform: translateX(25px);
+    }
+}
+
+
+/* MODO OSCURO */
+
+html[data-color-mode="dark"] .system-confirm-modal {
+    --sys-soft: color-mix(in srgb, var(--sys-color) 14%, #132338);
+    --sys-border: color-mix(in srgb, var(--sys-color) 35%, #30465d);
+}
+
+html[data-color-mode="dark"] .system-confirm-modal .modal-content {
+    background: #132338 !important;
+    border-color: #30465d !important;
+}
+
+html[data-color-mode="dark"] .system-confirm-title {
+    color: #f8fafc !important;
+}
+
+html[data-color-mode="dark"] .system-confirm-text {
+    color: #9fb1c5 !important;
+}
+
+html[data-color-mode="dark"] .system-confirm-close,
+html[data-color-mode="dark"] .system-confirm-cancel {
+    background: #17283d !important;
+    border-color: #36516d !important;
+    color: #d8e4ef !important;
+}
+
+html[data-color-mode="dark"] .system-confirm-footer {
+    border-color: #30465d !important;
+}
+
+html[data-color-mode="dark"] .system-toast {
+    background: #132338 !important;
+    border-top-color: #30465d;
+    border-right-color: #30465d;
+    border-bottom-color: #30465d;
+}
+
+html[data-color-mode="dark"] .system-toast-title {
+    color: #f8fafc;
+}
+
+html[data-color-mode="dark"] .system-toast-text {
+    color: #9fb1c5;
+}
+
+@media (max-width: 576px) {
+    .system-confirm-modal .modal-dialog {
+        margin: 12px;
+    }
+
+    .system-confirm-body {
+        padding: 28px 22px 22px;
+    }
+
+    .system-confirm-footer {
+        padding: 16px;
+    }
+
+    #systemToastContainer {
+        top: 70px;
+        right: 15px;
+        left: 15px;
+        width: auto;
+    }
+}
+</style>
+
+
+<div class="modal fade system-confirm-modal"
+     id="systemConfirmModal"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="system-confirm-strip"></div>
+
+            <button type="button"
+                    class="system-confirm-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Cerrar">
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+            <div class="system-confirm-body">
+
+                <div class="system-confirm-icon">
+                    <i id="systemConfirmIcon" class="bi bi-question-lg"></i>
+                </div>
+
+                <h5 class="system-confirm-title"
+                    id="systemConfirmTitle">
+                    Confirmar acción
+                </h5>
+
+                <p class="system-confirm-text"
+                   id="systemConfirmText">
+                    ¿Deseas continuar con esta acción?
+                </p>
+
+            </div>
+
+            <div class="system-confirm-footer">
+
+                <button type="button"
+                        class="btn system-confirm-btn system-confirm-cancel"
+                        data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <button type="button"
+                        class="btn system-confirm-btn system-confirm-accept"
+                        id="systemConfirmAccept">
+                    Confirmar
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div id="systemToastContainer"
+     aria-live="polite"
+     aria-atomic="true">
+</div>
+
+
+<script>
+window.openSystemLogoutConfirm = function () {
+
+    const logoutForm = document.getElementById('logoutForm');
+
+    if (!logoutForm) {
+        return;
+    }
+
+    SystemNotify.confirm({
+        type: 'danger',
+        title: 'Cerrar sesión',
+        text: 'Tu sesión actual finalizará y tendrás que iniciar sesión nuevamente.',
+        confirmText: 'Cerrar sesión',
+        icon: 'bi-box-arrow-right',
+        onConfirm: function () {
+            logoutForm.submit();
+        }
+    });
+};
+</script>
+<script id="system-notifications-script">
+(function () {
+
+    const icons = {
+        danger:  'bi-trash3',
+        success: 'bi-check-lg',
+        warning: 'bi-exclamation-triangle',
+        info:    'bi-info-lg',
+        primary: 'bi-question-lg'
+    };
+
+    const toastIcons = {
+        danger:  'bi-x-lg',
+        success: 'bi-check-lg',
+        warning: 'bi-exclamation-lg',
+        info:    'bi-info-lg',
+        primary: 'bi-bell'
+    };
+
+    let confirmCallback = null;
+
+    function getModalElement() {
+        return document.getElementById('systemConfirmModal');
+    }
+
+    function getModalInstance() {
+        return bootstrap.Modal.getOrCreateInstance(getModalElement());
+    }
+
+    window.SystemNotify = {
+
+        confirm(options = {}) {
+
+            const modal = getModalElement();
+            const type = options.type || 'primary';
+
+            modal.classList.remove(
+                'type-danger',
+                'type-success',
+                'type-warning',
+                'type-info',
+                'type-primary'
+            );
+
+            modal.classList.add('type-' + type);
+
+            document.getElementById('systemConfirmTitle').textContent =
+                options.title || 'Confirmar acción';
+
+            document.getElementById('systemConfirmText').textContent =
+                options.text || '¿Deseas continuar con esta acción?';
+
+            document.getElementById('systemConfirmAccept').textContent =
+                options.confirmText || 'Confirmar';
+
+            document.getElementById('systemConfirmIcon').className =
+                'bi ' + (options.icon || icons[type] || icons.primary);
+
+            confirmCallback =
+                typeof options.onConfirm === 'function'
+                    ? options.onConfirm
+                    : null;
+
+            getModalInstance().show();
+        },
+
+        toast(message, type = 'info', title = null, duration = 4000) {
+
+            const container =
+                document.getElementById('systemToastContainer');
+
+            if (!container) return;
+
+            const titles = {
+                success: 'Operación realizada',
+                danger: 'Ocurrió un problema',
+                warning: 'Atención',
+                info: 'Información',
+                primary: 'Notificación'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = 'system-toast type-' + type;
+
+            const icon = document.createElement('div');
+            icon.className = 'system-toast-icon';
+            icon.innerHTML =
+                '<i class="bi ' +
+                (toastIcons[type] || toastIcons.info) +
+                '"></i>';
+
+            const content = document.createElement('div');
+            content.className = 'system-toast-content';
+
+            const toastTitle = document.createElement('div');
+            toastTitle.className = 'system-toast-title';
+            toastTitle.textContent =
+                title || titles[type] || titles.info;
+
+            const text = document.createElement('div');
+            text.className = 'system-toast-text';
+            text.textContent = message;
+
+            const close = document.createElement('button');
+            close.type = 'button';
+            close.className = 'system-toast-close';
+            close.innerHTML = '<i class="bi bi-x-lg"></i>';
+
+            content.appendChild(toastTitle);
+            content.appendChild(text);
+
+            toast.appendChild(icon);
+            toast.appendChild(content);
+            toast.appendChild(close);
+
+            container.appendChild(toast);
+
+            let timer;
+
+            const removeToast = () => {
+                if (!toast.isConnected) return;
+
+                toast.classList.add('system-toast-out');
+
+                setTimeout(() => toast.remove(), 220);
+            };
+
+            close.addEventListener('click', removeToast);
+
+            if (duration > 0) {
+                timer = setTimeout(removeToast, duration);
+
+                toast.addEventListener('mouseenter', () => {
+                    clearTimeout(timer);
+                });
+
+                toast.addEventListener('mouseleave', () => {
+                    timer = setTimeout(removeToast, 1500);
+                });
+            }
+        },
+
+        success(message, title = null) {
+            this.toast(message, 'success', title);
+        },
+
+        error(message, title = null) {
+            this.toast(message, 'danger', title);
+        },
+
+        warning(message, title = null) {
+            this.toast(message, 'warning', title);
+        },
+
+        info(message, title = null) {
+            this.toast(message, 'info', title);
+        }
+    };
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const accept =
+            document.getElementById('systemConfirmAccept');
+
+        const modal =
+            document.getElementById('systemConfirmModal');
+
+        if (!accept || !modal) return;
+
+        accept.addEventListener('click', function () {
+
+            const callback = confirmCallback;
+            confirmCallback = null;
+
+            getModalInstance().hide();
+
+            if (callback) {
+                setTimeout(callback, 150);
+            }
+        });
+
+        modal.addEventListener('hidden.bs.modal', function () {
+            confirmCallback = null;
+        });
+
+    });
+
+})();
+</script>
+
+<!-- FIN SISTEMA GLOBAL DE NOTIFICACIONES -->
+
+
+{{-- =========================================================
+     NOTIFICACIONES FLASH DEL SISTEMA
+========================================================= --}}
+<script id="system-flash-notifications">
+document.addEventListener('DOMContentLoaded', function () {
+
+    if (!window.SystemNotify) {
+        console.error('SystemNotify no está disponible.');
+        return;
+    }
+
+    @if(session('success'))
+        SystemNotify.success(
+            @json(session('success')),
+            'Operación realizada'
+        );
+    @endif
+
+    @if(session('error'))
+        SystemNotify.error(
+            @json(session('error')),
+            'Ocurrió un problema'
+        );
+    @endif
+
+    @if(session('warning'))
+        SystemNotify.warning(
+            @json(session('warning')),
+            'Atención'
+        );
+    @endif
+
+    @if(session('info'))
+        SystemNotify.info(
+            @json(session('info')),
+            'Información'
+        );
+    @endif
+
+});
+</script>
+
+<style id="global-file-clear-controls">
+/* =========================================================
+   SELECTORES DE ARCHIVO - BOTÓN GLOBAL PARA QUITAR ARCHIVO
+========================================================= */
+
+.system-file-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.system-file-input-wrapper > input[type="file"] {
+    width: 100%;
+}
+
+.system-file-clear {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+
+    width: 34px;
+    height: 34px;
+
+    padding: 0;
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            #dc2626 30%,
+            var(--border-soft)
+        );
+
+    border-radius: 9px;
+
+    background:
+        color-mix(
+            in srgb,
+            #dc2626 5%,
+            var(--card-bg)
+        );
+
+    color: #dc2626;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    z-index: 6;
+
+    transition:
+        background .18s ease,
+        border-color .18s ease,
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+.system-file-input-wrapper.has-file
+.system-file-clear {
+    display: flex;
+}
+
+.system-file-clear:hover {
+    background:
+        color-mix(
+            in srgb,
+            #dc2626 11%,
+            var(--card-bg)
+        );
+
+    border-color:
+        color-mix(
+            in srgb,
+            #dc2626 55%,
+            var(--border-soft)
+        );
+
+    box-shadow:
+        0 4px 12px
+        rgba(220, 38, 38, .12);
+}
+
+.system-file-clear:active {
+    transform:
+        translateY(-50%)
+        scale(.94);
+}
+
+.system-file-clear i {
+    font-size: 15px;
+    line-height: 1;
+}
+
+
+/* Cuando hay archivo dejamos espacio para la X */
+.system-file-input-wrapper.has-file
+> input[type="file"] {
+    padding-right: 52px;
+}
+
+
+/* MODO OSCURO */
+html[data-color-mode="dark"]
+.system-file-clear {
+    background:
+        color-mix(
+            in srgb,
+            #ef4444 8%,
+            var(--card-bg)
+        );
+
+    border-color:
+        color-mix(
+            in srgb,
+            #ef4444 32%,
+            var(--border-soft)
+        );
+
+    color: #f87171;
+}
+
+html[data-color-mode="dark"]
+.system-file-clear:hover {
+    background:
+        color-mix(
+            in srgb,
+            #ef4444 15%,
+            var(--card-bg)
+        );
+
+    border-color: #ef4444;
+}
+</style>
+
+<script id="global-file-clear-script">
+document.addEventListener('DOMContentLoaded', function () {
+
+    const fileInputs =
+        document.querySelectorAll('input[type="file"]');
+
+    fileInputs.forEach(function (input) {
+
+        /*
+         * No modificar campos ocultos.
+         * Tampoco modificar Restaurar Sistema porque
+         * ya tiene su propio control personalizado.
+         */
+        if (
+            input.id === 'restoreRealFile' ||
+            input.id === 'restoreBackupFile' ||
+            input.closest('.d-none') ||
+            input.type !== 'file'
+        ) {
+            return;
+        }
+
+        /*
+         * Evitar procesar dos veces el mismo input.
+         */
+        if (input.dataset.systemFileClear === 'true') {
+            return;
+        }
+
+        input.dataset.systemFileClear = 'true';
+
+        /*
+         * Crear contenedor sin modificar atributos,
+         * name, accept, required, id ni eventos existentes.
+         */
+        const wrapper = document.createElement('div');
+
+        wrapper.className =
+            'system-file-input-wrapper';
+
+        input.parentNode.insertBefore(
+            wrapper,
+            input
+        );
+
+        wrapper.appendChild(input);
+
+        /*
+         * Crear botón X.
+         */
+        const clearButton =
+            document.createElement('button');
+
+        clearButton.type = 'button';
+
+        clearButton.className =
+            'system-file-clear';
+
+        clearButton.title =
+            'Quitar archivo seleccionado';
+
+        clearButton.setAttribute(
+            'aria-label',
+            'Quitar archivo seleccionado'
+        );
+
+        clearButton.innerHTML =
+            '<i class="bi bi-x-lg"></i>';
+
+        wrapper.appendChild(clearButton);
+
+
+        /*
+         * Mostrar la X únicamente cuando realmente
+         * exista un archivo seleccionado.
+         */
+        const updateState = function () {
+
+            const hasFile =
+                input.files &&
+                input.files.length > 0;
+
+            wrapper.classList.toggle(
+                'has-file',
+                hasFile
+            );
+        };
+
+
+        /*
+         * Cuando el usuario selecciona archivo.
+         */
+        input.addEventListener(
+            'change',
+            updateState
+        );
+
+
+        /*
+         * Quitar archivo.
+         */
+        clearButton.addEventListener(
+            'click',
+            function () {
+
+                input.value = '';
+
+                /*
+                 * Disparar change para que cualquier
+                 * preview o lógica propia del módulo
+                 * también pueda reaccionar.
+                 */
+                input.dispatchEvent(
+                    new Event(
+                        'change',
+                        {
+                            bubbles: true
+                        }
+                    )
+                );
+
+                updateState();
+
+                input.focus();
+            }
+        );
+
+        updateState();
+    });
+
+});
+</script>
 @stack('scripts')
 
 
@@ -9250,29 +10225,7 @@ html[data-color-mode="dark"] .kpi-stock .kpi-badge-link:hover {
     });
 </script>
 
-<script>
-    function confirmSystemLogout() {
 
-        const logoutForm =
-            document.getElementById('logoutForm');
-
-        if (!logoutForm) {
-            return;
-        }
-
-        const modalElement =
-            document.getElementById('logoutConfirmModal');
-
-        const modal =
-            bootstrap.Modal.getInstance(modalElement);
-
-        if (modal) {
-            modal.hide();
-        }
-
-        logoutForm.submit();
-    }
-</script>
 
 <script>
 /* ============================================================

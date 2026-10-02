@@ -473,7 +473,7 @@
 
                     <button type="submit"
                             class="btn cn-submit"
-                            onclick="return confirm('¿Emitir la Nota de Crédito? Se enviará a SUNAT.')">
+                            onclick="event.preventDefault(); const form=this.closest('form'); SystemNotify.confirm({type:'warning', title:'Emitir Nota de Crédito', text:'La Nota de Crédito será generada y enviada a SUNAT. ¿Deseas continuar?', confirmText:'Emitir y enviar', icon:'bi-receipt-cutoff', onConfirm:()=>form.submit()})">
                         <i class="bi bi-send me-1"></i>
                         Emitir y enviar a SUNAT
                     </button>

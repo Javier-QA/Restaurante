@@ -1400,61 +1400,7 @@ document.addEventListener('DOMContentLoaded', function () {
     color: var(--text-main);
 }
 </style>
-<div class="modal fade" id="reservationActionModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 shadow-lg"
-             style="border-radius:var(--radius-md, 14px); overflow:hidden;">
 
-            <div class="modal-header border-0"
-                 style="background:var(--primary, #ff8c00); color:#fff;">
-                <h6 class="modal-title fw-bold" id="reservationActionHeader">
-                    <i class="bi bi-question-circle me-2"></i>
-                    Confirmar acción
-                </h6>
-
-                <button type="button"
-                        class="btn-close btn-close-white"
-                        data-bs-dismiss="modal">
-                </button>
-            </div>
-
-            <div class="modal-body text-center px-4 py-4">
-                <div class="mb-3">
-                    <i class="bi bi-question-circle"
-                       style="font-size:2.8rem; color:var(--primary, #ff8c00);"></i>
-                </div>
-
-                <div class="fw-bold mb-2"
-                     id="reservationActionTitle">
-                    ¿Confirmar acción?
-                </div>
-
-                <div class="small text-muted"
-                     id="reservationActionText">
-                </div>
-
-                <div class="small fw-semibold mt-2"
-                     id="reservationActionClient">
-                </div>
-            </div>
-
-            <div class="modal-footer border-0 pt-0 px-4 pb-4">
-                <button type="button"
-                        class="btn btn-light border flex-fill"
-                        data-bs-dismiss="modal">
-                    Cancelar
-                </button>
-
-                <button type="button"
-                        id="reservationActionConfirm"
-                        class="btn flex-fill fw-bold text-white"
-                        style="background:var(--primary, #ff8c00); border-color:var(--primary, #ff8c00);">
-                    Aceptar
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 <style>
 .reservation-confirm-dialog {
     max-width: 430px;
@@ -1545,188 +1491,94 @@ document.addEventListener('DOMContentLoaded', function () {
     color: #fff;
 }
 </style>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    const modalElement = document.getElementById('reservationActionModal');
-
-    if (!modalElement) {
-        return;
-    }
-
-    const actionModal = new bootstrap.Modal(modalElement);
-    const header = document.getElementById('reservationActionHeader');
-    const title = document.getElementById('reservationActionTitle');
-    const text = document.getElementById('reservationActionText');
-    const client = document.getElementById('reservationActionClient');
-    const confirmButton = document.getElementById('reservationActionConfirm');
-
-    let currentForm = null;
+<script id="reservation-system-confirmations">
+(function () {
 
     const configurations = {
         confirm: {
-            title: '¿Confirmar reserva?',
+            type: 'success',
+            title: 'Confirmar reserva',
             text: 'La reserva pasará al estado Confirmada.',
-            button: 'Sí, confirmar',
-            icon: 'bi-check-lg',
-            style: 'confirm'
+            confirmText: 'Confirmar reserva',
+            icon: 'bi-check-lg'
         },
 
         cancel: {
-            title: '¿Cancelar reserva?',
+            type: 'danger',
+            title: 'Cancelar reserva',
             text: 'La reserva pasará al estado Cancelada.',
-            button: 'Sí, cancelar',
-            icon: 'bi-x-lg',
-            style: 'cancel'
+            confirmText: 'Cancelar reserva',
+            icon: 'bi-x-lg'
         },
 
         delete: {
-            title: '¿Eliminar reserva?',
+            type: 'danger',
+            title: 'Eliminar reserva',
             text: 'Esta acción eliminará definitivamente el registro de la reserva.',
-            button: 'Sí, eliminar',
-            icon: 'bi-trash3',
-            style: 'delete'
+            confirmText: 'Eliminar reserva',
+            icon: 'bi-trash3'
         }
     };
 
-    document.querySelectorAll('.reservation-action-btn').forEach(function (button) {
+    document.addEventListener('click', function (event) {
 
-        button.addEventListener('click', function () {
+        const button =
+            event.target.closest('.reservation-action-btn');
 
-            const action = this.dataset.action;
-            const config = configurations[action];
+        if (!button) {
+            return;
+        }
 
-            if (!config) {
-                return;
+        event.preventDefault();
+        event.stopPropagation();
+
+        const action = button.dataset.action;
+        const config = configurations[action];
+        const form = button.closest('form');
+
+        if (!config || !form) {
+            return;
+        }
+
+        const clientName =
+            button.dataset.client ||
+            button.dataset.clientName ||
+            '';
+
+        let message = config.text;
+
+        if (clientName) {
+            message += ' Cliente: ' + clientName + '.';
+        }
+
+        if (
+            !window.SystemNotify ||
+            typeof window.SystemNotify.confirm !== 'function'
+        ) {
+            console.error('SystemNotify no está disponible.');
+            return;
+        }
+
+        SystemNotify.confirm({
+            type: config.type,
+            title: config.title,
+            text: message,
+            confirmText: config.confirmText,
+            icon: config.icon,
+            onConfirm: function () {
+                form.submit();
             }
-
-            currentForm = this.closest('form');
-
-            title.textContent = config.title;
-            text.textContent = config.text;
-            client.textContent = this.dataset.client || 'Cliente';
-
-            const actionColors = {
-                confirm: '#16803d',
-                cancel: '#ea580c',
-                delete: '#dc2626'
-            };
-
-            const actionColor = actionColors[action] || 'var(--primary, #ff8c00)';
-
-            header.innerHTML =
-                '<i class="bi ' + config.icon + ' me-2"></i>' +
-                config.title.replace('¿', '').replace('?', '');
-
-            header.closest('.modal-header').style.background = actionColor;
-
-            const bodyIcon = modalElement.querySelector(
-                '.modal-body .bi-question-circle'
-            );
-
-            if (bodyIcon) {
-                bodyIcon.style.color = actionColor;
-            }
-
-            confirmButton.className =
-                'btn flex-fill fw-bold text-white';
-
-            confirmButton.style.background = actionColor;
-            confirmButton.style.borderColor = actionColor;
-            confirmButton.textContent = config.button;
-
-            actionModal.show();
         });
 
     });
 
-    confirmButton.addEventListener('click', function () {
-
-        if (!currentForm) {
-            return;
-        }
-
-        confirmButton.disabled = true;
-
-        currentForm.submit();
-    });
-
-    modalElement.addEventListener('hidden.bs.modal', function () {
-        currentForm = null;
-        confirmButton.disabled = false;
-    });
-
-});
+})();
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    window.showReservationNotification = function(message) {
 
-        let notification =
-            document.getElementById('reservationSystemNotification');
 
-        if (!notification) {
-
-            notification = document.createElement('div');
-            notification.id = 'reservationSystemNotification';
-
-            notification.style.cssText = `
-                position: fixed;
-                top: 24px;
-                right: 24px;
-                z-index: 99999;
-                width: min(390px, calc(100vw - 48px));
-                background: var(--card-bg, #ffffff);
-                color: var(--text-main, #172033);
-                border: 1px solid var(--border-soft, #e5e7eb);
-                border-left: 5px solid var(--accent-2, #198754);
-                border-radius: var(--radius-md, 12px);
-                box-shadow: var(--shadow-soft, 0 10px 30px rgba(0,0,0,.15));
-                padding: 14px 16px;
-                display: none;
-            `;
-
-            document.body.appendChild(notification);
-        }
-
-        notification.innerHTML = `
-            <div style="display:flex; align-items:flex-start; gap:12px;">
-
-                <i class="bi bi-check-circle-fill"
-                   style="color:var(--accent-2, #198754); font-size:1.25rem;"></i>
-
-                <div style="flex:1;">
-                    <div style="font-weight:700; margin-bottom:2px;">
-                        Operación realizada con éxito
-                    </div>
-
-                    <div style="font-size:.9rem;">
-                        ${message}
-                    </div>
-                </div>
-
-                <button type="button"
-                        onclick="this.closest('#reservationSystemNotification').style.display='none'"
-                        style="border:0;background:transparent;color:var(--text-muted,#6b7280);font-size:1.2rem;line-height:1;">
-                    &times;
-                </button>
-
-            </div>
-        `;
-
-        notification.style.display = 'block';
-
-        clearTimeout(window.reservationNotificationTimer);
-
-        window.reservationNotificationTimer = setTimeout(() => {
-            notification.style.display = 'none';
-        }, 4000);
-    };
-
-    @if(session('success'))
-        showReservationNotification(@json(session('success')));
-    @endif
 
 });
 </script>
@@ -1955,6 +1807,137 @@ html[data-color-mode="dark"]
     color: #d8b4fe !important;
 }
 
+</style>
+
+<style id="reservation-card-color-mode-final">
+/* ==========================================================
+   RESERVAS - TARJETA SEGUN MODO DE COLOR
+   ========================================================== */
+
+/* --------------------------
+   MODO CLARO
+   -------------------------- */
+
+html:not([data-color-mode="dark"]) .reservation-card,
+html:not([data-color-mode="dark"]) .reservation-card .card-body {
+    background: var(--card-bg) !important;
+    color: var(--text-main) !important;
+}
+
+html:not([data-color-mode="dark"]) .reservation-card {
+    border: 1px solid var(--border-soft) !important;
+    border-radius: 22px !important;
+}
+
+html:not([data-color-mode="dark"]) .reservation-card .reservation-client {
+    color: var(--text-main) !important;
+}
+
+html:not([data-color-mode="dark"]) .reservation-card .reservation-phone {
+    color: var(--text-muted) !important;
+}
+
+html:not([data-color-mode="dark"]) .reservation-card .reservation-client-icon {
+    background: color-mix(in srgb, var(--primary) 8%, var(--card-bg)) !important;
+    color: var(--primary) !important;
+    border: 1px solid var(--border-soft) !important;
+}
+
+html:not([data-color-mode="dark"]) .reservation-card .reservation-info {
+    background: var(--light-bg) !important;
+    border: 1px solid var(--border-soft) !important;
+    border-radius: 15px !important;
+}
+
+html:not([data-color-mode="dark"]) .reservation-card .reservation-detail {
+    border-right: 1px solid var(--border-soft) !important;
+}
+
+html:not([data-color-mode="dark"]) .reservation-card .reservation-detail:last-child {
+    border-right: 0 !important;
+}
+
+html:not([data-color-mode="dark"]) .reservation-card .reservation-info-label {
+    color: var(--text-muted) !important;
+}
+
+html:not([data-color-mode="dark"]) .reservation-card .reservation-info-value {
+    color: var(--text-main) !important;
+}
+
+html:not([data-color-mode="dark"]) .reservation-card .reservation-edit-btn {
+    background: var(--card-bg) !important;
+    border: 1px solid color-mix(in srgb, var(--primary) 45%, var(--border-soft)) !important;
+    color: var(--primary) !important;
+}
+
+html:not([data-color-mode="dark"]) .reservation-card .reservation-note {
+    background: var(--light-bg) !important;
+    border: 1px solid var(--border-soft) !important;
+    color: var(--text-main) !important;
+}
+
+
+/* --------------------------
+   MODO OSCURO
+   -------------------------- */
+
+html[data-color-mode="dark"] .reservation-card,
+html[data-color-mode="dark"] .reservation-card .card-body {
+    background: #111f33 !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .reservation-card {
+    border: 1px solid #9fb0c4 !important;
+}
+
+html[data-color-mode="dark"] .reservation-card .reservation-client {
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .reservation-card .reservation-phone {
+    color: #6f8eaf !important;
+}
+
+html[data-color-mode="dark"] .reservation-card .reservation-client-icon {
+    background: #202632 !important;
+    color: #ff8c00 !important;
+    border: 1px solid #303f54 !important;
+}
+
+html[data-color-mode="dark"] .reservation-card .reservation-info {
+    background: #202632 !important;
+    border: 1px solid #9fb0c4 !important;
+}
+
+html[data-color-mode="dark"] .reservation-card .reservation-detail {
+    border-right: 1px solid #9fb0c4 !important;
+}
+
+html[data-color-mode="dark"] .reservation-card .reservation-detail:last-child {
+    border-right: 0 !important;
+}
+
+html[data-color-mode="dark"] .reservation-card .reservation-info-label {
+    color: #6f8eaf !important;
+}
+
+html[data-color-mode="dark"] .reservation-card .reservation-info-value {
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .reservation-card .reservation-edit-btn {
+    background: #202632 !important;
+    border: 1px solid #d8c59a !important;
+    color: #ff8c00 !important;
+}
+
+html[data-color-mode="dark"] .reservation-card .reservation-note {
+    background: #202632 !important;
+    border: 1px solid #9fb0c4 !important;
+    color: #ffffff !important;
+}
 </style>
 @endsection
 <style>

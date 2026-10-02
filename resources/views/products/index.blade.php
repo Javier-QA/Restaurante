@@ -116,7 +116,7 @@
                                     @endif
                                     <div>
                                         <div class="fw-bold text-dark">{{ $product->name }}</div>
-                                        
+
                                         @if($product->barcode)
                                             <small class="text-muted d-block" style="font-size: 0.75rem;">
                                                 <i class="bi bi-upc-scan me-1"></i>{{ $product->barcode }}
@@ -188,7 +188,7 @@
 </div>
 
                                 <form id="del-{{$product->id}}" action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-none">@csrf @method('DELETE')</form>
-                                
+
                                 <div class="modal fade"
      id="adjustStock{{ $product->id }}"
      tabindex="-1"
@@ -376,82 +376,32 @@
     <x-system-pagination :paginator="$products" />
 </div>
 
-<div class="modal fade"
-     id="deleteProductModal"
-     tabindex="-1"
-     aria-hidden="true">
 
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-
-        <div class="modal-content product-delete-modal">
-
-            <div class="modal-body">
-
-                <div class="product-delete-icon">
-                    <i class="bi bi-trash3"></i>
-                </div>
-
-                <h5>Eliminar producto</h5>
-
-                <p class="product-delete-question">
-                    ¿Estás seguro de eliminar
-                    <strong id="deleteProductName"></strong>?
-                </p>
-
-                <div class="product-delete-info">
-                    <i class="bi bi-info-circle"></i>
-
-                    <span>
-                        Esta acción eliminará el producto de la lista,
-                        pero conservará su historial de movimientos.
-                    </span>
-                </div>
-
-                <div class="product-delete-buttons">
-
-                    <button type="button"
-                            class="btn product-cancel-btn"
-                            data-bs-dismiss="modal">
-                        Cancelar
-                    </button>
-
-                    <button type="button"
-                            class="btn product-delete-btn"
-                            onclick="submitDeleteProduct()">
-
-                        <i class="bi bi-trash3"></i>
-                        Eliminar producto
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
 
 <script>
 let deleteProductFormId = null;
 
 function confirmDeleteProduct(button) {
+    deleteProductFormId = 'del-' + button.dataset.productId;
 
-    deleteProductFormId =
-        'del-' + button.dataset.productId;
-
-    document.getElementById(
-        'deleteProductName'
-    ).textContent =
+    const productName =
         button.dataset.productName || 'este producto';
 
-    bootstrap.Modal
-        .getOrCreateInstance(
-            document.getElementById('deleteProductModal')
-        )
-        .show();
+    const form =
+        document.getElementById(deleteProductFormId);
+
+    if (!form) return;
+
+    SystemNotify.confirm({
+        type: 'danger',
+        title: 'Eliminar producto',
+        text: '¿Deseas eliminar "' + productName + '" del sistema?',
+        confirmText: 'Eliminar producto',
+        icon: 'bi-trash3',
+        onConfirm: function () {
+            form.submit();
+        }
+    });
 }
 
 function submitDeleteProduct() {

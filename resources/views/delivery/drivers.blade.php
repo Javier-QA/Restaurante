@@ -17,12 +17,7 @@
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-            <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
+
 
     <div class="card border shadow-sm" style="border-color: #dee2e6 !important;">
         <div class="card-body p-0">
@@ -61,7 +56,7 @@
                                     <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#editDriverModal{{ $driver->id }}">
                                         <i class="bi bi-pencil"></i>
                                     </button>
-                                    <form action="{{ route('delivery.drivers.destroy', $driver) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar delivery?');">
+                                    <form action="{{ route('delivery.drivers.destroy', $driver) }}" method="POST" class="d-inline" onsubmit="event.preventDefault(); const form=this; SystemNotify.confirm({type:'danger', title:'Eliminar delivery', text:'¿Deseas eliminar este repartidor del sistema?', confirmText:'Eliminar', icon:'bi-trash3', onConfirm:()=>form.submit()});">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
