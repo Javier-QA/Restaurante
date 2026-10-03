@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\CashRegister;
 use App\Models\Client;
 use App\Models\Delivery;
 use App\Models\DeliveryDriver;
@@ -132,7 +133,7 @@ class DeliveryController extends Controller
                 'client_name'    => $request->client_name,
                 'status'         => 'pending',
                 'total'          => 0,
-                'cash_register_id' => Auth::user()->activeCashRegister->id ?? null,
+                'cash_register_id' => CashRegister::where('status', 'open')->value('id'),
             ]);
 
             // 2. Agregar productos a la orden
@@ -173,7 +174,7 @@ class DeliveryController extends Controller
                 'reference'       => $request->reference,
                 'driver_id'       => $driverId,
                 'user_id'         => Auth::id(),
-                'cash_register_id'=> Auth::user()->activeCashRegister->id ?? null,
+                'cash_register_id'=> CashRegister::where('status', 'open')->value('id'),
                 'status'          => 'pending',
                 'payment_method'  => $request->payment_method,
                 'delivery_fee'    => $deliveryFee,
@@ -478,7 +479,7 @@ class DeliveryController extends Controller
                     : 'NOT_APPLICABLE',
 
                 'cash_register_id' =>
-                    Auth::user()->activeCashRegister->id ?? null,
+                    CashRegister::where('status', 'open')->value('id'),
             ]);
 
             // Sincronizar los datos del cliente con Delivery.

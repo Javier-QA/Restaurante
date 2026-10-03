@@ -16,11 +16,18 @@ class RequireOpenCashRegister
     {
         $user = $request->user();
 
-        // Si el usuario es admin o cajero, exigimos caja abierta para ciertas rutas
-        if ($user && in_array($user->role, ['admin', 'cashier'])) {
+        // Admin, cajero y mozo necesitan que exista una caja global abierta.
+        if ($user && in_array($user->role, ['admin', 'cashier', 'waiter'])) {
             if (!CashRegister::where('status', 'open')->exists()) {
-                return redirect()->route('cash_registers.create')
-                    ->with('warning', 'Debe existir una caja abierta antes de realizar operaciones de cobro o venta.');
+                // Solo admin y cajero pueden abrir la caja.
+                if (in_array($user->role, ['admin', 'cashier'])) {
+                    return redirect()->route('cash_registers.create')
+                        ->with('warning', 'Debe existir una caja abierta antes de realizar operaciones de cobro o venta.');
+                }
+
+                // El mozo no puede abrir caja.
+                return redirect()->route('pos.index')
+                    ->with('warning', 'No hay una caja abierta. Solicita al administrador o cajero que abra la caja.');
             }
         }
 

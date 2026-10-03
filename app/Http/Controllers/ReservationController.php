@@ -56,6 +56,19 @@ class ReservationController extends Controller
 
         unset($data['reservation_date'], $data['reservation_hour'], $data['reservation_period']);
 
+        if (!empty($data['table_id'])) {
+            $conflict = Reservation::where('table_id', $data['table_id'])
+                ->where('reservation_time', $data['reservation_time'])
+                ->where('status', '!=', 'cancelled')
+                ->exists();
+
+            if ($conflict) {
+                return back()
+                    ->withInput()
+                    ->with('error', 'La mesa seleccionada ya tiene una reserva para esa fecha y hora.');
+            }
+        }
+
         Reservation::create($data);
 
         return redirect()
@@ -82,6 +95,20 @@ class ReservationController extends Controller
         );
 
         unset($data['reservation_date'], $data['reservation_hour'], $data['reservation_period']);
+
+        if (!empty($data['table_id'])) {
+            $conflict = Reservation::where('table_id', $data['table_id'])
+                ->where('reservation_time', $data['reservation_time'])
+                ->where('status', '!=', 'cancelled')
+                ->where('id', '!=', $reservation->id)
+                ->exists();
+
+            if ($conflict) {
+                return back()
+                    ->withInput()
+                    ->with('error', 'La mesa seleccionada ya tiene una reserva para esa fecha y hora.');
+            }
+        }
 
         $reservation->update($data);
 

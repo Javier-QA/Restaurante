@@ -245,7 +245,7 @@ class PosController extends Controller
     if ($order->details()->whereIn('status', ['draft', 'pending'])->exists()) {
         return redirect()
             ->route('pos.order', $order->table_id)
-            ->with('error', 'Cocina debe iniciar la preparación antes de dividir la cuenta.');
+            ->with('error', 'Los productos deben iniciar su preparación antes de dividir la cuenta.');
     }
 
     $request->validate([
@@ -539,7 +539,7 @@ class PosController extends Controller
         if ($order->details()->whereIn('status', ['draft', 'pending'])->exists()) {
             return redirect()
                 ->route('pos.order', $order->table_id)
-                ->with('error', 'Cocina debe iniciar la preparación antes de cobrar.');
+                ->with('error', 'Los productos deben iniciar su preparación antes de cobrar.');
         }
 
         $method = $request->input('payment_method', 'cash');

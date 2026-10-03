@@ -153,6 +153,13 @@ class ProductController extends Controller
         $qty = $request->quantity;
         
         if ($request->type === 'sub') {
+            if ($qty > $oldStock) {
+                return back()->with(
+                    'error',
+                    'No se puede retirar una cantidad mayor al stock disponible (' . $oldStock . ').'
+                );
+            }
+
             $product->decrement('stock', $qty);
             $newStock = $oldStock - $qty;
             $type = 'adjustment_out';

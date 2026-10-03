@@ -281,7 +281,7 @@ class CashRegisterController extends Controller
         $cashRegister = CashRegister::where('status', 'open')->first();
 
         if (!$cashRegister) {
-            return redirect()->route('dashboard')->with('error', 'No tienes ninguna caja abierta para cerrar.');
+            return redirect()->route('dashboard')->with('error', 'No existe ninguna caja abierta para cerrar.');
         }
 
         // Resumen del turno por método de pago
