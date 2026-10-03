@@ -47,7 +47,14 @@ Route::middleware(['auth'])->group(function () {
     // ZONA OPERATIVA (Accesible para Mozo, Cajero, Admin)
     // =========================================================
 
-    // Rutas de Caja (Apertura y Cierre)
+    Route::middleware(['role:admin,cashier,waiter'])->group(function () {
+
+    });
+
+    // =========================================================
+    // CAJA - ADMINISTRADOR Y CAJERO
+    // =========================================================
+    Route::middleware(['role:admin,cashier'])->group(function () {
     Route::get(
         '/cash-registers/open',
         [App\Http\Controllers\CashRegisterController::class, 'create']
@@ -68,6 +75,13 @@ Route::middleware(['auth'])->group(function () {
         [App\Http\Controllers\CashRegisterController::class, 'processClose']
     )->name('cash_registers.processClose');
 
+
+    });
+
+    // =========================================================
+    // ZONA OPERATIVA - ADMINISTRADOR, CAJERO Y MOZO
+    // =========================================================
+    Route::middleware(['role:admin,cashier,waiter'])->group(function () {
 
     // POS (Punto de Venta)
     Route::middleware(['cash_register'])->group(function () {
@@ -150,37 +164,46 @@ Route::get('/pos', [PosController::class, 'index'])
     )->name('pos.remove');
 
 
-    // Monitor de Cocina
-    Route::get('/kitchen', [KitchenController::class, 'index'])
-        ->name('kitchen.index');
+    });
 
-    Route::get(
-        '/kitchen/orders',
-        [KitchenController::class, 'orders']
-    )->name('kitchen.orders');
-    Route::post(
-        '/kitchen/{detail}/status',
-        [KitchenController::class, 'updateStatus']
-    )->name('kitchen.update');
+    // Monitor de Cocina
+    Route::middleware(['role:admin,kitchen'])->group(function () {
+        Route::get('/kitchen', [KitchenController::class, 'index'])
+            ->name('kitchen.index');
+
+        Route::get(
+            '/kitchen/orders',
+            [KitchenController::class, 'orders']
+        )->name('kitchen.orders');
+
+        Route::post(
+            '/kitchen/{detail}/status',
+            [KitchenController::class, 'updateStatus']
+        )->name('kitchen.update');
+    });
 
 
     // =========================================================
 
     // Monitor de Barra
-    Route::get('/barra', [BarraController::class, 'index'])
-        ->name('barra.index');
+    Route::middleware(['role:admin,bar'])->group(function () {
+        Route::get('/barra', [BarraController::class, 'index'])
+            ->name('barra.index');
 
-    Route::get(
-        '/barra/orders',
-        [BarraController::class, 'orders']
-    )->name('barra.orders');
+        Route::get(
+            '/barra/orders',
+            [BarraController::class, 'orders']
+        )->name('barra.orders');
 
-    Route::post(
-        '/barra/{detail}/status',
-        [BarraController::class, 'updateStatus']
-    )->name('barra.update');
+        Route::post(
+            '/barra/{detail}/status',
+            [BarraController::class, 'updateStatus']
+        )->name('barra.update');
+    });
     // RESERVAS Y AGENDA
     // =========================================================
+
+    Route::middleware(['role:admin,cashier,waiter'])->group(function () {
 
     Route::get(
         '/reservations',
@@ -207,6 +230,8 @@ Route::get('/pos', [PosController::class, 'index'])
         [ReservationController::class, 'destroy']
     )->name('reservations.destroy');
 
+
+    });
 
     // =========================================================
     // ZONA FINANCIERA (Cajeros y Admins)
@@ -333,6 +358,13 @@ Route::resource(
             ClientController::class
         );
     });
+    // =========================================================
+    // DASHBOARD (Administrador y Cajero)
+    // =========================================================
+    Route::get(
+        '/',
+        [DashboardController::class, 'index']
+    )->middleware('role:admin,cashier')->name('dashboard');
     Route::middleware(['role:admin'])->group(function () {
 
         // =====================================================
@@ -344,6 +376,13 @@ Route::resource(
             [ChatbotController::class, 'chat']
         )->name('chatbot.chat');
 
+
+    });
+
+    // =========================================================
+    // FACTURACIÓN / SUNAT - ADMINISTRADOR Y CAJERO
+    // =========================================================
+    Route::middleware(['role:admin,cashier'])->group(function () {
 
         // =====================================================
         // FACTURACIÓN ELECTRÓNICA (SUNAT)
@@ -455,14 +494,13 @@ Route::resource(
         )->name('daily_summaries.cdr');
 
 
-        // =====================================================
-        // DASHBOARD Y BI
-        // =====================================================
 
-        Route::get(
-            '/',
-            [DashboardController::class, 'index']
-        )->name('dashboard');
+    });
+
+    // =========================================================
+    // ZONA EXCLUSIVA DEL ADMINISTRADOR
+    // =========================================================
+    Route::middleware(['role:admin'])->group(function () {
 
         Route::get(
             '/reports',
@@ -477,6 +515,13 @@ Route::resource(
         // CAJA
         // =====================================================
 
+    });
+
+    // =========================================================
+    // CONSULTA DE CAJA - ADMINISTRADOR Y CAJERO
+    // =========================================================
+    Route::middleware(['role:admin,cashier'])->group(function () {
+
         Route::get(
             '/cash-registers',
             [App\Http\Controllers\CashRegisterController::class, 'index']
@@ -485,12 +530,17 @@ Route::resource(
         Route::get(
             '/cash-registers/{cashRegister}',
             [App\Http\Controllers\CashRegisterController::class, 'show']
-        )->name('cash_registers.show');
+        )->middleware('role:admin,cashier')->name('cash_registers.show');
 
         Route::get(
             '/cash-registers/{cashRegister}/pdf',
             [App\Http\Controllers\CashRegisterController::class, 'pdf']
         )->name('cash_registers.pdf');
+
+    });
+
+    // Acciones destructivas de Caja: solo Administrador
+    Route::middleware(['role:admin'])->group(function () {
 
         Route::delete(
             '/cash-registers/reset-history/all',

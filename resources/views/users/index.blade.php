@@ -682,11 +682,25 @@
                                         Cajero
                                     </span>
 
-                                @else
+                                @elseif($user->role === 'waiter')
 
                                     <span class="user-role waiter">
                                         <i class="bi bi-person-badge"></i>
-                                        Mozo / Staff
+                                        Mozo
+                                    </span>
+
+                                @elseif($user->role === 'kitchen')
+
+                                    <span class="user-role kitchen">
+                                        <i class="bi bi-fire"></i>
+                                        Cocina
+                                    </span>
+
+                                @elseif($user->role === 'bar')
+
+                                    <span class="user-role bar">
+                                        <i class="bi bi-cup-straw"></i>
+                                        Barra
                                     </span>
 
                                 @endif
@@ -903,10 +917,18 @@
                             <i class="bi bi-lock"></i>
 
                             <input type="password"
-                                   name="password"
-                                   class="form-control user-modal-control"
-                                   placeholder="Mínimo 6 caracteres"
-                                   required>
+       name="password"
+       id="create_user_password"
+       class="form-control user-modal-control"
+       placeholder="Mínimo 6 caracteres"
+       required>
+
+<button type="button"
+        class="user-password-toggle"
+        id="createPasswordToggle"
+        aria-label="Mostrar contraseña">
+    <i class="bi bi-eye" id="createPasswordIcon"></i>
+</button>
                         </div>
 
                     </div>
@@ -922,9 +944,7 @@
                         <div class="user-modal-field">
                             <i class="bi bi-person-gear"></i>
 
-                            <select name="role"
-                                    class="form-select user-modal-control"
-                                    required>
+                            <select name="role" class="form-select user-modal-control user-role-select" required>
 
                                 <option value="waiter">
                                     Mozo
@@ -932,6 +952,14 @@
 
                                 <option value="cashier">
                                     Cajero
+                                </option>
+
+                                <option value="kitchen">
+                                    Cocina
+                                </option>
+
+                                <option value="bar">
+                                    Barra
                                 </option>
 
                                 <option value="admin">
@@ -1078,9 +1106,18 @@
                             <i class="bi bi-lock"></i>
 
                             <input type="password"
-                                   name="password"
-                                   class="form-control user-modal-control"
-                                   placeholder="Opcional">
+       name="password"
+       id="edit_user_password"
+       class="form-control user-modal-control"
+       placeholder="Opcional">
+
+<button type="button"
+        class="user-password-toggle edit-password-toggle"
+        id="editPasswordToggle"
+        aria-label="Mostrar contraseña"
+        title="Mostrar contraseña">
+    <i class="bi bi-eye" id="editPasswordIcon"></i>
+</button>
                         </div>
 
                         <span class="user-modal-help">
@@ -1100,13 +1137,12 @@
                         <div class="user-modal-field">
                             <i class="bi bi-person-gear"></i>
 
-                            <select name="role"
-                                    id="edit_role"
-                                    class="form-select user-modal-control"
-                                    required>
+                            <select name="role" id="edit_role" class="form-select user-modal-control user-role-select" required>
 
                                 <option value="waiter">Mozo</option>
                                 <option value="cashier">Cajero</option>
+                                <option value="kitchen">Cocina</option>
+                                <option value="bar">Barra</option>
                                 <option value="admin">Administrador</option>
 
                             </select>
@@ -1378,4 +1414,212 @@ html[data-color-mode="dark"] .user-action-disabled i {
     @csrf
     @method('DELETE')
 </form>
+
+<style id="user-create-controls-final">
+.user-modal-field:has(#create_user_password) {
+    position: relative;
+}
+
+#create_user_password {
+    padding-right: 48px !important;
+}
+
+.user-password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    z-index: 5;
+}
+
+.user-password-toggle:hover {
+    color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 10%, transparent);
+}
+
+.user-role-select {
+    cursor: pointer;
+    padding-right: 45px !important;
+}
+</style>
+
+<script id="user-create-password-script">
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('create_user_password');
+    const button = document.getElementById('createPasswordToggle');
+    const icon = document.getElementById('createPasswordIcon');
+
+    if (!input || !button || !icon) return;
+
+    button.addEventListener('click', () => {
+        const mostrar = input.type === 'password';
+
+        input.type = mostrar ? 'text' : 'password';
+
+        icon.classList.toggle('bi-eye', !mostrar);
+        icon.classList.toggle('bi-eye-slash', mostrar);
+
+        button.setAttribute(
+            'aria-label',
+            mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña'
+        );
+    });
+});
+</script>
+
+
+<style id="user-role-arrow-final">
+
+/* Rol / Permisos - flecha personalizada */
+.user-modal-field:has(.user-role-select) {
+    position: relative;
+}
+
+.user-role-select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background-image: none !important;
+    padding-right: 48px !important;
+    cursor: pointer;
+}
+
+.user-modal-field:has(.user-role-select)::after {
+    content: "\F282";
+    font-family: "bootstrap-icons";
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: .9rem;
+    font-weight: 700;
+    color: var(--primary);
+    pointer-events: none;
+    z-index: 6;
+}
+
+html[data-color-mode="dark"] .user-modal-field:has(.user-role-select)::after {
+    color: var(--primary);
+}
+
+</style>
+
+
+<style id="user-kitchen-bar-role-styles">
+
+/* Cocina */
+.user-role.kitchen {
+    color: #ea580c;
+    background: #fff7ed;
+    border: 1px solid #fdba74;
+}
+
+/* Barra */
+.user-role.bar {
+    color: #2563eb;
+    background: #eff6ff;
+    border: 1px solid #93c5fd;
+}
+
+/* Modo oscuro */
+html[data-color-mode="dark"] .user-role.kitchen {
+    color: #fb923c;
+    background: rgba(234, 88, 12, .12);
+    border-color: rgba(251, 146, 60, .35);
+}
+
+html[data-color-mode="dark"] .user-role.bar {
+    color: #60a5fa;
+    background: rgba(37, 99, 235, .12);
+    border-color: rgba(96, 165, 250, .35);
+}
+
+</style>
+
+
+<style id="user-kitchen-bar-avatar-final">
+
+/* Avatar Cocina - mismo estilo visual que los demás */
+.user-avatar.kitchen {
+    color: #ea580c !important;
+    background: #fff7ed !important;
+    border: 1px solid #fed7aa !important;
+}
+
+/* Avatar Barra */
+.user-avatar.bar {
+    color: #2563eb !important;
+    background: #eff6ff !important;
+    border: 1px solid #bfdbfe !important;
+}
+
+/* Modo oscuro */
+html[data-color-mode="dark"] .user-avatar.kitchen {
+    color: #fb923c !important;
+    background: rgba(234, 88, 12, .10) !important;
+    border-color: rgba(251, 146, 60, .32) !important;
+}
+
+html[data-color-mode="dark"] .user-avatar.bar {
+    color: #60a5fa !important;
+    background: rgba(37, 99, 235, .10) !important;
+    border-color: rgba(96, 165, 250, .32) !important;
+}
+
+</style>
+
+
+<style id="user-edit-controls-final">
+
+.user-modal-field:has(#edit_user_password) {
+    position: relative;
+}
+
+#edit_user_password {
+    padding-right: 48px !important;
+}
+
+</style>
+
+<script id="user-edit-password-script">
+document.addEventListener('DOMContentLoaded', () => {
+
+    const input = document.getElementById('edit_user_password');
+    const button = document.getElementById('editPasswordToggle');
+    const icon = document.getElementById('editPasswordIcon');
+
+    if (!input || !button || !icon) return;
+
+    button.addEventListener('click', () => {
+
+        const mostrar = input.type === 'password';
+
+        input.type = mostrar ? 'text' : 'password';
+
+        icon.classList.toggle('bi-eye', !mostrar);
+        icon.classList.toggle('bi-eye-slash', mostrar);
+
+        button.setAttribute(
+            'aria-label',
+            mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña'
+        );
+
+        button.setAttribute(
+            'title',
+            mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña'
+        );
+    });
+
+});
+</script>
+
 @endsection

@@ -6609,6 +6609,929 @@ html[data-color-mode="dark"]
 }
 
 </style>
+
+<style id="sidebar-collapse-final">
+
+/* ==========================================================
+   SIDEBAR COMPRIMIBLE - ESCRITORIO
+   ========================================================== */
+
+@media (min-width: 992px) {
+
+    .sidebar,
+    .main-content {
+        transition:
+            width .25s ease,
+            margin-left .25s ease !important;
+    }
+
+    .sidebar-collapse-btn {
+        position: absolute;
+        top: 67px;
+        right: -13px;
+
+        width: 27px;
+        height: 27px;
+
+        align-items: center;
+        justify-content: center;
+
+        padding: 0;
+        border-radius: 50%;
+
+        border: 1px solid rgba(255,255,255,.16);
+        background: var(--primary);
+        color: #fff;
+
+        box-shadow: 0 4px 12px rgba(0,0,0,.18);
+
+        z-index: 1100;
+
+        cursor: pointer;
+
+        transition:
+            transform .2s ease,
+            background .2s ease,
+            box-shadow .2s ease;
+    }
+
+    .sidebar-collapse-btn:hover {
+        background: var(--primary-hover);
+        box-shadow: 0 6px 16px rgba(0,0,0,.25);
+    }
+
+
+    /* SIDEBAR COMPRIMIDO */
+
+    body.sidebar-collapsed .sidebar {
+        width: 78px !important;
+    }
+
+    body.sidebar-collapsed .main-content {
+        margin-left: 78px !important;
+    }
+
+
+    /* ENCABEZADO */
+
+    body.sidebar-collapsed .sidebar-header {
+        padding-left: 16px;
+        padding-right: 16px;
+        justify-content: center;
+    }
+
+    body.sidebar-collapsed .sidebar-header .brand-name {
+        display: none !important;
+    }
+
+    body.sidebar-collapsed .sidebar-header > img {
+        width: 42px !important;
+        height: 42px !important;
+        flex: 0 0 42px;
+    }
+
+    body.sidebar-collapsed .sidebar-header .logo-box {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+    }
+
+
+    /* BOTÓN */
+
+    body.sidebar-collapsed .sidebar-collapse-btn {
+        right: -13px;
+    }
+
+    body.sidebar-collapsed .sidebar-collapse-btn i {
+        transform: rotate(180deg);
+    }
+
+
+    /* MENÚ */
+
+    body.sidebar-collapsed .sidebar-menu {
+        padding-left: 10px;
+        padding-right: 10px;
+        overflow-x: hidden;
+    }
+
+    body.sidebar-collapsed .menu-category {
+        height: 1px;
+        margin: 15px 10px;
+        padding: 0;
+        overflow: hidden;
+        font-size: 0;
+        background: rgba(255,255,255,.10);
+    }
+
+    body.sidebar-collapsed .sidebar .nav-link {
+        justify-content: center;
+        gap: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    body.sidebar-collapsed .sidebar .nav-link > i {
+        margin: 0 !important;
+        font-size: 1.18rem;
+    }
+
+    body.sidebar-collapsed .sidebar .nav-link {
+        font-size: 0;
+    }
+
+    body.sidebar-collapsed .sidebar .nav-link > i {
+        font-size: 1.18rem;
+    }
+
+
+    /* Ocultar textos auxiliares del sidebar */
+
+    body.sidebar-collapsed .sidebar-menu .badge,
+    body.sidebar-collapsed .sidebar-menu small {
+        display: none !important;
+    }
+}
+
+</style>
+
+<style id="sidebar-collapse-visual-fix">
+
+@media (min-width: 992px) {
+
+    /* El encabezado permite ubicar correctamente el control */
+    .sidebar-header {
+        position: relative;
+    }
+
+    /* Botón más discreto e integrado */
+    .sidebar-collapse-btn {
+        position: absolute !important;
+        top: 50% !important;
+        right: 10px !important;
+
+        transform: translateY(-50%) !important;
+
+        width: 30px !important;
+        height: 30px !important;
+
+        border-radius: 9px !important;
+
+        background: rgba(255,255,255,.10) !important;
+        border: 1px solid rgba(255,255,255,.13) !important;
+
+        color: rgba(255,255,255,.82) !important;
+
+        box-shadow: none !important;
+
+        z-index: 5 !important;
+    }
+
+    .sidebar-collapse-btn:hover {
+        background: rgba(255,255,255,.18) !important;
+        color: #fff !important;
+        transform: translateY(-50%) !important;
+    }
+
+    /* Espacio para que el nombre no choque con la flecha */
+    .sidebar-header .brand-name {
+        padding-right: 30px;
+    }
+
+
+    /* ==========================
+       ESTADO COMPRIMIDO
+       ========================== */
+
+    body.sidebar-collapsed .sidebar {
+        width: 78px !important;
+    }
+
+    body.sidebar-collapsed .main-content {
+        margin-left: 78px !important;
+    }
+
+    body.sidebar-collapsed .sidebar-header {
+        min-height: 82px;
+        padding: 14px 10px !important;
+        justify-content: center;
+    }
+
+    body.sidebar-collapsed .sidebar-header .brand-name {
+        display: none !important;
+    }
+
+    /* En comprimido ocultamos el logo del encabezado
+       para que no compita con el botón */
+    body.sidebar-collapsed .sidebar-header > img,
+    body.sidebar-collapsed .sidebar-header > .logo-box {
+        display: none !important;
+    }
+
+    body.sidebar-collapsed .sidebar-collapse-btn {
+        position: relative !important;
+
+        top: auto !important;
+        right: auto !important;
+
+        transform: none !important;
+
+        width: 38px !important;
+        height: 38px !important;
+
+        border-radius: 11px !important;
+    }
+
+    body.sidebar-collapsed .sidebar-collapse-btn:hover {
+        transform: none !important;
+    }
+
+    body.sidebar-collapsed .sidebar-collapse-btn i {
+        transform: rotate(180deg);
+    }
+
+
+    /* Menú comprimido más limpio */
+    body.sidebar-collapsed .sidebar-menu {
+        padding: 10px 9px 20px !important;
+    }
+
+    body.sidebar-collapsed .menu-category {
+        margin: 14px 8px 9px !important;
+        height: 1px !important;
+
+        font-size: 0 !important;
+
+        background: rgba(255,255,255,.10);
+    }
+
+    body.sidebar-collapsed .sidebar .nav-link {
+        width: 56px;
+        min-height: 52px;
+
+        margin-left: auto;
+        margin-right: auto;
+
+        padding: 0 !important;
+
+        display: flex !important;
+        align-items: center;
+        justify-content: center !important;
+
+        font-size: 0 !important;
+
+        border-radius: 13px;
+    }
+
+    body.sidebar-collapsed .sidebar .nav-link > i {
+        width: auto !important;
+        margin: 0 !important;
+
+        font-size: 20px !important;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    body.sidebar-collapsed .sidebar .nav-link.active {
+        width: 56px;
+    }
+}
+
+</style>
+
+<style id="sidebar-collapse-professional">
+
+@media (min-width: 992px) {
+
+    /* =========================================
+       TRANSICIÓN GENERAL
+       ========================================= */
+
+    .sidebar {
+        transition:
+            width .28s cubic-bezier(.4,0,.2,1),
+            box-shadow .28s ease !important;
+    }
+
+    .main-content {
+        transition:
+            margin-left .28s cubic-bezier(.4,0,.2,1) !important;
+    }
+
+
+    /* =========================================
+       BOTÓN PROFESIONAL
+       ========================================= */
+
+    .sidebar-collapse-btn {
+        width: 32px !important;
+        height: 32px !important;
+
+        right: 11px !important;
+
+        border-radius: 10px !important;
+
+        background: rgba(255,255,255,.075) !important;
+        border: 1px solid rgba(255,255,255,.12) !important;
+
+        color: rgba(255,255,255,.72) !important;
+
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.06) !important;
+
+        backdrop-filter: blur(8px);
+
+        transition:
+            background .18s ease,
+            color .18s ease,
+            border-color .18s ease !important;
+    }
+
+    .sidebar-collapse-btn i {
+        font-size: 13px;
+        line-height: 1;
+
+        transition: transform .28s cubic-bezier(.4,0,.2,1);
+    }
+
+    .sidebar-collapse-btn:hover {
+        background: rgba(255,255,255,.14) !important;
+        border-color: rgba(255,255,255,.20) !important;
+        color: #fff !important;
+    }
+
+
+    /* =========================================
+       SIDEBAR COMPRIMIDO
+       ========================================= */
+
+    body.sidebar-collapsed .sidebar {
+        width: 80px !important;
+
+        box-shadow:
+            6px 0 24px rgba(0,0,0,.08) !important;
+    }
+
+    body.sidebar-collapsed .main-content {
+        margin-left: 80px !important;
+    }
+
+
+    /* =========================================
+       ENCABEZADO COMPRIMIDO
+       ========================================= */
+
+    body.sidebar-collapsed .sidebar-header {
+        min-height: 82px !important;
+
+        padding: 15px 12px !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    body.sidebar-collapsed .sidebar-header .brand-name,
+    body.sidebar-collapsed .sidebar-header > img,
+    body.sidebar-collapsed .sidebar-header > .logo-box {
+        display: none !important;
+    }
+
+    body.sidebar-collapsed .sidebar-collapse-btn {
+        position: relative !important;
+
+        top: auto !important;
+        right: auto !important;
+
+        width: 38px !important;
+        height: 38px !important;
+
+        transform: none !important;
+
+        border-radius: 11px !important;
+
+        background: rgba(255,255,255,.08) !important;
+    }
+
+    body.sidebar-collapsed .sidebar-collapse-btn:hover {
+        transform: none !important;
+        background: rgba(255,255,255,.15) !important;
+    }
+
+    body.sidebar-collapsed .sidebar-collapse-btn i {
+        transform: rotate(180deg);
+    }
+
+
+    /* =========================================
+       MENÚ COMPRIMIDO
+       ========================================= */
+
+    body.sidebar-collapsed .sidebar-menu {
+        padding:
+            12px 10px
+            24px !important;
+    }
+
+
+    /* Separadores de categorías */
+
+    body.sidebar-collapsed .menu-category {
+        width: 30px !important;
+        height: 1px !important;
+
+        margin:
+            16px auto
+            10px !important;
+
+        padding: 0 !important;
+
+        font-size: 0 !important;
+
+        overflow: hidden;
+
+        background:
+            rgba(255,255,255,.12) !important;
+
+        border: 0 !important;
+    }
+
+
+    /* =========================================
+       BOTONES DEL MENÚ
+       ========================================= */
+
+    body.sidebar-collapsed .sidebar .nav-link {
+        width: 56px !important;
+        height: 52px !important;
+        min-height: 52px !important;
+
+        margin:
+            3px auto !important;
+
+        padding: 0 !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        gap: 0 !important;
+
+        border-radius: 14px !important;
+
+        font-size: 0 !important;
+
+        transition:
+            background .18s ease,
+            transform .18s ease,
+            box-shadow .18s ease !important;
+    }
+
+
+    /* Iconos */
+
+    body.sidebar-collapsed .sidebar .nav-link > i {
+        width: 24px !important;
+        height: 24px !important;
+
+        margin: 0 !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        font-size: 19px !important;
+        line-height: 1 !important;
+    }
+
+
+    /* Hover */
+
+    body.sidebar-collapsed .sidebar .nav-link:hover {
+        background:
+            rgba(255,255,255,.09) !important;
+
+        transform:
+            translateY(-1px);
+    }
+
+
+    /* Activo */
+
+    body.sidebar-collapsed .sidebar .nav-link.active {
+        width: 56px !important;
+
+        box-shadow:
+            0 7px 18px
+            var(--theme-shadow) !important;
+
+        transform: none !important;
+    }
+
+
+    /* Eliminar textos secundarios */
+
+    body.sidebar-collapsed .sidebar-menu .badge,
+    body.sidebar-collapsed .sidebar-menu small {
+        display: none !important;
+    }
+
+
+    /* =========================================
+       TOOLTIP NATIVO
+       ========================================= */
+
+    body.sidebar-collapsed .sidebar .nav-link {
+        position: relative;
+    }
+}
+
+</style>
+
+<style id="sidebar-groups-professional">
+
+/* ==========================================================
+   GRUPOS DESPLEGABLES DEL SIDEBAR
+   ========================================================== */
+
+.sidebar-menu .sidebar-group {
+    margin: 5px 0;
+}
+
+.sidebar-menu .sidebar-group-toggle {
+    width: 100%;
+    min-height: 38px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 7px 11px;
+
+    border: 0;
+    border-radius: 10px;
+
+    background: transparent;
+    color: rgba(255,255,255,.48);
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .75px;
+    text-transform: uppercase;
+
+    cursor: pointer;
+
+    transition:
+        color .18s ease,
+        background .18s ease;
+}
+
+.sidebar-menu .sidebar-group-toggle:hover {
+    color: rgba(255,255,255,.82);
+    background: rgba(255,255,255,.045);
+}
+
+.sidebar-group-title {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.sidebar-group-arrow {
+    margin-left: auto;
+
+    font-size: 11px;
+
+    transition:
+        transform .22s cubic-bezier(.4,0,.2,1);
+}
+
+.sidebar-group.open .sidebar-group-arrow {
+    transform: rotate(90deg);
+}
+
+
+/* Contenido desplegable */
+
+.sidebar-group-content {
+    display: grid;
+    grid-template-rows: 0fr;
+
+    opacity: .55;
+
+    transition:
+        grid-template-rows .25s cubic-bezier(.4,0,.2,1),
+        opacity .20s ease;
+}
+
+.sidebar-group-content-inner {
+    min-height: 0;
+    overflow: hidden;
+}
+
+.sidebar-group.open .sidebar-group-content {
+    grid-template-rows: 1fr;
+    opacity: 1;
+}
+
+.sidebar-group.open .sidebar-group-content-inner {
+    padding-top: 3px;
+    padding-bottom: 4px;
+}
+
+
+/* Categoría original reemplazada por el nuevo botón */
+
+.sidebar-menu .sidebar-group > .menu-category {
+    display: none !important;
+}
+
+
+/* ==========================================================
+   TOOLTIP PROFESIONAL EN MODO COMPRIMIDO
+   ========================================================== */
+
+.sidebar-icon-tooltip {
+    position: fixed;
+
+    z-index: 99999;
+
+    padding: 8px 11px;
+
+    border-radius: 8px;
+
+    background: #111827;
+    color: #fff;
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+        0 8px 24px rgba(0,0,0,.20);
+
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+
+    white-space: nowrap;
+
+    pointer-events: none;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translateX(-4px);
+
+    transition:
+        opacity .14s ease,
+        transform .14s ease,
+        visibility .14s ease;
+}
+
+.sidebar-icon-tooltip.show {
+    opacity: 1;
+    visibility: visible;
+
+    transform: translateX(0);
+}
+
+.sidebar-icon-tooltip::before {
+    content: "";
+
+    position: absolute;
+
+    left: -5px;
+    top: 50%;
+
+    width: 9px;
+    height: 9px;
+
+    background: #111827;
+
+    border-left:
+        1px solid rgba(255,255,255,.08);
+
+    border-bottom:
+        1px solid rgba(255,255,255,.08);
+
+    transform:
+        translateY(-50%)
+        rotate(45deg);
+}
+
+
+/* ==========================================================
+   COMPORTAMIENTO CUANDO EL SIDEBAR ESTÁ COMPRIMIDO
+   ========================================================== */
+
+@media (min-width: 992px) {
+
+    body.sidebar-collapsed
+    .sidebar-group-toggle {
+        width: 30px !important;
+        height: 1px !important;
+        min-height: 1px !important;
+
+        margin: 15px auto 10px !important;
+        padding: 0 !important;
+
+        background:
+            rgba(255,255,255,.12) !important;
+
+        border-radius: 20px !important;
+
+        pointer-events: none;
+    }
+
+    body.sidebar-collapsed
+    .sidebar-group-title,
+
+    body.sidebar-collapsed
+    .sidebar-group-arrow {
+        display: none !important;
+    }
+
+    /*
+       Al comprimir, mostramos todos los iconos.
+       No tiene sentido esconderlos dentro de submenús
+       cuando ya no podemos ver el título del grupo.
+    */
+
+    body.sidebar-collapsed
+    .sidebar-group-content {
+        display: block !important;
+
+        opacity: 1 !important;
+
+        grid-template-rows: none !important;
+    }
+
+    body.sidebar-collapsed
+    .sidebar-group-content-inner {
+        overflow: visible !important;
+        padding: 0 !important;
+    }
+}
+
+</style>
+
+<style id="sidebar-expand-all-style">
+
+.sidebar-expand-all-control {
+    margin: 4px 10px 10px;
+    padding-bottom: 10px;
+
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.sidebar-expand-all-btn {
+    width: 100%;
+    min-height: 36px;
+
+    padding: 7px 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 10px;
+
+    background: rgba(255,255,255,.045);
+    color: rgba(255,255,255,.72);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background .18s ease,
+        border-color .18s ease,
+        color .18s ease;
+}
+
+.sidebar-expand-all-btn:hover {
+    background: rgba(255,255,255,.09);
+    border-color: rgba(255,255,255,.14);
+    color: #fff;
+}
+
+.sidebar-expand-all-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sidebar-expand-all-left > i {
+    font-size: 13px;
+}
+
+.sidebar-expand-all-arrow {
+    font-size: 11px;
+
+    transition:
+        transform .22s cubic-bezier(.4,0,.2,1);
+}
+
+.sidebar-expand-all-btn.all-open
+.sidebar-expand-all-arrow {
+    transform: rotate(180deg);
+}
+
+
+/* Ocultarlo cuando el sidebar esté comprimido */
+
+@media (min-width: 992px) {
+
+    body.sidebar-collapsed
+    .sidebar-expand-all-control {
+        display: none !important;
+    }
+
+}
+
+</style>
+
+<style id="sidebar-tooltip-only-style">
+
+/* ==========================================================
+   TOOLTIP DEL SIDEBAR COMPRIMIDO
+   ========================================================== */
+
+.sidebar-hover-tooltip {
+    position: fixed;
+    z-index: 999999;
+
+    padding: 8px 11px;
+
+    background: #111827;
+    color: #ffffff;
+
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 8px;
+
+    box-shadow: 0 8px 24px rgba(0,0,0,.22);
+
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+
+    white-space: nowrap;
+
+    pointer-events: none;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translateX(-5px);
+
+    transition:
+        opacity .14s ease,
+        transform .14s ease,
+        visibility .14s ease;
+}
+
+.sidebar-hover-tooltip.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+/* Flechita del tooltip */
+
+.sidebar-hover-tooltip::before {
+    content: "";
+
+    position: absolute;
+
+    left: -5px;
+    top: 50%;
+
+    width: 9px;
+    height: 9px;
+
+    background: #111827;
+
+    transform:
+        translateY(-50%)
+        rotate(45deg);
+}
+
+
+/* Solo se utiliza en escritorio */
+
+@media (max-width: 991.98px) {
+
+    .sidebar-hover-tooltip {
+        display: none !important;
+    }
+
+}
+
+</style>
 </head>
 
 
@@ -6669,6 +7592,17 @@ html[data-color-mode="dark"]
             </div>
 
         @endif
+
+
+        <button
+            type="button"
+            class="sidebar-collapse-btn d-none d-lg-flex"
+            id="sidebarCollapseBtn"
+            title="Comprimir menú"
+            aria-label="Comprimir menú"
+        >
+            <i class="bi bi-chevron-left" id="sidebarCollapseIcon"></i>
+        </button>
 
 
         <div class="brand-name text-truncate">
@@ -6758,6 +7692,7 @@ html[data-color-mode="dark"]
         </div>
 
 
+        @if(in_array($role, ['admin', 'cashier', 'waiter']))
         <a
             href="{{ route('pos.index') }}"
             class="
@@ -6771,6 +7706,7 @@ html[data-color-mode="dark"]
             Punto de Venta
 
         </a>
+        @endif
 
 
         @if(in_array($role, ['admin', 'cashier', 'waiter']))
@@ -6826,6 +7762,7 @@ html[data-color-mode="dark"]
         @endif
 
 
+        @if(in_array($role, ['admin', 'kitchen']))
         <a
             href="{{ route('kitchen.index') }}"
             class="
@@ -6839,6 +7776,9 @@ html[data-color-mode="dark"]
             Cocina (KDS)
 
         </a>
+        @endif
+
+        @if(in_array($role, ['admin', 'bar']))
         <a
             href="{{ route('barra.index') }}"
             class="
@@ -6852,6 +7792,7 @@ html[data-color-mode="dark"]
             Barra
 
         </a>
+        @endif
 
 
         {{-- =====================================================
@@ -6867,7 +7808,7 @@ html[data-color-mode="dark"]
             </div>
 
 
-            @if(Auth::user()->activeCashRegister)
+            @if(\App\Models\CashRegister::where('status', 'open')->exists())
 
                 <a
                     href="{{ route('cash_registers.close') }}"
@@ -6902,7 +7843,7 @@ html[data-color-mode="dark"]
             @endif
 
 
-            @if($role === 'admin')
+            @if(in_array($role, ['admin', 'cashier']))
 
                 <a
                     href="{{ route('cash_registers.index') }}"
@@ -6927,7 +7868,7 @@ html[data-color-mode="dark"]
              FACTURACIÓN ELECTRÓNICA
         ====================================================== --}}
 
-        @if($role === 'admin')
+        @if(in_array($role, ['admin', 'cashier']))
 
             <div class="menu-category">
 
@@ -7310,7 +8251,14 @@ html[data-color-mode="dark"]
                         </span>
 
                         <span class="header-user-role">
-                            {{ ucfirst(Auth::user()->role) }}
+                            {{ match(Auth::user()->role) {
+    'admin' => 'Administrador',
+    'cashier' => 'Cajero',
+    'waiter' => 'Mozo',
+    'kitchen' => 'Cocina',
+    'bar' => 'Barra',
+    default => ucfirst(Auth::user()->role),
+} }}
                         </span>
 
                     </div>
@@ -11192,6 +12140,898 @@ document.addEventListener('DOMContentLoaded', function () {
     );
 
 })();
+</script>
+
+<script id="sidebar-collapse-script">
+document.addEventListener('DOMContentLoaded', function () {
+
+    const button = document.getElementById('sidebarCollapseBtn');
+
+    if (!button) {
+        return;
+    }
+
+    const storageKey = 'restaurant_sidebar_collapsed';
+
+    function applySidebarState(collapsed) {
+
+        document.body.classList.toggle(
+            'sidebar-collapsed',
+            collapsed
+        );
+
+        button.title = collapsed
+            ? 'Expandir menú'
+            : 'Comprimir menú';
+
+        button.setAttribute(
+            'aria-label',
+            collapsed
+                ? 'Expandir menú'
+                : 'Comprimir menú'
+        );
+    }
+
+
+    if (window.innerWidth >= 992) {
+
+        applySidebarState(
+            localStorage.getItem(storageKey) === '1'
+        );
+
+    }
+
+
+    button.addEventListener('click', function () {
+
+        if (window.innerWidth < 992) {
+            return;
+        }
+
+        const collapsed =
+            !document.body.classList.contains(
+                'sidebar-collapsed'
+            );
+
+        applySidebarState(collapsed);
+
+        localStorage.setItem(
+            storageKey,
+            collapsed ? '1' : '0'
+        );
+
+    });
+
+
+    window.addEventListener('resize', function () {
+
+        if (window.innerWidth < 992) {
+
+            document.body.classList.remove(
+                'sidebar-collapsed'
+            );
+
+            return;
+        }
+
+        applySidebarState(
+            localStorage.getItem(storageKey) === '1'
+        );
+
+    });
+
+});
+</script>
+
+<script id="sidebar-groups-professional">
+document.addEventListener('DOMContentLoaded', function () {
+
+    const menu = document.querySelector('#sidebar .sidebar-menu');
+
+    if (!menu) {
+        return;
+    }
+
+
+    /* ======================================================
+       1. CREAR GRUPOS DESPLEGABLES AUTOMÁTICAMENTE
+       ====================================================== */
+
+    const categories = Array.from(
+        menu.querySelectorAll(':scope > .menu-category')
+    );
+
+
+    categories.forEach(function (category, index) {
+
+        const title =
+            category.textContent
+                .replace(/\s+/g, ' ')
+                .trim();
+
+        if (!title) {
+            return;
+        }
+
+
+        const elements = [];
+
+        let sibling = category.nextElementSibling;
+
+
+        while (
+            sibling &&
+            !sibling.classList.contains('menu-category')
+        ) {
+
+            elements.push(sibling);
+
+            sibling = sibling.nextElementSibling;
+        }
+
+
+        if (!elements.length) {
+            return;
+        }
+
+
+        const group =
+            document.createElement('div');
+
+        group.className = 'sidebar-group';
+
+
+        const toggle =
+            document.createElement('button');
+
+        toggle.type = 'button';
+        toggle.className = 'sidebar-group-toggle';
+
+        toggle.setAttribute(
+            'aria-expanded',
+            'false'
+        );
+
+
+        const titleElement =
+            document.createElement('span');
+
+        titleElement.className =
+            'sidebar-group-title';
+
+        titleElement.textContent = title;
+
+
+        const arrow =
+            document.createElement('i');
+
+        arrow.className =
+            'bi bi-chevron-right sidebar-group-arrow';
+
+
+        toggle.appendChild(titleElement);
+        toggle.appendChild(arrow);
+
+
+        const content =
+            document.createElement('div');
+
+        content.className =
+            'sidebar-group-content';
+
+
+        const inner =
+            document.createElement('div');
+
+        inner.className =
+            'sidebar-group-content-inner';
+
+
+        category.parentNode.insertBefore(
+            group,
+            category
+        );
+
+
+        group.appendChild(category);
+        group.appendChild(toggle);
+        group.appendChild(content);
+
+        content.appendChild(inner);
+
+
+        elements.forEach(function (element) {
+            inner.appendChild(element);
+        });
+
+
+        const hasActive =
+            !!inner.querySelector('.nav-link.active');
+
+
+        /*
+           Abrimos automáticamente:
+           - el grupo donde está la página actual
+           - Operaciones inicialmente si ninguno está activo
+        */
+
+        if (hasActive) {
+            group.classList.add('open');
+
+            toggle.setAttribute(
+                'aria-expanded',
+                'true'
+            );
+        }
+
+
+        toggle.addEventListener(
+            'click',
+            function () {
+
+                if (
+                    document.body.classList.contains(
+                        'sidebar-collapsed'
+                    )
+                ) {
+                    return;
+                }
+
+
+                const willOpen =
+                    !group.classList.contains('open');
+
+
+                /*
+                   Comportamiento tipo acordeón:
+                   un grupo principal abierto a la vez.
+                */
+
+                menu
+                    .querySelectorAll('.sidebar-group.open')
+                    .forEach(function (other) {
+
+                        if (other === group) {
+                            return;
+                        }
+
+                        other.classList.remove('open');
+
+                        const otherToggle =
+                            other.querySelector(
+                                '.sidebar-group-toggle'
+                            );
+
+                        if (otherToggle) {
+                            otherToggle.setAttribute(
+                                'aria-expanded',
+                                'false'
+                            );
+                        }
+                    });
+
+
+                group.classList.toggle(
+                    'open',
+                    willOpen
+                );
+
+                toggle.setAttribute(
+                    'aria-expanded',
+                    willOpen
+                        ? 'true'
+                        : 'false'
+                );
+            }
+        );
+
+    });
+    /*
+       No abrir ningún grupo automáticamente.
+       Solo permanece abierto el grupo que contiene
+       la opción activa de la página actual.
+    */
+}
+
+
+    /* ======================================================
+       2. TOOLTIP PROFESIONAL PARA ICONOS
+       ====================================================== */
+
+    const tooltip =
+        document.createElement('div');
+
+    tooltip.className =
+        'sidebar-icon-tooltip';
+
+    document.body.appendChild(tooltip);
+
+
+    let currentLink = null;
+
+
+    function getLinkName(link) {
+
+        const clone =
+            link.cloneNode(true);
+
+        clone
+            .querySelectorAll('i, .badge, small')
+            .forEach(function (element) {
+                element.remove();
+            });
+
+        return clone.textContent
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+
+    function showTooltip(link) {
+
+        if (
+            window.innerWidth < 992 ||
+            !document.body.classList.contains(
+                'sidebar-collapsed'
+            )
+        ) {
+            return;
+        }
+
+
+        const name =
+            getLinkName(link);
+
+        if (!name) {
+            return;
+        }
+
+
+        currentLink = link;
+
+        tooltip.textContent = name;
+
+
+        const rect =
+            link.getBoundingClientRect();
+
+
+        tooltip.style.left =
+            (rect.right + 12) + 'px';
+
+
+        /*
+           Primero posicionamos aproximadamente.
+           Después corregimos usando su altura real.
+        */
+
+        tooltip.style.top =
+            rect.top + 'px';
+
+
+        tooltip.classList.add('show');
+
+
+        requestAnimationFrame(function () {
+
+            const tooltipRect =
+                tooltip.getBoundingClientRect();
+
+            let top =
+                rect.top +
+                (rect.height / 2) -
+                (tooltipRect.height / 2);
+
+
+            const padding = 8;
+
+
+            if (top < padding) {
+                top = padding;
+            }
+
+
+            if (
+                top + tooltipRect.height >
+                window.innerHeight - padding
+            ) {
+                top =
+                    window.innerHeight -
+                    tooltipRect.height -
+                    padding;
+            }
+
+
+            tooltip.style.top =
+                top + 'px';
+        });
+
+    }
+
+
+    function hideTooltip() {
+
+        currentLink = null;
+
+        tooltip.classList.remove('show');
+    }
+
+
+    menu.addEventListener(
+        'mouseover',
+        function (event) {
+
+            const link =
+                event.target.closest('.nav-link');
+
+            if (
+                !link ||
+                !menu.contains(link) ||
+                link === currentLink
+            ) {
+                return;
+            }
+
+            showTooltip(link);
+        }
+    );
+
+
+    menu.addEventListener(
+        'mouseout',
+        function (event) {
+
+            const link =
+                event.target.closest('.nav-link');
+
+            if (!link) {
+                return;
+            }
+
+
+            if (
+                event.relatedTarget &&
+                link.contains(event.relatedTarget)
+            ) {
+                return;
+            }
+
+            hideTooltip();
+        }
+    );
+
+
+    menu.addEventListener(
+        'scroll',
+        hideTooltip
+    );
+
+
+    window.addEventListener(
+        'resize',
+        hideTooltip
+    );
+
+});
+</script>
+
+<script id="sidebarExpandAllControl">
+document.addEventListener('DOMContentLoaded', function () {
+
+    const menu =
+        document.querySelector('#sidebar .sidebar-menu');
+
+    if (!menu) {
+        return;
+    }
+
+
+    const groups =
+        Array.from(
+            menu.querySelectorAll('.sidebar-group')
+        );
+
+    if (!groups.length) {
+        return;
+    }
+
+
+    /* ===============================================
+       CREAR CONTROL GENERAL
+       =============================================== */
+
+    const control =
+        document.createElement('div');
+
+    control.className =
+        'sidebar-expand-all-control';
+
+
+    const button =
+        document.createElement('button');
+
+    button.type = 'button';
+
+    button.className =
+        'sidebar-expand-all-btn';
+
+    button.innerHTML = `
+        <span class="sidebar-expand-all-left">
+
+            <i class="bi bi-layout-sidebar-inset"></i>
+
+            <span class="sidebar-expand-all-text">
+                Desplegar todo
+            </span>
+
+        </span>
+
+        <i class="
+            bi
+            bi-chevron-down
+            sidebar-expand-all-arrow
+        "></i>
+    `;
+
+
+    control.appendChild(button);
+
+    menu.insertBefore(
+        control,
+        menu.firstChild
+    );
+
+
+    const text =
+        button.querySelector(
+            '.sidebar-expand-all-text'
+        );
+
+
+    /* ===============================================
+       ACTUALIZAR TEXTO DEL BOTÓN
+       =============================================== */
+
+    function updateButton() {
+
+        const allOpen =
+            groups.every(function (group) {
+                return group.classList.contains('open');
+            });
+
+
+        button.classList.toggle(
+            'all-open',
+            allOpen
+        );
+
+
+        text.textContent =
+            allOpen
+                ? 'Contraer todo'
+                : 'Desplegar todo';
+
+
+        button.title =
+            allOpen
+                ? 'Contraer todas las secciones'
+                : 'Desplegar todas las secciones';
+
+    }
+
+
+    /* ===============================================
+       ABRIR / CERRAR TODOS
+       =============================================== */
+
+    button.addEventListener(
+        'click',
+        function () {
+
+            const allOpen =
+                groups.every(function (group) {
+                    return group.classList.contains('open');
+                });
+
+
+            const shouldOpen =
+                !allOpen;
+
+
+            groups.forEach(function (group) {
+
+                group.classList.toggle(
+                    'open',
+                    shouldOpen
+                );
+
+
+                const toggle =
+                    group.querySelector(
+                        '.sidebar-group-toggle'
+                    );
+
+
+                if (toggle) {
+
+                    toggle.setAttribute(
+                        'aria-expanded',
+                        shouldOpen
+                            ? 'true'
+                            : 'false'
+                    );
+
+                }
+
+            });
+
+
+            updateButton();
+
+        }
+    );
+
+
+    /* ===============================================
+       SI EL USUARIO ABRE/CIERRA UN GRUPO MANUALMENTE
+       ACTUALIZAMOS EL CONTROL GENERAL
+       =============================================== */
+
+    groups.forEach(function (group) {
+
+        const toggle =
+            group.querySelector(
+                '.sidebar-group-toggle'
+            );
+
+
+        if (!toggle) {
+            return;
+        }
+
+
+        toggle.addEventListener(
+            'click',
+            function () {
+
+                /*
+                   El listener anterior del grupo se ejecuta
+                   primero. Esperamos al siguiente ciclo para
+                   leer su estado definitivo.
+                */
+
+                setTimeout(
+                    updateButton,
+                    0
+                );
+
+            }
+        );
+
+    });
+
+
+    updateButton();
+
+});
+</script>
+
+<script id="sidebar-tooltip-only-script">
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const sidebar =
+        document.getElementById('sidebar');
+
+    if (!sidebar) {
+        return;
+    }
+
+
+    const menu =
+        sidebar.querySelector('.sidebar-menu');
+
+    if (!menu) {
+        return;
+    }
+
+
+    /* Crear un único tooltip para todo el sidebar */
+
+    const tooltip =
+        document.createElement('div');
+
+    tooltip.className =
+        'sidebar-hover-tooltip';
+
+    document.body.appendChild(tooltip);
+
+
+    let currentLink = null;
+
+
+    /* Obtener solamente el nombre del botón */
+
+    function getLinkName(link) {
+
+        const clone =
+            link.cloneNode(true);
+
+        clone
+            .querySelectorAll(
+                'i, .badge, small'
+            )
+            .forEach(function (element) {
+                element.remove();
+            });
+
+
+        return clone.textContent
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+
+    function showTooltip(link) {
+
+        /* Solo cuando el sidebar está comprimido */
+
+        if (
+            window.innerWidth < 992 ||
+            !document.body.classList.contains(
+                'sidebar-collapsed'
+            )
+        ) {
+            return;
+        }
+
+
+        const name =
+            getLinkName(link);
+
+
+        if (!name) {
+            return;
+        }
+
+
+        currentLink = link;
+
+        tooltip.textContent = name;
+
+
+        const rect =
+            link.getBoundingClientRect();
+
+
+        tooltip.style.left =
+            (rect.right + 13) + 'px';
+
+        tooltip.style.top =
+            rect.top + 'px';
+
+
+        tooltip.classList.add('show');
+
+
+        requestAnimationFrame(function () {
+
+            const tooltipRect =
+                tooltip.getBoundingClientRect();
+
+
+            let top =
+                rect.top +
+                (rect.height / 2) -
+                (tooltipRect.height / 2);
+
+
+            if (top < 8) {
+                top = 8;
+            }
+
+
+            if (
+                top + tooltipRect.height >
+                window.innerHeight - 8
+            ) {
+                top =
+                    window.innerHeight -
+                    tooltipRect.height -
+                    8;
+            }
+
+
+            tooltip.style.top =
+                top + 'px';
+
+        });
+
+    }
+
+
+    function hideTooltip() {
+
+        currentLink = null;
+
+        tooltip.classList.remove('show');
+
+    }
+
+
+    /* Detectar cualquier botón/enlace del menú */
+
+    menu.addEventListener(
+        'mouseover',
+        function (event) {
+
+            const link =
+                event.target.closest('.nav-link');
+
+
+            if (
+                !link ||
+                !menu.contains(link) ||
+                link === currentLink
+            ) {
+                return;
+            }
+
+
+            showTooltip(link);
+
+        }
+    );
+
+
+    menu.addEventListener(
+        'mouseout',
+        function (event) {
+
+            const link =
+                event.target.closest('.nav-link');
+
+
+            if (!link) {
+                return;
+            }
+
+
+            if (
+                event.relatedTarget &&
+                link.contains(event.relatedTarget)
+            ) {
+                return;
+            }
+
+
+            hideTooltip();
+
+        }
+    );
+
+
+    /* Evitar que quede flotando */
+
+    menu.addEventListener(
+        'scroll',
+        hideTooltip
+    );
+
+
+    window.addEventListener(
+        'resize',
+        hideTooltip
+    );
+
+
+    document.addEventListener(
+        'click',
+        hideTooltip
+    );
+
+});
+
 </script>
 </body>
 </html>

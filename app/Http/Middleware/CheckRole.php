@@ -27,7 +27,18 @@ class CheckRole
             return $next($request);
         }
 
-        // Si no tiene permiso, error 403 o redirigir
-        abort(403, 'No tienes permiso para acceder a esta sección.');
+        // Si no tiene permiso, regresar a una zona permitida
+        // y mostrar una notificación propia del sistema.
+        $route = match ($user->role) {
+            'admin', 'cashier' => 'dashboard',
+            'waiter' => 'pos.index',
+            'kitchen' => 'kitchen.index',
+            'bar' => 'barra.index',
+            default => 'login',
+        };
+
+        return redirect()
+            ->route($route)
+            ->with('warning', 'No tienes permiso para acceder a esta sección.');
     }
 }

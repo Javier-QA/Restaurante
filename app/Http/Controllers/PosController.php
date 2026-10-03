@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Models\CashRegister;
 use App\Models\Area;
 use App\Models\Table;
 use App\Models\Category;
@@ -433,7 +435,7 @@ class PosController extends Controller
             'tip' => 0,
 
             'cash_register_id' =>
-                Auth::user()->activeCashRegister->id ?? null,
+                CashRegister::where('status', 'open')->value('id'),
 
             'serie' => $serie,
             'correlativo' => $correlativo,
@@ -636,7 +638,7 @@ class PosController extends Controller
                 'client_id' => $clientId,
                 'client_name' => $clientName,
                 'client_document' => $clientDocument,
-                'cash_register_id' => Auth::user()->activeCashRegister->id ?? null,
+                'cash_register_id' => CashRegister::where('status', 'open')->value('id'),
 
                 // SUNAT
                 'serie' => $serie,

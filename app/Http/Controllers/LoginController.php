@@ -45,11 +45,19 @@ class LoginController extends Controller
     {
         $role = Auth::user()->role;
 
-        if ($role === 'admin') {
-            return redirect()->route('dashboard'); // El jefe va al panel de control
+        if (in_array($role, ['admin', 'cashier'])) {
+            return redirect()->route('dashboard');
         }
-        
-        // Cajeros y Meseros van directo al trabajo (POS)
-        return redirect()->route('pos.index'); 
+
+        if ($role === 'kitchen') {
+            return redirect()->route('kitchen.index');
+        }
+
+        if ($role === 'bar') {
+            return redirect()->route('barra.index');
+        }
+
+        // Mozo va directamente al POS
+        return redirect()->route('pos.index');
     }
 }

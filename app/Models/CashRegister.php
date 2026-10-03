@@ -8,6 +8,7 @@ class CashRegister extends Model
 {
     protected $fillable = [
         'user_id',
+        'closed_by',
         'opening_time',
         'closing_time',
         'opening_amount',

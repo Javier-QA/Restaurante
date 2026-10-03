@@ -250,8 +250,8 @@ class CashRegisterController extends Controller
 
     public function create()
     {
-        if (auth()->user()->activeCashRegister) {
-            return redirect()->route('dashboard')->with('info', 'Ya tienes un turno de caja abierto.');
+        if (CashRegister::where('status', 'open')->exists()) {
+            return redirect()->route('pos.index')->with('info', 'Ya existe un turno de caja abierto.');
         }
         return view('cash_registers.create');
     }
@@ -262,8 +262,8 @@ class CashRegisterController extends Controller
             'opening_amount' => 'required|numeric|min:0'
         ]);
 
-        if (auth()->user()->activeCashRegister) {
-            return redirect()->route('dashboard')->with('error', 'Ya tienes una caja abierta.');
+        if (CashRegister::where('status', 'open')->exists()) {
+            return redirect()->route('pos.index')->with('info', 'Ya existe una caja abierta.');
         }
 
         CashRegister::create([
@@ -278,7 +278,7 @@ class CashRegisterController extends Controller
 
     public function close()
     {
-        $cashRegister = auth()->user()->activeCashRegister;
+        $cashRegister = CashRegister::where('status', 'open')->first();
 
         if (!$cashRegister) {
             return redirect()->route('dashboard')->with('error', 'No tienes ninguna caja abierta para cerrar.');
@@ -334,10 +334,10 @@ class CashRegisterController extends Controller
             'closing_amount' => 'required|numeric|min:0'
         ]);
 
-        $cashRegister = auth()->user()->activeCashRegister;
+        $cashRegister = CashRegister::where('status', 'open')->first();
 
         if (!$cashRegister) {
-            return redirect()->route('dashboard')->with('error', 'No tienes ninguna caja abierta.');
+            return redirect()->route('dashboard')->with('error', 'No existe ninguna caja abierta.');
         }
 
         $totalSalesCash = $cashRegister->orders()->where('payment_method', 'cash')->where('status', 'completed')->sum('total');
@@ -348,6 +348,7 @@ class CashRegisterController extends Controller
 
         $cashRegister->update([
             'closing_time' => Carbon::now(),
+            'closed_by' => auth()->id(),
             'closing_amount' => $request->closing_amount,
             'expected_amount' => $expectedAmount,
             'difference' => $difference,
