@@ -198,10 +198,85 @@ body {
     }
 }
 </style>
+
+<style>
+@media screen {
+    body {
+        display: block !important;
+        width: auto !important;
+        min-height: 100vh !important;
+        margin: 0 !important;
+        padding: 90px 20px 50px !important;
+        background: #eef3f8 !important;
+    }
+
+    .ticket-preview {
+        width: 78mm !important;
+        max-width: calc(100vw - 32px);
+        margin: 0 auto !important;
+        padding: 18px 14px !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #dce3ea;
+        border-radius: 10px !important;
+        box-shadow: 0 14px 40px rgba(15, 23, 42, .14) !important;
+    }
+
+    .preview-toolbar {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        padding: 0;
+        background: transparent;
+        border: 0;
+        z-index: 1000;
+    }
+
+    .preview-btn {
+        min-height: 40px;
+        padding: 8px 18px;
+        border-radius: 50rem;
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .preview-btn-back {
+        color: #334155;
+        background: #ffffff;
+        border: 1px solid #94a3b8;
+    }
+
+    .preview-btn-print {
+        color: #ffffff;
+        background: #198754;
+        border: 1px solid #198754;
+    }
+}
+</style>
 </head>
-<body> <div class="no-print" style="position: fixed; top: 0; right: 0; padding: 10px; background: white; border: 1px solid #ccc; z-index: 1000;">
-        <button onclick="window.print()" style="padding: 10px 18px; font-weight: bold; cursor: pointer; background: #198754; color: white; border: 0; border-radius: 6px;">IMPRIMIR PRECUENTA</button>
+<body>
+
+    <div class="preview-toolbar no-print">
+        <button type="button"
+                class="preview-btn preview-btn-back"
+                onclick="window.close()">
+            ← Volver
+        </button>
+
+        <button type="button"
+                class="preview-btn preview-btn-print"
+                onclick="window.print()">
+            Imprimir precuenta
+        </button>
     </div>
+
+    <div class="ticket-preview">
 
     <div class="header text-center">
         @if(isset($settings['company_logo']))
@@ -280,5 +355,16 @@ body {
 
 </div>
 
+    </div>
+
+<script>
+function cerrarPrecuenta() {
+    if (window.opener && !window.opener.closed) {
+        window.close();
+    } else {
+        history.back();
+    }
+}
+</script>
 </body>
 </html>

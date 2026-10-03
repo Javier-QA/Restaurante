@@ -181,7 +181,8 @@
                 <a href="{{ route('pos.precheck', $order->id) }}"
    class="btn btn-light w-100 border text-muted btn-sm fw-bold py-2"
    title="Pre-cuenta"
-   onclick="window.open(this.href, 'precuenta', 'width=430,height=720,resizable=yes,scrollbars=yes'); return false;">
+   target="_self"
+   >
                     <i class="bi bi-receipt"></i> <span style="font-size: 0.7rem;">Pre</span>
                 </a>
             </div>
@@ -200,21 +201,21 @@
         <div class="d-grid">
             @if($order->details->contains('status', 'draft'))
                 <button type="button"
-                        class="btn btn-success fw-bold py-2 shadow-sm"
+                        class="btn btn-success pos-charge-btn fw-bold py-2 shadow-sm"
                         onclick="showPosNotification('Primero debes enviar todos los platos a Cocina antes de cobrar.')">
-                    <i class="bi bi-cash-coin me-2"></i> COBRAR
+                    <i class="bi bi-cash-stack me-2"></i> COBRAR
                 </button>
             @elseif($order->details->contains('status', 'pending'))
                 <button type="button"
-                        class="btn btn-success fw-bold py-2 shadow-sm"
+                        class="btn btn-success pos-charge-btn fw-bold py-2 shadow-sm"
                         onclick="showPosNotification('Cocina debe iniciar la preparación antes de cobrar.')">
-                    <i class="bi bi-cash-coin me-2"></i> COBRAR
+                    <i class="bi bi-cash-stack me-2"></i> COBRAR
                 </button>
             @else
                 <button type="button"
-                        class="btn btn-success fw-bold py-2 shadow-sm"
+                        class="btn btn-success pos-charge-btn fw-bold py-2 shadow-sm"
                         onclick="var m=document.getElementById('checkoutModal'); if(m){ new bootstrap.Modal(m).show(); }">
-                    <i class="bi bi-cash-coin me-2"></i> COBRAR
+                    <i class="bi bi-cash-stack me-2"></i> COBRAR
                 </button>
             @endif
         </div>
@@ -250,9 +251,18 @@
         background:
             color-mix(
                 in srgb,
-                var(--pos-primary, #ff8c00) 5%,
+                var(--pos-primary, #ff8c00) 12%,
                 #ffffff
-            );
+            ) !important;
+    }
+
+    html[data-color-mode="dark"] .pos-cart-body tbody tr:hover {
+        background:
+            color-mix(
+                in srgb,
+                var(--pos-primary) 10%,
+                #132338
+            ) !important;
     }
 
     .pos-cart-body .text-primary {
@@ -306,6 +316,52 @@
         border-color: var(--pos-primary-hover, #e07b00) !important;
     }
 
+
+/* Botón COBRAR - icono limpio y blanco */
+.pos-cart-summary .pos-charge-btn .bi,
+.pos-cart-summary .pos-charge-btn .bi::before {
+    color: #ffffff !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    outline: 0 !important;
+}
+
+.pos-cart-summary .pos-charge-btn .bi {
+    padding: 0 !important;
+    border-radius: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    display: inline-block !important;
+}
+
+/* También en modo oscuro */
+html[data-color-mode="dark"] .pos-cart-summary .pos-charge-btn .bi,
+html[data-color-mode="dark"] .pos-cart-summary .pos-charge-btn .bi::before {
+    color: #ffffff !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+/* HOVER FILAS - CUENTA ACTUAL */
+html:not([data-color-mode="dark"]) .pos-cart-body tbody tr:hover > td {
+    background: color-mix(
+        in srgb,
+        var(--pos-primary, var(--primary)) 12%,
+        #ffffff
+    ) !important;
+}
+
+html[data-color-mode="dark"] .pos-cart-body tbody tr:hover > td {
+    background: color-mix(
+        in srgb,
+        var(--pos-primary, var(--primary)) 10%,
+        #132338
+    ) !important;
+}
 </style>
 
 

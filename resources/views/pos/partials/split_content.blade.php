@@ -1,21 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid split-page">
     <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
+        <div class="col-12">
             
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex justify-content-between align-items-center split-page-header">
                 <div>
-                    <h2 class="fw-bold text-dark mb-0"><i class="bi bi-arrows-angle-expand me-2"></i> Dividir Cuenta</h2>
-                    <p class="text-muted mb-0">Selecciona los items que deseas cobrar por separado</p>
+                    <h2 class="split-page-title"><i class="bi bi-arrows-angle-expand me-2"></i> Dividir Cuenta</h2>
+                    <p class="split-page-subtitle">Selecciona los items que deseas cobrar por separado</p>
                 </div>
-                <a href="{{ route('pos.order', $order->table_id) }}" class="btn btn-outline-secondary">
+                <a href="{{ route('pos.order', $order->table_id) }}" class="btn btn-outline-secondary split-back-btn">
                     <i class="bi bi-arrow-left"></i> Volver
                 </a>
             </div>
 
-            <div class="card border-0 shadow-sm">
+            <div class="card split-main-card">
                 <div class="card-header text-white py-3 split-table-header">
                     <h5 class="mb-0 fw-bold">Mesa: {{ $order->table->name ?? 'Mesa' }} - Orden #{{ $order->id }}</h5>
                 </div>
@@ -99,11 +99,11 @@
                         </div>
                     </div>
 
-                    <div class="card-footer bg-light p-4">
+                    <div class="card-footer split-payment-panel">
                         <div class="row g-3 align-items-center">
                             <div class="col-md-6">
                                 <div class="mb-3">
-    <label class="form-label fw-bold">
+    <label class="form-label split-section-label">
         Tipo de comprobante
     </label>
 
@@ -191,7 +191,7 @@
     </div>
 
 </div>
-<label class="form-label fw-bold">Método de Pago para esta parte:</label>
+<label class="form-label split-section-label">Método de Pago para esta parte:</label>
                                 <div class="row g-2">
 
     <div class="col-6">
@@ -800,689 +800,329 @@ window.lookupSplitClientByDocument = async function() {
 };
 </script>
 
-<style>
-/* DIVIDIR CUENTA - MODO OSCURO DEFINITIVO */
 
-/* Contenedor inferior */
-html[data-color-mode="dark"] .card-footer.bg-light {
-    background: #132338 !important;
-    border-color: #30465d !important;
-    color: #ffffff !important;
-}
 
-/* Etiquetas */
-html[data-color-mode="dark"] .card-footer.bg-light .form-label {
-    color: #dbe7f3 !important;
-}
 
-/* =====================================
-   COMPROBANTES
-   ===================================== */
 
-html[data-color-mode="dark"] .split-doc-btn {
-    background: #182b40 !important;
-    border: 1px solid #466078 !important;
-    color: #dbe7f3 !important;
-    box-shadow: none !important;
-}
 
-html[data-color-mode="dark"] .split-doc-btn:hover {
-    border-color: #ff8c00 !important;
-    color: #ffb04a !important;
-}
 
-html[data-color-mode="dark"] .btn-check:checked + .split-doc-ticket {
-    background: rgba(255, 140, 0, .18) !important;
-    border-color: #ff8c00 !important;
-    color: #ffb04a !important;
-}
 
-html[data-color-mode="dark"] .btn-check:checked + .split-doc-boleta {
-    background: rgba(2, 132, 199, .18) !important;
-    border-color: #38bdf8 !important;
-    color: #7dd3fc !important;
-}
-
-html[data-color-mode="dark"] .btn-check:checked + .split-doc-factura {
-    background: rgba(34, 197, 94, .18) !important;
-    border-color: #22c55e !important;
-    color: #4ade80 !important;
-}
-
-
-/* =====================================
-   MÉTODOS DE PAGO
-   ===================================== */
-
-html[data-color-mode="dark"] .split-payment-btn {
-    background: #182b40 !important;
-    border: 1px solid #466078 !important;
-    color: #dbe7f3 !important;
-    box-shadow: none !important;
-}
-
-html[data-color-mode="dark"] .btn-check:checked + .split-payment-cash {
-    background: rgba(22, 163, 74, .16) !important;
-    border-color: #22c55e !important;
-    color: #4ade80 !important;
-}
-
-html[data-color-mode="dark"] .btn-check:checked + .split-payment-card {
-    background: rgba(59, 130, 246, .16) !important;
-    border-color: #60a5fa !important;
-    color: #93c5fd !important;
-}
-
-html[data-color-mode="dark"] .btn-check:checked + .split-payment-yape {
-    background: rgba(132, 56, 255, .18) !important;
-    border-color: #a78bfa !important;
-    color: #c4b5fd !important;
-}
-
-html[data-color-mode="dark"] .btn-check:checked + .split-payment-plin {
-    background: rgba(6, 182, 212, .16) !important;
-    border-color: #22d3ee !important;
-    color: #67e8f9 !important;
-}
-
-
-/* =====================================
-   INPUTS
-   ===================================== */
-
-html[data-color-mode="dark"] .card-footer.bg-light .form-control {
-    background: #0f1f32 !important;
-    border: 1px solid #40566e !important;
-    color: #ffffff !important;
-}
-
-html[data-color-mode="dark"] .card-footer.bg-light .form-control::placeholder {
-    color: #8196aa !important;
-}
-
-html[data-color-mode="dark"] .card-footer.bg-light .form-control:focus {
-    background: #10243a !important;
-    border-color: var(--primary) !important;
-    color: #ffffff !important;
-    box-shadow: 0 0 0 .2rem rgba(59,130,246,.12) !important;
-}
-
-
-/* =====================================
-   RECIBIDO / CAMBIO
-   ===================================== */
-
-html[data-color-mode="dark"] .split-cash-group {
-    background: #182b40 !important;
-    border: 1px solid #30465d !important;
-    border-radius: 10px !important;
-    padding: 12px !important;
-}
-
-html[data-color-mode="dark"] .split-cash-group .fw-bold,
-html[data-color-mode="dark"] .split-cash-group label {
-    color: #dbe7f3 !important;
-}
-
-html[data-color-mode="dark"] #splitChangeAmount {
-    color: #4ade80 !important;
-}
-
-
-/* =====================================
-   MONTOS DE TARJETA / QR
-   ===================================== */
-
-html[data-color-mode="dark"] .split-card-amount,
-html[data-color-mode="dark"] .split-qr-box {
-    background: #182b40 !important;
-    border-color: #30465d !important;
-    color: #dbe7f3 !important;
-}
-
-html[data-color-mode="dark"] .split-card-amount strong,
-html[data-color-mode="dark"] .split-qr-amount strong {
-    color: #ffffff !important;
-}
-
-
-/* =====================================
-   COBRAR SELECCIÓN
-   ===================================== */
-
-html[data-color-mode="dark"] #btnSplit {
-    background: var(--primary) !important;
-    border-color: var(--primary) !important;
-    color: #ffffff !important;
-    box-shadow: none !important;
-}
-
-html[data-color-mode="dark"] #btnSplit:disabled {
-    background: #34465a !important;
-    border-color: #465a70 !important;
-    color: #91a2b3 !important;
-    opacity: 1 !important;
-}
-
-
-/* =====================================
-   TEXTOS GENERALES
-   ===================================== */
-
-html[data-color-mode="dark"] .card-footer.bg-light .text-muted {
-    color: #8fa6bd !important;
-}
-
-</style>
-
-
-<style>
-/* DIVIDIR CUENTA - COLORES DE PAGO Y RECIBIDO V2 */
-
-/* =====================================================
-   MÉTODOS DE PAGO
-   Cada método conserva su color incluso sin seleccionar
-   ===================================================== */
-
-html[data-color-mode="dark"] .split-payment-cash {
-    background: rgba(22, 163, 74, .18) !important;
-    border: 1px solid #22c55e !important;
-    color: #4ade80 !important;
-}
-
-html[data-color-mode="dark"] .split-payment-card {
-    background: rgba(59, 130, 246, .18) !important;
-    border: 1px solid #60a5fa !important;
-    color: #93c5fd !important;
-}
-
-html[data-color-mode="dark"] .split-payment-yape {
-    background: rgba(168, 85, 247, .18) !important;
-    border: 1px solid #c084fc !important;
-    color: #d8b4fe !important;
-}
-
-html[data-color-mode="dark"] .split-payment-plin {
-    background: rgba(20, 184, 166, .18) !important;
-    border: 1px solid #2dd4bf !important;
-    color: #5eead4 !important;
-}
-
-
-/* =====================================================
-   MÉTODO SELECCIONADO
-   Un poco más intenso
-   ===================================================== */
-
-html[data-color-mode="dark"] .btn-check:checked + .split-payment-cash {
-    background: #168c50 !important;
-    border-color: #22c55e !important;
-    color: #ffffff !important;
-}
-
-html[data-color-mode="dark"] .btn-check:checked + .split-payment-card {
-    background: #2563eb !important;
-    border-color: #60a5fa !important;
-    color: #ffffff !important;
-}
-
-html[data-color-mode="dark"] .btn-check:checked + .split-payment-yape {
-    background: #9333ea !important;
-    border-color: #c084fc !important;
-    color: #ffffff !important;
-}
-
-html[data-color-mode="dark"] .btn-check:checked + .split-payment-plin {
-    background: #0f9f91 !important;
-    border-color: #2dd4bf !important;
-    color: #ffffff !important;
-}
-
-
-/* =====================================================
-   RECIBIDO
-   ===================================================== */
-
-html[data-color-mode="dark"] #splitCashGroup {
-    background: #182b40 !important;
-    border: 1px solid #38516a !important;
-    border-radius: 10px !important;
-    padding: 12px !important;
-}
-
-html[data-color-mode="dark"] #splitCashGroup label,
-html[data-color-mode="dark"] #splitCashGroup span {
-    color: #dbe7f3 !important;
-}
-
-
-/* El input 0.00 NO debe quedar blanco */
-
-html[data-color-mode="dark"] #splitReceivedAmount,
-html[data-color-mode="dark"] input#splitReceivedAmount,
-html[data-color-mode="dark"] #splitCashGroup input[type="number"] {
-    background: #0d1b2b !important;
-    background-color: #0d1b2b !important;
-    color: #ffffff !important;
-    border: 2px solid #22a05a !important;
-    border-radius: 10px !important;
-    box-shadow: none !important;
-    -webkit-text-fill-color: #ffffff !important;
-}
-
-html[data-color-mode="dark"] #splitReceivedAmount:focus,
-html[data-color-mode="dark"] input#splitReceivedAmount:focus {
-    background: #102238 !important;
-    background-color: #102238 !important;
-    color: #ffffff !important;
-    border-color: #22c55e !important;
-    box-shadow: 0 0 0 3px rgba(34, 197, 94, .12) !important;
-}
-
-
-/* =====================================================
-   CAMBIO
-   ===================================================== */
-
-html[data-color-mode="dark"] #splitChangeAmount {
-    color: #22c55e !important;
-    -webkit-text-fill-color: #22c55e !important;
-}
-
-
-/* =====================================================
-   EVITAR QUE BOOTSTRAP .bg-light VUELVA A PINTAR BLANCO
-   ===================================================== */
-
-html[data-color-mode="dark"] #splitCashGroup,
-html[data-color-mode="dark"] #splitCashGroup * {
-    --bs-bg-opacity: 1;
-}
-
-</style>
-
-
-<style>
-/* DIVIDIR CUENTA - MONTOS A PAGAR V2 */
-
-/* =========================================
-   TARJETA - MONTO A PAGAR
-   ========================================= */
-
-html[data-color-mode="dark"] #splitCardAmount {
-    display: none;
-    background: #182b40 !important;
-    background-color: #182b40 !important;
-    border: 1px solid #38516a !important;
-    border-radius: 10px !important;
-    color: #dbe7f3 !important;
-    padding: 12px 14px !important;
-}
-
-html[data-color-mode="dark"] #splitCardAmount span {
-    color: #9db2c7 !important;
-}
-
-html[data-color-mode="dark"] #splitCardAmount strong {
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-}
-
-
-/* =========================================
-   YAPE - MONTO A PAGAR
-   ========================================= */
-
-html[data-color-mode="dark"] #splitYapeQr {
-    background: #182b40 !important;
-    background-color: #182b40 !important;
-    border-color: #a78bfa !important;
-    color: #dbe7f3 !important;
-}
-
-html[data-color-mode="dark"] #splitYapeQr .split-qr-title {
-    color: #c4b5fd !important;
-}
-
-html[data-color-mode="dark"] #splitYapeQr .split-qr-amount {
-    background: #0d1b2b !important;
-    border: 1px solid #6d28d9 !important;
-    color: #dbe7f3 !important;
-}
-
-html[data-color-mode="dark"] #splitYapeQr .split-qr-amount span {
-    color: #b8a8d8 !important;
-}
-
-html[data-color-mode="dark"] #splitYapeQr .split-qr-amount strong {
-    color: #d8b4fe !important;
-    -webkit-text-fill-color: #d8b4fe !important;
-}
-
-
-/* =========================================
-   PLIN - MONTO A PAGAR
-   ========================================= */
-
-html[data-color-mode="dark"] #splitPlinQr {
-    background: #182b40 !important;
-    background-color: #182b40 !important;
-    border-color: #2dd4bf !important;
-    color: #dbe7f3 !important;
-}
-
-html[data-color-mode="dark"] #splitPlinQr .split-qr-title {
-    color: #5eead4 !important;
-}
-
-html[data-color-mode="dark"] #splitPlinQr .split-qr-amount {
-    background: #0d1b2b !important;
-    border: 1px solid #0f9f91 !important;
-    color: #dbe7f3 !important;
-}
-
-html[data-color-mode="dark"] #splitPlinQr .split-qr-amount span {
-    color: #9bc9c4 !important;
-}
-
-html[data-color-mode="dark"] #splitPlinQr .split-qr-amount strong {
-    color: #5eead4 !important;
-    -webkit-text-fill-color: #5eead4 !important;
-}
-
-
-/* =========================================
-   EVITAR FONDOS BLANCOS INTERNOS
-   ========================================= */
-
-html[data-color-mode="dark"] #splitCardAmount *,
-html[data-color-mode="dark"] #splitYapeQr *,
-html[data-color-mode="dark"] #splitPlinQr * {
-    box-shadow: none;
-}
-
-</style>
-
-@endsection
-<style>
-.split-payment-btn {
-    background: #ffffff;
-    border: 2px solid #dee2e6;
-    border-radius: 9px;
-    padding: 9px 6px;
-    transition: all .18s ease;
-}
-
-/* EFECTIVO */
-.split-payment-cash {
-    color: #198754;
-    border-color: #198754;
-}
-
-.split-payment-cash:hover,
-#splitCash:checked + .split-payment-cash {
-    background: #198754 !important;
-    border-color: #198754 !important;
-    color: #fff !important;
-}
-
-/* TARJETA */
-.split-payment-card {
-    color: #0d6efd;
-    border-color: #0d6efd;
-}
-
-.split-payment-card:hover,
-#splitCard:checked + .split-payment-card {
-    background: #0d6efd !important;
-    border-color: #0d6efd !important;
-    color: #fff !important;
-}
-
-/* YAPE */
-.split-payment-yape {
-    color: #742284;
-    border-color: #742284;
-}
-
-.split-payment-yape:hover,
-#splitYape:checked + .split-payment-yape {
-    background: #742284 !important;
-    border-color: #742284 !important;
-    color: #fff !important;
-}
-
-/* PLIN */
-.split-payment-plin {
-    color: #00a884;
-    border-color: #00a884;
-}
-
-.split-payment-plin:hover,
-#splitPlin:checked + .split-payment-plin {
-    background: #00a884 !important;
-    border-color: #00a884 !important;
-    color: #fff !important;
-}
-</style>
-
-<style>
-/* DIVIDIR CUENTA - COLORES AUN SIN SELECCIONAR */
-
-/* EFECTIVO */
-.split-payment-cash {
-    background: #edf8f2 !important;
-    color: #198754 !important;
-    border-color: #198754 !important;
-}
-
-.split-payment-cash:hover,
-#splitCash:checked + .split-payment-cash {
-    background: #198754 !important;
-    color: #fff !important;
-    border-color: #198754 !important;
-}
-
-/* TARJETA */
-.split-payment-card {
-    background: #eef5ff !important;
-    color: #0d6efd !important;
-    border-color: #0d6efd !important;
-}
-
-.split-payment-card:hover,
-#splitCard:checked + .split-payment-card {
-    background: #0d6efd !important;
-    color: #fff !important;
-    border-color: #0d6efd !important;
-}
-
-/* YAPE */
-.split-payment-yape {
-    background: #f6eef8 !important;
-    color: #742284 !important;
-    border-color: #742284 !important;
-}
-
-.split-payment-yape:hover,
-#splitYape:checked + .split-payment-yape {
-    background: #742284 !important;
-    color: #fff !important;
-    border-color: #742284 !important;
-}
-
-/* PLIN */
-.split-payment-plin {
-    background: #effaf7 !important;
-    color: #00a884 !important;
-    border-color: #00a884 !important;
-}
-
-.split-payment-plin:hover,
-#splitPlin:checked + .split-payment-plin {
-    background: #00a884 !important;
-    color: #fff !important;
-    border-color: #00a884 !important;
-}
-</style>
 
 <style>
 /* =========================================================
-   DIVIDIR CUENTA - MISMO ESTILO DE COBRAR VENTA
+   DIVIDIR CUENTA
+   Diseño unificado con el sistema
    ========================================================= */
 
-.split-payment-btn {
-    width: 100%;
-    min-height: 44px;
-    border-width: 2px !important;
-    border-style: solid !important;
+.split-page {
+    --split-navy: #0b2e4f;
+    --split-navy-hover: #08253f;
+    --split-orange: #f49114;
+    --split-green: #168a5b;
+    --split-border: #e2e8f0;
+    --split-muted: #64748b;
+    --split-surface: #ffffff;
+    --split-soft: #f8fafc;
+}
+
+/* CONTENEDOR GENERAL */
+.split-page {
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+.split-page-header {
+    margin-bottom: 1.35rem;
+}
+
+.split-page-title {
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: -.025em;
+    color: #17212b;
+    margin: 0;
+}
+
+.split-page-title i {
+    color: var(--split-orange);
+}
+
+.split-page-subtitle {
+    margin: .3rem 0 0;
+    color: var(--split-muted);
+    font-size: .9rem;
+}
+
+/* TARJETA PRINCIPAL */
+.split-main-card {
+    background: var(--split-surface);
+    border: 1px solid var(--split-border) !important;
+    border-radius: 16px !important;
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(15, 23, 42, .06) !important;
+}
+
+/* ENCABEZADO DE LA ORDEN */
+.split-table-header {
+    background: var(--split-navy) !important;
+    border: 0 !important;
+    padding: 1rem 1.25rem !important;
+}
+
+.split-table-header h5 {
+    font-size: 1rem;
+    letter-spacing: -.01em;
+}
+
+/* TABLA */
+.split-page .table {
+    --bs-table-bg: transparent;
+    margin: 0;
+}
+
+.split-page .table thead th {
+    background: #f8fafc !important;
+    color: #64748b;
+    border-bottom: 1px solid var(--split-border);
+    padding-top: .8rem;
+    padding-bottom: .8rem;
+    font-size: .73rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .045em;
+}
+
+.split-page .table tbody td {
+    padding-top: .95rem;
+    padding-bottom: .95rem;
+    border-color: #edf1f5;
+    vertical-align: middle;
+}
+
+.split-page .table tbody tr {
+    transition: background-color .15s ease;
+}
+
+.split-page .table tbody tr:hover {
+    background: #fbfcfd;
+}
+
+.split-page .form-check-input {
+    width: 1.15rem;
+    height: 1.15rem;
+    cursor: pointer;
+}
+
+.split-page .form-check-input:checked {
+    background-color: var(--split-navy);
+    border-color: var(--split-navy);
+}
+
+/* CONTROL DE CANTIDAD */
+.split-page .split-qty {
+    min-width: 42px;
+    border-color: #d9e1e8;
+    background: #fff;
+}
+
+.split-page .input-group .btn {
+    min-width: 34px;
+    border-color: #d9e1e8;
+    font-weight: 800;
+}
+
+.split-page .input-group .btn-outline-primary {
+    color: var(--split-navy);
+}
+
+.split-page .input-group .btn-outline-primary:hover {
+    background: var(--split-navy);
+    border-color: var(--split-navy);
+    color: #fff;
+}
+
+/* ZONA DE COBRO */
+.split-payment-panel {
+    background: #f8fafc !important;
+    border-top: 1px solid var(--split-border) !important;
+    padding: 1.4rem !important;
+}
+
+.split-section-label {
+    color: #334155;
+    font-size: .82rem;
+    font-weight: 800;
+    margin-bottom: .55rem;
+}
+
+/* COMPROBANTES */
+.split-doc-btn {
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff !important;
+    border: 1px solid #d9e2ea !important;
     border-radius: 10px !important;
-    font-weight: 700 !important;
-    transition:
-        background-color .18s ease,
-        color .18s ease,
-        border-color .18s ease,
-        box-shadow .18s ease,
-        transform .12s ease !important;
+    color: #475569 !important;
+    font-size: .84rem;
+    transition: all .15s ease;
+}
+
+.split-doc-btn:hover {
+    border-color: var(--split-orange) !important;
+    color: var(--split-orange) !important;
+}
+
+#splitTicket:checked + .split-doc-ticket,
+#splitBoleta:checked + .split-doc-boleta,
+#splitFactura:checked + .split-doc-factura {
+    background: var(--split-orange) !important;
+    border-color: var(--split-orange) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 10px rgba(244,145,20,.18);
+}
+
+/* DATOS DEL CLIENTE */
+#splitClientData {
+    background: #fff;
+    border: 1px solid var(--split-border);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.split-page .form-control {
+    min-height: 42px;
+    border: 1px solid #d9e2ea;
+    border-radius: 10px;
+    color: #17212b;
+}
+
+.split-page .form-control:focus {
+    border-color: var(--split-navy);
+    box-shadow: 0 0 0 .2rem rgba(11,46,79,.08);
+}
+
+/* MÉTODOS DE PAGO */
+.split-payment-btn {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .25rem;
+    border-radius: 10px !important;
+    border: 1px solid !important;
+    font-size: .84rem;
+    transition: all .15s ease;
+}
+
+.split-payment-cash {
+    background: #f1faf5 !important;
+    border-color: #a9d9c1 !important;
+    color: #168a5b !important;
+}
+
+.split-payment-card {
+    background: #f2f7ff !important;
+    border-color: #b9d2fa !important;
+    color: #2563a9 !important;
+}
+
+.split-payment-yape {
+    background: #faf5ff !important;
+    border-color: #d9c0ec !important;
+    color: #742284 !important;
+}
+
+.split-payment-plin {
+    background: #f0fbf9 !important;
+    border-color: #afe0d7 !important;
+    color: #087f70 !important;
+}
+
+#splitCash:checked + .split-payment-cash {
+    background: #168a5b !important;
+    border-color: #168a5b !important;
+    color: #fff !important;
+}
+
+#splitCard:checked + .split-payment-card {
+    background: #2563a9 !important;
+    border-color: #2563a9 !important;
+    color: #fff !important;
+}
+
+#splitYape:checked + .split-payment-yape {
+    background: #742284 !important;
+    border-color: #742284 !important;
+    color: #fff !important;
+}
+
+#splitPlin:checked + .split-payment-plin {
+    background: #087f70 !important;
+    border-color: #087f70 !important;
+    color: #fff !important;
 }
 
 /* EFECTIVO */
-.split-payment-cash {
-    background: #edf8f2 !important;
-    color: #198754 !important;
-    border-color: #198754 !important;
-}
-
-.split-payment-cash:hover,
-#splitCash:checked + .split-payment-cash {
-    background: #198754 !important;
-    color: #fff !important;
-    border-color: #198754 !important;
-    box-shadow: 0 3px 10px rgba(25,135,84,.22);
-}
-
-/* TARJETA */
-.split-payment-card {
-    background: #eef5ff !important;
-    color: #0d6efd !important;
-    border-color: #0d6efd !important;
-}
-
-.split-payment-card:hover,
-#splitCard:checked + .split-payment-card {
-    background: #0d6efd !important;
-    color: #fff !important;
-    border-color: #0d6efd !important;
-    box-shadow: 0 3px 10px rgba(13,110,253,.22);
-}
-
-/* YAPE */
-.split-payment-yape {
-    background: #f6eef8 !important;
-    color: #742284 !important;
-    border-color: #742284 !important;
-}
-
-.split-payment-yape:hover,
-#splitYape:checked + .split-payment-yape {
-    background: #742284 !important;
-    color: #fff !important;
-    border-color: #742284 !important;
-    box-shadow: 0 3px 10px rgba(116,34,132,.22);
-}
-
-/* PLIN */
-.split-payment-plin {
-    background: #effaf7 !important;
-    color: #00a884 !important;
-    border-color: #00a884 !important;
-}
-
-.split-payment-plin:hover,
-#splitPlin:checked + .split-payment-plin {
-    background: #00a884 !important;
-    color: #fff !important;
-    border-color: #00a884 !important;
-    box-shadow: 0 3px 10px rgba(0,168,132,.22);
-}
-
-/* EFECTO AL PRESIONAR */
-.split-payment-btn:active {
-    transform: scale(.97);
-}
-</style>
-
-<style>
 .split-cash-group {
-    padding: 12px;
-    background: #edf8f2;
-    border: 1px solid #198754;
+    background: #fff;
+    border: 1px solid #cfe7da;
     border-radius: 12px;
-}
-
-.split-cash-group .form-label {
-    color: #198754;
+    padding: 1rem;
 }
 
 #splitReceivedAmount {
-    border: 2px solid #198754 !important;
-    color: #198754 !important;
-    background: #ffffff !important;
-    border-radius: 10px;
+    background: #fff !important;
+    border-color: #a9d9c1 !important;
+    font-size: 1.05rem !important;
+    color: #17212b !important;
 }
 
 #splitReceivedAmount:focus {
-    border-color: #198754 !important;
-    box-shadow: 0 0 0 .18rem rgba(25,135,84,.15) !important;
+    border-color: var(--split-green) !important;
+    box-shadow: 0 0 0 .2rem rgba(22,138,91,.08) !important;
 }
 
 #splitChangeAmount {
-    color: #198754 !important;
+    color: var(--split-green) !important;
 }
-</style>
 
-<style>
-/* TARJETA - DIVIDIR CUENTA */
+/* TARJETA */
 .split-card-amount {
-    padding: 12px 14px;
-    background: #eef5ff;
-    border: 1px solid #0d6efd;
+    padding: .9rem 1rem;
+    background: #fff;
+    border: 1px solid #c9daf2;
     border-radius: 12px;
     align-items: center;
     justify-content: space-between;
 }
 
-.split-card-amount span {
-    color: #0d6efd;
-}
-
 #splitCardAmountValue {
-    color: #0d6efd;
-    font-size: 1.25rem;
+    color: #2563a9;
+    font-size: 1.15rem;
     font-weight: 800;
 }
-</style>
 
-<style>
+/* YAPE / PLIN */
 .split-qr-box {
-    padding: 14px;
+    padding: 1rem;
     border-radius: 12px;
     text-align: center;
+    background: #fff;
 }
 
 .split-yape-box {
-    background: #f8effa;
-    border: 1px solid #742284;
+    border: 1px solid #d9c0ec;
 }
 
 .split-plin-box {
-    background: #effaf7;
-    border: 1px solid #00a884;
+    border: 1px solid #afe0d7;
 }
 
 .split-qr-title {
     font-weight: 800;
-    margin-bottom: 10px;
+    margin-bottom: .8rem;
 }
 
 .split-yape-box .split-qr-title {
@@ -1490,67 +1130,101 @@ html[data-color-mode="dark"] #splitPlinQr * {
 }
 
 .split-plin-box .split-qr-title {
-    color: #00a884;
+    color: #087f70;
 }
 
 .split-qr-image {
     display: block;
-    width: 170px;
-    height: 170px;
+    width: 155px;
+    height: 155px;
     object-fit: contain;
-    margin: 8px auto 12px;
-    background: #ffffff;
-    padding: 6px;
+    margin: .5rem auto .8rem;
+    padding: 5px;
+    background: #fff;
     border-radius: 10px;
 }
 
 .split-qr-empty {
-    padding: 20px 10px;
-    color: #6c757d;
+    padding: 1.25rem .5rem;
+    color: #94a3b8;
 }
 
 .split-qr-empty i {
     display: block;
-    font-size: 2rem;
-    margin-bottom: 5px;
+    font-size: 1.8rem;
+    margin-bottom: .3rem;
 }
 
 .split-qr-amount {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 10px 12px;
-    background: #ffffff;
+    justify-content: space-between;
+    padding: .75rem .85rem;
     border-radius: 9px;
+    background: #f8fafc;
     font-weight: 700;
-}
-
-.split-yape-box .split-qr-amount {
-    border: 1px solid #742284;
-}
-
-.split-plin-box .split-qr-amount {
-    border: 1px solid #00a884;
 }
 
 #splitYapeAmount {
     color: #742284;
-    font-size: 1.2rem;
-    font-weight: 800;
 }
 
 #splitPlinAmount {
-    color: #00a884;
-    font-size: 1.2rem;
-    font-weight: 800;
+    color: #087f70;
 }
-</style>
 
-<style>
+/* BOTÓN PRINCIPAL */
+#btnSplit {
+    min-height: 48px;
+    background: var(--split-navy) !important;
+    border-color: var(--split-navy) !important;
+    border-radius: 11px;
+    font-size: .92rem;
+    box-shadow: 0 5px 14px rgba(11,46,79,.14);
+}
+
+#btnSplit:hover:not(:disabled) {
+    background: var(--split-navy-hover) !important;
+    border-color: var(--split-navy-hover) !important;
+    transform: translateY(-1px);
+}
+
+#btnSplit:disabled {
+    background: #cbd5e1 !important;
+    border-color: #cbd5e1 !important;
+    color: #fff !important;
+    box-shadow: none;
+}
+
+/* VOLVER */
+.split-back-btn {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    border-radius: 10px;
+    border-color: #d7e0e8;
+    color: #475569;
+    font-weight: 700;
+}
+
+.split-back-btn:hover {
+    background: #fff;
+    color: var(--split-navy);
+    border-color: var(--split-navy);
+}
+
+/* MODAL DE CONFIRMACIÓN */
+#splitConfirmModal .modal-content {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
 .split-confirm-header {
-    background: #198754;
+    background: var(--split-navy);
     color: #fff;
-    border-bottom: 0;
+    border: 0;
+    padding: .9rem 1.1rem;
 }
 
 .split-confirm-icon {
@@ -1562,157 +1236,1389 @@ html[data-color-mode="dark"] #splitPlinQr * {
     align-items: center;
     justify-content: center;
     background: #edf8f2;
-    color: #198754;
-    font-size: 1.7rem;
+    color: var(--split-green);
+    font-size: 1.65rem;
 }
 
 .split-confirm-total {
-    color: #198754;
+    color: var(--split-navy);
 }
 
 .split-confirm-pay-btn {
-    background: #198754 !important;
-    border: 1px solid #198754 !important;
+    background: var(--split-green) !important;
+    border-color: var(--split-green) !important;
     color: #fff !important;
+    border-radius: 9px;
 }
 
 .split-confirm-pay-btn:hover {
-    background: #157347 !important;
-    border-color: #146c43 !important;
+    background: #11754c !important;
+    border-color: #11754c !important;
+}
+
+/* RESPONSIVE */
+@media (max-width: 767.98px) {
+    .split-page-title {
+        font-size: 1.3rem;
+    }
+
+    .split-payment-panel {
+        padding: 1rem !important;
+    }
+
+    .split-page .table tbody td {
+        padding-top: .75rem;
+        padding-bottom: .75rem;
+    }
+}
+
+/* =========================================================
+   MODO OSCURO
+   ========================================================= */
+
+html[data-color-mode="dark"] .split-page {
+    --split-surface: #122238;
+    --split-soft: #0f1f32;
+    --split-border: #2c4258;
+    --split-muted: #91a5b9;
+}
+
+html[data-color-mode="dark"] .split-page-title {
+    color: #f4f7fa;
+}
+
+html[data-color-mode="dark"] .split-page-subtitle {
+    color: #91a5b9;
+}
+
+html[data-color-mode="dark"] .split-main-card {
+    background: #122238;
+    border-color: #2c4258 !important;
+}
+
+html[data-color-mode="dark"] .split-page .table thead th {
+    background: #172a40 !important;
+    color: #9db0c3;
+    border-color: #2c4258;
+}
+
+html[data-color-mode="dark"] .split-page .table tbody td {
+    color: #e6edf4;
+    border-color: #263b50;
+}
+
+html[data-color-mode="dark"] .split-page .table tbody tr:hover {
+    background: #162a40;
+}
+
+html[data-color-mode="dark"] .split-page .text-muted {
+    color: #91a5b9 !important;
+}
+
+html[data-color-mode="dark"] .split-payment-panel {
+    background: #0f1f32 !important;
+    border-color: #2c4258 !important;
+}
+
+html[data-color-mode="dark"] .split-section-label,
+html[data-color-mode="dark"] .split-payment-panel .form-label {
+    color: #dce6ef;
+}
+
+html[data-color-mode="dark"] #splitClientData,
+html[data-color-mode="dark"] .split-cash-group,
+html[data-color-mode="dark"] .split-card-amount,
+html[data-color-mode="dark"] .split-qr-box {
+    background: #15283d;
+    border-color: #365069;
+    color: #e6edf4;
+}
+
+html[data-color-mode="dark"] .split-page .form-control,
+html[data-color-mode="dark"] .split-page .split-qty {
+    background: #0c1b2c !important;
+    border-color: #3b5269 !important;
     color: #fff !important;
 }
-</style>
 
-<style>
-/* TARJETA - IGUALAR TEXTO A YAPE Y PLIN */
-.split-card-amount span {
-    font-size: 1rem !important;
-    font-weight: 400 !important;
-    line-height: 1.5 !important;
-}
-</style>
-
-<style>
-/* TARJETA - TEXTO IGUAL A YAPE Y PLIN */
-#splitCardAmount > span {
-    color: #212529 !important;
-    font-size: 1rem !important;
-    font-weight: 400 !important;
-    line-height: 1.5 !important;
+html[data-color-mode="dark"] .split-page .form-control::placeholder {
+    color: #71869a;
 }
 
-/* SOLO EL MONTO EN AZUL */
-#splitCardAmountValue {
-    color: #0d6efd !important;
-    font-size: 1.2rem !important;
-    font-weight: 800 !important;
-}
-</style>
-
-<style>
-/* TARJETA - MISMA TIPOGRAFIA QUE YAPE/PLIN */
-#splitCardAmount {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+html[data-color-mode="dark"] .split-doc-btn {
+    background: #15283d !important;
+    border-color: #3b5269 !important;
+    color: #d6e0e9 !important;
 }
 
-#splitCardAmount > span {
-    color: #212529 !important;
-    font-size: 1rem !important;
-    font-weight: 700 !important;
-    line-height: 1.5 !important;
+html[data-color-mode="dark"] .split-qr-amount {
+    background: #0c1b2c;
 }
 
-#splitCardAmountValue {
-    color: #0d6efd !important;
-    font-size: 1.2rem !important;
-    font-weight: 800 !important;
-    line-height: 1.5 !important;
-}
-</style>
-
-<style>
-/* TARJETA - MISMO ESPACIADO QUE YAPE/PLIN */
-#splitCardAmount {
-    background: #ffffff !important;
-    border: 1px solid #0d6efd !important;
-    border-radius: 9px !important;
-
-    padding: 10px 12px !important;
-
-    justify-content: space-between !important;
-    align-items: center !important;
+html[data-color-mode="dark"] #splitReceivedAmount {
+    background: #0c1b2c !important;
+    color: #fff !important;
 }
 
-#splitCardAmount > span {
-    color: #212529 !important;
-    font-size: 1rem !important;
-    font-weight: 700 !important;
-    margin: 0 !important;
+html[data-color-mode="dark"] .split-back-btn {
+    color: #d6e0e9;
+    border-color: #3b5269;
 }
 
-#splitCardAmountValue {
-    color: #0d6efd !important;
-    font-size: 1.2rem !important;
-    font-weight: 800 !important;
-    margin: 0 !important;
+html[data-color-mode="dark"] .split-back-btn:hover {
+    background: #15283d;
+    color: #fff;
 }
-</style>
 
-<style>
+/* =========================================================
+   AJUSTE DE PALETA GLOBAL DEL SISTEMA
+   ========================================================= */
+
+/* Título e icono - modo claro */
+.split-page-title {
+    color: #111827 !important;
+}
+
+.split-page-title i {
+    color: #111827 !important;
+}
+
+/* Subtítulo - modo claro */
+.split-page-subtitle {
+    color: #4b5563 !important;
+}
+
+/* Elementos principales respetan la paleta configurada */
 .split-table-header {
-    background: #ff8c00 !important;
-    border-color: #ff8c00 !important;
-}
-</style>
-
-<style>
-.split-doc-btn {
-    background: #ffffff;
-    border: 1px solid #dce7f1;
-    border-radius: 9px;
-    padding: 8px 5px;
-    color: #475569;
+    background: var(--primary) !important;
 }
 
-.split-doc-btn:hover {
-    border-color: #ff8c00;
-    color: #ff8c00;
+#btnSplit {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
 }
 
-#splitTicket:checked + .split-doc-ticket,
-#splitBoleta:checked + .split-doc-boleta,
-#splitFactura:checked + .split-doc-factura {
-    background: #ff8c00 !important;
-    border-color: #ff8c00 !important;
+#btnSplit:hover:not(:disabled) {
+    filter: brightness(.90);
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+}
+
+/* Checkbox seleccionado */
+.split-page .form-check-input:checked {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+}
+
+/* Cantidad + */
+.split-page .input-group .btn-outline-primary {
+    color: var(--primary) !important;
+}
+
+.split-page .input-group .btn-outline-primary:hover {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
     color: #fff !important;
 }
-</style>
 
-<style>
-/* TIPO DE COMPROBANTE - DIVIDIR CUENTA */
+/* Focus de campos */
+.split-page .form-control:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--primary) 12%, transparent) !important;
+}
+
+/* =========================================================
+   MODO OSCURO
+   ========================================================= */
+
+html[data-color-mode="dark"] .split-page-title {
+    color: #f8fafc !important;
+}
+
+html[data-color-mode="dark"] .split-page-title i {
+    color: #f8fafc !important;
+}
+
+html[data-color-mode="dark"] .split-page-subtitle {
+    color: #aebdca !important;
+}
+
+/* =========================================================
+   REFINAMIENTO - COMPROBANTES, PAGOS Y BOTÓN VOLVER
+   ========================================================= */
+
+/* ---------- TIPO DE COMPROBANTE ---------- */
+
 .split-doc-btn {
     background: #ffffff !important;
-    border: 2px solid #ff8c00 !important;
-    color: #ff8c00 !important;
-    border-radius: 9px !important;
-    padding: 9px 6px !important;
-    font-weight: 700 !important;
-    transition: all .18s ease;
+    border: 1.5px solid #d6dee8 !important;
+    color: #334155 !important;
+    box-shadow: none !important;
+    font-weight: 700;
 }
 
 .split-doc-btn:hover {
-    background: #fff7ed !important;
-    border-color: #ff8c00 !important;
-    color: #ff8c00 !important;
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+    background: color-mix(in srgb, var(--primary) 4%, #ffffff) !important;
 }
 
+/* Comprobante seleccionado = paleta configurada */
 #splitTicket:checked + .split-doc-ticket,
 #splitBoleta:checked + .split-doc-boleta,
 #splitFactura:checked + .split-doc-factura {
-    background: #ff8c00 !important;
-    border-color: #ff8c00 !important;
+    background: color-mix(in srgb, var(--primary) 12%, #ffffff) !important;
+    border: 1.5px solid var(--primary) !important;
+    color: var(--primary) !important;
+    box-shadow: 0 3px 10px color-mix(in srgb, var(--primary) 10%, transparent) !important;
+}
+
+
+/* ---------- MÉTODOS DE PAGO ---------- */
+
+/* Estado normal */
+.split-payment-cash {
+    background: #ffffff !important;
+    border-color: #b9ddcb !important;
+    color: #168a5b !important;
+}
+
+.split-payment-card {
+    background: #ffffff !important;
+    border-color: #bfd4f4 !important;
+    color: #2563a9 !important;
+}
+
+.split-payment-yape {
+    background: #ffffff !important;
+    border-color: #dcc8e8 !important;
+    color: #742284 !important;
+}
+
+.split-payment-plin {
+    background: #ffffff !important;
+    border-color: #b8dfd9 !important;
+    color: #087f70 !important;
+}
+
+
+/* Seleccionados: color suave, NO fondo sólido */
+
+#splitCash:checked + .split-payment-cash {
+    background: #edf8f2 !important;
+    border: 1.5px solid #55ad80 !important;
+    color: #13734c !important;
+    box-shadow: 0 3px 9px rgba(22, 138, 91, .08) !important;
+}
+
+#splitCard:checked + .split-payment-card {
+    background: #f0f5fc !important;
+    border: 1.5px solid #78a5dc !important;
+    color: #245f9f !important;
+    box-shadow: 0 3px 9px rgba(37, 99, 169, .07) !important;
+}
+
+#splitYape:checked + .split-payment-yape {
+    background: #f8f1fa !important;
+    border: 1.5px solid #b486c0 !important;
+    color: #6d2679 !important;
+    box-shadow: 0 3px 9px rgba(116, 34, 132, .07) !important;
+}
+
+#splitPlin:checked + .split-payment-plin {
+    background: #edf8f6 !important;
+    border: 1.5px solid #69b7aa !important;
+    color: #087568 !important;
+    box-shadow: 0 3px 9px rgba(8, 127, 112, .07) !important;
+}
+
+
+/* ---------- BOTÓN VOLVER ---------- */
+
+.split-back-btn {
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #334155 !important;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
+}
+
+.split-back-btn:hover {
+    background: color-mix(in srgb, var(--primary) 5%, #ffffff) !important;
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+}
+
+
+/* =========================================================
+   MODO OSCURO
+   ========================================================= */
+
+/* Comprobantes */
+html[data-color-mode="dark"] .split-doc-btn {
+    background: #15283d !important;
+    border-color: #3a5269 !important;
+    color: #dce5ed !important;
+}
+
+html[data-color-mode="dark"] .split-doc-btn:hover {
+    background: color-mix(in srgb, var(--primary) 12%, #15283d) !important;
+    border-color: var(--primary) !important;
     color: #ffffff !important;
 }
+
+html[data-color-mode="dark"] #splitTicket:checked + .split-doc-ticket,
+html[data-color-mode="dark"] #splitBoleta:checked + .split-doc-boleta,
+html[data-color-mode="dark"] #splitFactura:checked + .split-doc-factura {
+    background: color-mix(in srgb, var(--primary) 18%, #15283d) !important;
+    border-color: var(--primary) !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+
+/* Métodos de pago - modo oscuro */
+
+html[data-color-mode="dark"] .split-payment-cash {
+    background: #15283d !important;
+    border-color: #35654e !important;
+    color: #74c99d !important;
+}
+
+html[data-color-mode="dark"] .split-payment-card {
+    background: #15283d !important;
+    border-color: #3c5e83 !important;
+    color: #86b6ec !important;
+}
+
+html[data-color-mode="dark"] .split-payment-yape {
+    background: #15283d !important;
+    border-color: #68486f !important;
+    color: #c996d3 !important;
+}
+
+html[data-color-mode="dark"] .split-payment-plin {
+    background: #15283d !important;
+    border-color: #356b65 !important;
+    color: #79c9bd !important;
+}
+
+
+/* Seleccionados oscuros */
+
+html[data-color-mode="dark"] #splitCash:checked + .split-payment-cash {
+    background: #18382d !important;
+    border-color: #54a87c !important;
+    color: #a4dfc0 !important;
+}
+
+html[data-color-mode="dark"] #splitCard:checked + .split-payment-card {
+    background: #192f49 !important;
+    border-color: #628ec1 !important;
+    color: #acd0f5 !important;
+}
+
+html[data-color-mode="dark"] #splitYape:checked + .split-payment-yape {
+    background: #32243a !important;
+    border-color: #9d6aa8 !important;
+    color: #dab5e1 !important;
+}
+
+html[data-color-mode="dark"] #splitPlin:checked + .split-payment-plin {
+    background: #173936 !important;
+    border-color: #559c91 !important;
+    color: #a0d8d0 !important;
+}
+
+
+/* Volver - modo oscuro */
+
+html[data-color-mode="dark"] .split-back-btn {
+    background: #15283d !important;
+    border: 1.5px solid #496176 !important;
+    color: #e1e8ee !important;
+}
+
+html[data-color-mode="dark"] .split-back-btn:hover {
+    background: color-mix(in srgb, var(--primary) 15%, #15283d) !important;
+    border-color: var(--primary) !important;
+    color: #ffffff !important;
+}
+
+
+/* ===== REFINAMIENTO FINAL DE SELECCIONES ===== */
+
+/* Comprobante seleccionado - paleta del sistema más suave */
+#splitTicket:checked + .split-doc-ticket,
+#splitBoleta:checked + .split-doc-boleta,
+#splitFactura:checked + .split-doc-factura {
+    background: color-mix(in srgb, var(--primary) 8%, #ffffff) !important;
+    border: 1.5px solid var(--primary) !important;
+    color: var(--primary) !important;
+    box-shadow: none !important;
+}
+
+/* Métodos seleccionados - selección más sutil */
+#splitCash:checked + .split-payment-cash {
+    background: #f5faf7 !important;
+    border-color: #8fc5a9 !important;
+    color: #16734d !important;
+    box-shadow: none !important;
+}
+
+#splitCard:checked + .split-payment-card {
+    background: #f6f9fd !important;
+    border-color: #9dbce0 !important;
+    color: #285f9b !important;
+    box-shadow: none !important;
+}
+
+#splitYape:checked + .split-payment-yape {
+    background: #fbf7fc !important;
+    border-color: #c7a7ce !important;
+    color: #762985 !important;
+    box-shadow: none !important;
+}
+
+#splitPlin:checked + .split-payment-plin {
+    background: #f5fbfa !important;
+    border-color: #8fcac1 !important;
+    color: #08786b !important;
+    box-shadow: none !important;
+}
+
+/* Volver */
+.split-back-btn {
+    border: 1.5px solid #94a3b8 !important;
+}
+
+/* ===== MODO OSCURO ===== */
+
+html[data-color-mode="dark"]
+#splitTicket:checked + .split-doc-ticket,
+html[data-color-mode="dark"]
+#splitBoleta:checked + .split-doc-boleta,
+html[data-color-mode="dark"]
+#splitFactura:checked + .split-doc-factura {
+    background: color-mix(in srgb, var(--primary) 10%, #15283d) !important;
+    border-color: var(--primary) !important;
+    color: color-mix(in srgb, var(--primary) 70%, #ffffff) !important;
+}
+
+/* En oscuro evitamos fondos fuertes */
+html[data-color-mode="dark"]
+#splitCash:checked + .split-payment-cash {
+    background: #183027 !important;
+    border-color: #497b62 !important;
+    color: #8bc8a8 !important;
+}
+
+html[data-color-mode="dark"]
+#splitCard:checked + .split-payment-card {
+    background: #182b3f !important;
+    border-color: #52749a !important;
+    color: #94b9df !important;
+}
+
+html[data-color-mode="dark"]
+#splitYape:checked + .split-payment-yape {
+    background: #292232 !important;
+    border-color: #795881 !important;
+    color: #c397cc !important;
+}
+
+html[data-color-mode="dark"]
+#splitPlin:checked + .split-payment-plin {
+    background: #18312f !important;
+    border-color: #497c75 !important;
+    color: #8bc6bd !important;
+}
+
+html[data-color-mode="dark"] .split-back-btn {
+    background: transparent !important;
+    border: 1.5px solid #526b82 !important;
+    color: #e2e8f0 !important;
+}
+
+html[data-color-mode="dark"] .split-back-btn:hover {
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+}
+
+
+/* =========================================================
+   AJUSTE VISUAL - PALETA + PAGOS EN MODO OSCURO
+   ========================================================= */
+
+/* Encabezado Mesa / Orden siempre usa la paleta configurada */
+.split-table-header {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #ffffff !important;
+}
+
+.split-table-header h5,
+.split-table-header span,
+.split-table-header strong,
+.split-table-header i {
+    color: #ffffff !important;
+}
+
+
+/* =========================================================
+   MÉTODOS DE PAGO - MODO OSCURO
+   Colores identificables pero sin saturar demasiado
+   ========================================================= */
+
+html[data-color-mode="dark"] .split-payment-cash {
+    background: rgba(22, 138, 91, .14) !important;
+    border: 1.5px solid #3fa374 !important;
+    color: #7ed6a9 !important;
+}
+
+html[data-color-mode="dark"] .split-payment-card {
+    background: rgba(37, 99, 169, .15) !important;
+    border: 1.5px solid #548bc8 !important;
+    color: #8fc0f4 !important;
+}
+
+html[data-color-mode="dark"] .split-payment-yape {
+    background: rgba(116, 34, 132, .16) !important;
+    border: 1.5px solid #a35caf !important;
+    color: #d39bdd !important;
+}
+
+html[data-color-mode="dark"] .split-payment-plin {
+    background: rgba(8, 127, 112, .15) !important;
+    border: 1.5px solid #39a394 !important;
+    color: #7bd5c8 !important;
+}
+
+
+/* SELECCIONADOS - más visibles */
+
+html[data-color-mode="dark"]
+#splitCash:checked + .split-payment-cash {
+    background: rgba(22, 138, 91, .28) !important;
+    border-color: #62c392 !important;
+    color: #b1e8cb !important;
+    box-shadow: 0 0 0 1px rgba(98,195,146,.15) !important;
+}
+
+html[data-color-mode="dark"]
+#splitCard:checked + .split-payment-card {
+    background: rgba(37, 99, 169, .30) !important;
+    border-color: #76a9df !important;
+    color: #c2ddf8 !important;
+    box-shadow: 0 0 0 1px rgba(118,169,223,.15) !important;
+}
+
+html[data-color-mode="dark"]
+#splitYape:checked + .split-payment-yape {
+    background: rgba(116, 34, 132, .30) !important;
+    border-color: #bd7ac7 !important;
+    color: #e4bce9 !important;
+    box-shadow: 0 0 0 1px rgba(189,122,199,.15) !important;
+}
+
+html[data-color-mode="dark"]
+#splitPlin:checked + .split-payment-plin {
+    background: rgba(8, 127, 112, .28) !important;
+    border-color: #59b9ac !important;
+    color: #b2e5de !important;
+    box-shadow: 0 0 0 1px rgba(89,185,172,.15) !important;
+}
+
+
+/* =========================================================
+   COMPROBANTE SELECCIONADO - PALETA DEL SISTEMA
+   ========================================================= */
+
+html[data-color-mode="dark"]
+#splitTicket:checked + .split-doc-ticket,
+html[data-color-mode="dark"]
+#splitBoleta:checked + .split-doc-boleta,
+html[data-color-mode="dark"]
+#splitFactura:checked + .split-doc-factura {
+    background:
+        color-mix(in srgb, var(--primary) 20%, #15283d) !important;
+
+    border: 1.5px solid var(--primary) !important;
+
+    color:
+        color-mix(in srgb, var(--primary) 65%, #ffffff) !important;
+}
+
+
+/* =========================================================
+   VOLVER - MODO OSCURO
+   ========================================================= */
+
+html[data-color-mode="dark"] .split-back-btn {
+    background: transparent !important;
+    border: 1.5px solid #60778d !important;
+    color: #e5edf4 !important;
+}
+
+html[data-color-mode="dark"] .split-back-btn:hover {
+    background:
+        color-mix(in srgb, var(--primary) 12%, transparent) !important;
+
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+}
+
+
+/* =========================================================
+   PAGOS - CONTRASTE DEFINITIVO EN MODO OSCURO
+   ========================================================= */
+
+/* NO SELECCIONADOS */
+html[data-color-mode="dark"] .split-payment-cash {
+    background: #14283a !important;
+    border: 1.5px solid #29966a !important;
+    color: #65c99a !important;
+}
+
+html[data-color-mode="dark"] .split-payment-card {
+    background: #14283a !important;
+    border: 1.5px solid #4c83bd !important;
+    color: #7db2e8 !important;
+}
+
+html[data-color-mode="dark"] .split-payment-yape {
+    background: #14283a !important;
+    border: 1.5px solid #9854a6 !important;
+    color: #c780d2 !important;
+}
+
+html[data-color-mode="dark"] .split-payment-plin {
+    background: #14283a !important;
+    border: 1.5px solid #299b8e !important;
+    color: #67c9bd !important;
+}
+
+
+/* EFECTIVO SELECCIONADO */
+html[data-color-mode="dark"]
+#splitCash:checked + .split-payment-cash {
+    background: #1d503b !important;
+    border: 2px solid #5fd095 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 2px rgba(95, 208, 149, .12) !important;
+}
+
+/* TARJETA SELECCIONADA */
+html[data-color-mode="dark"]
+#splitCard:checked + .split-payment-card {
+    background: #234e7b !important;
+    border: 2px solid #78b5f0 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 2px rgba(120, 181, 240, .12) !important;
+}
+
+/* YAPE SELECCIONADO */
+html[data-color-mode="dark"]
+#splitYape:checked + .split-payment-yape {
+    background: #583063 !important;
+    border: 2px solid #cf83da !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 2px rgba(207, 131, 218, .12) !important;
+}
+
+/* PLIN SELECCIONADO */
+html[data-color-mode="dark"]
+#splitPlin:checked + .split-payment-plin {
+    background: #18564f !important;
+    border: 2px solid #64cfc0 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 2px rgba(100, 207, 192, .12) !important;
+}
+
+
+/* =========================================================
+   COMPROBANTE - SELECCIÓN MÁS CLARA EN OSCURO
+   ========================================================= */
+
+html[data-color-mode="dark"]
+#splitTicket:checked + .split-doc-ticket,
+html[data-color-mode="dark"]
+#splitBoleta:checked + .split-doc-boleta,
+html[data-color-mode="dark"]
+#splitFactura:checked + .split-doc-factura {
+    background:
+        color-mix(in srgb, var(--primary) 28%, #15283d) !important;
+
+    border: 2px solid var(--primary) !important;
+
+    color:
+        color-mix(in srgb, var(--primary) 65%, #ffffff) !important;
+
+    box-shadow:
+        0 0 0 2px
+        color-mix(in srgb, var(--primary) 12%, transparent) !important;
+}
+
+
+/* =========================================================
+   MÉTODOS DE PAGO - CONTRASTE CLARO Y OSCURO
+   ========================================================= */
+
+/* ---------- MODO CLARO: NO SELECCIONADOS ---------- */
+
+.split-payment-cash {
+    background: #ffffff !important;
+    border: 1.5px solid #65b88d !important;
+    color: #14764d !important;
+}
+
+.split-payment-card {
+    background: #ffffff !important;
+    border: 1.5px solid #7da9da !important;
+    color: #245f9f !important;
+}
+
+.split-payment-yape {
+    background: #ffffff !important;
+    border: 1.5px solid #b77bc2 !important;
+    color: #762985 !important;
+}
+
+.split-payment-plin {
+    background: #ffffff !important;
+    border: 1.5px solid #64b8ac !important;
+    color: #08786b !important;
+}
+
+
+/* ---------- MODO CLARO: SELECCIONADOS ---------- */
+
+#splitCash:checked + .split-payment-cash {
+    background: #dff3e8 !important;
+    border: 2px solid #168a5b !important;
+    color: #0f6843 !important;
+    box-shadow: 0 0 0 2px rgba(22,138,91,.08) !important;
+}
+
+#splitCard:checked + .split-payment-card {
+    background: #e1edfa !important;
+    border: 2px solid #3979bb !important;
+    color: #205b98 !important;
+    box-shadow: 0 0 0 2px rgba(57,121,187,.08) !important;
+}
+
+#splitYape:checked + .split-payment-yape {
+    background: #f0dff4 !important;
+    border: 2px solid #8c3b9b !important;
+    color: #6d247a !important;
+    box-shadow: 0 0 0 2px rgba(140,59,155,.08) !important;
+}
+
+#splitPlin:checked + .split-payment-plin {
+    background: #dcf2ef !important;
+    border: 2px solid #168f80 !important;
+    color: #087367 !important;
+    box-shadow: 0 0 0 2px rgba(22,143,128,.08) !important;
+}
+
+
+/* ---------- MODO OSCURO: NO SELECCIONADOS ---------- */
+
+html[data-color-mode="dark"] .split-payment-cash {
+    background: #14283a !important;
+    border: 1.5px solid #3fa374 !important;
+    color: #7ed6a9 !important;
+}
+
+html[data-color-mode="dark"] .split-payment-card {
+    background: #14283a !important;
+    border: 1.5px solid #5a91ca !important;
+    color: #93c2f1 !important;
+}
+
+html[data-color-mode="dark"] .split-payment-yape {
+    background: #14283a !important;
+    border: 1.5px solid #a65db2 !important;
+    color: #d59ade !important;
+}
+
+html[data-color-mode="dark"] .split-payment-plin {
+    background: #14283a !important;
+    border: 1.5px solid #43a99b !important;
+    color: #83d7cb !important;
+}
+
+
+/* ---------- MODO OSCURO: SELECCIONADOS ---------- */
+
+html[data-color-mode="dark"]
+#splitCash:checked + .split-payment-cash {
+    background: #245a42 !important;
+    border: 2px solid #69d49b !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 2px rgba(105,212,155,.13) !important;
+}
+
+html[data-color-mode="dark"]
+#splitCard:checked + .split-payment-card {
+    background: #285887 !important;
+    border: 2px solid #83bdf5 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 2px rgba(131,189,245,.13) !important;
+}
+
+html[data-color-mode="dark"]
+#splitYape:checked + .split-payment-yape {
+    background: #61366d !important;
+    border: 2px solid #d58adf !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 2px rgba(213,138,223,.13) !important;
+}
+
+html[data-color-mode="dark"]
+#splitPlin:checked + .split-payment-plin {
+    background: #206159 !important;
+    border: 2px solid #70d5c6 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 2px rgba(112,213,198,.13) !important;
+}
+
+
+/* =========================================================
+   QR YAPE / PLIN - MEJOR CONTRASTE EN MODO OSCURO
+   ========================================================= */
+
+/* Panel general */
+html[data-color-mode="dark"] .split-qr-box {
+    background: #162b40 !important;
+    border: 1px solid #456078 !important;
+}
+
+/* Título Yape */
+html[data-color-mode="dark"] .split-yape-box .split-qr-title {
+    color: #e1b4e8 !important;
+    font-weight: 800 !important;
+}
+
+/* Título Plin */
+html[data-color-mode="dark"] .split-plin-box .split-qr-title {
+    color: #9de1d7 !important;
+    font-weight: 800 !important;
+}
+
+/* QR: mantener fondo blanco para lectura */
+html[data-color-mode="dark"] .split-qr-image {
+    background: #ffffff !important;
+    border: 5px solid #ffffff !important;
+    border-radius: 10px !important;
+}
+
+/* Caja de Monto a pagar */
+html[data-color-mode="dark"] .split-qr-amount {
+    background: #0c1b2c !important;
+    border: 1px solid #304a62 !important;
+    color: #ffffff !important;
+}
+
+/* Texto Monto a pagar */
+html[data-color-mode="dark"] .split-qr-amount span:first-child,
+html[data-color-mode="dark"] .split-qr-amount strong:first-child {
+    color: #f8fafc !important;
+}
+
+/* Monto Yape */
+html[data-color-mode="dark"] #splitYapeAmount {
+    color: #e6b5ed !important;
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+}
+
+/* Monto Plin */
+html[data-color-mode="dark"] #splitPlinAmount {
+    color: #9de1d7 !important;
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+}
+
+/* Si no existe QR */
+html[data-color-mode="dark"] .split-qr-empty {
+    color: #a9bac9 !important;
+}
+
+
+/* =========================================================
+   EFECTIVO Y TARJETA - MEJOR CONTRASTE EN MODO OSCURO
+   ========================================================= */
+
+/* ---------- EFECTIVO ---------- */
+
+html[data-color-mode="dark"] .split-cash-group {
+    background: #162b40 !important;
+    border: 1px solid #3f6b58 !important;
+    color: #f8fafc !important;
+}
+
+html[data-color-mode="dark"] .split-cash-group label,
+html[data-color-mode="dark"] .split-cash-group .form-label {
+    color: #f8fafc !important;
+}
+
+html[data-color-mode="dark"] #splitReceivedAmount {
+    background: #0c1b2c !important;
+    border: 1px solid #4c8068 !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] #splitReceivedAmount:focus {
+    border-color: #69d49b !important;
+    box-shadow: 0 0 0 .2rem rgba(105, 212, 155, .10) !important;
+}
+
+html[data-color-mode="dark"] #splitChangeAmount {
+    color: #8de0b4 !important;
+    font-weight: 800 !important;
+}
+
+
+/* ---------- TARJETA ---------- */
+
+html[data-color-mode="dark"] .split-card-amount {
+    background: #162b40 !important;
+    border: 1px solid #4d6f94 !important;
+    color: #f8fafc !important;
+}
+
+html[data-color-mode="dark"] .split-card-amount span,
+html[data-color-mode="dark"] .split-card-amount strong {
+    color: #f8fafc;
+}
+
+html[data-color-mode="dark"] #splitCardAmountValue {
+    color: #9bc8f5 !important;
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+}
+
+
+/* ---------- TEXTOS SECUNDARIOS ---------- */
+
+html[data-color-mode="dark"] .split-cash-group .text-muted,
+html[data-color-mode="dark"] .split-card-amount .text-muted {
+    color: #aebdca !important;
+}
+
+
+/* =========================================================
+   ENCABEZADO MESA / ORDEN - PALETA DEL SISTEMA
+   ========================================================= */
+
+/* Modo claro */
+.split-page .split-table-header {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #ffffff !important;
+}
+
+.split-page .split-table-header h5,
+.split-page .split-table-header span,
+.split-page .split-table-header strong,
+.split-page .split-table-header i {
+    color: #ffffff !important;
+}
+
+/* Modo oscuro: NO reemplazar por azul oscuro */
+html[data-color-mode="dark"] .split-page .split-table-header {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .split-page .split-table-header h5,
+html[data-color-mode="dark"] .split-page .split-table-header span,
+html[data-color-mode="dark"] .split-page .split-table-header strong,
+html[data-color-mode="dark"] .split-page .split-table-header i {
+    color: #ffffff !important;
+}
+
+
+/* =========================================================
+   MÉTODOS DE PAGO - MODO CLARO MÁS VISIBLE
+   ========================================================= */
+
+/* EFECTIVO */
+.split-payment-cash {
+    background: #eef9f3 !important;
+    border: 1.5px solid #72c49a !important;
+    color: #087a4b !important;
+}
+
+#splitCash:checked + .split-payment-cash {
+    background: #ccebdc !important;
+    border: 2px solid #07965c !important;
+    color: #05683f !important;
+    box-shadow: 0 3px 9px rgba(7,150,92,.14) !important;
+}
+
+
+/* TARJETA */
+.split-payment-card {
+    background: #f0f6fd !important;
+    border: 1.5px solid #7eafe2 !important;
+    color: #1763ad !important;
+}
+
+#splitCard:checked + .split-payment-card {
+    background: #d5e7f9 !important;
+    border: 2px solid #347fc6 !important;
+    color: #165b9b !important;
+    box-shadow: 0 3px 9px rgba(52,127,198,.14) !important;
+}
+
+
+/* YAPE */
+.split-payment-yape {
+    background: #faf2fc !important;
+    border: 1.5px solid #c989d3 !important;
+    color: #812b91 !important;
+}
+
+#splitYape:checked + .split-payment-yape {
+    background: #edd5f2 !important;
+    border: 2px solid #9b47aa !important;
+    color: #70247d !important;
+    box-shadow: 0 3px 9px rgba(155,71,170,.14) !important;
+}
+
+
+/* PLIN */
+.split-payment-plin {
+    background: #eefaf8 !important;
+    border: 1.5px solid #68c0b4 !important;
+    color: #087c6d !important;
+}
+
+#splitPlin:checked + .split-payment-plin {
+    background: #d0eee9 !important;
+    border: 2px solid #159687 !important;
+    color: #076d62 !important;
+    box-shadow: 0 3px 9px rgba(21,150,135,.14) !important;
+}
+
+
+/* Texto e iconos un poco más definidos */
+.split-payment-btn {
+    font-weight: 700 !important;
+}
+
+.split-payment-btn i {
+    font-weight: 700;
+}
+
+
+/* ===== BOTÓN COBRAR - CONTRASTE ===== */
+
+#btnSplit,
+#btnSplit i {
+    color: #ffffff !important;
+}
+
+/* Modo oscuro */
+html[data-color-mode="dark"] #btnSplit,
+html[data-color-mode="dark"] #btnSplit i {
+    color: #ffffff !important;
+}
+
+/* Deshabilitado */
+#btnSplit:disabled,
+#btnSplit:disabled i,
+html[data-color-mode="dark"] #btnSplit:disabled,
+html[data-color-mode="dark"] #btnSplit:disabled i {
+    color: rgba(255,255,255,.65) !important;
+}
+
+
+/* COBRAR - ICONO Y TEXTO SIEMPRE BLANCOS */
+.split-page #btnSplit,
+.split-page #btnSplit i,
+.split-page #btnSplit .bi,
+html[data-color-mode="dark"] .split-page #btnSplit,
+html[data-color-mode="dark"] .split-page #btnSplit i,
+html[data-color-mode="dark"] .split-page #btnSplit .bi {
+    color: #ffffff !important;
+}
+
+
+/* DIVIDIR CUENTA - TEXTOS DE PAGO BLANCOS EN MODO OSCURO */
+
+/* EFECTIVO */
+html[data-color-mode="dark"] #splitCashGroup,
+html[data-color-mode="dark"] #splitCashGroup label,
+html[data-color-mode="dark"] #splitCashGroup span,
+html[data-color-mode="dark"] #splitCashGroup strong,
+html[data-color-mode="dark"] #splitReceivedAmount,
+html[data-color-mode="dark"] #splitChangeAmount {
+    color: #ffffff !important;
+}
+
+/* TARJETA */
+html[data-color-mode="dark"] #splitCardAmount,
+html[data-color-mode="dark"] #splitCardAmount span,
+html[data-color-mode="dark"] #splitCardAmount strong,
+html[data-color-mode="dark"] #splitCardAmountValue {
+    color: #ffffff !important;
+}
+
+/* YAPE */
+html[data-color-mode="dark"] #splitYapeQr,
+html[data-color-mode="dark"] #splitYapeQr span,
+html[data-color-mode="dark"] #splitYapeQr strong,
+html[data-color-mode="dark"] #splitYapeAmount {
+    color: #ffffff !important;
+}
+
+/* PLIN */
+html[data-color-mode="dark"] #splitPlinQr,
+html[data-color-mode="dark"] #splitPlinQr span,
+html[data-color-mode="dark"] #splitPlinQr strong,
+html[data-color-mode="dark"] #splitPlinAmount {
+    color: #ffffff !important;
+}
+
+/* DIVIDIR CUENTA - TITULOS YAPE Y PLIN BLANCOS EN MODO OSCURO */
+html[data-color-mode="dark"] #splitYapeQr .split-qr-title,
+html[data-color-mode="dark"] #splitYapeQr .split-qr-title *,
+html[data-color-mode="dark"] #splitPlinQr .split-qr-title,
+html[data-color-mode="dark"] #splitPlinQr .split-qr-title * {
+    color: #ffffff !important;
+}
+
+/* DIVIDIR CUENTA - COLOR SEGUN SELECCION EN MODO OSCURO */
+
+/* NO SELECCIONADOS */
+html[data-color-mode="dark"] #splitCash:not(:checked) + .split-payment-cash,
+html[data-color-mode="dark"] #splitCash:not(:checked) + .split-payment-cash i {
+    color: #6ee7a8 !important;
+}
+
+html[data-color-mode="dark"] #splitCard:not(:checked) + .split-payment-card,
+html[data-color-mode="dark"] #splitCard:not(:checked) + .split-payment-card i {
+    color: #78b9f4 !important;
+}
+
+html[data-color-mode="dark"] #splitYape:not(:checked) + .split-payment-yape,
+html[data-color-mode="dark"] #splitYape:not(:checked) + .split-payment-yape i {
+    color: #d99be4 !important;
+}
+
+html[data-color-mode="dark"] #splitPlin:not(:checked) + .split-payment-plin,
+html[data-color-mode="dark"] #splitPlin:not(:checked) + .split-payment-plin i {
+    color: #6edbd0 !important;
+}
+
+/* SELECCIONADO */
+html[data-color-mode="dark"] #splitCash:checked + .split-payment-cash,
+html[data-color-mode="dark"] #splitCash:checked + .split-payment-cash i,
+html[data-color-mode="dark"] #splitCard:checked + .split-payment-card,
+html[data-color-mode="dark"] #splitCard:checked + .split-payment-card i,
+html[data-color-mode="dark"] #splitYape:checked + .split-payment-yape,
+html[data-color-mode="dark"] #splitYape:checked + .split-payment-yape i,
+html[data-color-mode="dark"] #splitPlin:checked + .split-payment-plin,
+html[data-color-mode="dark"] #splitPlin:checked + .split-payment-plin i {
+    color: #ffffff !important;
+}
+
+/* DIVIDIR CUENTA - BORDES YAPE Y PLIN EN MODO OSCURO */
+
+/* YAPE */
+html[data-color-mode="dark"] #splitYapeQr {
+    border-color: #b968c7 !important;
+}
+
+html[data-color-mode="dark"] #splitYapeQr .split-qr-amount {
+    border-color: #b968c7 !important;
+}
+
+/* PLIN */
+html[data-color-mode="dark"] #splitPlinQr {
+    border-color: #3bc5b4 !important;
+}
+
+html[data-color-mode="dark"] #splitPlinQr .split-qr-amount {
+    border-color: #3bc5b4 !important;
+}
+
+/* DIVIDIR CUENTA - ESTRUCTURA DE BLOQUES DE PAGO */
+
+/* ========== MODO CLARO ========== */
+
+/* EFECTIVO */
+html:not([data-color-mode="dark"]) #splitCashGroup {
+    background: #ffffff !important;
+    border: 1.5px solid #198754 !important;
+}
+
+html:not([data-color-mode="dark"]) #splitReceivedAmount {
+    background: #eef9f3 !important;
+    border: 1.5px solid #198754 !important;
+}
+
+/* TARJETA */
+html:not([data-color-mode="dark"]) #splitCardAmount {
+    background: #eff6ff !important;
+    border: 1.5px solid #347fc6 !important;
+}
+
+/* YAPE */
+html:not([data-color-mode="dark"]) #splitYapeQr {
+    background: #ffffff !important;
+    border: 1.5px solid #9b47aa !important;
+}
+
+html:not([data-color-mode="dark"]) #splitYapeQr .split-qr-amount {
+    background: #faf2fc !important;
+    border: 1.5px solid #9b47aa !important;
+}
+
+/* PLIN */
+html:not([data-color-mode="dark"]) #splitPlinQr {
+    background: #ffffff !important;
+    border: 1.5px solid #159687 !important;
+}
+
+html:not([data-color-mode="dark"]) #splitPlinQr .split-qr-amount {
+    background: #eefaf8 !important;
+    border: 1.5px solid #159687 !important;
+}
+
+
+/* ========== MODO OSCURO ========== */
+
+/* EFECTIVO */
+html[data-color-mode="dark"] #splitCashGroup {
+    background: #132338 !important;
+    border: 1.5px solid #28a66d !important;
+}
+
+html[data-color-mode="dark"] #splitReceivedAmount {
+    background: #12352d !important;
+    border: 1.5px solid #28a66d !important;
+}
+
+/* TARJETA */
+html[data-color-mode="dark"] #splitCardAmount {
+    background: #162d48 !important;
+    border: 1.5px solid #438bcf !important;
+}
+
+/* YAPE */
+html[data-color-mode="dark"] #splitYapeQr {
+    background: #132338 !important;
+    border: 1.5px solid #b968c7 !important;
+}
+
+html[data-color-mode="dark"] #splitYapeQr .split-qr-amount {
+    background: #2b1831 !important;
+    border: 1.5px solid #b968c7 !important;
+}
+
+/* PLIN */
+html[data-color-mode="dark"] #splitPlinQr {
+    background: #132338 !important;
+    border: 1.5px solid #3bc5b4 !important;
+}
+
+html[data-color-mode="dark"] #splitPlinQr .split-qr-amount {
+    background: #123532 !important;
+    border: 1.5px solid #3bc5b4 !important;
+}
+
+/* DIVIDIR CUENTA - COLORES DE MONTOS EN MODO CLARO */
+
+/* EFECTIVO */
+html:not([data-color-mode="dark"]) #splitCashGroup .form-label,
+html:not([data-color-mode="dark"]) #splitReceivedAmount,
+html:not([data-color-mode="dark"]) #splitChangeAmount {
+    color: #087a4b !important;
+}
+
+/* TARJETA */
+html:not([data-color-mode="dark"]) #splitCardAmount span,
+html:not([data-color-mode="dark"]) #splitCardAmount strong,
+html:not([data-color-mode="dark"]) #splitCardAmountValue {
+    color: #1763ad !important;
+}
+
+/* YAPE */
+html:not([data-color-mode="dark"]) #splitYapeQr .split-qr-amount span,
+html:not([data-color-mode="dark"]) #splitYapeQr .split-qr-amount strong,
+html:not([data-color-mode="dark"]) #splitYapeAmount {
+    color: #812b91 !important;
+}
+
+/* PLIN */
+html:not([data-color-mode="dark"]) #splitPlinQr .split-qr-amount span,
+html:not([data-color-mode="dark"]) #splitPlinQr .split-qr-amount strong,
+html:not([data-color-mode="dark"]) #splitPlinAmount {
+    color: #087c6d !important;
+}
+
+/* DIVIDIR CUENTA - CAMBIO EFECTIVO MODO CLARO */
+html:not([data-color-mode="dark"]) #splitCashGroup .small {
+    color: #087a4b !important;
+}
+
+/* DIVIDIR CUENTA - METODO DE PAGO MODO CLARO */
+/* NO SELECCIONADOS: SOLO BORDE */
+
+html:not([data-color-mode="dark"]) .split-payment-cash {
+    background: transparent !important;
+    border: 1.5px solid #72c49a !important;
+    color: #087a4b !important;
+}
+
+html:not([data-color-mode="dark"]) .split-payment-card {
+    background: transparent !important;
+    border: 1.5px solid #7eafe2 !important;
+    color: #1763ad !important;
+}
+
+html:not([data-color-mode="dark"]) .split-payment-yape {
+    background: transparent !important;
+    border: 1.5px solid #c989d3 !important;
+    color: #812b91 !important;
+}
+
+html:not([data-color-mode="dark"]) .split-payment-plin {
+    background: transparent !important;
+    border: 1.5px solid #68c0b4 !important;
+    color: #087c6d !important;
+}
 </style>
+
+@endsection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -25,8 +25,8 @@
         <div class="col-md-3">
             <div class="card border-0 shadow-sm h-100 bg-light">
                 <div class="card-header border-0 bg-transparent pt-3 pb-2">
-                    <h6 class="fw-bold mb-0" style="color: {{ $statuses['pending'] ?? '#f59e0b' }}">
-                        <i class="bi bi-hourglass-split me-1"></i> Pendiente
+                    <h6 class="fw-bold mb-0 delivery-column-title" style="--status-color: {{ $statuses['pending'] ?? '#f59e0b' }}; color: var(--status-color) !important;">
+                        <i class="bi bi-hourglass-split me-1" style="color: {{ $statuses['pending'] ?? '#f59e0b' }} !important;"></i> <span style="color: {{ $statuses['pending'] ?? '#f59e0b' }} !important;">Pendiente</span>
                         <span id="count-pending" class="badge bg-warning text-dark rounded-pill float-end">{{ $counts['pending'] }}</span>
                     </h6>
                 </div>
@@ -42,8 +42,8 @@
         <div class="col-md-3">
             <div class="card border-0 shadow-sm h-100 bg-light">
                 <div class="card-header border-0 bg-transparent pt-3 pb-2">
-                    <h6 class="fw-bold mb-0" style="color: {{ $statuses['preparing'] ?? '#3b82f6' }}">
-                        <i class="bi bi-fire me-1"></i> Preparando
+                    <h6 class="fw-bold mb-0 delivery-column-title" style="--status-color: {{ $statuses['preparing'] ?? '#3b82f6' }}; color: var(--status-color) !important;">
+                        <i class="bi bi-fire me-1" style="color: {{ $statuses['preparing'] ?? '#3b82f6' }} !important;"></i> <span style="color: {{ $statuses['preparing'] ?? '#3b82f6' }} !important;">Preparando</span>
                         <span id="count-preparing" class="badge bg-primary rounded-pill float-end">{{ $counts['preparing'] }}</span>
                     </h6>
                 </div>
@@ -59,8 +59,8 @@
         <div class="col-md-3">
             <div class="card border-0 shadow-sm h-100 bg-light">
                 <div class="card-header border-0 bg-transparent pt-3 pb-2">
-                    <h6 class="fw-bold mb-0" style="color: {{ $statuses['on_way'] ?? '#f97316' }}">
-                        <i class="bi bi-bicycle me-1"></i> Listos / En camino
+                    <h6 class="fw-bold mb-0 delivery-column-title" style="--status-color: {{ $statuses['on_way'] ?? '#f97316' }}; color: var(--status-color) !important;">
+                        <i class="bi bi-bicycle me-1" style="color: {{ $statuses['on_way'] ?? '#f97316' }} !important;"></i> <span style="color: {{ $statuses['on_way'] ?? '#f97316' }} !important;">Listos / En camino</span>
                         <span id="count-on_way" class="badge rounded-pill float-end" style="background-color: #f97316;">{{ $counts['on_way'] }}</span>
                     </h6>
                 </div>
@@ -76,8 +76,8 @@
         <div class="col-md-3">
             <div class="card border-0 shadow-sm h-100 bg-light">
                 <div class="card-header border-0 bg-transparent pt-3 pb-2">
-                    <h6 class="fw-bold mb-0" style="color: {{ $statuses['delivered'] ?? '#22c55e' }}">
-                        <i class="bi bi-check2-all me-1"></i> Entregados Hoy
+                    <h6 class="fw-bold mb-0 delivery-column-title" style="--status-color: {{ $statuses['delivered'] ?? '#22c55e' }}; color: var(--status-color) !important;">
+                        <i class="bi bi-check2-all me-1" style="color: {{ $statuses['delivered'] ?? '#22c55e' }} !important;"></i> <span style="color: {{ $statuses['delivered'] ?? '#22c55e' }} !important;">Entregados Hoy</span>
                         <span id="count-delivered" class="badge bg-success rounded-pill float-end">{{ $counts['delivered'] }}</span>
                     </h6>
                 </div>
@@ -233,7 +233,7 @@
 }
 
 .delivery-preparing {
-    color: #f59e0b;
+    color: var(--delivery-card-status-color) !important;
     font-weight: 700;
 }
 
@@ -398,14 +398,374 @@ html[data-color-mode="dark"] .delivery-pending span {
 
 /* PREPARANDO - AMARILLO */
 html[data-color-mode="dark"] .delivery-preparing {
-    color: #fbbf24 !important;
+    color: var(--delivery-card-status-color) !important;
 }
 
 html[data-color-mode="dark"] .delivery-preparing i,
 html[data-color-mode="dark"] .delivery-preparing span {
+    color: var(--delivery-card-status-color) !important;
+}
+
+
+/* BADGES DE TARJETA DELIVERY */
+.delivery-card .order-number-badge,
+.delivery-card .delivery-type-badge {
+    background: color-mix(in srgb, var(--primary) 10%, var(--card-bg)) !important;
+    color: var(--delivery-card-status-color) !important;
+    border: 1px solid color-mix(in srgb, var(--primary) 22%, transparent) !important;
+}
+
+.delivery-card .delivery-type-badge i {
+    color: var(--delivery-card-status-color) !important;
+}
+
+html[data-color-mode="dark"] .delivery-card .order-number-badge,
+html[data-color-mode="dark"] .delivery-card .delivery-type-badge {
+    background: color-mix(in srgb, var(--primary) 15%, #132338) !important;
+    color: var(--delivery-card-status-color) !important;
+    border-color: color-mix(in srgb, var(--primary) 35%, #30465d) !important;
+}
+
+html[data-color-mode="dark"] .delivery-card .delivery-type-badge i {
+    color: var(--delivery-card-status-color) !important;
+}
+
+/* IDENTIFICADORES DE TARJETA */
+.delivery-order-number {
+    background: color-mix(in srgb, var(--primary) 12%, var(--card-bg)) !important;
+    color: var(--delivery-card-status-color) !important;
+    border: 1px solid color-mix(in srgb, var(--primary) 28%, transparent) !important;
+}
+
+.delivery-type-badge.delivery {
+    background: color-mix(in srgb, var(--primary) 12%, var(--card-bg)) !important;
+    color: var(--delivery-card-status-color) !important;
+    border: 1px solid color-mix(in srgb, var(--primary) 28%, transparent) !important;
+}
+
+.delivery-type-badge.delivery i {
+    color: var(--delivery-card-status-color) !important;
+}
+
+/* MODO OSCURO */
+html[data-color-mode="dark"] .delivery-order-number,
+html[data-color-mode="dark"] .delivery-type-badge.delivery {
+    background: color-mix(in srgb, var(--primary) 16%, #132338) !important;
+    color: var(--delivery-card-status-color) !important;
+    border-color: color-mix(in srgb, var(--primary) 38%, #30465d) !important;
+}
+
+html[data-color-mode="dark"] .delivery-type-badge.delivery i {
+    color: var(--delivery-card-status-color) !important;
+}
+
+/* COLORES DE ENCABEZADOS POR ESTADO */
+.delivery-column-title,
+.delivery-column-title i {
+    color: var(--status-color) !important;
+}
+
+html[data-color-mode="dark"] .delivery-column-title,
+html[data-color-mode="dark"] .delivery-column-title i {
+    color: var(--status-color) !important;
+}
+
+/* =========================================
+   TARJETA PENDIENTE - COLOR SEMANTICO
+   ========================================= */
+
+/* Borde de la tarjeta dentro de Pendiente */
+#col-pending .delivery-order-card {
+    border-color: var(--delivery-card-status-color) !important;
+    box-shadow: 0 0 0 1px color-mix(
+        in srgb,
+        #f59e0b 20%,
+        transparent
+    );
+}
+
+/* Numero del pedido */
+#col-pending .delivery-order-number {
+    color: var(--delivery-card-status-color) !important;
+    background: color-mix(
+        in srgb,
+        #f59e0b 12%,
+        var(--card-bg)
+    ) !important;
+    border-color: color-mix(
+        in srgb,
+        #f59e0b 45%,
+        transparent
+    ) !important;
+}
+
+/* Badge Delivery */
+#col-pending .delivery-type-badge {
+    color: var(--delivery-card-status-color) !important;
+    background: color-mix(
+        in srgb,
+        #f59e0b 12%,
+        var(--card-bg)
+    ) !important;
+    border-color: color-mix(
+        in srgb,
+        #f59e0b 45%,
+        transparent
+    ) !important;
+}
+
+#col-pending .delivery-type-badge i {
+    color: var(--delivery-card-status-color) !important;
+}
+
+/* Estado Pendiente dentro de la tarjeta */
+#col-pending .delivery-pending,
+#col-pending .delivery-pending span,
+#col-pending .delivery-pending i {
+    color: var(--delivery-card-status-color) !important;
+}
+
+/* MODO OSCURO */
+html[data-color-mode="dark"] #col-pending .delivery-order-number,
+html[data-color-mode="dark"] #col-pending .delivery-type-badge {
+    color: #fbbf24 !important;
+    background: color-mix(
+        in srgb,
+        #f59e0b 14%,
+        #132338
+    ) !important;
+    border-color: color-mix(
+        in srgb,
+        #f59e0b 55%,
+        #30465d
+    ) !important;
+}
+
+html[data-color-mode="dark"] #col-pending .delivery-type-badge i,
+html[data-color-mode="dark"] #col-pending .delivery-pending,
+html[data-color-mode="dark"] #col-pending .delivery-pending span,
+html[data-color-mode="dark"] #col-pending .delivery-pending i {
     color: #fbbf24 !important;
 }
 
+html[data-color-mode="dark"] #col-pending .delivery-order-card {
+    border-color: var(--delivery-card-status-color) !important;
+}
+
+/* TARJETA PENDIENTE - TEXTO CON COLOR DEL ESTADO */
+#col-pending .delivery-order-card,
+#col-pending .delivery-order-card .delivery-order-number,
+#col-pending .delivery-order-card .delivery-type-badge,
+#col-pending .delivery-order-card .delivery-type-badge i,
+#col-pending .delivery-order-card .delivery-time,
+#col-pending .delivery-order-card .delivery-time i,
+#col-pending .delivery-order-card .delivery-customer,
+#col-pending .delivery-order-card .delivery-location,
+#col-pending .delivery-order-card .delivery-location i,
+#col-pending .delivery-order-card .delivery-payment,
+#col-pending .delivery-order-card .delivery-payment i,
+#col-pending .delivery-order-card .delivery-pending,
+#col-pending .delivery-order-card .delivery-pending i,
+#col-pending .delivery-order-card .delivery-pending span,
+#col-pending .delivery-order-card .delivery-total,
+#col-pending .delivery-order-card .delivery-total * {
+    color: var(--delivery-card-status-color) !important;
+}
+
+/* MODO OSCURO */
+html[data-color-mode="dark"] #col-pending .delivery-order-card,
+html[data-color-mode="dark"] #col-pending .delivery-order-card * {
+    color: #fbbf24 !important;
+}
+
+/* Ver pedido sigue siendo una accion del sistema */
+html[data-color-mode="dark"] #col-pending .delivery-order-card a,
+html[data-color-mode="dark"] #col-pending .delivery-order-card a * {
+    color: var(--primary) !important;
+}
+
+/* LINEAS DE TARJETA PENDIENTE */
+#col-pending .delivery-order-card hr {
+    border-color: var(--delivery-card-status-color) !important;
+    opacity: 1 !important;
+}
+
+#col-pending .delivery-order-card {
+    --bs-border-color: #f59e0b;
+}
+
+#col-pending .delivery-order-card .border-top,
+#col-pending .delivery-order-card .border-bottom {
+    border-color: var(--delivery-card-status-color) !important;
+}
+
+/* MODO OSCURO */
+html[data-color-mode="dark"] #col-pending .delivery-order-card hr,
+html[data-color-mode="dark"] #col-pending .delivery-order-card .border-top,
+html[data-color-mode="dark"] #col-pending .delivery-order-card .border-bottom {
+    border-color: #fbbf24 !important;
+    opacity: 1 !important;
+}
+
+/* LINEAS REALES - TARJETA PENDIENTE */
+#col-pending .delivery-order-card .delivery-card-info,
+#col-pending .delivery-order-card .delivery-card-footer {
+    border-top-color: var(--delivery-card-status-color) !important;
+    border-top-width: 1px !important;
+    border-top-style: solid !important;
+}
+
+/* MODO OSCURO */
+html[data-color-mode="dark"] #col-pending .delivery-order-card .delivery-card-info,
+html[data-color-mode="dark"] #col-pending .delivery-order-card .delivery-card-footer {
+    border-top-color: #fbbf24 !important;
+}
+
+/* ENCABEZADO DE CADA COLUMNA - RESPETAR COLOR DEL ESTADO */
+.delivery-column-title,
+.delivery-column-title > i,
+.delivery-column-title > span:not(.badge) {
+    color: var(--status-color) !important;
+}
+
+html[data-color-mode="dark"] .delivery-column-title,
+html[data-color-mode="dark"] .delivery-column-title > i,
+html[data-color-mode="dark"] .delivery-column-title > span:not(.badge) {
+    color: var(--status-color) !important;
+}
+
+/* PENDIENTE - TODO NARANJA EN MODO CLARO */
+html:not([data-color-mode="dark"]) #col-pending .delivery-order-card,
+html:not([data-color-mode="dark"]) #col-pending .delivery-order-card * {
+    color: var(--delivery-card-status-color) !important;
+}
+
+html:not([data-color-mode="dark"]) #col-pending .delivery-order-card {
+    border-color: var(--delivery-card-status-color) !important;
+}
+
+html:not([data-color-mode="dark"]) #col-pending .delivery-card-info,
+html:not([data-color-mode="dark"]) #col-pending .delivery-card-footer {
+    border-top-color: var(--delivery-card-status-color) !important;
+}
+
+/* El enlace tambien queda naranja */
+html:not([data-color-mode="dark"]) #col-pending .delivery-order-card a,
+html:not([data-color-mode="dark"]) #col-pending .delivery-order-card a * {
+    color: var(--delivery-card-status-color) !important;
+}
+
+/* =====================================================
+   COLOR DINAMICO DE TODA LA TARJETA SEGUN SU ESTADO
+   ===================================================== */
+
+.delivery-order-card {
+    border-color: var(--delivery-card-status-color) !important;
+}
+
+/* TODOS LOS TEXTOS E ICONOS */
+.delivery-order-card,
+.delivery-order-card * {
+    color: var(--delivery-card-status-color) !important;
+}
+
+/* LINEAS DIVISORIAS */
+.delivery-order-card .delivery-card-info,
+.delivery-order-card .delivery-card-footer {
+    border-top-color: var(--delivery-card-status-color) !important;
+}
+
+/* NUMERO DEL PEDIDO */
+.delivery-order-card .delivery-order-number {
+    color: var(--delivery-card-status-color) !important;
+    border-color: color-mix(
+        in srgb,
+        var(--delivery-card-status-color) 45%,
+        transparent
+    ) !important;
+
+    background: color-mix(
+        in srgb,
+        var(--delivery-card-status-color) 10%,
+        var(--card-bg)
+    ) !important;
+}
+
+/* DELIVERY / RECOJO */
+.delivery-order-card .delivery-type-badge {
+    color: var(--delivery-card-status-color) !important;
+
+    border-color: color-mix(
+        in srgb,
+        var(--delivery-card-status-color) 45%,
+        transparent
+    ) !important;
+
+    background: color-mix(
+        in srgb,
+        var(--delivery-card-status-color) 10%,
+        var(--card-bg)
+    ) !important;
+}
+
+.delivery-order-card .delivery-type-badge i {
+    color: var(--delivery-card-status-color) !important;
+}
+
+/* MODO OSCURO */
+html[data-color-mode="dark"] .delivery-order-card,
+html[data-color-mode="dark"] .delivery-order-card * {
+    color: var(--delivery-card-status-color) !important;
+}
+
+html[data-color-mode="dark"] .delivery-order-card .delivery-card-info,
+html[data-color-mode="dark"] .delivery-order-card .delivery-card-footer {
+    border-top-color: var(--delivery-card-status-color) !important;
+}
+
+html[data-color-mode="dark"] .delivery-order-card .delivery-order-number,
+html[data-color-mode="dark"] .delivery-order-card .delivery-type-badge {
+    color: var(--delivery-card-status-color) !important;
+
+    background: color-mix(
+        in srgb,
+        var(--delivery-card-status-color) 14%,
+        #132338
+    ) !important;
+
+    border-color: color-mix(
+        in srgb,
+        var(--delivery-card-status-color) 55%,
+        #30465d
+    ) !important;
+}
+
+/* BADGE DELIVERY / RECOJO - HEREDA EL COLOR DEL ESTADO */
+.delivery-order-card .delivery-type-badge,
+.delivery-order-card .delivery-type-badge span,
+.delivery-order-card .delivery-type-badge i {
+    color: var(--delivery-card-status-color) !important;
+}
+
+.delivery-order-card .delivery-type-badge {
+    border-color: var(--delivery-card-status-color) !important;
+
+    background: color-mix(
+        in srgb,
+        var(--delivery-card-status-color) 10%,
+        var(--card-bg)
+    ) !important;
+}
+
+html[data-color-mode="dark"] .delivery-order-card .delivery-type-badge {
+    background: color-mix(
+        in srgb,
+        var(--delivery-card-status-color) 14%,
+        #132338
+    ) !important;
+
+    border-color: var(--delivery-card-status-color) !important;
+}
 </style>
 
 @endsection

@@ -217,7 +217,7 @@ class PosController extends Controller
         $request->validate(['target_table_id' => 'required|exists:tables,id']);
         if (Order::where('table_id', $request->target_table_id)->where('status', 'pending')->exists()) return redirect()->back()->with('error', 'Ocupada.');
         $order->table_id = $request->target_table_id; $order->save();
-        return redirect()->route('pos.order', $request->target_table_id);
+        return redirect()->route('pos.order', $request->target_table_id)->with('success', 'Mesa movida correctamente.');
     }
 
     public function getSplitContent(Order $order)

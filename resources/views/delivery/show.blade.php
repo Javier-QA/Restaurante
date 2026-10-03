@@ -1,10 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="container-fluid py-4 delivery-detail-page"
+     style="--delivery-status-color: {{ \App\Models\Delivery::$statusColors[$delivery->status] ?? '#6c757d' }};">
+    <div class="d-flex justify-content-between align-items-center mb-4 delivery-detail-header">
         <div>
-            <h3 class="fw-bold mb-0 text-gray-800"><i class="bi bi-bicycle me-2 text-primary"></i>Delivery #{{ $delivery->id }}</h3>
+            <h3 class="fw-bold mb-0 delivery-detail-title"><i class="bi bi-bicycle me-2 text-primary"></i>Delivery #{{ $delivery->id }}</h3>
             <span class="badge rounded-pill mt-2" style="background-color: {{ \App\Models\Delivery::$statusColors[$delivery->status] ?? '#6c757d' }}">
                 {{ $delivery->status_label }}
             </span>
@@ -26,10 +27,10 @@
 
 
 
-    <div class="row">
+    <div class="row g-4 delivery-detail-grid">
         {{-- Detalles del Cliente y Estado --}}
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm mb-4">
+        <div class="col-md-4 delivery-side-column">
+            <div class="card border-0 shadow-sm mb-4 delivery-client-card">
                 <div class="card-header bg-white border-bottom py-3">
                     <h6 class="fw-bold mb-0"><i class="bi bi-person-lines-fill me-2"></i>Datos del Cliente</h6>
                 </div>
@@ -64,7 +65,7 @@
             </div>
 
             @if(!in_array($delivery->status, ['delivered', 'cancelled']))
-                <div class="card border-0 shadow-sm">
+                <div class="card border-0 shadow-sm delivery-management-card">
                     <div class="card-header bg-white border-bottom py-3">
                         <h6 class="fw-bold mb-0"><i class="bi bi-gear me-2"></i>{{ $delivery->delivery_type === 'pickup' ? 'Gestión de Recojo' : 'Gestión de Envío' }}</h6>
                     </div>
@@ -87,17 +88,17 @@
                         @endif
 
                         @if($delivery->status === 'pending')
-                            <div class="alert alert-warning mb-0">
+                            <div class="alert alert-warning mb-0" id="deliveryStatusAlert">
                                 <i class="bi bi-hourglass-split me-1"></i>
                                 Pedido pendiente de preparación en cocina.
                             </div>
                         @elseif($delivery->status === 'preparing')
-                            <div class="alert alert-primary mb-0">
+                            <div class="alert alert-primary mb-0" id="deliveryStatusAlert">
                                 <i class="bi bi-fire me-1"></i>
                                 El pedido se está preparando en cocina.
                             </div>
                         @elseif($delivery->status === 'on_way')
-                            <div class="alert alert-info mb-0">
+                            <div class="alert mb-0 delivery-status-onway" id="deliveryStatusAlert">
                                 @if($delivery->delivery_type === 'pickup')
                                     <i class="bi bi-bag-check me-1"></i>
                                     El pedido está listo para recoger.
@@ -113,14 +114,14 @@
         </div>
 
         {{-- Detalles de la Orden y Cobro --}}
-        <div class="col-md-8">
-            <div class="card border-0 shadow-sm h-100">
+        <div class="col-md-8 delivery-order-column">
+            <div class="card border-0 shadow-sm delivery-order-card">
                 <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
                     <h6 class="fw-bold mb-0"><i class="bi bi-receipt me-2"></i>Detalle de la Orden</h6>
                     <small class="text-muted"><i class="bi bi-clock me-1"></i>Pedido: {{ $delivery->created_at->format('d/m/Y H:i') }}</small>
                 </div>
                 <div class="card-body d-flex flex-column p-0">
-                    <div class="table-responsive flex-grow-1 p-3">
+                    <div class="table-responsive p-3 delivery-order-table">
                         <table class="table table-borderless align-middle">
                             <thead class="border-bottom text-muted small">
                                 <tr>
@@ -148,8 +149,8 @@
                         </table>
                     </div>
 
-                    <div class="bg-light p-4 border-top flex-shrink-0">
-                        <div class="row">
+                    <div class="border-top flex-shrink-0 delivery-order-summary">
+                        <div class="row g-4 delivery-detail-grid">
                             <div class="col-md-6 offset-md-6">
                                 <div class="d-flex justify-content-between mb-2 text-muted">
                                     <span>Subtotal de productos:</span>
@@ -165,7 +166,7 @@
                                 </div>
 
                                 @if($delivery->status === 'on_way')
-                                    <button class="btn btn-success btn-lg w-100 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#checkoutModal">
+                                    <button class="btn delivery-onway-checkout-btn btn-lg w-100 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#checkoutModal">
                                         <i class="bi bi-check-circle me-2"></i> MARCAR COMO ENTREGADO Y COBRAR
                                     </button>
                                 @endif
@@ -184,7 +185,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow">
 
-            <div class="modal-header bg-success text-white border-0">
+            <div class="modal-header delivery-checkout-header text-white border-0">
                 <h5 class="modal-title fw-bold">
                     <i class="bi bi-cash-coin me-2"></i>Completar Pedido
                 </h5>
@@ -199,7 +200,7 @@
                     {{-- TOTAL --}}
                     <div class="text-center mb-4">
                         <div class="text-muted small fw-bold mb-1">TOTAL A COBRAR</div>
-                        <h2 class="display-4 fw-bold text-success mb-0">
+                        <h2 class="display-4 fw-bold delivery-checkout-amount mb-0">
                             {{ $currency }}{{ number_format($delivery->total_with_fee, 2) }}
                         </h2>
                     </div>
@@ -286,7 +287,7 @@
 
                         <div class="mb-3 d-flex justify-content-between align-items-center bg-light p-3 rounded border">
                             <span class="fw-bold text-muted">Vuelto a entregar:</span>
-                            <span class="fs-4 fw-bold text-danger" id="change_amount">{{ $currency }}0.00</span>
+                            <span class="fs-4 fw-bold delivery-checkout-amount" id="change_amount">{{ $currency }}0.00</span>
                         </div>
                     </div>
 
@@ -312,11 +313,11 @@
                                      class="img-fluid rounded border bg-white p-2"
                                      style="width:240px;height:240px;object-fit:contain;">
 
-                                <div class="mt-3 fw-bold text-success fs-4">
+                                <div class="mt-3 fw-bold delivery-qr-amount fs-4">
                                     {{ $currency }}{{ number_format($delivery->total_with_fee, 2) }}
                                 </div>
                             @else
-                                <div class="alert alert-warning mb-0">
+                                <div class="alert alert-warning mb-0" id="deliveryStatusAlert">
                                     No se ha configurado el QR de Yape.
                                 </div>
                             @endif
@@ -339,38 +340,29 @@
                                      class="img-fluid rounded border bg-white p-2"
                                      style="width:240px;height:240px;object-fit:contain;">
 
-                                <div class="mt-3 fw-bold text-success fs-4">
+                                <div class="mt-3 fw-bold delivery-qr-amount fs-4">
                                     {{ $currency }}{{ number_format($delivery->total_with_fee, 2) }}
                                 </div>
                             @else
-                                <div class="alert alert-warning mb-0">
+                                <div class="alert alert-warning mb-0" id="deliveryStatusAlert">
                                     No se ha configurado el QR de Plin.
                                 </div>
                             @endif
                         </div>
                     </div>
 
-
-                    @else
-
-                        <input type="hidden"
-                               name="received_amount"
-                               value="{{ $delivery->total_with_fee }}">
-
-                    @endif
-
                 </div>
 
                 <div class="modal-footer bg-light border-0">
 
                     <button type="button"
-                            class="btn btn-outline-secondary"
+                            class="btn delivery-checkout-cancel-btn"
                             data-bs-dismiss="modal">
                         Cancelar
                     </button>
 
                     <button type="submit"
-                            class="btn btn-success px-4 fw-bold shadow-sm">
+                            class="btn delivery-finalize-btn px-4 fw-bold shadow-sm">
 
                         <i class="bi bi-check2-circle me-2"></i>
                         Finalizar y Cobrar
@@ -385,11 +377,92 @@
     </div>
 </div>
 
+@endif
+
 <style>
 
 /* =========================================================
    DISEÑO - DETALLE DELIVERY / RECOJO
    ========================================================= */
+
+/* ENCABEZADO */
+
+.delivery-detail-header {
+    padding: 18px 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-soft);
+    border-left: 4px solid var(--delivery-status-color);
+    border-radius: 14px;
+    box-shadow: var(--theme-shadow);
+}
+
+.delivery-detail-title {
+    color: var(--text-main) !important;
+    font-size: 1.45rem;
+    letter-spacing: -0.02em;
+}
+
+.delivery-detail-title > i {
+    color: var(--primary) !important;
+}
+
+.delivery-detail-header .badge {
+    border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+    box-shadow: none;
+}
+
+.delivery-detail-header > div:last-child {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.delivery-detail-header > div:last-child .btn {
+    min-height: 40px;
+    padding: 8px 14px;
+    border-radius: 9px;
+    font-size: .84rem;
+    font-weight: 700;
+}
+
+.delivery-detail-header .btn-outline-secondary {
+    color: var(--text-main);
+    background: transparent;
+    border: 1.5px solid #9ca3af !important;
+    box-shadow: none;
+}
+
+.delivery-detail-header .btn-outline-secondary:hover,
+.delivery-detail-header .btn-outline-secondary:focus,
+.delivery-detail-header .btn-outline-secondary:active {
+    color: var(--primary) !important;
+    background: color-mix(in srgb, var(--primary) 8%, transparent) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 10%, transparent) !important;
+}
+
+.delivery-detail-header .btn-outline-secondary:hover {
+    color: var(--text-main);
+    border-color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+html[data-color-mode="dark"] .delivery-detail-header {
+    background: #132338;
+    border-color: #30465d;
+    border-left-color: var(--delivery-status-color);
+}
+
+html[data-color-mode="dark"] .delivery-detail-header .btn-outline-secondary {
+    color: #d7e2ee;
+    border-color: #3a5068;
+}
+
+html[data-color-mode="dark"] .delivery-detail-header .btn-outline-secondary:hover {
+    color: #ffffff;
+    border-color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 12%, #132338);
+}
 
 .container-fluid.py-4 {
     max-width: 1500px;
@@ -466,15 +539,293 @@
     border-color: var(--border-soft);
 }
 
-#checkoutModal .modal-header,
+#checkoutModal .modal-header {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+#checkoutModal .modal-header .modal-title,
+#checkoutModal .modal-header .modal-title i {
+    color: #ffffff;
+}
+
 #checkoutModal .modal-footer {
     background: var(--card-bg);
     border-color: var(--border-soft);
 }
+/* CUERPO DEL DETALLE */
 
-#checkoutModal .modal-title {
-    color: var(--text-main);
+.delivery-detail-grid {
+    align-items: flex-start;
 }
+
+.delivery-side-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.delivery-side-column .delivery-client-card,
+.delivery-side-column .delivery-management-card {
+    margin-bottom: 0 !important;
+}
+
+.delivery-client-card,
+.delivery-management-card,
+.delivery-order-card {
+    border: 1px solid var(--border-soft) !important;
+    border-radius: 14px !important;
+}
+
+.delivery-client-card .card-header,
+.delivery-management-card .card-header,
+.delivery-order-card .card-header {
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+}
+
+.delivery-client-card .card-header i,
+.delivery-management-card .card-header i,
+.delivery-order-card .card-header h6 i {
+    color: var(--primary);
+}
+
+.delivery-client-card .card-body,
+.delivery-management-card .card-body {
+    padding: 16px 18px;
+}
+
+.delivery-management-card .card-header {
+    min-height: 52px;
+    padding: 13px 18px !important;
+}
+
+.delivery-management-card #driverForm .form-label {
+    margin-bottom: 6px;
+}
+
+.delivery-management-card #driverForm .input-group {
+    gap: 8px;
+}
+
+.delivery-management-card #driverForm {
+    margin-bottom: 0 !important;
+}
+
+.delivery-management-card #driver_id {
+    height: 42px;
+    min-height: 42px;
+}
+
+.delivery-management-card #updateDriverBtn {
+    min-height: 42px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+.delivery-client-card .card-body > .mb-3 {
+    margin-bottom: 18px !important;
+}
+
+.delivery-client-card .card-body > .mb-3:last-child {
+    margin-bottom: 0 !important;
+}
+
+.delivery-management-card #driverForm {
+    margin-bottom: 16px !important;
+}
+
+.delivery-management-card #driverForm .form-label {
+    margin-bottom: 8px;
+    color: var(--text-main);
+    font-size: .78rem;
+    font-weight: 700 !important;
+}
+
+.delivery-management-card #driverForm .input-group {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.delivery-management-card #driver_id {
+    width: 100%;
+    height: 46px;
+    min-height: 46px;
+
+    padding: 0 44px 0 14px;
+
+    background-color: var(--card-bg);
+    color: var(--text-main);
+
+    border: 1px solid var(--border-soft);
+    border-radius: 10px !important;
+
+    font-size: .92rem;
+    font-weight: 600;
+
+    cursor: pointer;
+    box-shadow: none;
+
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+        linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+
+    background-position:
+        calc(100% - 18px) 19px,
+        calc(100% - 13px) 19px;
+
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+
+    transition:
+        border-color .18s ease,
+        box-shadow .18s ease,
+        background-color .18s ease;
+}
+
+.delivery-management-card #driver_id:hover {
+    border-color:
+        color-mix(in srgb, var(--primary) 55%, var(--border-soft));
+}
+
+.delivery-management-card #driver_id:focus {
+    border-color: var(--primary);
+    box-shadow:
+        0 0 0 3px
+        color-mix(in srgb, var(--primary) 12%, transparent);
+    outline: none;
+}
+
+.delivery-management-card #updateDriverBtn {
+    width: 100%;
+    min-width: 0;
+}
+
+.delivery-management-card #driver_id {
+    min-height: 44px;
+    border: 1px solid var(--border-soft);
+    border-radius: 9px !important;
+    box-shadow: none;
+}
+
+.delivery-management-card #driver_id:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 .18rem color-mix(in srgb, var(--primary) 14%, transparent);
+}
+
+.delivery-management-card #updateDriverBtn {
+    min-width: 112px;
+    min-height: 44px;
+    padding: 8px 14px;
+    color: #fff;
+    background: var(--delivery-status-color);
+    border: 1px solid var(--delivery-status-color);
+    border-radius: 9px !important;
+    font-size: .82rem;
+    font-weight: 700;
+}
+
+.delivery-management-card #updateDriverBtn:hover {
+    color: #fff;
+    background: color-mix(in srgb, var(--primary) 82%, #000);
+    border-color: color-mix(in srgb, var(--primary) 82%, #000);
+}
+
+/* ORDEN */
+
+.delivery-order-card {
+    overflow: hidden;
+}
+
+.delivery-order-table {
+    min-height: 0;
+    padding: 12px 20px !important;
+}
+
+.delivery-order-card .table thead th {
+    padding: 12px 10px;
+}
+
+.delivery-order-card .table tbody td {
+    padding: 16px 10px;
+}
+
+/* RESUMEN */
+
+.delivery-order-summary {
+    background: var(--card-bg) !important;
+    padding: 20px 24px !important;
+}
+
+.delivery-order-summary > .row {
+    justify-content: flex-end;
+}
+
+.delivery-order-summary .col-md-6 {
+    padding: 4px 8px;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+}
+
+.delivery-order-summary .col-md-6 > .d-flex:not(.fs-4) {
+    margin-bottom: 9px !important;
+    font-size: .88rem;
+}
+
+.delivery-order-summary .fs-4 {
+    margin: 12px 0 0 !important;
+    padding-top: 14px !important;
+    border-top: 1px solid var(--border-soft) !important;
+    font-size: 1.25rem !important;
+}
+
+.delivery-order-summary .fs-4 > span:first-child {
+    color: var(--text-main);
+    font-size: 1rem;
+    letter-spacing: .025em;
+}
+
+.delivery-order-summary .text-primary {
+    color: var(--primary) !important;
+    font-size: 1.65rem;
+    font-weight: 800;
+}
+
+/* DARK */
+
+html[data-color-mode="dark"] .delivery-client-card,
+html[data-color-mode="dark"] .delivery-management-card,
+html[data-color-mode="dark"] .delivery-order-card {
+    background: #132338;
+    border-color: #30465d !important;
+}
+
+html[data-color-mode="dark"] .delivery-order-summary {
+    background: #132338 !important;
+}
+
+html[data-color-mode="dark"] .delivery-order-summary .col-md-6 {
+    background: transparent;
+    border: 0;
+}
+
+html[data-color-mode="dark"] .delivery-management-card #driver_id {
+    background-color: #172a40;
+    border-color: #30465d;
+    color: #f8fafc;
+}
+
+html[data-color-mode="dark"] .delivery-order-summary .fs-4 {
+    border-color: #30465d !important;
+}
+
 /* INFORMACION DEL CLIENTE */
 
 .card-body small.text-muted.d-block {
@@ -543,6 +894,49 @@ select.form-select {
 
 #updateDriverBtn {
     min-width: 105px;
+}
+
+/* MENSAJE DE ACTUALIZACION DEL DELIVERY */
+
+#driverUpdateMessage:empty,
+#driverUpdateMessage[style*="display:none"],
+#driverUpdateMessage[style*="display: none"] {
+    display: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#driverUpdateMessage:not(:empty) {
+    margin-top: 8px !important;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: .78rem;
+    line-height: 1.35;
+}
+
+/* COMPACTAR GESTION DE ENVIO */
+
+.delivery-management-card .card-body {
+    padding-bottom: 10px;
+}
+
+.delivery-management-card #driverUpdateMessage {
+    margin-bottom: 0 !important;
+}
+
+.delivery-management-card #driverUpdateMessage[style*="display:none"],
+.delivery-management-card #driverUpdateMessage[style*="display: none"] {
+    display: none !important;
+    margin: 0 !important;
+}
+
+.delivery-management-card #driverUpdateMessage:not(:empty) {
+    margin-top: 8px !important;
+    margin-bottom: 0 !important;
+}
+
+.delivery-management-card #driverForm {
+    margin-bottom: 0 !important;
 }
 
 /* ALERTAS DE ESTADO */
@@ -687,6 +1081,480 @@ select.form-select {
 
 }
 
+
+#deliveryStatusAlert {
+    margin-top: 10px !important;
+}
+
+/* RESUMEN DE ORDEN - INTEGRADO */
+.delivery-order-summary {
+    padding: 12px 24px 14px !important;
+    margin: 0 !important;
+    background: color-mix(in srgb, var(--delivery-status-color) 12%, var(--card-bg)) !important;
+    border-top: 3px solid var(--delivery-status-color) !important;
+}
+
+.delivery-order-summary .fs-4 {
+    border-top-color:
+        color-mix(
+            in srgb,
+            var(--delivery-status-color) 25%,
+            var(--border-soft)
+        ) !important;
+}
+
+.delivery-order-summary .fs-4 > span:first-child {
+    color: var(--delivery-status-color) !important;
+}
+
+.delivery-order-summary .text-primary {
+    color: var(--delivery-status-color) !important;
+}
+
+.delivery-order-summary > .row {
+    margin: 0 !important;
+    justify-content: flex-end;
+}
+
+.delivery-order-summary .col-md-6 {
+    width: 100%;
+    max-width: 440px;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+}
+
+.delivery-order-summary .col-md-6 > .d-flex:not(.fs-4) {
+    margin-bottom: 6px !important;
+    font-size: .9rem;
+}
+
+.delivery-order-summary .col-md-6 > .d-flex:not(.fs-4) span:first-child {
+    color: var(--text-muted);
+}
+
+.delivery-order-summary .col-md-6 > .d-flex:not(.fs-4) span:last-child {
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+.delivery-order-summary .fs-4 {
+    margin: 8px 0 0 !important;
+    padding-top: 9px !important;
+    border-top: 2px solid color-mix(in srgb, var(--delivery-status-color) 55%, transparent) !important;
+    align-items: center;
+}
+
+.delivery-order-summary .fs-4 > span:first-child {
+    color: var(--text-main);
+    font-size: 1rem !important;
+    font-weight: 800;
+}
+
+.delivery-order-summary .text-primary {
+    color: var(--delivery-status-color) !important;
+    font-size: 1.55rem !important;
+    font-weight: 800;
+    line-height: 1;
+}
+
+html[data-color-mode="dark"] .delivery-order-summary {
+    background: color-mix(
+        in srgb,
+        var(--delivery-status-color) 12%,
+        #132338
+    ) !important;
+
+    border-top-color: var(--delivery-status-color) !important;
+}
+
+html[data-color-mode="dark"] .delivery-order-summary .fs-4 {
+    border-top-color: color-mix(
+        in srgb,
+        var(--delivery-status-color) 55%,
+        #132338
+    ) !important;
+}
+
+html[data-color-mode="dark"] .delivery-order-summary .fs-4 > span:first-child,
+html[data-color-mode="dark"] .delivery-order-summary .text-primary {
+    color: var(--delivery-status-color) !important;
+}
+
+html[data-color-mode="dark"] .delivery-order-summary .fs-4 {
+    border-top-color: #30465d !important;
+}
+
+/* COLOR DEL ESTADO EN SUBTOTAL Y ENVIO */
+.delivery-order-summary .col-md-6 > .d-flex:not(.fs-4) span:first-child {
+    color: var(--delivery-status-color) !important;
+}
+
+.delivery-order-summary .col-md-6 > .d-flex:not(.fs-4) span:last-child {
+    color: var(--text-main) !important;
+}
+
+/* LINEA ANTES DEL TOTAL */
+.delivery-order-summary .fs-4 {
+    border-top: 2px solid color-mix(
+        in srgb,
+        var(--delivery-status-color) 65%,
+        transparent
+    ) !important;
+}
+
+/* MODO OSCURO */
+html[data-color-mode="dark"]
+.delivery-order-summary .col-md-6 > .d-flex:not(.fs-4) span:first-child {
+    color: var(--delivery-status-color) !important;
+}
+
+html[data-color-mode="dark"]
+.delivery-order-summary .col-md-6 > .d-flex:not(.fs-4) span:last-child {
+    color: #ffffff !important;
+}
+
+html[data-color-mode="dark"]
+.delivery-order-summary .fs-4 {
+    border-top-color: var(--delivery-status-color) !important;
+}
+
+/* SEPARACION UNIFORME DEL AVISO DE ESTADO */
+#deliveryStatusAlert {
+    margin-top: 12px !important;
+}
+
+/* ESTADO EN CAMINO */
+.delivery-status-onway {
+    color: #f97316 !important;
+    background: color-mix(in srgb, #f97316 12%, var(--card-bg)) !important;
+    border: 1px solid color-mix(in srgb, #f97316 55%, transparent) !important;
+}
+
+.delivery-status-onway i {
+    color: #f97316 !important;
+}
+
+/* EN CAMINO - MODO OSCURO */
+html[data-color-mode="dark"] .delivery-status-onway {
+    color: #fb923c !important;
+    background: color-mix(in srgb, #f97316 14%, #132338) !important;
+    border-color: color-mix(in srgb, #f97316 55%, #30465d) !important;
+}
+
+html[data-color-mode="dark"] .delivery-status-onway i {
+    color: #fb923c !important;
+}
+
+/* BOTON DE COBRO - ESTADO EN CAMINO */
+.delivery-onway-checkout-btn {
+    margin-top: 12px !important;
+    color: #ffffff !important;
+    background: #f97316 !important;
+    border: 1px solid #f97316 !important;
+}
+
+.delivery-onway-checkout-btn:hover,
+.delivery-onway-checkout-btn:focus,
+.delivery-onway-checkout-btn:active {
+    color: #ffffff !important;
+    background: #ea580c !important;
+    border-color: #ea580c !important;
+}
+
+/* FINALIZAR Y COBRAR - PALETA DEL SISTEMA */
+.delivery-finalize-btn {
+    color: #ffffff !important;
+    background: var(--primary) !important;
+    border: 1px solid var(--primary) !important;
+}
+
+.delivery-finalize-btn:hover,
+.delivery-finalize-btn:focus,
+.delivery-finalize-btn:active {
+    color: #ffffff !important;
+    background: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
+}
+
+/* COMPLETAR PEDIDO - PALETA DE CONFIGURACION */
+#checkoutModal .modal-header.delivery-checkout-header {
+    color: #ffffff !important;
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+}
+
+#checkoutModal .delivery-checkout-header .modal-title,
+#checkoutModal .delivery-checkout-header .modal-title i {
+    color: #ffffff !important;
+}
+
+/* CANCELAR - BORDE NEUTRO / HOVER CON PALETA */
+.delivery-checkout-cancel-btn {
+    color: var(--text-main) !important;
+    background: transparent !important;
+    border: 1.5px solid #6c757d !important;
+}
+
+.delivery-checkout-cancel-btn:hover,
+.delivery-checkout-cancel-btn:focus {
+    color: var(--primary) !important;
+    background: color-mix(in srgb, var(--primary) 8%, transparent) !important;
+    border-color: var(--primary) !important;
+}
+
+html[data-color-mode="dark"] .delivery-checkout-cancel-btn {
+    color: #f8fafc !important;
+    border-color: #64748b !important;
+}
+
+html[data-color-mode="dark"] .delivery-checkout-cancel-btn:hover,
+html[data-color-mode="dark"] .delivery-checkout-cancel-btn:focus {
+    color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    background: color-mix(in srgb, var(--primary) 12%, transparent) !important;
+}
+
+/* MONTOS DEL MODAL COMPLETAR PEDIDO */
+#checkoutModal .delivery-checkout-amount,
+#checkoutModal #cash_received,
+#checkoutModal .input-group-text {
+    color: #000000 !important;
+}
+
+/* MONTOS YAPE Y PLIN */
+#checkoutModal #yapePaymentFields .delivery-qr-amount,
+#checkoutModal #plinPaymentFields .delivery-qr-amount {
+    color: #000000 !important;
+}
+
+/* MONTOS DEL CHECKOUT EN MODO OSCURO */
+html[data-color-mode="dark"] #checkoutModal .delivery-checkout-amount,
+html[data-color-mode="dark"] #checkoutModal #cash_received,
+html[data-color-mode="dark"] #checkoutModal .input-group-text,
+html[data-color-mode="dark"] #checkoutModal #yapePaymentFields .delivery-qr-amount,
+html[data-color-mode="dark"] #checkoutModal #plinPaymentFields .delivery-qr-amount {
+    color: #ffffff !important;
+}
+
+/* COMPLETAR PEDIDO - TAMAÑO COMPACTO */
+#checkoutModal .modal-dialog {
+    max-width: 760px !important;
+    margin: 1.5rem auto !important;
+}
+
+#checkoutModal .modal-content {
+    border-radius: 18px !important;
+    overflow: hidden;
+}
+
+#checkoutModal .modal-header {
+    padding: 16px 22px !important;
+}
+
+#checkoutModal .modal-header .modal-title {
+    font-size: 1.25rem !important;
+}
+
+#checkoutModal .modal-body {
+    padding: 22px 26px !important;
+}
+
+#checkoutModal .modal-body .mb-4 {
+    margin-bottom: 18px !important;
+}
+
+#checkoutModal .modal-body .mb-3 {
+    margin-bottom: 14px !important;
+}
+
+#checkoutModal .form-label {
+    margin-bottom: 6px !important;
+    font-size: .88rem !important;
+}
+
+#checkoutModal .form-control,
+#checkoutModal .form-select,
+#checkoutModal .input-group-text {
+    min-height: 46px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    font-size: .95rem !important;
+}
+
+#checkoutModal .delivery-checkout-amount {
+    font-size: 2.25rem !important;
+    line-height: 1.05 !important;
+}
+
+#checkoutModal .delivery-checkout-total-label {
+    margin-bottom: 7px !important;
+    font-size: .78rem !important;
+}
+
+#checkoutModal .delivery-checkout-customer-card {
+    padding: 16px 18px !important;
+    margin-bottom: 18px !important;
+    border-radius: 14px !important;
+}
+
+#checkoutModal .modal-footer {
+    padding: 14px 22px !important;
+}
+
+#checkoutModal .modal-footer .btn {
+    min-height: 42px !important;
+    padding: 8px 18px !important;
+}
+
+@media (max-width: 767.98px) {
+    #checkoutModal .modal-dialog {
+        max-width: calc(100% - 24px) !important;
+        margin: 12px auto !important;
+    }
+
+    #checkoutModal .modal-body {
+        padding: 18px !important;
+    }
+}
+
+/* COMPLETAR PEDIDO - VERSION MAS COMPACTA */
+#checkoutModal .modal-dialog {
+    max-width: 580px !important;
+}
+
+#checkoutModal .modal-header {
+    padding: 13px 18px !important;
+}
+
+#checkoutModal .modal-header .modal-title {
+    font-size: 1.08rem !important;
+}
+
+#checkoutModal .modal-body {
+    padding: 16px 20px !important;
+}
+
+#checkoutModal .modal-body .mb-4 {
+    margin-bottom: 12px !important;
+}
+
+#checkoutModal .modal-body .mb-3 {
+    margin-bottom: 10px !important;
+}
+
+#checkoutModal .form-label {
+    margin-bottom: 4px !important;
+    font-size: .8rem !important;
+}
+
+#checkoutModal .form-control,
+#checkoutModal .form-select,
+#checkoutModal .input-group-text {
+    min-height: 40px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+    font-size: .88rem !important;
+}
+
+#checkoutModal .delivery-checkout-amount {
+    font-size: 1.85rem !important;
+}
+
+#checkoutModal .delivery-checkout-total-label {
+    margin-bottom: 4px !important;
+    font-size: .72rem !important;
+}
+
+#checkoutModal .delivery-checkout-customer-card {
+    padding: 12px 14px !important;
+    margin-bottom: 12px !important;
+    border-radius: 12px !important;
+}
+
+#checkoutModal .delivery-checkout-customer-card h6 {
+    margin-bottom: 10px !important;
+    font-size: .9rem !important;
+}
+
+#checkoutModal .modal-footer {
+    padding: 11px 18px !important;
+}
+
+#checkoutModal .modal-footer .btn {
+    min-height: 38px !important;
+    padding: 6px 15px !important;
+    font-size: .85rem !important;
+}
+
+/* COMPLETAR PEDIDO - ULTRA COMPACTO */
+#checkoutModal .modal-dialog {
+    max-width: 480px !important;
+}
+
+#checkoutModal .modal-header {
+    padding: 10px 15px !important;
+}
+
+#checkoutModal .modal-header .modal-title {
+    font-size: 1rem !important;
+}
+
+#checkoutModal .modal-body {
+    padding: 12px 16px !important;
+}
+
+#checkoutModal .modal-body .mb-4,
+#checkoutModal .modal-body .mb-3 {
+    margin-bottom: 8px !important;
+}
+
+#checkoutModal .form-label {
+    margin-bottom: 3px !important;
+    font-size: .75rem !important;
+}
+
+#checkoutModal .form-control,
+#checkoutModal .form-select,
+#checkoutModal .input-group-text {
+    min-height: 36px !important;
+    padding: 5px 10px !important;
+    font-size: .82rem !important;
+    border-radius: 9px !important;
+}
+
+#checkoutModal .delivery-checkout-amount {
+    font-size: 1.6rem !important;
+    line-height: 1 !important;
+}
+
+#checkoutModal .delivery-checkout-total-label {
+    margin-bottom: 3px !important;
+    font-size: .68rem !important;
+}
+
+#checkoutModal .delivery-checkout-customer-card {
+    padding: 9px 11px !important;
+    margin-bottom: 8px !important;
+    border-radius: 10px !important;
+}
+
+#checkoutModal .delivery-checkout-customer-card h6 {
+    margin-bottom: 7px !important;
+    font-size: .82rem !important;
+}
+
+#checkoutModal .modal-footer {
+    padding: 9px 15px !important;
+}
+
+#checkoutModal .modal-footer .btn {
+    min-height: 35px !important;
+    padding: 5px 13px !important;
+    font-size: .8rem !important;
+}
 </style>
 
 <script>

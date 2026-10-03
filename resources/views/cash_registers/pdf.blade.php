@@ -61,11 +61,11 @@
         .section-title {
             font-size: 11px;
             font-weight: bold;
-            color: {{ $palette['dark'] }};
+            color: #ffffff;
             border-left: 4px solid {{ $palette['primary'] }};
             padding: 5px 8px;
             margin-bottom: 9px;
-            background: #15263a;
+            background: {{ $palette['dark'] }};
         }
 
         .info-box {
@@ -164,9 +164,9 @@
         .total-box {
             margin-top: 10px;
             padding: 10px;
-            background: #15263a;
+            background: {{ $palette['dark'] }};
             border: 1px solid {{ $palette['primary'] }};
-            color: {{ $palette['dark'] }};
+            color: #ffffff;
             font-weight: bold;
         }
 
@@ -225,7 +225,7 @@
         }
 
         .expenses-total td {
-            background: #15263a;
+            background: {{ $palette['dark'] }};
             font-weight: bold;
             border-top: 2px solid {{ $palette['primary'] }};
         }
@@ -252,7 +252,79 @@
             font-size: 7px;
             text-align: center;
         }
-    </style>
+    
+/* CONTRASTE DEL RESULTADO DEL ARQUEO */
+.difference {
+    color: #ffffff !important;
+}
+
+.difference * {
+    color: #ffffff !important;
+}
+
+/* TOTALES - PALETA CONFIGURADA DEL SISTEMA */
+.total-box {
+    background: {{ $palette['dark'] }} !important;
+    border: 2px solid {{ $palette['primary'] }} !important;
+    color: #ffffff !important;
+}
+
+.total-box,
+.total-box span {
+    color: #ffffff !important;
+}
+
+/* RESULTADO DEL ARQUEO - PALETA CONFIGURADA */
+.difference {
+    background: {{ $palette['dark'] }} !important;
+    border: 2px solid {{ $palette['primary'] }} !important;
+    color: #ffffff !important;
+}
+
+.difference,
+.difference * {
+    color: #ffffff !important;
+}
+
+/* TOTALES - FONDO SEGUN COLOR DE CONFIGURACION */
+.total-box,
+.difference {
+    background: {{ $palette['primary'] }} !important;
+    border: 2px solid {{ $palette['primary'] }} !important;
+    color: #ffffff !important;
+}
+
+.total-box span,
+.difference,
+.difference * {
+    color: #ffffff !important;
+}
+
+/* ENCABEZADOS PDF - CORREGIR FRANJA LATERAL */
+.section-title {
+    color: #ffffff !important;
+    background: {{ $palette['dark'] }} !important;
+    border-left: 4px solid {{ $palette['primary'] }} !important;
+    padding: 5px 8px !important;
+    margin-left: 0 !important;
+}
+
+.section-title::before,
+.section-title::after {
+    display: none !important;
+}
+
+/* ENCABEZADOS PDF - FRANJA INTERNA LIMPIA */
+.section-title {
+    color: #ffffff !important;
+    background: {{ $palette['dark'] }} !important;
+    border: none !important;
+    border-left: none !important;
+    box-shadow: inset 4px 0 0 {{ $palette['primary'] }} !important;
+    padding: 5px 8px 5px 12px !important;
+    margin-left: 0 !important;
+}
+</style>
 </head>
 
 <body>

@@ -8925,7 +8925,7 @@ html[data-color-mode="dark"]
 
 
     document
-        .querySelectorAll('.alert')
+        .querySelectorAll('.alert:not(#driverUpdateMessage):not(#deliveryStatusAlert)')
         .forEach(
             alertElement => {
 
