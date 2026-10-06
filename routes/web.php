@@ -19,7 +19,6 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\BillingController;
-use App\Http\Controllers\ChatbotController;
 
 /*
 |--------------------------------------------------------------------------
@@ -366,15 +365,6 @@ Route::resource(
         [DashboardController::class, 'index']
     )->middleware('role:admin,cashier')->name('dashboard');
     Route::middleware(['role:admin'])->group(function () {
-
-        // =====================================================
-        // CHATBOT DEL ADMINISTRADOR
-        // =====================================================
-
-        Route::post(
-            '/chatbot',
-            [ChatbotController::class, 'chat']
-        )->name('chatbot.chat');
 
 
     });
