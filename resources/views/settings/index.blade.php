@@ -729,60 +729,16 @@ button[type="submit"].btn-primary:hover {
 
 
                         <div class="row g-3 mb-4">
-
-                            <div class="col-md-6">
-
-                                <label class="form-label fw-bold">
-                                    Nombre del Restaurante
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="company_name"
-                                    class="form-control"
-                                    value="{{ $settings['company_name'] ?? '' }}"
-                                    placeholder="Ej: El Capitán - Cevichería y Más"
-                                    required
-                                >
-
-                            </div>
-
-
-                            <div class="col-md-6">
-
-                                <label class="form-label fw-bold">
-                                    Teléfono / Pedidos
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="company_phone"
-                                    class="form-control"
-                                    value="{{ $settings['company_phone'] ?? '' }}"
-                                    placeholder="Ej: 999-888-777"
-                                >
-
-                            </div>
-
-
-                            <div class="col-12">
-
-                                <label class="form-label fw-bold">
-                                    Dirección
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="company_address"
-                                    class="form-control"
-                                    value="{{ $settings['company_address'] ?? '' }}"
-                                    placeholder="Ej: Av. Principal 123, Ica"
-                                >
-
-                            </div>
-
-                        </div>
-
+<div class="col-md-6"><label class="form-label fw-bold" for="business_company_name">Nombre comercial *</label><input id="business_company_name" type="text" name="company_name" class="form-control" value="{{ old('company_name', $settings['company_name'] ?? '') }}" placeholder="Ej: Restaurante Sabor Peruano" required ></div>
+<div class="col-md-6"><label class="form-label fw-bold" for="business_sunat_razon_social">Razón social</label><input id="business_sunat_razon_social" type="text" name="sunat_razon_social" class="form-control" value="{{ old('sunat_razon_social', $settings['sunat_razon_social'] ?? '') }}" placeholder=""  ></div>
+<div class="col-md-4"><label class="form-label fw-bold" for="business_sunat_ruc">RUC / ID fiscal</label><input id="business_sunat_ruc" type="text" name="sunat_ruc" class="form-control" value="{{ old('sunat_ruc', $settings['sunat_ruc'] ?? '') }}" placeholder="20123456789"  maxlength="11" pattern="[0-9]{11}"></div>
+<div class="col-md-8"><label class="form-label fw-bold" for="business_company_business">Giro o rubro</label><input id="business_company_business" type="text" name="company_business" class="form-control" value="{{ old('company_business', $settings['company_business'] ?? '') }}" placeholder="Restaurante, pollería, cevichería…"  ></div>
+<div class="col-md-8"><label class="form-label fw-bold" for="business_company_address">Dirección</label><input id="business_company_address" type="text" name="company_address" class="form-control" value="{{ old('company_address', $settings['company_address'] ?? '') }}" placeholder="Av. Principal 123, Lima"  ></div>
+<div class="col-md-4"><label class="form-label fw-bold" for="business_company_city">Ciudad / distrito</label><input id="business_company_city" type="text" name="company_city" class="form-control" value="{{ old('company_city', $settings['company_city'] ?? '') }}" placeholder=""  ></div>
+<div class="col-md-4"><label class="form-label fw-bold" for="business_company_phone">Teléfono</label><input id="business_company_phone" type="text" name="company_phone" class="form-control" value="{{ old('company_phone', $settings['company_phone'] ?? '') }}" placeholder="(01) 555-0123"  ></div>
+<div class="col-md-4"><label class="form-label fw-bold" for="business_company_email">Correo electrónico</label><input id="business_company_email" type="email" name="company_email" class="form-control" value="{{ old('company_email', $settings['company_email'] ?? '') }}" placeholder=""  ></div>
+<div class="col-md-4"><label class="form-label fw-bold" for="business_company_website">Sitio web</label><input id="business_company_website" type="text" name="company_website" class="form-control" value="{{ old('company_website', $settings['company_website'] ?? '') }}" placeholder="www.mirestaurante.com"  ></div>
+</div>
 
 <hr class="text-muted opacity-25">
 
@@ -1791,7 +1747,7 @@ button[type="submit"].btn-primary:hover {
 
                                 <input
                                     type="text"
-                                    name="sunat_ruc"
+                                    data-business-mirror="sunat_ruc"
                                     class="form-control"
                                     value="{{ $settings['sunat_ruc'] ?? '' }}"
                                     maxlength="11"
@@ -1817,7 +1773,7 @@ button[type="submit"].btn-primary:hover {
 
                                 <input
                                     type="text"
-                                    name="sunat_razon_social"
+                                    data-business-mirror="sunat_razon_social"
                                     class="form-control"
                                     value="{{ $settings['sunat_razon_social'] ?? '' }}"
                                     placeholder="MI EMPRESA SAC"
@@ -2798,3 +2754,18 @@ html[data-color-mode="dark"] .bi-qr-code::before {
 @endpush
 
 
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    ['sunat_ruc', 'sunat_razon_social'].forEach(function (name) {
+        const source = document.querySelector('[name="' + name + '"]');
+        const mirror = document.querySelector('[data-business-mirror="' + name + '"]');
+        if (!source || !mirror) return;
+        mirror.value = source.value;
+        source.addEventListener('input', function () { mirror.value = source.value; });
+        mirror.addEventListener('input', function () { source.value = mirror.value; });
+    });
+});
+</script>
+@endpush
