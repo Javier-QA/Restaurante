@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -25,9 +25,7 @@
         rel="stylesheet"
     >
 
-    @if(auth()->check() && auth()->user()->role === 'admin')
-        @vite('resources/js/ai-chat.js')
-    @endif
+
 
     <style>
 
@@ -7399,7 +7397,7 @@ html[data-color-mode="dark"]
 
             <a
                 href="{{ route('ai.assistant') }}"
-                class="nav-link {{ request()->routeIs('ai.assistant*') ? 'active' : '' }}"
+                class="nav-link {{ request()->routeIs('ai.assistant', 'assistant.index') ? 'active' : '' }}"
             >
                 <i class="bi bi-stars"></i>
                 Asistente IA
@@ -7407,7 +7405,7 @@ html[data-color-mode="dark"]
 
             <a
                 href="{{ route('ai.chat') }}"
-                class="nav-link {{ request()->routeIs('ai.chat*') ? 'active' : '' }}"
+                class="nav-link {{ request()->routeIs('ai.chat', 'chatbot.index') ? 'active' : '' }}"
             >
                 <i class="bi bi-robot"></i>
                 Chat IA
@@ -10036,6 +10034,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 })();
 </script>
+@include('assistant.assets')
 @stack('scripts')
 
 

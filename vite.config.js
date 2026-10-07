@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.scss', 'resources/js/app.js', 'resources/js/ai-chat.js'], // Cambio aquí
+            input: ['resources/css/app.scss', 'resources/js/app.js'], // Cambio aquí
             refresh: true,
         }),
     ],

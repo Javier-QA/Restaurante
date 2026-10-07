@@ -19,9 +19,6 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\BillingController;
-use App\Http\Controllers\AiChatController;
-use App\Http\Controllers\AiAssistantController;
-use App\Http\Controllers\AiSettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -494,26 +491,6 @@ Route::resource(
         // INTELIGENCIA ARTIFICIAL - SOLO ADMINISTRADOR
         // =====================================================
 
-        Route::get('/ai/chat',[AiChatController::class,'index'])->name('ai.chat');
-        Route::post('/ai/chat/ask',[AiChatController::class,'ask'])->middleware('throttle:ai')->name('ai.chat.ask');
-        Route::get('/ai/chat/state',[AiChatController::class,'state'])->name('ai.chat.state');
-        Route::post('/ai/chat/clear',[AiChatController::class,'clear'])->name('ai.chat.clear');
-
-        Route::get('/ai/settings',[AiSettingsController::class,'index'])->name('ai.settings');
-        Route::post('/ai/settings',[AiSettingsController::class,'update'])->name('ai.settings.update');
-        Route::post('/ai/settings/test',[AiSettingsController::class,'test'])->name('ai.settings.test');
-
-        Route::get('/ai/assistant',[AiAssistantController::class,'index'])->name('ai.assistant');
-        Route::post('/ai/assistant/ask',[AiAssistantController::class,'ask'])->middleware('throttle:ai')->name('ai.assistant.ask');
-        Route::post('/ai/assistant/{query}/run',[AiAssistantController::class,'run'])->name('ai.assistant.run');
-        Route::get('/ai/assistant/schema',[AiAssistantController::class,'schema'])->name('ai.assistant.schema');
-        Route::get('/ai/assistant/history',[AiAssistantController::class,'history'])->name('ai.assistant.history');
-        Route::get('/ai/assistant/favorites',[AiAssistantController::class,'favorites'])->name('ai.assistant.favorites');
-        Route::patch('/ai/assistant/{query}/favorite',[AiAssistantController::class,'toggleFavorite'])->name('ai.assistant.favorite');
-        Route::delete('/ai/assistant/{query}',[AiAssistantController::class,'destroy'])->name('ai.assistant.destroy');
-        Route::get('/ai/assistant/export/csv',[AiAssistantController::class,'exportCsv'])->name('ai.assistant.export.csv');
-
-
         Route::get(
             '/reports',
             [ReportController::class, 'index']
@@ -691,3 +668,4 @@ Route::resource(
         )->name('tables.updatePositions');
     });
 });
+require __DIR__.'/sys_ia.php';
