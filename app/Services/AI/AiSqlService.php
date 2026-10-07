@@ -17,19 +17,14 @@ class AiSqlService
      * users, sessions, settings, password_reset_tokens o migrations.
      */
     private const ALLOWED_TABLES = [
-        'orders',
-        'order_details',
-        'products',
-        'categories',
-        'product_ingredients',
-        'inventory_logs',
-        'clients',
-        'expenses',
-        'cash_registers',
-        'reservations',
-        'deliveries',
-        'delivery_drivers',
-        'tables',
+        'v_ia_ventas',
+        'v_ia_detalle_ventas',
+        'v_ia_productos',
+        'v_ia_inventario',
+        'v_ia_gastos',
+        'v_ia_cajas',
+        'v_ia_reservas',
+        'v_ia_delivery',
     ];
 
     /**
