@@ -296,6 +296,68 @@ document.addEventListener('DOMContentLoaded', async () => {
             messages.scrollTop = messages.scrollHeight;
         };
 
+        const addDataTable = (rows) => {
+            if (!Array.isArray(rows) || rows.length === 0) {
+                return;
+            }
+
+            const safeRows = rows.slice(0, 20);
+            const columns = Object.keys(safeRows[0]).slice(0, 5);
+
+            if (columns.length === 0) {
+                return;
+            }
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'ai-floating-message bot';
+            wrapper.style.maxWidth = '100%';
+            wrapper.style.overflowX = 'auto';
+
+            const table = document.createElement('table');
+            table.style.width = '100%';
+            table.style.borderCollapse = 'collapse';
+            table.style.fontSize = '.76rem';
+
+            const thead = document.createElement('thead');
+            const headRow = document.createElement('tr');
+
+            columns.forEach(column => {
+                const th = document.createElement('th');
+                th.textContent = column.replaceAll('_', ' ');
+                th.style.textAlign = 'left';
+                th.style.padding = '6px';
+                th.style.borderBottom = '1px solid #dce7f1';
+                headRow.appendChild(th);
+            });
+
+            thead.appendChild(headRow);
+            table.appendChild(thead);
+
+            const tbody = document.createElement('tbody');
+
+            safeRows.forEach(row => {
+                const tr = document.createElement('tr');
+
+                columns.forEach(column => {
+                    const td = document.createElement('td');
+                    const value = row[column];
+                    td.textContent = value === null || value === undefined
+                        ? 'Sin dato'
+                        : String(value);
+                    td.style.padding = '6px';
+                    td.style.borderBottom = '1px solid #edf2f7';
+                    tr.appendChild(td);
+                });
+
+                tbody.appendChild(tr);
+            });
+
+            table.appendChild(tbody);
+            wrapper.appendChild(table);
+            messages.appendChild(wrapper);
+            messages.scrollTop = messages.scrollHeight;
+        };
+
         const ask = async (question) => {
             question = question.trim();
 
@@ -323,11 +385,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 const data = await response.json();
 
-                addMessage(
-                    data.success
-                        ? data.answer
-                        : (data.message || 'No fue posible procesar la consulta.')
-                );
+                if (data.success) {
+                    addMessage(data.answer);
+                    addDataTable(data.data);
+                } else {
+                    addMessage(
+                        data.message || 'No fue posible procesar la consulta.'
+                    );
+                }
             } catch (error) {
                 addMessage('No se pudo establecer comunicación con el servidor.');
             } finally {
