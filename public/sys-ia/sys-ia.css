@@ -1,16 +1,16 @@
 :is(.sys-ia,.chat-root,#toastWrap){
-  --accent:#f97316; --accent-2:#fb923c; --accent-dark:#ea580c; --accent-soft:#fff1e6;
-  --ink:#0f172a; --ink-2:#1e293b; --muted:#64748b; --line:#e8ebf1;
-  --bg:#f4f6fb; --card:#ffffff;
+  --accent:var(--primary); --accent-dark:var(--primary-hover); --accent-soft:color-mix(in srgb,var(--primary) 12%,var(--card-bg));
+  --ink:var(--text-main); --ink-2:var(--text-main); --muted:var(--text-muted); --line:var(--border-soft);
+  --bg:var(--light-bg); --card:var(--card-bg);
   --side:#111827; --side-2:#1b2434; --side-text:#9aa6b8;
   --ok:#10b981; --warn:#f59e0b; --danger:#ef4444; --info:#3b82f6; --violet:#8b5cf6;
-  --radius:16px; --shadow:0 1px 2px rgba(15,23,42,.04),0 8px 24px -8px rgba(15,23,42,.08);
+  --radius:var(--radius-xl); --shadow:var(--shadow-soft);
   --side-w:272px;
 }
-:is(.sys-ia,.chat-root,#toastWrap) .ia-hero{background:linear-gradient(120deg,#0f172a,#1e293b 60%,#7c2d12);border-radius:18px;color:#fff;padding:22px 26px;margin-bottom:16px;position:relative;overflow:hidden}
-:is(.sys-ia,.chat-root,#toastWrap) .ia-hero:after{content:"";position:absolute;right:-50px;top:-70px;width:240px;height:240px;border-radius:50%;background:rgba(249,115,22,.22)}
+:is(.sys-ia,.chat-root,#toastWrap) .ia-hero{background:linear-gradient(135deg,var(--dark-bg),var(--dark-bg-2));border-radius:18px;color:#fff;padding:22px 26px;margin-bottom:16px;position:relative;overflow:hidden}
+:is(.sys-ia,.chat-root,#toastWrap) .ia-hero:after{content:"";position:absolute;right:-50px;top:-70px;width:240px;height:240px;border-radius:50%;background:color-mix(in srgb,var(--primary) 22%,transparent)}
 :is(.sys-ia,.chat-root,#toastWrap) .ia-hero h2{font-size:1.25rem;font-weight:800;margin:0 0 4px}:is(.sys-ia,.chat-root,#toastWrap) .ia-hero p{margin:0 0 14px;opacity:.85;font-size:.88rem}
-:is(.sys-ia,.chat-root,#toastWrap) .ia-ask{display:flex;gap:8px;background:#fff;border-radius:14px;padding:6px;box-shadow:0 10px 30px -12px rgba(0,0,0,.5);position:relative;z-index:1}
+:is(.sys-ia,.chat-root,#toastWrap) .ia-ask{display:flex;gap:8px;background:var(--card);border-radius:14px;padding:6px;box-shadow:0 10px 30px -12px rgba(0,0,0,.5);position:relative;z-index:1}
 :is(.sys-ia,.chat-root,#toastWrap) .ia-ask textarea{flex:1;border:0;outline:0;resize:none;padding:.65rem .8rem;font-size:.97rem;border-radius:10px;background:transparent;color:var(--ink);min-height:48px;max-height:120px}
 :is(.sys-ia,.chat-root,#toastWrap) .ia-ask button{border:0;border-radius:11px;padding:0 20px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;gap:8px;white-space:nowrap}
 :is(.sys-ia,.chat-root,#toastWrap) .ia-ask button:disabled{opacity:.6}
@@ -33,13 +33,13 @@
 :is(.sys-ia,.chat-root,#toastWrap) .ia-setup .st{display:flex;gap:12px;margin-bottom:10px}:is(.sys-ia,.chat-root,#toastWrap) .ia-setup .st b{width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent-dark);display:grid;place-items:center;flex:none;font-size:.8rem}
 @media(max-width:575.98px){.ia-ask{flex-direction:column}:is(.sys-ia,.chat-root,#toastWrap) .ia-ask button{padding:12px;justify-content:center}:is(.sys-ia,.chat-root,#toastWrap) .ia-hero{padding:16px}}
 
-:is(.sys-ia,.chat-root,#toastWrap) .chat-fab{position:fixed;right:20px;bottom:20px;width:58px;height:58px;border-radius:50%;border:0;color:#fff;font-size:1.5rem;background:linear-gradient(135deg,var(--accent),var(--accent-dark));box-shadow:0 14px 30px -8px rgba(234,88,12,.7);z-index:1045;display:grid;place-items:center;transition:transform .15s}
+:is(.sys-ia,.chat-root,#toastWrap) .chat-fab{position:fixed;right:20px;bottom:20px;width:58px;height:58px;border-radius:50%;border:0;color:#fff;font-size:1.5rem;background:linear-gradient(135deg,var(--accent),var(--accent-dark));box-shadow:0 14px 30px -8px var(--theme-shadow);z-index:1045;display:grid;place-items:center;transition:transform .15s}
 :is(.sys-ia,.chat-root,#toastWrap) .chat-fab:hover{transform:scale(1.07)}
 :is(.sys-ia,.chat-root,#toastWrap) .chat-panel{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);overflow:hidden}
 .chat-root:not(.chat-page) .chat-panel{position:fixed;right:20px;bottom:90px;width:390px;height:min(620px,calc(100dvh - 120px));border-radius:20px;box-shadow:0 30px 70px -20px rgba(15,23,42,.45);z-index:1046}
 .chat-root:not(.chat-page) .chat-panel[hidden]{display:none}
 .chat-page .chat-panel{height:calc(100dvh - 230px);min-height:460px;width:100%;max-width:920px;border-radius:18px;box-shadow:var(--shadow)}
-:is(.sys-ia,.chat-root,#toastWrap) .chat-head{display:flex;align-items:center;gap:10px;padding:12px 14px;color:#fff;background:linear-gradient(120deg,#111827,#1f2937 55%,#c2410c)}
+:is(.sys-ia,.chat-root,#toastWrap) .chat-head{display:flex;align-items:center;gap:10px;padding:12px 14px;color:#fff;background:linear-gradient(135deg,var(--dark-bg),var(--dark-bg-2))}
 :is(.sys-ia,.chat-root,#toastWrap) .chat-head b{display:block;line-height:1.1}:is(.sys-ia,.chat-root,#toastWrap) .chat-head small{opacity:.8;font-size:.72rem}
 :is(.sys-ia,.chat-root,#toastWrap) .chat-head button{border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:9px;width:32px;height:32px}
 :is(.sys-ia,.chat-root,#toastWrap) .chat-av{width:36px;height:36px;border-radius:12px;background:rgba(255,255,255,.2);display:grid;place-items:center}
@@ -67,7 +67,7 @@
 :is(.sys-ia,.chat-root,#toastWrap) .page-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1.5rem}
 :is(.sys-ia,.chat-root,#toastWrap) .page-head h1{font-size:1.65rem;font-weight:800;letter-spacing:-.025em;margin:0}
 :is(.sys-ia,.chat-root,#toastWrap) .page-head p{margin:0;color:var(--muted)}
-:is(.sys-ia,.chat-root,#toastWrap) .btn-soft{background:#fff;border:1px solid var(--line);border-radius:12px;font-weight:600;color:var(--ink-2)}
+:is(.sys-ia,.chat-root,#toastWrap) .btn-soft{background:var(--card);border:1px solid var(--line);border-radius:12px;font-weight:600;color:var(--ink-2)}
 :is(.sys-ia,.chat-root,#toastWrap) .btn-soft:hover{border-color:var(--accent);color:var(--accent-dark)}
 :is(.sys-ia,.chat-root,#toastWrap) .card-x{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);height:100%}
 :is(.sys-ia,.chat-root,#toastWrap) .card-x .head{display:flex;justify-content:space-between;align-items:center;padding:1.15rem 1.35rem .4rem}
@@ -76,9 +76,9 @@
 :is(.sys-ia,.chat-root,#toastWrap) .card-x .body{padding:.6rem 1.35rem 1.3rem}
 :is(.sys-ia,.chat-root,#toastWrap) .tbl{width:100%;border-collapse:separate;border-spacing:0}
 :is(.sys-ia,.chat-root,#toastWrap) .tbl th{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700;padding:.7rem .6rem;border-bottom:1px solid var(--line);white-space:nowrap}
-:is(.sys-ia,.chat-root,#toastWrap) .tbl td{padding:.8rem .6rem;border-bottom:1px solid #f1f4f9;vertical-align:middle}
+:is(.sys-ia,.chat-root,#toastWrap) .tbl td{padding:.8rem .6rem;border-bottom:1px solid var(--line);vertical-align:middle}
 :is(.sys-ia,.chat-root,#toastWrap) .tbl tr:last-child td{border-bottom:0}
-:is(.sys-ia,.chat-root,#toastWrap) .mini-btn{border:0;background:#f1f5f9;border-radius:9px;width:30px;height:30px;color:var(--muted)}
+:is(.sys-ia,.chat-root,#toastWrap) .mini-btn{border:0;background:var(--bg);border-radius:9px;width:30px;height:30px;color:var(--muted)}
 :is(.sys-ia,.chat-root,#toastWrap) .mini-btn:hover{color:var(--accent-dark);background:var(--accent-soft)}
 :is(.sys-ia,.chat-root,#toastWrap) .mini-btn.del:hover{color:#dc2626;background:#fee2e2}
 .toast-wrap{position:fixed;right:1.2rem;bottom:1.2rem;z-index:2000;display:grid;gap:.5rem}
@@ -86,7 +86,21 @@
 :is(.sys-ia,.chat-root,#toastWrap) .toast-x.ok i{color:#34d399}:is(.sys-ia,.chat-root,#toastWrap) .toast-x.err{background:#7f1d1d}:is(.sys-ia,.chat-root,#toastWrap) .toast-x.err i{color:#fecaca}
 :is(.sys-ia,.chat-root,#toastWrap) .card-x.h-auto{height:auto}
 :is(.sys-ia,.chat-root,#toastWrap) .btn-soft.sm,:is(.sys-ia,.chat-root,#toastWrap) .btn-soft{padding:.4rem .8rem;font-size:.82rem}
-.sys-ia,.chat-root{font-family:Inter,system-ui,sans-serif;color:var(--ink)}
+.sys-ia,.chat-root{font-family:inherit;color:var(--ink)}
 .sys-ia{background:transparent;padding:0;border-radius:0}.sys-ia .btn-accent,.chat-root .btn-accent{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border-radius:12px}.sys-ia .link-accent{color:var(--accent-dark)}
 
 @media(max-width:767.98px){.chat-page .chat-panel{width:100%}}
+
+/* Use the palette and color mode selected in system settings. */
+html[data-color-mode="dark"] :is(.sys-ia,.chat-root,#toastWrap){
+ --ink:var(--dm-text);--ink-2:var(--dm-title);--muted:var(--dm-muted);
+ --line:var(--dm-border);--bg:var(--dm-page-2);--card:var(--dm-surface);
+ --accent-soft:color-mix(in srgb,var(--primary) 15%,var(--dm-surface));
+ --shadow:0 8px 30px rgba(0,0,0,.22);
+}
+:is(.sys-ia,.chat-root) .ia-sum{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,var(--line));color:var(--ink)}
+:is(.sys-ia,.chat-root) :is(textarea,input)::placeholder{color:var(--muted);opacity:1}
+:is(.sys-ia,.chat-root) :is(textarea,button,a):focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+:is(.sys-ia,.chat-root) .chat-fab{box-shadow:0 8px 24px var(--theme-shadow)}
+.sys-ia .ia-ask{box-shadow:var(--shadow);border:1px solid var(--line)}
+html[data-color-mode="dark"] .sys-ia .alert-light{background:var(--dm-surface-2);color:var(--dm-text);border-color:var(--dm-border)!important}

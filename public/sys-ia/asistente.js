@@ -8,7 +8,10 @@
   const NOMONEY = /(pct|porcentaje|cantidad|num_|nro|veces|minutos|hora)/i;
   const nf = (n, d = 0) => window.SP.num(n, d);
   const cel = (v, c) => v === null || v === undefined ? '—' : typeof v === 'number' ? (MONEY.test(c) && !NOMONEY.test(c) ? money(v) : nf(v, Number.isInteger(v) ? 0 : 2)) : esc(String(v));
-  const COL = ['#f97316', '#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4', '#ec4899', '#84cc16', '#64748b'];
+  const chartTheme = () => { const c = getComputedStyle(document.querySelector('.sys-ia')); return { primary: c.getPropertyValue('--accent').trim(), text: c.getPropertyValue('--muted').trim(), line: c.getPropertyValue('--line').trim() }; };
+  let chartResult;
+  new MutationObserver(() => { if (chartResult) dibujar(chartResult.r, chartResult.g); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-color-mode'] });
+  new MutationObserver(() => { if (chartResult) dibujar(chartResult.r, chartResult.g); }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
   let ST = null, last = null, chart = null, busy = false;
 
   const ta = $('#iaQ'); ta.addEventListener('input', () => { ta.style.height = 'auto'; ta.style.height = Math.min(120, ta.scrollHeight) + 'px'; });
@@ -73,15 +76,18 @@
     $('#iaOut').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
   function dibujar(r, g) {
+    chartResult = { r, g };
+    if (chart) { chart.destroy(); chart = null; }
+    const theme = chartTheme(), COL = [theme.primary, getComputedStyle(document.body).getPropertyValue('--dark-bg-2').trim(), '#10b981', '#8b5cf6', '#f59e0b', '#ef4444'];
     const xi = r.columnas.indexOf(g.x), yi = r.columnas.indexOf(g.y); if (xi < 0 || yi < 0 || !window.Chart) return;
     const lab = r.filas.map(f => String(f[xi] ?? '—').slice(0, 40)), val = r.filas.map(f => f[yi]);
     const money_ = MONEY.test(g.y) && !NOMONEY.test(g.y), fmt = v => money_ ? money(v) : nf(v, Number.isInteger(v) ? 0 : 2);
     const horiz = g.tipo === 'bar' && (lab.length > 8 || lab.some(l => l.length > 14));
     const cfg = { type: g.tipo === 'line' ? 'line' : g.tipo === 'pie' ? 'doughnut' : 'bar', data: { labels: lab, datasets: [{ label: g.y.replace(/_/g, ' '), data: val,
-      backgroundColor: g.tipo === 'pie' ? lab.map((_, i) => COL[i % COL.length]) : g.tipo === 'line' ? 'rgba(249,115,22,.15)' : '#f97316', borderColor: g.tipo === 'line' ? '#f97316' : undefined,
+      backgroundColor: g.tipo === 'pie' ? lab.map((_, i) => COL[i % COL.length]) : theme.primary, borderColor: theme.primary,
       borderRadius: g.tipo === 'bar' ? 6 : 0, fill: g.tipo === 'line', tension: .3, pointRadius: g.tipo === 'line' ? 3 : 0 }] },
-      options: { responsive: true, maintainAspectRatio: false, indexAxis: horiz ? 'y' : 'x', plugins: { legend: { display: g.tipo === 'pie', position: 'bottom' }, tooltip: { callbacks: { label: c => ' ' + (g.tipo === 'pie' ? c.label + ': ' : '') + fmt(c.parsed.y ?? c.parsed.x ?? c.parsed) } } },
-        scales: g.tipo === 'pie' ? {} : { [horiz ? 'x' : 'y']: { beginAtZero: true, ticks: { callback: v => fmt(v) } }, [horiz ? 'y' : 'x']: { grid: { display: false } } } } };
+      options: { responsive: true, maintainAspectRatio: false, indexAxis: horiz ? 'y' : 'x', plugins: { legend: { display: g.tipo === 'pie', position: 'bottom', labels: { color: theme.text } }, tooltip: { callbacks: { label: c => ' ' + (g.tipo === 'pie' ? c.label + ': ' : '') + fmt(c.parsed.y ?? c.parsed.x ?? c.parsed) } } },
+        scales: g.tipo === 'pie' ? {} : { [horiz ? 'x' : 'y']: { beginAtZero: true, grid: { color: theme.line }, ticks: { color: theme.text, callback: v => fmt(v) } }, [horiz ? 'y' : 'x']: { grid: { display: false }, ticks: { color: theme.text } } } } };
     chart = new Chart($('#iaCv'), cfg);
   }
   async function resumen(r) {

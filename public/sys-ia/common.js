@@ -17,6 +17,7 @@
   SP.r2 = n => Math.round(n * 100) / 100;
   SP.mdl = id => bootstrap.Modal.getOrCreateInstance(document.getElementById(id));
   SP.toast = function (msg, type = 'ok') {
+    if (window.SystemNotify) { window.SystemNotify.toast(msg, type === 'ok' ? 'success' : type === 'err' ? 'danger' : type); return; }
     let wrap = SP.$('#toastWrap'); if (!wrap) { wrap = document.createElement('div'); wrap.id = 'toastWrap'; wrap.className = 'toast-wrap'; document.body.appendChild(wrap); }
     const t = document.createElement('div'); t.className = 'toast-x ' + type;
     t.innerHTML = '<i class="bi ' + (type === 'ok' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill') + '"></i><span>' + SP.esc(msg) + '</span>';
