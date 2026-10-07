@@ -2329,11 +2329,7 @@ button[type="submit"].btn-primary:hover {
 
                         <hr class="text-muted opacity-25">
 
-                        <div id="ia" class="mb-4">
-                            <h5 class="fw-bold mb-3"><i class="bi bi-stars me-2"></i>Inteligencia Artificial</h5>
-                            <p>Configura el proveedor, la URL, el modelo y la clave desde el Asistente IA.</p>
-                            <a href="{{ route('ai.settings') }}" class="btn btn-primary"><i class="bi bi-gear me-1"></i>Configurar IA</a>
-                        </div>
+                        
 
                     </form>
 
