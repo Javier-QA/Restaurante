@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 return [
 
@@ -40,4 +40,10 @@ return [
         'token' => env('FACTILIZA_TOKEN'),
         'base_url' => env('FACTILIZA_BASE_URL', 'https://api.factiliza.com'),
     ],
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY'),
+        'base_url' => env('GEMINI_BASE_URL', 'https://generativelanguage.googleapis.com/v1beta/openai'),
+        'model' => env('GEMINI_MODEL', 'gemini-2.5-flash'),
+    ],
 ];
+
