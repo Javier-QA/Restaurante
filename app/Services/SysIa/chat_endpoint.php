@@ -23,7 +23,7 @@ if (request()->method() === 'POST') {
 switch ($action) {
 case 'estado':
     $c = ia_cfg();
-    $neg = cfg('company_name', APP_NAME);
+    $neg = ia_empresa();
     ch_out(['listo' => ia_listo($c), 'proveedor' => IA_PRESETS[$c['proveedor']]['nombre'], 'empresa' => $neg ?: APP_NAME, 'historial' => array_values($_SESSION['chat_hist'] ?? [])]);
 
 case 'enviar':

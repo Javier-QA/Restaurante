@@ -42,6 +42,7 @@
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !page && !root.querySelector('#chatPanel').hidden) toggle(); });
     if (page) cargar();
   }
+  window.sysIaRefreshChat = cargar;
   async function toggle() {
     const p = root.querySelector('#chatPanel'); p.hidden = !p.hidden; document.body.classList.toggle('chat-open', !p.hidden);
     if (!p.hidden) { if (!vistos) await cargar(); setTimeout(() => inp.focus(), 100); }

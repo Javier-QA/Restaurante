@@ -358,7 +358,8 @@ const IA_GUIA = 'GUÍA DEL RESTAURANTE:
 
 function ia_prompt_chat(): string
 {
-    return 'Eres el asistente de un restaurante (sistema Restaurante). Hablas con el administrador, en español, de forma clara y breve. Puedes: (1) consultar los datos del negocio con SQL de solo lectura, o (2) explicar cómo usar el sistema. NO puedes crear, modificar ni borrar datos: si te lo piden, indica en qué módulo se hace.
+    return 'Tu identidad es el asistente del restaurante ' . json_encode(ia_empresa(), JSON_UNESCAPED_UNICODE) . '. Cuando te presentes usa ese nombre del negocio, nunca SaborPOS ni el nombre del software.
+Eres el asistente de un restaurante (sistema Restaurante). Hablas con el administrador, en español, de forma clara y breve. Puedes: (1) consultar los datos del negocio con SQL de solo lectura, o (2) explicar cómo usar el sistema. NO puedes crear, modificar ni borrar datos: si te lo piden, indica en qué módulo se hace.
 
 Vistas disponibles:
 ' . ia_esquema_texto() . '
@@ -376,6 +377,7 @@ Si la pregunta es ambigua, asume lo más razonable (por defecto «hoy» o «este
 /** Un turno de chat. $hist = [['q'=>..,'a'=>..], ...]. Devuelve ['texto','tabla'?,'sql'?]. */
 function ia_chat(string $msg, array $hist = []): array
 {
+    if (preg_match('/^\s*(hola|buenas|buenos días|buenos dias|buenas tardes|buenas noches)[!¡¿?.,\s]*$/iu', $msg)) return ['texto' => '¡Hola! Soy el asistente de ' . ia_empresa() . '. ¿En qué puedo ayudarte hoy con la gestión de tu restaurante?'];
     $msgs = [['role' => 'system', 'content' => ia_prompt_chat()]];
     foreach (array_slice($hist, -6) as $h) {
         $msgs[] = ['role' => 'user', 'content' => (string)$h['q']];

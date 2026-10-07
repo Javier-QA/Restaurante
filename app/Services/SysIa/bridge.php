@@ -12,3 +12,5 @@ function csrf_ok($token): bool { return is_string($token) && hash_equals(request
 function cfg($key, $default = '') { return \App\Models\Setting::where('key', $key)->value('value') ?? $default; }
 const APP_NAME = 'Restaurante';
 const MONEDA = 'S/';
+
+function ia_empresa(): string { return trim((string) cfg('company_name', '')) ?: APP_NAME; }

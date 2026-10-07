@@ -25,4 +25,17 @@ class SysIaSecurityTest extends TestCase
             $this->assertContains('role:admin', $route->gatherMiddleware());
         }
     }
+    public function test_greetings_and_prompt_follow_the_configured_restaurant_name(): void
+    {
+        config(['database.default' => 'sqlite', 'database.connections.sqlite.database' => ':memory:']);
+        \Illuminate\Support\Facades\DB::purge('sqlite');
+        \Illuminate\Support\Facades\Schema::create('settings', function ($table) { $table->string('key'); $table->text('value'); });
+        require_once app_path('Services/SysIa/core.php');
+        foreach (['El Capitán', 'Frida Mezcal'] as $name) {
+            \Illuminate\Support\Facades\DB::table('settings')->updateOrInsert(['key' => 'company_name'], ['value' => $name]);
+            $reply = \App\Services\SysIa\ia_chat('hola');
+            $this->assertStringContainsString('Soy el asistente de '.$name, $reply['texto']);
+            $this->assertSame($name, \App\Services\SysIa\ia_empresa());
+        }
+    }
 }
