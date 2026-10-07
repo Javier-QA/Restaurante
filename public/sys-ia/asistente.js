@@ -8,7 +8,7 @@
   const NOMONEY = /(pct|porcentaje|cantidad|num_|nro|veces|minutos|hora)/i;
   const nf = (n, d = 0) => window.SP.num(n, d);
   const cel = (v, c) => v === null || v === undefined ? '—' : typeof v === 'number' ? (MONEY.test(c) && !NOMONEY.test(c) ? money(v) : nf(v, Number.isInteger(v) ? 0 : 2)) : esc(String(v));
-  const chartTheme = () => { const c = getComputedStyle(document.querySelector('.sys-ia')); return { primary: c.getPropertyValue('--accent').trim(), text: c.getPropertyValue('--muted').trim(), line: c.getPropertyValue('--line').trim() }; };
+  const chartTheme = () => { const c = getComputedStyle(document.querySelector('.sys-ia')); return { primary: c.getPropertyValue('--accent').trim(), text: c.getPropertyValue('--muted').trim(), line: c.getPropertyValue('--line').trim(), surface: c.getPropertyValue('--card').trim() }; };
   let chartResult;
   new MutationObserver(() => { if (chartResult) dibujar(chartResult.r, chartResult.g); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-color-mode'] });
   new MutationObserver(() => { if (chartResult) dibujar(chartResult.r, chartResult.g); }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
@@ -84,9 +84,9 @@
     const money_ = MONEY.test(g.y) && !NOMONEY.test(g.y), fmt = v => money_ ? money(v) : nf(v, Number.isInteger(v) ? 0 : 2);
     const horiz = g.tipo === 'bar' && (lab.length > 8 || lab.some(l => l.length > 14));
     const cfg = { type: g.tipo === 'line' ? 'line' : g.tipo === 'pie' ? 'doughnut' : 'bar', data: { labels: lab, datasets: [{ label: g.y.replace(/_/g, ' '), data: val,
-      backgroundColor: g.tipo === 'pie' ? lab.map((_, i) => COL[i % COL.length]) : g.tipo === 'line' ? getComputedStyle(document.querySelector('.sys-ia')).getPropertyValue('--chart-fill').trim() : theme.primary, borderColor: g.tipo === 'pie' ? 'transparent' : theme.primary, borderWidth: g.tipo === 'pie' ? 0 : 2, hoverBorderWidth: g.tipo === 'pie' ? 0 : 2,
+      backgroundColor: g.tipo === 'pie' ? lab.map((_, i) => COL[i % COL.length]) : g.tipo === 'line' ? getComputedStyle(document.querySelector('.sys-ia')).getPropertyValue('--chart-fill').trim() : theme.primary, borderColor: g.tipo === 'pie' ? theme.surface : theme.primary, borderWidth: 2, hoverBorderWidth: 2,
       borderRadius: g.tipo === 'bar' ? 6 : 0, fill: g.tipo === 'line', tension: .3, pointRadius: g.tipo === 'line' ? 3 : 0 }] },
-      options: { responsive: true, maintainAspectRatio: false, indexAxis: horiz ? 'y' : 'x', plugins: { legend: { display: g.tipo === 'pie', position: 'bottom', labels: { color: theme.text } }, tooltip: { callbacks: { label: c => ' ' + (g.tipo === 'pie' ? c.label + ': ' : '') + fmt(c.parsed.y ?? c.parsed.x ?? c.parsed) } } },
+      options: { responsive: true, maintainAspectRatio: false, indexAxis: horiz ? 'y' : 'x', plugins: { legend: { display: g.tipo === 'pie', position: 'bottom', labels: { color: theme.text, generateLabels: c => Chart.defaults.plugins.legend.labels.generateLabels(c).map(item => ({ ...item, lineWidth: 0 })) } }, tooltip: { callbacks: { label: c => ' ' + (g.tipo === 'pie' ? c.label + ': ' : '') + fmt(c.parsed.y ?? c.parsed.x ?? c.parsed) } } },
         scales: g.tipo === 'pie' ? {} : { [horiz ? 'x' : 'y']: { beginAtZero: true, grid: { color: theme.line }, ticks: { color: theme.text, callback: v => fmt(v) } }, [horiz ? 'y' : 'x']: { grid: { display: false }, ticks: { color: theme.text } } } } };
     chart = new Chart($('#iaCv'), cfg);
   }
