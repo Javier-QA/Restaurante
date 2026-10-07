@@ -20,6 +20,7 @@ use App\Http\Controllers\SystemController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\AiChatController;
+use App\Http\Controllers\AiAssistantController;
 
 /*
 |--------------------------------------------------------------------------
@@ -365,24 +366,6 @@ Route::resource(
         '/',
         [DashboardController::class, 'index']
     )->middleware('role:admin,cashier')->name('dashboard');
-    Route::middleware(['role:admin'])->group(function () {
-        // =====================================================
-        // INTELIGENCIA ARTIFICIAL - SOLO ADMINISTRADOR
-        // =====================================================
-
-        Route::get(
-            '/ai/chat',
-            [AiChatController::class, 'index']
-        )->name('ai.chat');
-
-        Route::post(
-            '/ai/chat/ask',
-            [AiChatController::class, 'ask']
-        )->name('ai.chat.ask');
-
-
-
-    });
 
     // =========================================================
     // FACTURACIÓN / SUNAT - ADMINISTRADOR Y CAJERO
@@ -520,6 +503,42 @@ Route::resource(
             [AiChatController::class, 'ask']
         )->name('ai.chat.ask');
 
+        // Asistente IA
+        Route::get(
+            '/ai/assistant',
+            [AiAssistantController::class, 'index']
+        )->name('ai.assistant');
+
+        Route::post(
+            '/ai/assistant/ask',
+            [AiAssistantController::class, 'ask']
+        )->name('ai.assistant.ask');
+
+        Route::get(
+            '/ai/assistant/history',
+            [AiAssistantController::class, 'history']
+        )->name('ai.assistant.history');
+
+        Route::get(
+            '/ai/assistant/favorites',
+            [AiAssistantController::class, 'favorites']
+        )->name('ai.assistant.favorites');
+
+        Route::patch(
+            '/ai/assistant/{query}/favorite',
+            [AiAssistantController::class, 'toggleFavorite']
+        )->name('ai.assistant.favorite');
+
+        Route::delete(
+            '/ai/assistant/{query}',
+            [AiAssistantController::class, 'destroy']
+        )->name('ai.assistant.destroy');
+
+        Route::post(
+            '/ai/assistant/export/csv',
+            [AiAssistantController::class, 'exportCsv']
+        )->name('ai.assistant.export.csv');
+
 
         Route::get(
             '/reports',
@@ -560,21 +579,6 @@ Route::resource(
 
     // Acciones destructivas de Caja: solo Administrador
     Route::middleware(['role:admin'])->group(function () {
-        // =====================================================
-        // INTELIGENCIA ARTIFICIAL - SOLO ADMINISTRADOR
-        // =====================================================
-
-        Route::get(
-            '/ai/chat',
-            [AiChatController::class, 'index']
-        )->name('ai.chat');
-
-        Route::post(
-            '/ai/chat/ask',
-            [AiChatController::class, 'ask']
-        )->name('ai.chat.ask');
-
-
         Route::delete(
             '/cash-registers/reset-history/all',
             [App\Http\Controllers\CashRegisterController::class, 'destroyAll']

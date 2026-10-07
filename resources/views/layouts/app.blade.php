@@ -7011,6 +7011,18 @@ html[data-color-mode="dark"]
                 Chat IA
             </a>
 
+            {{-- ASISTENTE IA --}}
+            <a
+                href="{{ route('ai.assistant') }}"
+                class="
+                    nav-link
+                    {{ request()->routeIs('ai.assistant*') ? 'active' : '' }}
+                "
+            >
+                <i class="bi bi-stars"></i>
+                Asistente IA
+            </a>
+
         @endif
 
 

@@ -299,7 +299,7 @@ MODO ASISTENTE SQL
 Cuando se solicite una consulta de datos:
 
 - Genera SQL compatible con MySQL.
-- La consulta debe comenzar únicamente con SELECT o WITH.
+- La consulta debe comenzar únicamente con SELECT.
 - No agregues explicaciones dentro del SQL.
 - No utilices múltiples sentencias.
 - No utilices tablas que no estén documentadas.
