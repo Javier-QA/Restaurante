@@ -703,7 +703,7 @@ button[type="submit"].btn-primary:hover {
                              DATOS DE LA EMPRESA
                         ================================================== --}}
 
-                        <h5 class="fw-bold text-primary mb-3">
+<div class="row g-4 align-items-start"><div class="col-xl-8">                        <h5 class="fw-bold text-primary mb-3">
 
                             <i class="bi bi-shop me-2"></i>
                             Datos de la Empresa
@@ -767,10 +767,7 @@ button[type="submit"].btn-primary:hover {
                         </div>
 
 
-                        <hr class="text-muted opacity-25">
-
-
-                        <div class="card mb-4" style="max-width:520px">
+</div><div class="col-xl-4"><div class="card mb-4">
                             <div class="card-body p-4">
                                 <h5 class="fw-bold mb-3"><i class="bi bi-eye me-2"></i>Vista previa del ticket</h5>
                                 <div id="settingsTicketPreview" style="font-family:monospace;border:1px dashed var(--border-soft);border-radius:12px;padding:20px">
@@ -784,7 +781,9 @@ button[type="submit"].btn-primary:hover {
                                 </div>
                                 <p class="small text-muted mt-3 mb-0">Ejemplo con productos e importes de muestra. Los datos del negocio se actualizan al editar el formulario.</p>
                             </div>
-                        </div>
+                        </div></div></div>
+                        <hr class="text-muted opacity-25">
+
 
                         {{-- =================================================
                              REGIÓN Y SISTEMA
