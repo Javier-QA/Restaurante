@@ -109,10 +109,14 @@ html[data-color-mode="dark"] .sys-ia .alert-light{background:var(--dm-surface-2)
 
 /* Dialog headers follow the same palette as the system. */
 .sys-ia :is(#mdlCfg,#mdlEsq) .modal-header{
- background:linear-gradient(135deg,var(--dark-bg),var(--dark-bg-2))!important;
- color:#fff!important;border-bottom:0!important;padding:1.25rem 1.5rem;
+ background:linear-gradient(135deg,var(--primary),var(--primary-hover))!important;
+ color:#fff!important;border-bottom:0!important;padding:1.1rem 1.5rem!important;
+ display:flex;align-items:center;min-height:76px;
 }
 .sys-ia :is(#mdlCfg,#mdlEsq) .modal-header :is(.modal-title,h5,h6,i){color:#fff!important}
 .sys-ia :is(#mdlCfg,#mdlEsq) .modal-header .btn-close{filter:brightness(0) invert(1);opacity:.9}
 .sys-ia :is(#mdlCfg,#mdlEsq) .modal-content{overflow:hidden}
 .sys-ia #mdlCfg .form-check-input:checked{background-color:var(--primary);border-color:var(--primary)}
+
+.sys-ia :is(#mdlCfg,#mdlEsq) .modal-header .modal-title{margin:0!important;line-height:1.3}
+.sys-ia :is(#mdlCfg,#mdlEsq) .modal-header .btn-close{margin:0 0 0 auto!important;flex-shrink:0}
