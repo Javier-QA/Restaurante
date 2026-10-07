@@ -87,4 +87,4 @@
 :is(.sys-ia,.chat-root,#toastWrap) .card-x.h-auto{height:auto}
 :is(.sys-ia,.chat-root,#toastWrap) .btn-soft.sm,:is(.sys-ia,.chat-root,#toastWrap) .btn-soft{padding:.4rem .8rem;font-size:.82rem}
 .sys-ia,.chat-root{font-family:Inter,system-ui,sans-serif;color:var(--ink)}
-.sys-ia{background:var(--bg);padding:20px;border-radius:18px}.sys-ia .btn-accent,.chat-root .btn-accent{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border-radius:12px}.sys-ia .link-accent{color:var(--accent-dark)}
+.sys-ia{background:transparent;padding:0;border-radius:0}.sys-ia .btn-accent,.chat-root .btn-accent{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border-radius:12px}.sys-ia .link-accent{color:var(--accent-dark)}
