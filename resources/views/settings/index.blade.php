@@ -1601,67 +1601,20 @@ button[type="submit"].btn-primary:hover {
                         </h5>
 
 
-                        <div class="row align-items-center mb-4">
+                        <div class="row g-3 align-items-center mb-4">
+ <div class="col-md-8">
+  <label class="form-label fw-bold" for="companyLogoInput">Subir Logo (Ticket y Sistema)</label>
+  <input id="companyLogoInput" type="file" name="company_logo" class="form-control" accept="image/*">
+ </div>
+ <div class="col-md-4 d-flex justify-content-center">
+  <div style="width:100px;height:100px;padding:5px;border:1px solid var(--border-soft);border-radius:6px;background:var(--card-bg);display:flex;align-items:center;justify-content:center">
+   <img id="companyLogoThumbnail" src="{{ !empty($settings['company_logo']) ? asset('storage/'.$settings['company_logo']) : '' }}" alt="Logo del restaurante" style="width:88px;height:88px;object-fit:contain" @if(empty($settings['company_logo'])) hidden @endif>
+   <i id="companyLogoPlaceholder" class="bi bi-image fs-1 text-muted" @if(!empty($settings['company_logo'])) hidden @endif></i>
+  </div>
+ </div>
+</div>
 
-
-                            <div class="col-md-8">
-
-                                <label class="form-label">
-                                    Subir Logo (Ticket y Sistema)
-                                </label>
-
-                                <input
-                                    type="file"
-                                    name="company_logo"
-                                    class="form-control"
-                                    accept="image/*"
-                                >
-
-                            </div>
-
-
-                            <div class="col-md-4 text-center">
-
-
-                                @if(isset($settings['company_logo']) && $settings['company_logo'])
-
-
-                                    <img
-                                        src="{{ asset('storage/'.$settings['company_logo']) }}"
-                                        class="img-thumbnail"
-                                        style="max-height:80px;"
-                                        alt="Logo"
-                                    >
-
-
-                                @else
-
-
-                                    <div
-                                        class="
-                                            p-3
-                                            border
-                                            rounded
-                                            bg-light
-                                            text-muted
-                                        "
-                                    >
-
-                                        <i class="bi bi-image fs-1"></i>
-
-                                    </div>
-
-
-                                @endif
-
-
-                            </div>
-
-
-                        </div>
-
-
-                        <hr class="text-muted opacity-25">
+<hr class="text-muted opacity-25">
 
 
                         {{-- =================================================
@@ -2747,7 +2700,7 @@ html[data-color-mode="dark"] .bi-qr-code::before {
  fields.forEach(name => { const field=document.querySelector('[name="'+name+'"]');field?.addEventListener('input',refresh);field?.addEventListener('change',refresh) });
  const logoInput=document.querySelector('[name="company_logo"]');
  let logoUrl;
- logoInput?.addEventListener('change',()=>{const file=logoInput.files?.[0];if(!file)return;if(logoUrl)URL.revokeObjectURL(logoUrl);logoUrl=URL.createObjectURL(file);const image=document.getElementById('ticketPreviewLogo');image.src=logoUrl;image.hidden=false});
+ logoInput?.addEventListener('change',()=>{const file=logoInput.files?.[0];if(!file)return;if(logoUrl)URL.revokeObjectURL(logoUrl);logoUrl=URL.createObjectURL(file);['ticketPreviewLogo','companyLogoThumbnail'].forEach(id=>{const image=document.getElementById(id);if(image){image.src=logoUrl;image.hidden=false}});const placeholder=document.getElementById('companyLogoPlaceholder');if(placeholder)placeholder.hidden=true});
  refresh();
 })();
 </script>
