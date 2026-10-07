@@ -142,3 +142,21 @@ html[data-color-mode="dark"] .sys-ia .alert-light{background:var(--dm-surface-2)
 }
 .chat-root .chat-fab:hover,.chat-root .chat-fab:focus-visible{animation:none;opacity:1}
 @media(prefers-reduced-motion:reduce){.chat-root .chat-fab{animation:none}}
+
+/* Expanding halo around the chatbot, following the supplied example. */
+.chat-root .chat-fab{animation:none;opacity:1;isolation:isolate;overflow:visible}
+.chat-root .chat-fab::before{
+ content:"";position:absolute;inset:-7px;border-radius:50%;z-index:-1;pointer-events:none;
+ background:color-mix(in srgb,var(--primary) 28%,transparent);
+ border:2px solid color-mix(in srgb,var(--primary) 35%,transparent);
+ animation:sys-chat-halo 2s ease-out infinite;
+}
+.chat-root .chat-fab::after{
+ content:"";position:absolute;width:7px;height:7px;border-radius:50%;
+ background:var(--primary);right:-6px;top:-5px;pointer-events:none;
+ box-shadow:-67px 37px 0 -1px var(--primary),-57px 65px 0 -2px var(--primary);
+ animation:sys-chat-sparks 2s ease-in-out infinite;
+}
+@keyframes sys-chat-halo{0%{transform:scale(.9);opacity:.85}100%{transform:scale(1.45);opacity:0}}
+@keyframes sys-chat-sparks{0%,100%{opacity:.5;transform:translateY(2px)}50%{opacity:1;transform:translateY(-2px)}}
+@media(prefers-reduced-motion:reduce){.chat-root .chat-fab::before,.chat-root .chat-fab::after{animation:none;opacity:.3}}
