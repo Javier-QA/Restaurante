@@ -736,7 +736,8 @@ button[type="submit"].btn-primary:hover {
 .business-logo-placeholder i{display:block;font-size:36px}
 .business-logo-copy strong{display:block;font-size:1.1rem;color:var(--text-main);margin-bottom:4px}
 .business-logo-copy p{color:var(--text-muted);margin:0 0 12px;line-height:1.55}
-.business-logo-upload{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border:1px solid var(--border-soft);border-radius:15px;background:var(--card-bg);color:var(--text-main);font-weight:600;cursor:pointer}
+.business-logo-upload{position:relative;display:inline-flex!important;flex-wrap:nowrap;white-space:nowrap;width:auto!important;min-width:148px;min-height:42px;justify-content:center;align-items:center;gap:8px;padding:9px 18px;border:1px solid var(--border-soft);border-radius:15px;background:var(--card-bg);color:var(--text-main);font-weight:600;cursor:pointer}
+.business-logo-upload i{flex-shrink:0}.business-logo-upload input{position:absolute!important;width:1px!important;height:1px!important;min-height:0!important;padding:0!important;margin:-1px!important;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0!important}
 .business-logo-upload:hover{border-color:var(--primary);color:var(--primary)}
 .business-logo-upload:focus-within{outline:2px solid var(--primary);outline-offset:3px}
 @media(max-width:575px){.business-logo-panel{flex-direction:column;align-items:flex-start;gap:16px}}
@@ -927,6 +928,7 @@ button[type="submit"].btn-primary:hover {
  <img id="ticketPreviewLogo" alt="Logo" hidden>
  @endif
  <div class="sp-name" data-ticket="company_name">{{ $settings['company_name'] ?? 'MI RESTAURANTE' }}</div>
+ <div id="ticketPreviewRucRow" @if(empty($settings['sunat_ruc'])) hidden @endif>RUC: <span data-ticket="sunat_ruc">{{ $settings['sunat_ruc'] ?? '' }}</span></div>
  <div data-ticket="company_address">{{ $settings['company_address'] ?? '' }}</div>
  <div>Tel: <span data-ticket="company_phone">{{ $settings['company_phone'] ?? '' }}</span></div>
  <div class="sp-gap">{{ now()->format('d/m/Y H:i') }}</div>
@@ -2686,13 +2688,14 @@ html[data-color-mode="dark"] .bi-qr-code::before {
 <script>
 (() => {
  const preview = document.getElementById('settingsTicketPreview');
- const fields = ['company_name','company_address','company_phone','ticket_footer','currency_symbol'];
+ const fields = ['sunat_ruc','company_name','company_address','company_phone','ticket_footer','currency_symbol'];
  const value = name => document.querySelector('[name="'+name+'"]')?.value.trim() || '';
  const refresh = () => {
   preview.querySelectorAll('[data-ticket]').forEach(el => {
    const key=el.dataset.ticket;
    el.textContent=value(key) || (key==='company_name' ? 'Nombre del restaurante' : '');
   });
+  document.getElementById('ticketPreviewRucRow').hidden = !value('sunat_ruc');
   preview.querySelectorAll('[data-ticket-price]').forEach(el => {el.textContent=(value('currency_symbol') || 'S/')+' '+Number(el.dataset.ticketPrice).toFixed(2)});
  };
  fields.forEach(name => { const field=document.querySelector('[name="'+name+'"]');field?.addEventListener('input',refresh);field?.addEventListener('change',refresh) });
@@ -2715,7 +2718,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!source || !mirror) return;
         mirror.value = source.value;
         source.addEventListener('input', function () { mirror.value = source.value; });
-        mirror.addEventListener('input', function () { source.value = mirror.value; });
+        mirror.addEventListener('input', function () { source.value = mirror.value; source.dispatchEvent(new Event('input', { bubbles: true })); });
     });
 });
 </script>

@@ -285,6 +285,9 @@ body {
         @endif
         
         <div class="fw-bold fs-5 uppercase" style="font-size: 14px;">{{ $settings['company_name'] ?? 'MI RESTAURANTE' }}</div>
+        @if(!empty($settings['sunat_ruc']))
+            <div>RUC: {{ $settings['sunat_ruc'] }}</div>
+        @endif
         <div>{{ $settings['company_address'] ?? 'Dirección del Local' }}</div>
         <div>Tel: {{ $settings['company_phone'] ?? '---' }}</div>
         <div style="margin-top: 5px;">{{ now()->format('d/m/Y H:i') }}</div>
