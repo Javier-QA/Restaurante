@@ -767,7 +767,34 @@ button[type="submit"].btn-primary:hover {
 <div class="col-md-4"><label class="form-label fw-bold" for="business_company_website">Sitio web</label><input id="business_company_website" type="text" name="company_website" class="form-control" value="{{ old('company_website', $settings['company_website'] ?? '') }}" placeholder="www.mirestaurante.com"  ></div>
 </div>
 
-<hr class="text-muted opacity-25">
+</div><div class="col-xl-4"><div class="card mb-4">
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold mb-3"><i class="bi bi-eye me-2"></i>Vista previa de la precuenta</h5>
+                                <div id="settingsTicketPreview" class="settings-precuenta">
+ <div class="sp-header">
+ @if(!empty($settings['company_logo']))
+ <img id="ticketPreviewLogo" style="width:60px;height:70px;max-width:60px;max-height:70px;object-fit:contain" src="{{ asset('storage/'.$settings['company_logo']) }}" alt="Logo">
+ @else
+ <img id="ticketPreviewLogo" alt="Logo" hidden>
+ @endif
+ <div class="sp-name" data-ticket="company_name">{{ $settings['company_name'] ?? 'MI RESTAURANTE' }}</div>
+ <div id="ticketPreviewRucRow" @if(empty($settings['sunat_ruc'])) hidden @endif>RUC: <span data-ticket="sunat_ruc">{{ $settings['sunat_ruc'] ?? '' }}</span></div>
+ <div data-ticket="company_address">{{ $settings['company_address'] ?? '' }}</div>
+ <div>Tel: <span data-ticket="company_phone">{{ $settings['company_phone'] ?? '' }}</span></div>
+ <div class="sp-gap">{{ now()->format('d/m/Y H:i') }}</div>
+ <div class="sp-bold sp-gap">PRECUENTA #000100</div>
+ <div class="sp-bold">Cli: CLIENTE DE EJEMPLO</div>
+ <div class="sp-bold">MESA: BARRA</div>
+ </div>
+ <table><thead><tr><th>C.</th><th>DESCRIPCION</th><th>TOTAL</th></tr></thead><tbody><tr><td>1</td><td>LECHE DE TIGRE</td><td>18.00</td></tr></tbody></table>
+ <div class="sp-totals"><div class="sp-row"><span>Subtotal:</span><span data-ticket-price="18">S/ 18.00</span></div>
+ <div class="sp-row sp-total"><span>TOTAL A PAGAR:</span><span data-ticket-price="18">S/ 18.00</span></div></div>
+ <div class="sp-footer"><span data-ticket="ticket_footer">{{ $settings['ticket_footer'] ?? '¡Gracias por su preferencia!' }}</span><br><br>.</div>
+</div>
+<p class="small text-muted mt-3 mb-0">Ejemplo con productos e importes de muestra. Los datos del negocio se actualizan al editar el formulario.</p>
+                            </div>
+                        </div></div></div>
+                                                <hr class="text-muted opacity-25">
 
 
                         {{-- =================================================
@@ -785,7 +812,7 @@ button[type="submit"].btn-primary:hover {
                         <div class="row g-3 mb-4">
 
 
-                            <div class="col-md-6">
+                            <div class="col-md-6 col-xl-4">
 
                                 <label class="form-label fw-bold">
 
@@ -829,7 +856,7 @@ button[type="submit"].btn-primary:hover {
                             </div>
 
 
-                            <div class="col-md-3">
+                            <div class="col-md-6 col-xl-2">
 
                                 <label class="form-label fw-bold">
                                     Moneda
@@ -867,7 +894,7 @@ button[type="submit"].btn-primary:hover {
                             </div>
 
 
-                            <div class="col-md-12">
+                            <div class="col-md-8 col-xl-3">
 
                                 <label class="form-label fw-bold">
                                     Mensaje Pie de Ticket
@@ -883,7 +910,7 @@ button[type="submit"].btn-primary:hover {
                             </div>
 
 
-                            <div class="col-md-6">
+                            <div class="col-md-4 col-xl-3">
 
                                 <label class="form-label fw-bold">
                                     <i class="bi bi-bullseye me-1"></i>
@@ -917,34 +944,8 @@ button[type="submit"].btn-primary:hover {
                         </div>
 
 
-</div><div class="col-xl-4"><div class="card mb-4">
-                            <div class="card-body p-4">
-                                <h5 class="fw-bold mb-3"><i class="bi bi-eye me-2"></i>Vista previa de la precuenta</h5>
-                                <div id="settingsTicketPreview" class="settings-precuenta">
- <div class="sp-header">
- @if(!empty($settings['company_logo']))
- <img id="ticketPreviewLogo" style="width:60px;height:70px;max-width:60px;max-height:70px;object-fit:contain" src="{{ asset('storage/'.$settings['company_logo']) }}" alt="Logo">
- @else
- <img id="ticketPreviewLogo" alt="Logo" hidden>
- @endif
- <div class="sp-name" data-ticket="company_name">{{ $settings['company_name'] ?? 'MI RESTAURANTE' }}</div>
- <div id="ticketPreviewRucRow" @if(empty($settings['sunat_ruc'])) hidden @endif>RUC: <span data-ticket="sunat_ruc">{{ $settings['sunat_ruc'] ?? '' }}</span></div>
- <div data-ticket="company_address">{{ $settings['company_address'] ?? '' }}</div>
- <div>Tel: <span data-ticket="company_phone">{{ $settings['company_phone'] ?? '' }}</span></div>
- <div class="sp-gap">{{ now()->format('d/m/Y H:i') }}</div>
- <div class="sp-bold sp-gap">PRECUENTA #000100</div>
- <div class="sp-bold">Cli: CLIENTE DE EJEMPLO</div>
- <div class="sp-bold">MESA: BARRA</div>
- </div>
- <table><thead><tr><th>C.</th><th>DESCRIPCION</th><th>TOTAL</th></tr></thead><tbody><tr><td>1</td><td>LECHE DE TIGRE</td><td>18.00</td></tr></tbody></table>
- <div class="sp-totals"><div class="sp-row"><span>Subtotal:</span><span data-ticket-price="18">S/ 18.00</span></div>
- <div class="sp-row sp-total"><span>TOTAL A PAGAR:</span><span data-ticket-price="18">S/ 18.00</span></div></div>
- <div class="sp-footer"><span data-ticket="ticket_footer">{{ $settings['ticket_footer'] ?? '¡Gracias por su preferencia!' }}</span><br><br>.</div>
-</div>
-<p class="small text-muted mt-3 mb-0">Ejemplo con productos e importes de muestra. Los datos del negocio se actualizan al editar el formulario.</p>
-                            </div>
-                        </div></div></div>
-                                                {{-- =================================================
+
+{{-- =================================================
                              CELEBRACIÓN DE META MENSUAL
                         ================================================== --}}
 
