@@ -20,10 +20,19 @@
                             </p>
                         </div>
 
-                        <span class="badge bg-success-subtle text-success px-3 py-2">
-                            <i class="bi bi-database-check me-1"></i>
-                            Datos del sistema
-                        </span>
+                        <div class="d-flex align-items-center gap-2">
+                            <a
+                                href="{{ route('ai.settings') }}"
+                                class="btn btn-outline-secondary btn-sm"
+                            >
+                                <i class="bi bi-sliders2-vertical me-1"></i>
+                                Configurar IA
+                            </a>
+                            <span class="badge bg-success-subtle text-success px-3 py-2">
+                                <i class="bi bi-database-check me-1"></i>
+                                Datos del sistema
+                            </span>
+                        </div>
                     </div>
                 </div>
 
