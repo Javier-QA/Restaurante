@@ -728,7 +728,33 @@ button[type="submit"].btn-primary:hover {
                         </h5>
 
 
-                        <div class="row g-3 mb-4">
+                        <style>
+.business-logo-panel{display:flex;align-items:center;gap:24px;padding:20px;margin-bottom:28px;border:1px dashed var(--border-soft);border-radius:18px;background:color-mix(in srgb,var(--primary) 3%,var(--card-bg))}
+.business-logo-preview{width:140px;height:140px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:2px dashed var(--border-soft);border-radius:24px;background:var(--card-bg);padding:12px}
+.business-logo-preview img{width:100%;height:100%;object-fit:contain}
+.business-logo-placeholder{text-align:center;color:var(--text-muted)}
+.business-logo-placeholder i{display:block;font-size:36px}
+.business-logo-copy strong{display:block;font-size:1.1rem;color:var(--text-main);margin-bottom:4px}
+.business-logo-copy p{color:var(--text-muted);margin:0 0 12px;line-height:1.55}
+.business-logo-upload{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border:1px solid var(--border-soft);border-radius:15px;background:var(--card-bg);color:var(--text-main);font-weight:600;cursor:pointer}
+.business-logo-upload:hover{border-color:var(--primary);color:var(--primary)}
+.business-logo-upload:focus-within{outline:2px solid var(--primary);outline-offset:3px}
+@media(max-width:575px){.business-logo-panel{flex-direction:column;align-items:flex-start;gap:16px}}
+</style>
+<div class="business-logo-panel">
+ <div class="business-logo-preview">
+  <img id="companyLogoThumbnail" src="{{ !empty($settings['company_logo']) ? asset('storage/'.$settings['company_logo']) : '' }}" alt="Logo del restaurante" @if(empty($settings['company_logo'])) hidden @endif>
+  <div id="companyLogoPlaceholder" class="business-logo-placeholder" @if(!empty($settings['company_logo'])) hidden @endif><i class="bi bi-image"></i><span>Sin logo</span></div>
+ </div>
+ <div class="business-logo-copy">
+  <strong>Logo de la empresa</strong>
+  <p>Se muestra en el menú, el inicio de sesión y el ticket. PNG, JPG o WEBP, hasta 2 MB.<br>Recomendado: cuadrado, fondo transparente.</p>
+  <label class="business-logo-upload" for="companyLogoInput"><i class="bi bi-upload"></i>Subir logo
+   <input id="companyLogoInput" type="file" name="company_logo" accept="image/png,image/jpeg,image/webp" class="visually-hidden">
+  </label>
+ </div>
+</div>
+<div class="row g-3 mb-4">
 <div class="col-md-6"><label class="form-label fw-bold" for="business_company_name">Nombre comercial *</label><input id="business_company_name" type="text" name="company_name" class="form-control" value="{{ old('company_name', $settings['company_name'] ?? '') }}" placeholder="Ej: Restaurante Sabor Peruano" required ></div>
 <div class="col-md-6"><label class="form-label fw-bold" for="business_sunat_razon_social">Razón social</label><input id="business_sunat_razon_social" type="text" name="sunat_razon_social" class="form-control" value="{{ old('sunat_razon_social', $settings['sunat_razon_social'] ?? '') }}" placeholder=""  ></div>
 <div class="col-md-4"><label class="form-label fw-bold" for="business_sunat_ruc">RUC / ID fiscal</label><input id="business_sunat_ruc" type="text" name="sunat_ruc" class="form-control" value="{{ old('sunat_ruc', $settings['sunat_ruc'] ?? '') }}" placeholder="20123456789"  maxlength="11" pattern="[0-9]{11}"></div>
@@ -1587,34 +1613,6 @@ button[type="submit"].btn-primary:hover {
 
 
                         <hr class="text-muted opacity-25">
-
-
-                        {{-- =================================================
-                             LOGOTIPO
-                        ================================================== --}}
-
-                        <h5 class="fw-bold text-primary mb-3">
-
-                            <i class="bi bi-image me-2"></i>
-                            Logotipo
-
-                        </h5>
-
-
-                        <div class="row g-3 align-items-center mb-4">
- <div class="col-md-8">
-  <label class="form-label fw-bold" for="companyLogoInput">Subir Logo (Ticket y Sistema)</label>
-  <input id="companyLogoInput" type="file" name="company_logo" class="form-control" accept="image/*">
- </div>
- <div class="col-md-4 d-flex justify-content-center">
-  <div style="width:100px;height:100px;padding:5px;border:1px solid var(--border-soft);border-radius:6px;background:var(--card-bg);display:flex;align-items:center;justify-content:center">
-   <img id="companyLogoThumbnail" src="{{ !empty($settings['company_logo']) ? asset('storage/'.$settings['company_logo']) : '' }}" alt="Logo del restaurante" style="width:88px;height:88px;object-fit:contain" @if(empty($settings['company_logo'])) hidden @endif>
-   <i id="companyLogoPlaceholder" class="bi bi-image fs-1 text-muted" @if(!empty($settings['company_logo'])) hidden @endif></i>
-  </div>
- </div>
-</div>
-
-<hr class="text-muted opacity-25">
 
 
                         {{-- =================================================
