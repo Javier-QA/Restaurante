@@ -21,7 +21,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const style = document.createElement('style');
         style.textContent = `
             #ai-floating-widget{position:fixed;right:24px;bottom:24px;z-index:1080;font-family:inherit}
-            #ai-floating-bubble{width:60px;height:60px;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary-hover));box-shadow:0 10px 28px rgba(0,0,0,.22)}
+            #ai-floating-bubble{width:64px;height:64px;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary-hover));box-shadow:0 10px 28px rgba(0,0,0,.22);position:relative;animation:aiBubbleFloat 2.4s ease-in-out infinite;transition:transform .2s ease,box-shadow .2s ease}
+            #ai-floating-bubble::before,#ai-floating-bubble::after{content:"";position:absolute;inset:-5px;border:2px solid var(--primary);border-radius:50%;opacity:0;animation:aiBubblePulse 2.4s ease-out infinite;pointer-events:none}
+            #ai-floating-bubble::after{animation-delay:1.2s}
+            #ai-floating-bubble:hover{transform:scale(1.08);box-shadow:0 14px 34px rgba(0,0,0,.28)}
+            #ai-floating-bubble i{position:relative;z-index:2;animation:aiBubbleIcon 1.8s ease-in-out infinite}
+            @keyframes aiBubbleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+            @keyframes aiBubblePulse{0%{transform:scale(.88);opacity:.7}70%{transform:scale(1.45);opacity:0}100%{transform:scale(1.45);opacity:0}}
+            @keyframes aiBubbleIcon{0%,100%{transform:rotate(0deg) scale(1)}50%{transform:rotate(8deg) scale(1.08)}}
             #ai-floating-window{display:none;position:absolute;right:0;bottom:72px;width:min(390px,calc(100vw - 28px));height:min(600px,calc(100vh - 100px));background:#fff;border:1px solid #dce5ee;border-radius:18px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.22)}
             #ai-floating-window.open{display:flex;flex-direction:column}
             .ai-head{padding:14px 16px;background:linear-gradient(135deg,var(--primary),var(--primary-hover));color:#fff;display:flex;align-items:center;justify-content:space-between}
