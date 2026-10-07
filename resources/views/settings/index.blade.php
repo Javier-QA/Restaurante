@@ -902,7 +902,7 @@ button[type="submit"].btn-primary:hover {
                             </div>
 
 
-                            <div class="col-md-8 col-xl-3">
+                            <div class="col-md-12 col-xl-6">
 
                                 <label class="form-label fw-bold">
                                     <i class="bi bi-chat-left-text me-1" aria-hidden="true"></i>Mensaje Pie de Ticket
@@ -918,7 +918,18 @@ button[type="submit"].btn-primary:hover {
                             </div>
 
 
-                            <div class="col-md-4 col-xl-3">
+                            
+
+                        </div>
+
+
+
+{{-- =================================================
+                             CELEBRACIÓN DE META MENSUAL
+                        ================================================== --}}
+
+                        <div class="row g-3 mb-4 align-items-stretch">
+<div class="col-md-12 col-xl-4">
 
                                 <label class="form-label fw-bold">
                                     <i class="bi bi-bullseye me-1"></i>
@@ -949,17 +960,7 @@ button[type="submit"].btn-primary:hover {
 
                             </div>
 
-                        </div>
-
-
-
-{{-- =================================================
-                             CELEBRACIÓN DE META MENSUAL
-                        ================================================== --}}
-
-                        <div class="row g-3 mb-4">
-
-                            <div class="col-md-6">
+                            <div class="col-md-6 col-xl-4">
                                 <div class="border rounded-3 p-3 h-100 bg-light">
 
                                     <div class="form-check form-switch mb-1">
@@ -998,7 +999,7 @@ button[type="submit"].btn-primary:hover {
                             </div>
 
 
-                            <div class="col-md-6">
+                            <div class="col-md-6 col-xl-4">
                                 <div class="border rounded-3 p-3 h-100 bg-light">
 
                                     <div class="form-check form-switch mb-1">
