@@ -19,6 +19,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\AiChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -365,6 +366,20 @@ Route::resource(
         [DashboardController::class, 'index']
     )->middleware('role:admin,cashier')->name('dashboard');
     Route::middleware(['role:admin'])->group(function () {
+        // =====================================================
+        // INTELIGENCIA ARTIFICIAL - SOLO ADMINISTRADOR
+        // =====================================================
+
+        Route::get(
+            '/ai/chat',
+            [AiChatController::class, 'index']
+        )->name('ai.chat');
+
+        Route::post(
+            '/ai/chat/ask',
+            [AiChatController::class, 'ask']
+        )->name('ai.chat.ask');
+
 
 
     });
@@ -491,6 +506,20 @@ Route::resource(
     // ZONA EXCLUSIVA DEL ADMINISTRADOR
     // =========================================================
     Route::middleware(['role:admin'])->group(function () {
+        // =====================================================
+        // INTELIGENCIA ARTIFICIAL - SOLO ADMINISTRADOR
+        // =====================================================
+
+        Route::get(
+            '/ai/chat',
+            [AiChatController::class, 'index']
+        )->name('ai.chat');
+
+        Route::post(
+            '/ai/chat/ask',
+            [AiChatController::class, 'ask']
+        )->name('ai.chat.ask');
+
 
         Route::get(
             '/reports',
@@ -531,6 +560,20 @@ Route::resource(
 
     // Acciones destructivas de Caja: solo Administrador
     Route::middleware(['role:admin'])->group(function () {
+        // =====================================================
+        // INTELIGENCIA ARTIFICIAL - SOLO ADMINISTRADOR
+        // =====================================================
+
+        Route::get(
+            '/ai/chat',
+            [AiChatController::class, 'index']
+        )->name('ai.chat');
+
+        Route::post(
+            '/ai/chat/ask',
+            [AiChatController::class, 'ask']
+        )->name('ai.chat.ask');
+
 
         Route::delete(
             '/cash-registers/reset-history/all',

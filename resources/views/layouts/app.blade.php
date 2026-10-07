@@ -6999,6 +6999,18 @@ html[data-color-mode="dark"]
 
             </a>
 
+            {{-- CHAT IA --}}
+            <a
+                href="{{ route('ai.chat') }}"
+                class="
+                    nav-link
+                    {{ request()->routeIs('ai.chat*') ? 'active' : '' }}
+                "
+            >
+                <i class="bi bi-robot"></i>
+                Chat IA
+            </a>
+
         @endif
 
 

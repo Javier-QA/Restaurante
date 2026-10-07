@@ -11,6 +11,28 @@ class AiSqlService
     private const MAX_ROWS = 500;
 
     /**
+     * Únicas tablas que la IA puede consultar.
+     *
+     * Nunca incluir aquí tablas sensibles como:
+     * users, sessions, settings, password_reset_tokens o migrations.
+     */
+    private const ALLOWED_TABLES = [
+        'orders',
+        'order_details',
+        'products',
+        'categories',
+        'product_ingredients',
+        'inventory_logs',
+        'clients',
+        'expenses',
+        'cash_registers',
+        'reservations',
+        'deliveries',
+        'delivery_drivers',
+        'tables',
+    ];
+
+    /**
      * Limpia bloques Markdown que pudiera devolver la IA.
      */
     public function cleanSql(string $sql): string
@@ -89,6 +111,39 @@ class AiSqlService
             }
         }
 
+        /*
+         * Validamos las tablas utilizadas por la consulta.
+         *
+         * Buscamos tablas después de FROM y JOIN.
+         * Cada tabla encontrada debe pertenecer a la lista blanca.
+         */
+        preg_match_all(
+            '/\b(?:FROM|JOIN)\s+`?([a-zA-Z0-9_]+)`?/i',
+            $sql,
+            $matches
+        );
+
+        $tables = array_unique(
+            array_map(
+                'strtolower',
+                $matches[1] ?? []
+            )
+        );
+
+        if (empty($tables)) {
+            throw new RuntimeException(
+                'No se pudo identificar una tabla autorizada en la consulta.'
+            );
+        }
+
+        foreach ($tables as $table) {
+            if (!in_array($table, self::ALLOWED_TABLES, true)) {
+                throw new RuntimeException(
+                    "La IA intentó consultar una tabla no autorizada: {$table}."
+                );
+            }
+        }
+
         // Evitamos comentarios SQL para reducir técnicas de evasión.
         if (
             str_contains($sql, '--') ||
@@ -112,8 +167,30 @@ class AiSqlService
         $sql = $this->cleanSql($sql);
 
         $this->validate($sql);
+        /*
+         * Limitamos la cantidad de filas directamente en MySQL.
+         *
+         * - Sin LIMIT: agrega LIMIT 500.
+         * - LIMIT mayor de 500: lo reduce a 500.
+         * - LIMIT menor o igual a 500: lo conserva.
+         */
+        $sqlForExecution = rtrim($sql, " \t\n\r\0\x0B;");
 
-        try {
+        if (preg_match('/\bLIMIT\s+(\d+)\b/i', $sqlForExecution, $limitMatch)) {
+            $requestedLimit = (int) $limitMatch[1];
+
+            if ($requestedLimit > self::MAX_ROWS) {
+                $sqlForExecution = preg_replace(
+                    '/\bLIMIT\s+\d+\b/i',
+                    'LIMIT ' . self::MAX_ROWS,
+                    $sqlForExecution,
+                    1
+                );
+            }
+        } else {
+            $sqlForExecution .= ' LIMIT ' . self::MAX_ROWS;
+        }
+try {
             $pdo = DB::connection()->getPdo();
 
             // Defensa adicional a nivel de sesión MySQL.
@@ -122,7 +199,7 @@ class AiSqlService
             DB::beginTransaction();
 
             try {
-                $rows = DB::select($sql);
+                $rows = DB::select($sqlForExecution);
 
                 $rows = array_slice($rows, 0, self::MAX_ROWS);
 
