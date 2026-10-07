@@ -21,6 +21,7 @@ use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\AiChatController;
 use App\Http\Controllers\AiAssistantController;
+use App\Http\Controllers\AiSettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -502,6 +503,17 @@ Route::resource(
             '/ai/chat/ask',
             [AiChatController::class, 'ask']
         )->middleware('throttle:ai')->name('ai.chat.ask');
+
+        // Configuración IA
+        Route::get(
+            '/ai/settings',
+            [AiSettingsController::class, 'index']
+        )->name('ai.settings');
+
+        Route::post(
+            '/ai/settings',
+            [AiSettingsController::class, 'update']
+        )->name('ai.settings.update');
 
         // Asistente IA
         Route::get(
