@@ -160,3 +160,13 @@ html[data-color-mode="dark"] .sys-ia .alert-light{background:var(--dm-surface-2)
 @keyframes sys-chat-halo{0%{transform:scale(.9);opacity:.85}100%{transform:scale(1.45);opacity:0}}
 @keyframes sys-chat-sparks{0%,100%{opacity:.5;transform:translateY(2px)}50%{opacity:1;transform:translateY(-2px)}}
 @media(prefers-reduced-motion:reduce){.chat-root .chat-fab::before,.chat-root .chat-fab::after{animation:none;opacity:.3}}
+
+/* Report tables use the selected palette in both color modes. */
+:is(.sys-ia,.chat-root) .tbl thead th{
+ background:var(--primary)!important;color:#fff!important;border-bottom:0;
+ padding:.85rem .75rem;
+}
+:is(.sys-ia,.chat-root) .tbl tbody tr:nth-child(odd) td{background:color-mix(in srgb,var(--primary) 9%,var(--card));color:var(--ink)}
+:is(.sys-ia,.chat-root) .tbl tbody tr:nth-child(even) td{background:var(--card);color:var(--ink)}
+:is(.sys-ia,.chat-root) .tbl tbody tr:hover td{background:color-mix(in srgb,var(--primary) 16%,var(--card))}
+:is(.sys-ia,.chat-root) .tbl td{padding:.8rem .75rem;border-bottom:1px solid var(--line)}
