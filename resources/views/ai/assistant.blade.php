@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  $('#frmCfg').onsubmit=async e=>{e.preventDefault();$('#cErr').textContent='';try{await saveCfg();modal('mdlCfg').hide();alert('Configuración guardada')}catch(x){$('#cErr').textContent=x.message}};
  $('#cTest').onclick=async()=>{const b=$('#cTest');b.disabled=true;try{await saveCfg();await api('{{ url('/ai/settings/test') }}',{method:'POST',body:'{}'});alert('Conexión correcta')}catch(x){$('#cErr').textContent=x.message}finally{b.disabled=false}};
  $('#btnEsq').onclick=async()=>{modal('mdlEsq').show();try{const r=await fetch('{{ route('ai.assistant.schema') }}',{credentials:'same-origin'});$('#esqTxt').textContent=await r.text()}catch(e){$('#esqTxt').textContent='No se pudo cargar.'}};
- loadSide();
+ loadSide(); if(location.hash==='#configurar'){setTimeout(()=>$('#btnCfg').click(),150);}
 });
 </script>
 @endsection
