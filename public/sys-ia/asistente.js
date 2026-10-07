@@ -81,10 +81,14 @@
     const theme = chartTheme(), COL = [theme.primary, getComputedStyle(document.body).getPropertyValue('--dark-bg-2').trim(), '#10b981', '#8b5cf6', '#f59e0b', '#ef4444'];
     const xi = r.columnas.indexOf(g.x), yi = r.columnas.indexOf(g.y); if (xi < 0 || yi < 0 || !window.Chart) return;
     const lab = r.filas.map(f => String(f[xi] ?? '—').slice(0, 40)), val = r.filas.map(f => f[yi]);
+    const paymentColors = { yape: '#742284', plin: '#00a884', efectivo: '#198754', cash: '#198754', tarjeta: '#0d6efd', card: '#0d6efd' };
+    const paymentKey = label => String(label).normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+    const isPayment = /metodo.*pago|medio.*pago|payment|forma.*pago/i.test(g.x) || lab.every(label => paymentColors[paymentKey(label)]);
+    const colors = lab.map((label, i) => isPayment ? (paymentColors[paymentKey(label)] || (/transfer/.test(paymentKey(label)) ? '#0b84c6' : '#64748b')) : COL[i % COL.length]);
     const money_ = MONEY.test(g.y) && !NOMONEY.test(g.y), fmt = v => money_ ? money(v) : nf(v, Number.isInteger(v) ? 0 : 2);
     const horiz = g.tipo === 'bar' && (lab.length > 8 || lab.some(l => l.length > 14));
     const cfg = { type: g.tipo === 'line' ? 'line' : g.tipo === 'pie' ? 'doughnut' : 'bar', data: { labels: lab, datasets: [{ label: g.y.replace(/_/g, ' '), data: val,
-      backgroundColor: g.tipo === 'pie' ? lab.map((_, i) => COL[i % COL.length]) : g.tipo === 'line' ? getComputedStyle(document.querySelector('.sys-ia')).getPropertyValue('--chart-fill').trim() : theme.primary, borderColor: g.tipo === 'pie' ? theme.surface : theme.primary, borderWidth: 2, hoverBorderWidth: 2,
+      backgroundColor: g.tipo === 'pie' || (g.tipo === 'bar' && isPayment) ? colors : g.tipo === 'line' ? getComputedStyle(document.querySelector('.sys-ia')).getPropertyValue('--chart-fill').trim() : theme.primary, borderColor: g.tipo === 'pie' ? theme.surface : theme.primary, borderWidth: 2, hoverBorderWidth: 2,
       borderRadius: g.tipo === 'bar' ? 6 : 0, fill: g.tipo === 'line', tension: .3, pointRadius: g.tipo === 'line' ? 3 : 0 }] },
       options: { responsive: true, maintainAspectRatio: false, indexAxis: horiz ? 'y' : 'x', plugins: { legend: { display: g.tipo === 'pie', position: 'bottom', labels: { color: theme.text, generateLabels: c => Chart.overrides.doughnut.plugins.legend.labels.generateLabels(c).map(item => ({ ...item, lineWidth: 0 })) } }, tooltip: { callbacks: { label: c => ' ' + (g.tipo === 'pie' ? c.label + ': ' : '') + fmt(c.parsed.y ?? c.parsed.x ?? c.parsed) } } },
         scales: g.tipo === 'pie' ? {} : { [horiz ? 'x' : 'y']: { beginAtZero: true, grid: { color: theme.line }, ticks: { color: theme.text, callback: v => fmt(v) } }, [horiz ? 'y' : 'x']: { grid: { display: false }, ticks: { color: theme.text } } } } };
