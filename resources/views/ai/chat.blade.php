@@ -84,7 +84,13 @@
                                 </button>
                             </div>
 
-                            <div class="d-flex justify-content-between mt-2">
+                            <div class="d-flex flex-wrap gap-2 mt-3 mb-2">
+    <button type="button" class="btn btn-sm btn-outline-secondary ai-quick">¿Cuáles son los 5 productos más vendidos?</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary ai-quick">¿Cuánto vendimos?</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary ai-quick">¿Qué productos tienen mayor rotación?</button>
+</div>
+
+<div class="d-flex justify-content-between mt-2">
                                 <small class="text-muted">
                                     La IA solo consulta información autorizada.
                                 </small>
@@ -112,6 +118,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const button = document.getElementById('aiSendButton');
     const messages = document.getElementById('aiMessages');
     const counter = document.getElementById('aiCharacterCount');
+    document.querySelectorAll('.ai-quick').forEach(btn => {
+        btn.addEventListener('click', () => {
+            input.value = btn.textContent.trim();
+            input.dispatchEvent(new Event('input'));
+            form.requestSubmit();
+        });
+    });
 
     input.addEventListener('input', function () {
         counter.textContent = input.value.length;
