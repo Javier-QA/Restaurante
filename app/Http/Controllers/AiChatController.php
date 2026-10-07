@@ -10,82 +10,28 @@ use Throwable;
 
 class AiChatController extends Controller
 {
-    public function __construct(
-        protected AiChatService $chatService
-    ) {
-    }
+    public function __construct(protected AiChatService $chatService){}
 
-    /**
-     * Muestra la interfaz del Chat IA.
-     */
-    public function index(): View
-    {
-        return view('ai.chat');
-    }
+    public function index(): View{return view('ai.chat');}
 
-    /**
-     * Procesa una pregunta enviada al Chat IA.
-     */
     public function ask(Request $request): JsonResponse
     {
-        $validated = $request->validate([
-            'message' => [
-                'required',
-                'string',
-                'max:500',
-            ],
-        ]);
-
-        try {
-            $result = $this->chatService->ask(
-                $validated['message']
-            );
-
-            return response()->json([
-                'success' => true,
-                'answer' => $result['answer'],
-                'sql' => $result['sql'],
-                'data' => $result['data'],
-                'total_rows' => $result['total_rows'],
-            ]);
-
-        } catch (Throwable $e) {
-
-            report($e);
-
-            $message = $this->getPublicErrorMessage($e);
-
-            return response()->json([
-                'success' => false,
-                'message' => $message,
-            ], 503);
+        $v=$request->validate(['message'=>['required','string','max:400']]);
+        try{
+            $history=session('ai_chat_history',[]);
+            $result=$this->chatService->ask($v['message']);
+            $history[]= ['q'=>$v['message'],'a'=>$result['answer']];
+            session(['ai_chat_history'=>array_slice($history,-12)]);
+            $rows=array_map(static fn($r)=>(array)$r,$result['data']??[]);
+            return response()->json(['success'=>true,'answer'=>$result['answer'],'sql'=>$result['sql']??null,'data'=>$rows,'columns'=>$rows?array_keys($rows[0]):[]]);
+        }catch(Throwable $e){
+            report($e);return response()->json(['success'=>false,'message'=>$this->publicError($e)],503);
         }
     }
 
-    /**
-     * Convierte errores técnicos de la IA en mensajes seguros
-     * para mostrar al usuario.
-     */
-    private function getPublicErrorMessage(Throwable $e): string
-    {
-        $message = $e->getMessage();
+    public function clear(): JsonResponse{session()->forget('ai_chat_history');return response()->json(['success'=>true]);}
 
-        if (
-            str_contains($message, '429') ||
-            str_contains($message, 'quota') ||
-            str_contains($message, 'RESOURCE_EXHAUSTED')
-        ) {
-            return 'El servicio de inteligencia artificial alcanzó temporalmente su límite de uso. Inténtalo nuevamente más tarde.';
-        }
+    public function state(): JsonResponse{return response()->json(['success'=>true,'history'=>session('ai_chat_history',[]),'configured'=>app(\App\Services\AI\AiService::class)->isConfigured()]);}
 
-        if (
-            str_contains($message, '503') ||
-            str_contains($message, 'UNAVAILABLE') ||
-            str_contains($message, 'high demand')
-        ) {
-            return 'El servicio de inteligencia artificial se encuentra temporalmente ocupado. Inténtalo nuevamente en unos minutos.';
-        }
-
-        return 'No fue posible procesar la consulta en este momento.';
-    }
+    private function publicError(Throwable $e): string{$m=$e->getMessage();if(str_contains($m,'429')||str_contains($m,'límite'))return 'El servicio de IA alcanzó temporalmente su límite de uso.';return $m;}
 }
