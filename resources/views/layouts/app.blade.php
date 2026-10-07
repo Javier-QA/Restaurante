@@ -25,6 +25,8 @@
         rel="stylesheet"
     >
 
+    @vite('resources/js/ai-chat.js')
+
 
     <style>
 
