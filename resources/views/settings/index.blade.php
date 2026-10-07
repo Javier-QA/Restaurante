@@ -769,17 +769,28 @@ button[type="submit"].btn-primary:hover {
 
 </div><div class="col-xl-4"><div class="card mb-4">
                             <div class="card-body p-4">
-                                <h5 class="fw-bold mb-3"><i class="bi bi-eye me-2"></i>Vista previa del ticket</h5>
-                                <div id="settingsTicketPreview" style="font-family:monospace;border:1px dashed var(--border-soft);border-radius:12px;padding:20px">
-                                    <div class="text-center"><strong data-ticket="company_name"></strong><div data-ticket="company_address"></div><div data-ticket="company_phone"></div></div>
-                                    <hr>
-                                    <div class="d-flex justify-content-between gap-3"><span>1 x Ceviche clásico</span><span data-ticket-price="38"></span></div>
-                                    <div class="d-flex justify-content-between gap-3"><span>2 x Chicha morada</span><span data-ticket-price="24"></span></div>
-                                    <hr>
-                                    <div class="d-flex justify-content-between fw-bold"><span>TOTAL</span><span data-ticket-price="62"></span></div>
-                                    <hr><div class="text-center" data-ticket="ticket_footer"></div>
-                                </div>
-                                <p class="small text-muted mt-3 mb-0">Ejemplo con productos e importes de muestra. Los datos del negocio se actualizan al editar el formulario.</p>
+                                <h5 class="fw-bold mb-3"><i class="bi bi-eye me-2"></i>Vista previa de la precuenta</h5>
+                                <div id="settingsTicketPreview" class="settings-precuenta">
+ <div class="sp-header">
+ @if(!empty($settings['company_logo']))
+ <img id="ticketPreviewLogo" src="{{ asset('storage/'.$settings['company_logo']) }}" alt="Logo">
+ @else
+ <img id="ticketPreviewLogo" alt="Logo" hidden>
+ @endif
+ <div class="sp-name" data-ticket="company_name">{{ $settings['company_name'] ?? 'MI RESTAURANTE' }}</div>
+ <div data-ticket="company_address">{{ $settings['company_address'] ?? '' }}</div>
+ <div>Tel: <span data-ticket="company_phone">{{ $settings['company_phone'] ?? '' }}</span></div>
+ <div class="sp-gap">{{ now()->format('d/m/Y H:i') }}</div>
+ <div class="sp-bold sp-gap">PRECUENTA #000100</div>
+ <div class="sp-bold">Cli: CLIENTE DE EJEMPLO</div>
+ <div class="sp-bold">MESA: BARRA</div>
+ </div>
+ <table><thead><tr><th>C.</th><th>DESCRIPCION</th><th>TOTAL</th></tr></thead><tbody><tr><td>1</td><td>LECHE DE TIGRE</td><td>18.00</td></tr></tbody></table>
+ <div class="sp-totals"><div class="sp-row"><span>Subtotal:</span><span data-ticket-price="18">S/ 18.00</span></div>
+ <div class="sp-row sp-total"><span>TOTAL A PAGAR:</span><span data-ticket-price="18">S/ 18.00</span></div></div>
+ <div class="sp-footer"><span data-ticket="ticket_footer">{{ $settings['ticket_footer'] ?? '¡Gracias por su preferencia!' }}</span><br><br>.</div>
+</div>
+<p class="small text-muted mt-3 mb-0">Ejemplo con productos e importes de muestra. Los datos del negocio se actualizan al editar el formulario.</p>
                             </div>
                         </div></div></div>
                         <hr class="text-muted opacity-25">
@@ -2761,7 +2772,30 @@ html[data-color-mode="dark"] .bi-qr-code::before {
   preview.querySelectorAll('[data-ticket-price]').forEach(el => {el.textContent=(value('currency_symbol') || 'S/')+' '+Number(el.dataset.ticketPrice).toFixed(2)});
  };
  fields.forEach(name => { const field=document.querySelector('[name="'+name+'"]');field?.addEventListener('input',refresh);field?.addEventListener('change',refresh) });
+ const logoInput=document.querySelector('[name="company_logo"]');
+ let logoUrl;
+ logoInput?.addEventListener('change',()=>{const file=logoInput.files?.[0];if(!file)return;if(logoUrl)URL.revokeObjectURL(logoUrl);logoUrl=URL.createObjectURL(file);const image=document.getElementById('ticketPreviewLogo');image.src=logoUrl;image.hidden=false});
  refresh();
 })();
 </script>
+@endpush
+
+@push('styles')
+<style>
+#settingsTicketPreview.settings-precuenta{width:100%;max-width:78mm;margin:auto;padding:18px 14px;background:#fff!important;color:#000!important;font:12px/1.35 'Courier New',Courier,monospace;border:1px solid #dce3ea;border-radius:10px;box-sizing:border-box}
+#settingsTicketPreview .sp-header{text-align:center;border-bottom:1px dashed #000;padding-bottom:10px;margin-bottom:10px}
+#settingsTicketPreview img{max-width:60px;max-height:70px;object-fit:contain;filter:grayscale(100%);margin-bottom:5px}
+#settingsTicketPreview .sp-name{font-size:14px;font-weight:bold;text-transform:uppercase}
+#settingsTicketPreview .sp-bold{font-weight:bold;margin-top:3px}
+#settingsTicketPreview .sp-gap{margin-top:5px}
+#settingsTicketPreview table{width:100%;border-collapse:collapse;margin-top:5px;color:#000!important;font:inherit}
+#settingsTicketPreview th,#settingsTicketPreview td{padding:2px 0;background:#fff!important;color:#000!important;text-align:left;border:0}
+#settingsTicketPreview thead tr{border-bottom:1px solid #000}
+#settingsTicketPreview th:first-child{width:10%}
+#settingsTicketPreview th:last-child,#settingsTicketPreview td:last-child{width:30%;text-align:right}
+#settingsTicketPreview .sp-totals{margin-top:14px;border-top:1px solid #000;padding-top:5px}
+#settingsTicketPreview .sp-row{display:flex;justify-content:space-between;gap:8px;margin-bottom:2px}
+#settingsTicketPreview .sp-total{font-size:16px;font-weight:bold;margin-top:5px;border-top:1px dashed #000;padding-top:5px}
+#settingsTicketPreview .sp-footer{margin-top:16px;border-top:1px dashed #000;padding-top:5px;font-size:10px;text-align:center}
+</style>
 @endpush
