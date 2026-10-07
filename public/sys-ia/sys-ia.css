@@ -38,7 +38,7 @@
 :is(.sys-ia,.chat-root,#toastWrap) .chat-panel{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);overflow:hidden}
 .chat-root:not(.chat-page) .chat-panel{position:fixed;right:20px;bottom:90px;width:390px;height:min(620px,calc(100dvh - 120px));border-radius:20px;box-shadow:0 30px 70px -20px rgba(15,23,42,.45);z-index:1046}
 .chat-root:not(.chat-page) .chat-panel[hidden]{display:none}
-.chat-page .chat-panel{height:calc(100dvh - 230px);min-height:460px;width:92%;max-width:1100px;margin-inline:auto;border-radius:18px;box-shadow:var(--shadow)}
+.chat-page .chat-panel{height:calc(100dvh - 230px);min-height:460px;width:100%;max-width:920px;border-radius:18px;box-shadow:var(--shadow)}
 :is(.sys-ia,.chat-root,#toastWrap) .chat-head{display:flex;align-items:center;gap:10px;padding:12px 14px;color:#fff;background:linear-gradient(120deg,#111827,#1f2937 55%,#c2410c)}
 :is(.sys-ia,.chat-root,#toastWrap) .chat-head b{display:block;line-height:1.1}:is(.sys-ia,.chat-root,#toastWrap) .chat-head small{opacity:.8;font-size:.72rem}
 :is(.sys-ia,.chat-root,#toastWrap) .chat-head button{border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:9px;width:32px;height:32px}
