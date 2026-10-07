@@ -56,8 +56,8 @@ class AiSqlService
             throw new RuntimeException('La consulta SQL está vacía.');
         }
 
-        // Solo permitimos SELECT o CTE mediante WITH.
-        if (!preg_match('/^\s*(SELECT|WITH)\b/i', $sql)) {
+        // Solo permitimos consultas SELECT.
+        if (!preg_match('/^\s*SELECT\b/i', $sql)) {
             throw new RuntimeException(
                 'La IA intentó generar una operación SQL no permitida.'
             );
@@ -100,6 +100,34 @@ class AiSqlService
         $normalized = strtoupper(
             preg_replace('/\s+/', ' ', $sql)
         );
+
+        /*
+         * Restricciones adicionales para evitar consultas complejas
+         * o accesos que no son necesarios para el asistente.
+         */
+        $dangerousPatterns = [
+            '/\bUNION\b/i',
+            '/\bINFORMATION_SCHEMA\b/i',
+            '/\bPERFORMANCE_SCHEMA\b/i',
+            '/\bLOAD_FILE\s*\(/i',
+            '/\bSLEEP\s*\(/i',
+            '/\bBENCHMARK\s*\(/i',
+            '/\bGET_LOCK\s*\(/i',
+            '/\bRELEASE_LOCK\s*\(/i',
+            '/\bFOR\s+UPDATE\b/i',
+            '/\bLOCK\s+IN\s+SHARE\s+MODE\b/i',
+            '/:=/',
+            '/@[a-zA-Z0-9_]+/',
+            '/\(\s*SELECT\b/i',
+        ];
+
+        foreach ($dangerousPatterns as $pattern) {
+            if (preg_match($pattern, $sql)) {
+                throw new RuntimeException(
+                    'La consulta contiene una construcción SQL no permitida.'
+                );
+            }
+        }
 
         foreach ($forbidden as $keyword) {
             $pattern = '/\b' . preg_quote($keyword, '/') . '\b/i';
