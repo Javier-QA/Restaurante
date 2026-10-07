@@ -44,6 +44,9 @@ class AiChatController extends Controller
             return response()->json([
                 'success' => true,
                 'answer' => $result['answer'],
+                'sql' => $result['sql'],
+                'data' => $result['data'],
+                'total_rows' => $result['total_rows'],
             ]);
 
         } catch (Throwable $e) {
