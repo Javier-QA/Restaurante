@@ -14,8 +14,15 @@ class AiSettingsController extends Controller
     ) {
     }
 
-    public function index(): View
+    public function index(Request $request): View|\Illuminate\Http\JsonResponse
     {
+        if ($request->expectsJson()) {
+            return response()->json([
+                'admin' => true,
+                'config' => $this->config->publicConfig(),
+            ]);
+        }
+
         return view('ai.settings', [
             'config' => $this->config->publicConfig(),
             'providers' => $this->config->providers(),
