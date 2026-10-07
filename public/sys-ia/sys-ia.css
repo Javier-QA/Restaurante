@@ -133,3 +133,12 @@ html[data-color-mode="dark"] .sys-ia .alert-light{background:var(--dm-surface-2)
 
 :is(.sys-ia,.chat-root) .chat-sugs .chat-sug{background:var(--primary)!important;border-color:var(--primary)!important;color:#fff!important;font-weight:600}
 :is(.sys-ia,.chat-root) .chat-sugs .chat-sug:hover{background:var(--primary-hover)!important;border-color:var(--primary-hover)!important;color:#fff!important}
+
+/* Soft blinking cue for the floating chatbot button. */
+.chat-root .chat-fab{animation:sys-chat-blink 2.4s ease-in-out infinite}
+@keyframes sys-chat-blink{
+ 0%,100%{opacity:1;box-shadow:0 8px 24px var(--theme-shadow),0 0 0 0 color-mix(in srgb,var(--primary) 30%,transparent)}
+ 50%{opacity:.72;box-shadow:0 8px 24px var(--theme-shadow),0 0 0 10px color-mix(in srgb,var(--primary) 0%,transparent)}
+}
+.chat-root .chat-fab:hover,.chat-root .chat-fab:focus-visible{animation:none;opacity:1}
+@media(prefers-reduced-motion:reduce){.chat-root .chat-fab{animation:none}}
