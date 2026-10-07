@@ -660,6 +660,14 @@ button[type="submit"].btn-primary:hover {
     }
 }
 </style>
+<style>
+.settings-page-header + .card form h5.text-primary {
+ color:var(--text-main)!important;
+}
+.settings-page-header + .card form h5 > i {
+ color:var(--text-main)!important;
+}
+</style>
 <div class="container-fluid">
 
     <div class="row">
@@ -859,7 +867,7 @@ button[type="submit"].btn-primary:hover {
                             <div class="col-md-6 col-xl-2">
 
                                 <label class="form-label fw-bold">
-                                    Moneda
+                                    <i class="bi bi-currency-exchange me-1" aria-hidden="true"></i>Moneda
                                 </label>
 
 
@@ -897,7 +905,7 @@ button[type="submit"].btn-primary:hover {
                             <div class="col-md-8 col-xl-3">
 
                                 <label class="form-label fw-bold">
-                                    Mensaje Pie de Ticket
+                                    <i class="bi bi-chat-left-text me-1" aria-hidden="true"></i>Mensaje Pie de Ticket
                                 </label>
 
                                 <input
