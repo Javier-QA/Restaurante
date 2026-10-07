@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -25,8 +25,9 @@
         rel="stylesheet"
     >
 
-    @vite('resources/js/ai-chat.js')
-
+    @if(auth()->check() && auth()->user()->role === 'admin')
+        @vite('resources/js/ai-chat.js')
+    @endif
 
     <style>
 
@@ -6868,7 +6869,7 @@ html[data-color-mode="dark"]
     }
 @endphp
 
-<body class="{{ request()->routeIs('pos.order') ? 'pos-page' : '' }} theme-{{ $dashboardTheme }}">
+<body class="{{ request()->routeIs('pos.order') ? 'pos-page' : '' }} theme-{{ $dashboardTheme }} {{ auth()->check() && auth()->user()->role === 'admin' ? 'ai-admin' : '' }}">
 
 
 <div
@@ -7000,30 +7001,6 @@ html[data-color-mode="dark"]
 
                 Reportes
 
-            </a>
-
-            {{-- CHAT IA --}}
-            <a
-                href="{{ route('ai.chat') }}"
-                class="
-                    nav-link
-                    {{ request()->routeIs('ai.chat*') ? 'active' : '' }}
-                "
-            >
-                <i class="bi bi-robot"></i>
-                Chat IA
-            </a>
-
-            {{-- ASISTENTE IA --}}
-            <a
-                href="{{ route('ai.assistant') }}"
-                class="
-                    nav-link
-                    {{ request()->routeIs('ai.assistant*') ? 'active' : '' }}
-                "
-            >
-                <i class="bi bi-stars"></i>
-                Asistente IA
             </a>
 
         @endif
@@ -7413,6 +7390,27 @@ html[data-color-mode="dark"]
 
                 Mantenimiento
 
+            </a>
+
+            {{-- INTELIGENCIA --}}
+            <div class="menu-category">
+                Inteligencia
+            </div>
+
+            <a
+                href="{{ route('ai.assistant') }}"
+                class="nav-link {{ request()->routeIs('ai.assistant*') ? 'active' : '' }}"
+            >
+                <i class="bi bi-stars"></i>
+                Asistente IA
+            </a>
+
+            <a
+                href="{{ route('ai.chat') }}"
+                class="nav-link {{ request()->routeIs('ai.chat*') ? 'active' : '' }}"
+            >
+                <i class="bi bi-robot"></i>
+                Chat IA
             </a>
 
         @endif
@@ -11887,5 +11885,20 @@ html[data-color-mode="dark"]
         border-color .35s ease !important;
 }
 
-</style>
 
+/* AJUSTE CHAT IA - ELIMINAR ESPACIO SUPERIOR DEL CONTENIDO */
+.main-content {
+    padding-top: 0 !important;
+}
+
+.main-content > .container-fluid {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.top-navbar + .container-fluid {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+</style>
