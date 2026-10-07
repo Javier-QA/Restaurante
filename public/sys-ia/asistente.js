@@ -98,7 +98,11 @@
     if (!ST || !ST.cfg.resumen || !r.filas.length) return;
     const b = $('#iaSum'); b.innerHTML = '<div class="ia-sum"><span class="ia-dots"><span></span><span></span><span></span></span><div class="text-muted">Redactando resumen…</div></div>';
     try { const s = await call(API, 'resumir', { method: 'POST', body: { id: r.id } }); if (last && last.id === r.id) b.innerHTML = `<div class="ia-sum"><i class="bi bi-stars"></i><div>${esc(s.resumen)}</div></div>`; }
-    catch (x) { b.innerHTML = ''; }
+    catch (x) {
+      if (!last || last.id !== r.id || !b.isConnected) return;
+      b.innerHTML = '<div class="ia-sum"><i class="bi bi-exclamation-circle"></i><div>No se pudo generar el resumen: ' + esc(x.message) + '<br><button class="btn btn-soft sm mt-2" id="iaRetrySummary">Reintentar resumen</button></div></div>';
+      $('#iaRetrySummary').onclick = () => resumen(r);
+    }
   }
 
   /* ---- activación rápida ---- */
