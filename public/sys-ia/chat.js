@@ -2,7 +2,7 @@
 (() => {
   if (window.__chatIA) return; window.__chatIA = true;
   const { esc, money, toast, call } = window.SP;
-  const SUG = ['¿Cuánto vendimos hoy?', '¿Cuáles son los 5 platos más vendidos este mes?', '¿Qué insumos tienen stock bajo?', '¿Qué mozo vendió más esta semana?', '¿Cómo registro una compra?'];
+  const SUG = ['¿Cuánto vendimos hoy?', '¿Cuáles son los 5 platos más vendidos este mes?', '¿Cuál es el stock actual de los insumos?', '¿Qué mozo vendió más esta semana?', '¿Cómo registro un pedido?'];
   const page = document.getElementById('chatPage');
   let ST = null, enviando = false, root, box, inp, vistos = false;
   const API = () => window.API_CHAT, API_IA = () => window.API_IA;
@@ -52,7 +52,7 @@
     try { ST = await call(API(), 'estado'); } catch (x) { return bot('No pude conectarme al sistema: ' + x.message); }
     root.querySelector('#chatSub').textContent = ST.listo ? ST.proveedor : 'Falta activar la IA';
     if (!ST.listo) return setup();
-    if (!ST.historial.length) { bot(`¡Hola! Soy el asistente de **${ST.empresa}**. Puedo consultar tus ventas, platos, insumos, compras, clientes y gastos, o explicarte cómo usar el sistema.`); sugerencias(); }
+    if (!ST.historial.length) { bot(`¡Hola! Soy el asistente de **${ST.empresa}**. Puedo consultar tus ventas, platos, inventario, pedidos, clientes y gastos, o explicarte cómo usar el sistema.`); sugerencias(); }
     else ST.historial.forEach((h) => { user(h.q); bot(h.a); });
     scroll();
   }
