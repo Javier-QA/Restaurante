@@ -770,6 +770,22 @@ button[type="submit"].btn-primary:hover {
                         <hr class="text-muted opacity-25">
 
 
+                        <div class="card mb-4" style="max-width:520px">
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold mb-3"><i class="bi bi-eye me-2"></i>Vista previa del ticket</h5>
+                                <div id="settingsTicketPreview" style="font-family:monospace;border:1px dashed var(--border-soft);border-radius:12px;padding:20px">
+                                    <div class="text-center"><strong data-ticket="company_name"></strong><div data-ticket="company_address"></div><div data-ticket="company_phone"></div></div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between gap-3"><span>1 x Ceviche clásico</span><span data-ticket-price="38"></span></div>
+                                    <div class="d-flex justify-content-between gap-3"><span>2 x Chicha morada</span><span data-ticket-price="24"></span></div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between fw-bold"><span>TOTAL</span><span data-ticket-price="62"></span></div>
+                                    <hr><div class="text-center" data-ticket="ticket_footer"></div>
+                                </div>
+                                <p class="small text-muted mt-3 mb-0">Ejemplo con productos e importes de muestra. Los datos del negocio se actualizan al editar el formulario.</p>
+                            </div>
+                        </div>
+
                         {{-- =================================================
                              REGIÓN Y SISTEMA
                         ================================================== --}}
@@ -2731,3 +2747,22 @@ html[data-color-mode="dark"] .bi-qr-code::before {
 
 @endpush
 
+
+@push('scripts')
+<script>
+(() => {
+ const preview = document.getElementById('settingsTicketPreview');
+ const fields = ['company_name','company_address','company_phone','ticket_footer','currency_symbol'];
+ const value = name => document.querySelector('[name="'+name+'"]')?.value.trim() || '';
+ const refresh = () => {
+  preview.querySelectorAll('[data-ticket]').forEach(el => {
+   const key=el.dataset.ticket;
+   el.textContent=value(key) || (key==='company_name' ? 'Nombre del restaurante' : '');
+  });
+  preview.querySelectorAll('[data-ticket-price]').forEach(el => {el.textContent=(value('currency_symbol') || 'S/')+' '+Number(el.dataset.ticketPrice).toFixed(2)});
+ };
+ fields.forEach(name => { const field=document.querySelector('[name="'+name+'"]');field?.addEventListener('input',refresh);field?.addEventListener('change',refresh) });
+ refresh();
+})();
+</script>
+@endpush
