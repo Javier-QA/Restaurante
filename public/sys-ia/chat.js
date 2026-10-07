@@ -16,7 +16,7 @@
 
   const fmtTxt = (t) => esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
   const MONEY = /(total|importe|ingreso|venta|monto|utilidad|costo|precio|valor|deuda|gasto|margen|saldo|promedio|propina|descuento|impuesto|ticket)/i;
-  const cel = (v, c) => v === null ? '—' : typeof v === 'number' ? (MONEY.test(c) && !/pct|cantidad|num_/i.test(c) ? money(v) : nf(v, Number.isInteger(v) ? 0 : 2)) : esc(String(v));
+  const cel = (v, c) => v === null ? '—' : typeof v === 'number' ? (MONEY.test(c) && !/pct|porcentaje|cantidad|num_|nro|pedidos|ordenes|unidades|clientes|visitas|stock|veces|minutos|hora/i.test(c) ? money(v) : nf(v, Number.isInteger(v) ? 0 : 2)) : esc(String(v));
 
   function build() {
     if (root) return;
@@ -73,7 +73,7 @@
   function sugerencias() { const d = document.createElement('div'); d.className = 'chat-sugs'; d.innerHTML = SUG.map((s) => `<button type="button" class="chat-sug">${esc(s)}</button>`).join(''); box.appendChild(d); }
   function tabla(t) {
     if (!t || !t.filas.length || (t.filas.length === 1 && t.columnas.length === 1)) return '';
-    return `<button type="button" class="chat-tg" data-tg><i class="bi bi-table"></i> Ver datos (${t.total})</button><div class="chat-tbl" hidden><div class="table-responsive"><table class="tbl"><thead><tr>${t.columnas.map((c) => `<th>${esc(c.replace(/_/g, ' '))}</th>`).join('')}</tr></thead><tbody>${t.filas.map((f) => `<tr>${f.map((v, i) => `<td class="${typeof v === 'number' ? 'text-end' : ''}">${cel(v, t.columnas[i])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>${t.total > t.filas.length ? `<div class="small text-muted px-2 pb-1">Se muestran ${t.filas.length} de ${t.total}. Para el detalle completo usa el Asistente IA.</div>` : ''}</div>`;
+    return `<button type="button" class="chat-tg" data-tg><i class="bi bi-table"></i> Ver datos (${t.total})</button><div class="chat-tbl" hidden><div class="table-responsive"><table class="tbl"><thead><tr>${t.columnas.map((c, i) => `<th class="${t.filas.some(f => typeof f[i] === 'number') ? 'text-end' : ''}">${esc(c.replace(/_/g, ' '))}</th>`).join('')}</tr></thead><tbody>${t.filas.map((f) => `<tr>${f.map((v, i) => `<td class="${typeof v === 'number' ? 'text-end' : ''}">${cel(v, t.columnas[i])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>${t.total > t.filas.length ? `<div class="small text-muted px-2 pb-1">Se muestran ${t.filas.length} de ${t.total}. Para el detalle completo usa el Asistente IA.</div>` : ''}</div>`;
   }
   async function enviar() {
     const m = inp.value.trim(); if (!m || enviando) return;

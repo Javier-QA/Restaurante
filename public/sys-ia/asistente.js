@@ -5,7 +5,7 @@
   const SUG = ['¿Cuáles fueron los 10 platos más vendidos este mes?', 'Ventas por día de los últimos 15 días', '¿Cuánto vendimos por método de pago esta semana?', 'Ventas por mozo este mes',
     '¿Qué insumos tienen stock bajo?', 'Utilidad por categoría este mes', '¿Qué horas tienen más ventas?', 'Gastos por categoría este mes'];
   const MONEY = /(total|importe|ingreso|venta|monto|utilidad|costo|precio|valor|deuda|gasto|margen|saldo|promedio|propina|descuento|impuesto|ticket)/i;
-  const NOMONEY = /(pct|porcentaje|cantidad|num_|nro|veces|minutos|hora)/i;
+  const NOMONEY = /(pct|porcentaje|cantidad|num_|nro|veces|minutos|hora|pedidos|ordenes|unidades|clientes|visitas|stock)/i;
   const nf = (n, d = 0) => window.SP.num(n, d);
   const cel = (v, c) => v === null || v === undefined ? '—' : typeof v === 'number' ? (MONEY.test(c) && !NOMONEY.test(c) ? money(v) : nf(v, Number.isInteger(v) ? 0 : 2)) : esc(String(v));
   const chartTheme = () => { const c = getComputedStyle(document.querySelector('.sys-ia')); return { primary: c.getPropertyValue('--accent').trim(), text: c.getPropertyValue('--muted').trim(), line: c.getPropertyValue('--line').trim(), surface: c.getPropertyValue('--card').trim() }; };
@@ -67,7 +67,7 @@
         <div class="d-flex gap-1"><button class="mini-btn" id="iaStar" title="Favorita"></button><a class="mini-btn" href="${API}?action=csv&id=${r.id}" title="Exportar CSV"><i class="bi bi-filetype-csv"></i></a><button class="mini-btn" id="iaSqlB" title="Ver SQL"><i class="bi bi-code-slash"></i></button></div></div>
       <div id="iaSum"></div>
       ${g.tipo !== 'none' && n > 1 ? '<div class="ia-chart"><canvas id="iaCv"></canvas></div>' : ''}
-      ${n ? `<div class="ia-tbl mt-2"><table class="tbl"><thead><tr>${r.columnas.map(c => `<th>${esc(c.replace(/_/g, ' '))}</th>`).join('')}</tr></thead><tbody>${r.filas.map(f => `<tr>${f.map((v, i) => `<td class="${typeof v === 'number' ? 'text-end' : ''}">${cel(v, r.columnas[i])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : '<div class="text-center text-muted py-4">La consulta no devolvió resultados para ese período.</div>'}
+      ${n ? `<div class="ia-tbl mt-2"><table class="tbl"><thead><tr>${r.columnas.map((c, i) => `<th class="${r.filas.some(f => typeof f[i] === 'number') ? 'text-end' : ''}">${esc(c.replace(/_/g, ' '))}</th>`).join('')}</tr></thead><tbody>${r.filas.map(f => `<tr>${f.map((v, i) => `<td class="${typeof v === 'number' ? 'text-end' : ''}">${cel(v, r.columnas[i])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : '<div class="text-center text-muted py-4">La consulta no devolvió resultados para ese período.</div>'}
       <div class="form-check mt-3 small"><input class="form-check-input" type="checkbox" id="iaSeg"><label class="form-check-label" for="iaSeg">Mi próxima pregunta es de seguimiento de este resultado (p. ej. «ahora solo delivery»)</label></div>
       <pre class="ia-sql" id="iaSql" hidden>${esc(r.sql)}</pre></div></div>`;
     star(); $('#iaStar').onclick = async () => { const v = last.favorito ? 0 : 1; try { await call(API, 'favorito', { method: 'POST', body: { id: last.id, valor: v } }); last.favorito = v; star(); estado(); } catch (x) { toast(x.message, 'err'); } };
