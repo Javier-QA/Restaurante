@@ -130,3 +130,6 @@ html[data-color-mode="dark"] .sys-ia .alert-light{background:var(--dm-surface-2)
 :is(.sys-ia,.chat-root) .chat-sug:hover{
  background:var(--primary-hover);border-color:var(--primary-hover);color:#fff;
 }
+
+:is(.sys-ia,.chat-root) .chat-sugs .chat-sug{background:var(--primary)!important;border-color:var(--primary)!important;color:#fff!important;font-weight:600}
+:is(.sys-ia,.chat-root) .chat-sugs .chat-sug:hover{background:var(--primary-hover)!important;border-color:var(--primary-hover)!important;color:#fff!important}
