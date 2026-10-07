@@ -218,38 +218,35 @@ class AiSqlService
         } else {
             $sqlForExecution .= ' LIMIT ' . self::MAX_ROWS;
         }
-try {
-            $pdo = DB::connection()->getPdo();
+        try {
+            /*
+             * Todas las consultas generadas por IA utilizan una conexión
+             * MySQL independiente cuyo usuario solo posee permiso SELECT.
+             *
+             * Esto evita que la IA utilice las credenciales de escritura
+             * de la conexión principal del restaurante.
+             */
+            $connection = DB::connection('ai_readonly');
 
-            // Defensa adicional a nivel de sesión MySQL.
-            $pdo->exec('SET SESSION TRANSACTION READ ONLY');
-
-            DB::beginTransaction();
+            $connection->beginTransaction();
 
             try {
-                $rows = DB::select($sqlForExecution);
+                $rows = $connection->select($sqlForExecution);
 
                 $rows = array_slice($rows, 0, self::MAX_ROWS);
 
-                DB::rollBack();
+                $connection->rollBack();
 
                 return array_map(
                     static fn ($row) => (array) $row,
                     $rows
                 );
             } catch (Throwable $e) {
-                if (DB::transactionLevel() > 0) {
-                    DB::rollBack();
+                if ($connection->transactionLevel() > 0) {
+                    $connection->rollBack();
                 }
 
                 throw $e;
-            } finally {
-                // Restauramos la sesión utilizada por Laravel.
-                try {
-                    $pdo->exec('SET SESSION TRANSACTION READ WRITE');
-                } catch (Throwable) {
-                    // La validación de SQL sigue siendo la barrera principal.
-                }
             }
         } catch (Throwable $e) {
             throw new RuntimeException(
