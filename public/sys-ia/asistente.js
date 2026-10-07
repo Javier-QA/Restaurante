@@ -132,7 +132,7 @@
     catch (x) { $('#cErr').textContent = x.message; }
     $('#cTest').disabled = false;
   };
-  $('#btnEsq').onclick = async () => { mdl('mdlEsq').show(); $('#esqTxt').textContent = 'Cargando…'; try { const r = await fetch(API + '?action=esquema', { credentials: 'same-origin' }); $('#esqTxt').textContent = await r.text(); } catch (x) { $('#esqTxt').textContent = 'No se pudo cargar.'; } };
+  $('#btnEsq').onclick = () => mdl('mdlEsq').show();
 
   estado();
 })();
