@@ -104,3 +104,5 @@ html[data-color-mode="dark"] :is(.sys-ia,.chat-root,#toastWrap){
 :is(.sys-ia,.chat-root) .chat-fab{box-shadow:0 8px 24px var(--theme-shadow)}
 .sys-ia .ia-ask{box-shadow:var(--shadow);border:1px solid var(--line)}
 html[data-color-mode="dark"] .sys-ia .alert-light{background:var(--dm-surface-2);color:var(--dm-text);border-color:var(--dm-border)!important}
+
+.sys-ia{--chart-fill:color-mix(in srgb,var(--primary) 15%,transparent)}
