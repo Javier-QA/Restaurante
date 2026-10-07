@@ -25,6 +25,10 @@
         rel="stylesheet"
     >
 
+    @if(auth()->check() && auth()->user()->role === 'admin')
+        @vite('resources/js/ai-chat.js')
+    @endif
+
     <style>
 
         /* =========================================================
@@ -6865,7 +6869,7 @@ html[data-color-mode="dark"]
     }
 @endphp
 
-<body class="{{ request()->routeIs('pos.order') ? 'pos-page' : '' }} theme-{{ $dashboardTheme }}">
+<body class="{{ request()->routeIs('pos.order') ? 'pos-page' : '' }} theme-{{ $dashboardTheme }} {{ auth()->check() && auth()->user()->role === 'admin' ? 'ai-admin' : '' }}">
 
 
 <div
@@ -6997,30 +7001,6 @@ html[data-color-mode="dark"]
 
                 Reportes
 
-            </a>
-
-            {{-- CHAT IA --}}
-            <a
-                href="{{ route('ai.chat') }}"
-                class="
-                    nav-link
-                    {{ request()->routeIs('ai.chat*') ? 'active' : '' }}
-                "
-            >
-                <i class="bi bi-robot"></i>
-                Chat IA
-            </a>
-
-            {{-- ASISTENTE IA --}}
-            <a
-                href="{{ route('ai.assistant') }}"
-                class="
-                    nav-link
-                    {{ request()->routeIs('ai.assistant*') ? 'active' : '' }}
-                "
-            >
-                <i class="bi bi-stars"></i>
-                Asistente IA
             </a>
 
         @endif
@@ -7410,6 +7390,27 @@ html[data-color-mode="dark"]
 
                 Mantenimiento
 
+            </a>
+
+            {{-- INTELIGENCIA --}}
+            <div class="menu-category">
+                Inteligencia
+            </div>
+
+            <a
+                href="{{ route('ai.assistant') }}"
+                class="nav-link {{ request()->routeIs('ai.assistant*') ? 'active' : '' }}"
+            >
+                <i class="bi bi-stars"></i>
+                Asistente IA
+            </a>
+
+            <a
+                href="{{ route('ai.chat') }}"
+                class="nav-link {{ request()->routeIs('ai.chat*') ? 'active' : '' }}"
+            >
+                <i class="bi bi-robot"></i>
+                Chat IA
             </a>
 
         @endif
