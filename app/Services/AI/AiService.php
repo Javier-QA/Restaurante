@@ -14,38 +14,50 @@ class AiService
     protected string $apiKey;
     protected string $baseUrl;
     protected string $model;
+    protected string $provider;
+    protected string $providerLabel;
 
-    public function __construct()
-    {
-        $this->apiKey = (string) config('services.gemini.api_key');
+    public function __construct(
+        protected AiProviderConfigService $providerConfig
+    ) {
+        $config = $this->providerConfig->get();
 
-        $this->baseUrl = rtrim(
-            (string) config('services.gemini.base_url'),
-            '/'
-        );
-
-        $this->model = (string) config('services.gemini.model');
+        $this->apiKey = $config['api_key'];
+        $this->baseUrl = rtrim($config['base_url'], '/');
+        $this->model = $config['model'];
+        $this->provider = $config['provider'];
+        $this->providerLabel = $config['provider_label'];
     }
 
-    /**
-     * Envía mensajes a Gemini mediante su endpoint
-     * compatible con OpenAI.
-     */
     public function chat(
         array $messages,
         float $temperature = 0.2,
         int $maxTokens = 1500
     ): string {
-        if (empty($this->apiKey)) {
+        if ($this->baseUrl === '' || $this->model === '') {
             throw new RuntimeException(
-                'La API Key de Gemini no está configurada.'
+                'La configuración del proveedor de IA está incompleta.'
             );
         }
 
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->apiKey,
+        $definition = AiProviderConfigService::PROVIDERS[$this->provider]
+            ?? null;
+
+        if (($definition['requires_key'] ?? true) && $this->apiKey === '') {
+            throw new RuntimeException(
+                "El proveedor {$this->providerLabel} no tiene una API Key configurada."
+            );
+        }
+
+        $request = Http::withHeaders([
             'Content-Type' => 'application/json',
-        ])
+        ]);
+
+        if ($this->apiKey !== '') {
+            $request = $request->withToken($this->apiKey);
+        }
+
+        $response = $request
             ->timeout(60)
             ->retry(
                 2,
@@ -54,17 +66,10 @@ class AiService
                     Throwable $exception,
                     PendingRequest $request
                 ): bool {
-                    /*
-                     * Los errores de conexión pueden ser temporales.
-                     */
                     if ($exception instanceof ConnectionException) {
                         return true;
                     }
 
-                    /*
-                     * Si existe una respuesta HTTP, únicamente
-                     * reintentamos errores temporales del servidor.
-                     */
                     if (
                         method_exists($exception, 'response') &&
                         $exception->response instanceof Response
@@ -95,52 +100,57 @@ class AiService
 
             if ($status === 429) {
                 throw new RuntimeException(
-                    'Error al comunicarse con Gemini: 429 - límite de uso alcanzado.'
+                    "El proveedor {$this->providerLabel} alcanzó temporalmente su límite de uso."
                 );
             }
 
             if (in_array($status, [500, 502, 503, 504], true)) {
                 throw new RuntimeException(
-                    "Error al comunicarse con Gemini: {$status} - servicio temporalmente no disponible."
+                    "El proveedor {$this->providerLabel} no está disponible temporalmente ({$status})."
                 );
             }
 
             throw new RuntimeException(
-                "Error al comunicarse con Gemini: {$status}."
+                "Error al comunicarse con {$this->providerLabel}: {$status}."
             );
         }
 
-        $content = $response->json(
-            'choices.0.message.content'
-        );
+        $content = $response->json('choices.0.message.content');
 
-        if (
-            !is_string($content) ||
-            trim($content) === ''
-        ) {
+        if (!is_string($content) || trim($content) === '') {
             throw new RuntimeException(
-                'Gemini devolvió una respuesta vacía o inválida.'
+                "{$this->providerLabel} devolvió una respuesta vacía o inválida."
             );
         }
 
         return trim($content);
     }
 
-    /**
-     * Comprueba si Gemini está configurado.
-     */
     public function isConfigured(): bool
     {
-        return !empty($this->apiKey)
-            && !empty($this->baseUrl)
-            && !empty($this->model);
+        $definition = AiProviderConfigService::PROVIDERS[$this->provider]
+            ?? null;
+
+        return $this->baseUrl !== ''
+            && $this->model !== ''
+            && (
+                !($definition['requires_key'] ?? true)
+                || $this->apiKey !== ''
+            );
     }
 
-    /**
-     * Devuelve el modelo configurado sin exponer la API Key.
-     */
     public function getModel(): string
     {
         return $this->model;
+    }
+
+    public function getProvider(): string
+    {
+        return $this->provider;
+    }
+
+    public function getProviderLabel(): string
+    {
+        return $this->providerLabel;
     }
 }
