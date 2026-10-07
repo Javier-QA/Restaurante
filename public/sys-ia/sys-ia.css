@@ -170,3 +170,18 @@ html[data-color-mode="dark"] .sys-ia .alert-light{background:var(--dm-surface-2)
 :is(.sys-ia,.chat-root) .tbl tbody tr:nth-child(even) td{background:var(--card);color:var(--ink)}
 :is(.sys-ia,.chat-root) .tbl tbody tr:hover td{background:color-mix(in srgb,var(--primary) 16%,var(--card))}
 :is(.sys-ia,.chat-root) .tbl td{padding:.8rem .75rem;border-bottom:1px solid var(--line)}
+
+/* Override original sticky header and global table styles. */
+:is(.sys-ia,.chat-root) :is(.ia-tbl,.chat-tbl) table.tbl thead tr th{
+ background:var(--primary)!important;color:#fff!important;
+ border-color:var(--primary)!important;
+}
+:is(.sys-ia,.chat-root) :is(.ia-tbl,.chat-tbl) table.tbl tbody tr:nth-child(odd) td{
+ background:color-mix(in srgb,var(--primary) 12%,var(--card))!important;color:var(--ink)!important;
+}
+:is(.sys-ia,.chat-root) :is(.ia-tbl,.chat-tbl) table.tbl tbody tr:nth-child(even) td{
+ background:var(--card)!important;color:var(--ink)!important;
+}
+:is(.sys-ia,.chat-root) :is(.ia-tbl,.chat-tbl) table.tbl tbody tr:hover td{
+ background:color-mix(in srgb,var(--primary) 20%,var(--card))!important;
+}
