@@ -120,3 +120,5 @@ html[data-color-mode="dark"] .sys-ia .alert-light{background:var(--dm-surface-2)
 
 .sys-ia :is(#mdlCfg,#mdlEsq) .modal-header .modal-title{margin:0!important;line-height:1.3}
 .sys-ia :is(#mdlCfg,#mdlEsq) .modal-header .btn-close{margin:0 0 0 auto!important;flex-shrink:0}
+
+.sys-ia .ia-privacy{padding:1rem;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);line-height:1.6}
