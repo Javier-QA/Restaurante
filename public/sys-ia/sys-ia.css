@@ -122,3 +122,11 @@ html[data-color-mode="dark"] .sys-ia .alert-light{background:var(--dm-surface-2)
 .sys-ia :is(#mdlCfg,#mdlEsq) .modal-header .btn-close{margin:0 0 0 auto!important;flex-shrink:0}
 
 .sys-ia .ia-privacy{padding:1rem;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);line-height:1.6}
+
+/* Distinguish suggested questions from assistant messages. */
+:is(.sys-ia,.chat-root) .chat-sug{
+ background:var(--primary);border-color:var(--primary);color:#fff;font-weight:600;
+}
+:is(.sys-ia,.chat-root) .chat-sug:hover{
+ background:var(--primary-hover);border-color:var(--primary-hover);color:#fff;
+}
