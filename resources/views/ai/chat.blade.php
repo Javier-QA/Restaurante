@@ -93,6 +93,18 @@
                                 </button>
                             </div>
 
+                            <div class="d-flex flex-wrap gap-2 mt-3 mb-2">
+    <button type="button" class="btn btn-sm btn-outline-secondary ai-quick">¿Cuáles son los 5 productos más vendidos?</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary ai-quick">¿Cuánto vendimos?</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary ai-quick">¿Qué productos tienen mayor rotación?</button>
+</div>
+
+<div class="d-flex flex-wrap gap-2 mt-3 mb-2">
+                                <button type="button" class="btn btn-sm btn-outline-secondary ai-quick">¿Cuáles son los 5 productos más vendidos?</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary ai-quick">¿Cuánto vendimos?</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary ai-quick">¿Qué productos tienen mayor rotación?</button>
+                            </div>
+
                             <div class="d-flex justify-content-between mt-2">
                                 <small class="text-muted">
                                     La IA solo consulta información autorizada.
@@ -121,6 +133,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const button = document.getElementById('aiSendButton');
     const messages = document.getElementById('aiMessages');
     const counter = document.getElementById('aiCharacterCount');
+    const quickButtons = document.querySelectorAll('.ai-quick');
+    document.querySelectorAll('.ai-quick').forEach(btn => {
+        btn.addEventListener('click', () => {
+            input.value = btn.textContent.trim();
+            input.dispatchEvent(new Event('input'));
+            form.requestSubmit();
+        });
+    });
 
     input.addEventListener('input', function () {
         counter.textContent = input.value.length;
@@ -154,6 +174,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         messages.scrollTop = messages.scrollHeight;
     }
+
+    quickButtons.forEach(function (quick) {
+        quick.addEventListener('click', function () {
+            input.value = quick.textContent.trim();
+            counter.textContent = input.value.length;
+            form.requestSubmit();
+        });
+    });
 
     form.addEventListener('submit', async function (event) {
 
@@ -204,6 +232,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (data.success) {
                 addMessage('assistant', data.answer);
+
+                if (data.sql) {
+                    const details = document.createElement('details');
+                    details.className = 'mb-4 ms-5';
+                    details.innerHTML = '<summary class="small text-muted">Ver consulta SQL segura</summary>';
+                    const pre = document.createElement('pre');
+                    pre.className = 'small bg-light rounded-3 p-3 mt-2';
+                    pre.style.whiteSpace = 'pre-wrap';
+                    pre.textContent = data.sql;
+                    details.appendChild(pre);
+                    messages.appendChild(details);
+                    messages.scrollTop = messages.scrollHeight;
+                }
             } else {
                 addMessage(
                     'assistant',

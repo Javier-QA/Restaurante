@@ -57,6 +57,12 @@
                                 required
                             ></textarea>
 
+                            <div class="d-flex flex-wrap gap-2 mt-2 mb-2">
+                                <button type="button" class="btn btn-sm btn-outline-secondary assistant-quick">5 productos más vendidos</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary assistant-quick">Ventas totales</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary assistant-quick">Productos con mayor rotación</button>
+                            </div>
+
                             <div class="text-end mt-1">
                                 <small class="text-muted">
                                     <span id="assistantCharacterCount">0</span>/500
@@ -248,11 +254,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const counter = document.getElementById('assistantCharacterCount');
     const historyList = document.getElementById('assistantHistoryList');
     const tabButtons = document.querySelectorAll('[data-assistant-tab]');
+    const quickButtons = document.querySelectorAll('.assistant-quick');
 
     const urls = {
         history: @json(route('ai.assistant.history')),
         favorites: @json(route('ai.assistant.favorites'))
     };
+
+    quickButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            question.value = button.textContent.trim();
+            counter.textContent = question.value.length;
+            question.focus();
+        });
+    });
 
     question.addEventListener('input', function () {
         counter.textContent = question.value.length;

@@ -5,6 +5,7 @@ namespace App\Services\AI;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 use Throwable;
@@ -14,50 +15,63 @@ class AiService
     protected string $apiKey;
     protected string $baseUrl;
     protected string $model;
-    protected string $provider;
-    protected string $providerLabel;
 
-    public function __construct(
-        protected AiProviderConfigService $providerConfig
-    ) {
-        $config = $this->providerConfig->get();
+    public function __construct()
+    {
+        $this->apiKey = (string) config('services.gemini.api_key');
 
-        $this->apiKey = $config['api_key'];
-        $this->baseUrl = rtrim($config['base_url'], '/');
-        $this->model = $config['model'];
-        $this->provider = $config['provider'];
-        $this->providerLabel = $config['provider_label'];
+        $this->baseUrl = rtrim(
+            (string) config('services.gemini.base_url'),
+            '/'
+        );
+
+        $this->model = (string) (
+            Setting::where('key', 'ai_model')->value('value')
+            ?: config('services.gemini.model')
+        );
     }
 
+    /**
+     * Envía mensajes a Gemini mediante su endpoint
+     * compatible con OpenAI.
+     */
     public function chat(
         array $messages,
         float $temperature = 0.2,
         int $maxTokens = 1500
     ): string {
-        if ($this->baseUrl === '' || $this->model === '') {
+        $provider = (string) (
+            Setting::where('key', 'ai_provider')->value('value')
+            ?: 'gemini'
+        );
+
+        $enabled = (string) (
+            Setting::where('key', 'ai_enabled')->value('value')
+            ?? '1'
+        );
+
+        if ($enabled !== '1') {
             throw new RuntimeException(
-                'La configuración del proveedor de IA está incompleta.'
+                'La inteligencia artificial está desactivada en la configuración del sistema.'
             );
         }
 
-        $definition = AiProviderConfigService::PROVIDERS[$this->provider]
-            ?? null;
-
-        if (($definition['requires_key'] ?? true) && $this->apiKey === '') {
+        if ($provider !== 'gemini') {
             throw new RuntimeException(
-                "El proveedor {$this->providerLabel} no tiene una API Key configurada."
+                'El proveedor seleccionado todavía no está disponible.'
             );
         }
 
-        $request = Http::withHeaders([
+        if (empty($this->apiKey)) {
+            throw new RuntimeException(
+                'La API Key de Gemini no está configurada.'
+            );
+        }
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $this->apiKey,
             'Content-Type' => 'application/json',
-        ]);
-
-        if ($this->apiKey !== '') {
-            $request = $request->withToken($this->apiKey);
-        }
-
-        $response = $request
+        ])
             ->timeout(60)
             ->retry(
                 2,
@@ -66,10 +80,17 @@ class AiService
                     Throwable $exception,
                     PendingRequest $request
                 ): bool {
+                    /*
+                     * Los errores de conexión pueden ser temporales.
+                     */
                     if ($exception instanceof ConnectionException) {
                         return true;
                     }
 
+                    /*
+                     * Si existe una respuesta HTTP, únicamente
+                     * reintentamos errores temporales del servidor.
+                     */
                     if (
                         method_exists($exception, 'response') &&
                         $exception->response instanceof Response
@@ -100,57 +121,64 @@ class AiService
 
             if ($status === 429) {
                 throw new RuntimeException(
-                    "El proveedor {$this->providerLabel} alcanzó temporalmente su límite de uso."
+                    'Error al comunicarse con Gemini: 429 - límite de uso alcanzado.'
                 );
             }
 
             if (in_array($status, [500, 502, 503, 504], true)) {
                 throw new RuntimeException(
-                    "El proveedor {$this->providerLabel} no está disponible temporalmente ({$status})."
+                    "Error al comunicarse con Gemini: {$status} - servicio temporalmente no disponible."
                 );
             }
 
             throw new RuntimeException(
-                "Error al comunicarse con {$this->providerLabel}: {$status}."
+                "Error al comunicarse con Gemini: {$status}."
             );
         }
 
-        $content = $response->json('choices.0.message.content');
+        $content = $response->json(
+            'choices.0.message.content'
+        );
 
-        if (!is_string($content) || trim($content) === '') {
+        if (
+            !is_string($content) ||
+            trim($content) === ''
+        ) {
             throw new RuntimeException(
-                "{$this->providerLabel} devolvió una respuesta vacía o inválida."
+                'Gemini devolvió una respuesta vacía o inválida.'
             );
         }
 
         return trim($content);
     }
 
+    /**
+     * Comprueba si Gemini está configurado.
+     */
     public function isConfigured(): bool
     {
-        $definition = AiProviderConfigService::PROVIDERS[$this->provider]
-            ?? null;
+        $enabled = (string) (
+            Setting::where('key', 'ai_enabled')->value('value')
+            ?? '1'
+        );
 
-        return $this->baseUrl !== ''
-            && $this->model !== ''
-            && (
-                !($definition['requires_key'] ?? true)
-                || $this->apiKey !== ''
-            );
+        $provider = (string) (
+            Setting::where('key', 'ai_provider')->value('value')
+            ?: 'gemini'
+        );
+
+        return $enabled === '1'
+            && $provider === 'gemini'
+            && !empty($this->apiKey)
+            && !empty($this->baseUrl)
+            && !empty($this->model);
     }
 
+    /**
+     * Devuelve el modelo configurado sin exponer la API Key.
+     */
     public function getModel(): string
     {
         return $this->model;
-    }
-
-    public function getProvider(): string
-    {
-        return $this->provider;
-    }
-
-    public function getProviderLabel(): string
-    {
-        return $this->providerLabel;
     }
 }

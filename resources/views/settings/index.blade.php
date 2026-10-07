@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 
@@ -2321,6 +2321,69 @@ button[type="submit"].btn-primary:hover {
                         </div>
 
 
+
+
+                        {{-- =================================================
+                             INTELIGENCIA ARTIFICIAL
+                        ================================================== --}}
+
+                        <hr class="text-muted opacity-25">
+
+                        <div id="ia" class="mb-4 ai-settings-section">
+                            <h5 class="fw-bold mb-3">
+                                <i class="bi bi-stars me-2"></i>
+                                Inteligencia Artificial
+                            </h5>
+
+                            <div class="p-3 rounded-3 border" style="background: color-mix(in srgb, var(--primary) 3%, var(--card-bg)); border-color: var(--border-soft) !important;">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Proveedor de IA</label>
+                                        <select name="ai_provider" class="form-select">
+                                            <option value="gemini" {{ ($settings['ai_provider'] ?? 'gemini') === 'gemini' ? 'selected' : '' }}>Google Gemini</option>
+                                            <option value="openai" disabled>OpenAI — próximamente</option>
+                                            <option value="anthropic" disabled>Anthropic — próximamente</option>
+                                        </select>
+                                        <small class="text-muted">Actualmente el sistema utiliza Gemini.</small>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Modelo</label>
+                                        <select name="ai_model" class="form-select">
+                                            <option value="gemini-2.5-flash" {{ ($settings['ai_model'] ?? 'gemini-2.5-flash') === 'gemini-2.5-flash' ? 'selected' : '' }}>Gemini 2.5 Flash</option>
+                                            <option value="gemini-2.5-pro" {{ ($settings['ai_model'] ?? '') === 'gemini-2.5-pro' ? 'selected' : '' }}>Gemini 2.5 Pro</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Estado de la IA</label>
+                                        <select name="ai_enabled" class="form-select">
+                                            <option value="1" {{ ($settings['ai_enabled'] ?? '1') === '1' ? 'selected' : '' }}>Activada</option>
+                                            <option value="0" {{ ($settings['ai_enabled'] ?? '1') === '0' ? 'selected' : '' }}>Desactivada</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Clave API</label>
+                                        <input type="password" class="form-control" value="{{ !empty(config('services.gemini.api_key')) ? '••••••••••••••••' : '' }}" placeholder="Configurada en .env" disabled>
+                                        <small class="text-muted">Por seguridad, la API Key no se almacena en la base de datos. Se configura en <code>.env</code>.</small>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3 d-flex flex-wrap gap-2">
+                                    <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
+                                        <i class="bi bi-shield-check me-1"></i> SQL de solo lectura
+                                    </span>
+                                    <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2">
+                                        <i class="bi bi-database-check me-1"></i> Vistas IA autorizadas
+                                    </span>
+                                    <span class="badge rounded-pill bg-secondary-subtle text-secondary px-3 py-2">
+                                        <i class="bi bi-person-lock me-1"></i> Solo Administrador
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
                     </form>
 
 
@@ -2720,3 +2783,4 @@ html[data-color-mode="dark"] .bi-qr-code::before {
 </script>
 
 @endpush
+

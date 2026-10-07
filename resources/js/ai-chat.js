@@ -1,97 +1,57 @@
-import './bootstrap';
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('aiFloatingAssistant')) return;
 
-document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const response = await fetch('/ai/settings', {
-            headers: {
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-            },
-            credentials: 'same-origin',
-        });
+    const style = document.createElement('style');
+    style.textContent = `
+        #aiFloatingAssistant{position:fixed;right:24px;bottom:24px;z-index:1090;font-family:inherit}
+        #aiFloatingButton{width:62px;height:62px;border:0;border-radius:50%;background:var(--primary,#ff8c00);color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;animation:aiPulse 2s infinite}
+        #aiFloatingButton i{font-size:25px}
+        #aiFloatingButton:before{content:"";position:absolute;inset:-7px;border:2px solid var(--primary,#ff8c00);border-radius:50%;opacity:.45;animation:aiRing 2s infinite}
+        #aiFloatingPanel{position:absolute;right:0;bottom:78px;width:340px;background:#fff;border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.22);overflow:hidden;display:none;border:1px solid rgba(0,0,0,.08)}
+        #aiFloatingPanel.open{display:block;animation:aiUp .18s ease-out}
+        .ai-float-head{background:var(--dark-bg,#063970);color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+        .ai-float-head strong{font-size:15px}.ai-float-head small{opacity:.8;display:block}
+        .ai-float-body{padding:14px}.ai-float-option{width:100%;border:1px solid #e7e7e7;background:#fff;border-radius:11px;padding:11px 12px;margin-bottom:9px;text-align:left;cursor:pointer}
+        .ai-float-option:hover{border-color:var(--primary,#ff8c00);background:#fff8ef}
+        .ai-float-option i{color:var(--primary,#ff8c00);margin-right:8px}
+        .ai-float-foot{padding:10px 14px;border-top:1px solid #eee;text-align:center}
+        .ai-float-foot a{color:var(--primary,#ff8c00);font-weight:600;text-decoration:none}
+        @keyframes aiPulse{0%,100%{box-shadow:0 8px 24px rgba(0,0,0,.22)}50%{box-shadow:0 8px 30px rgba(0,0,0,.28),0 0 0 8px color-mix(in srgb,var(--primary,#ff8c00) 18%,transparent)}}
+        @keyframes aiRing{0%{transform:scale(.95);opacity:.5}70%{transform:scale(1.12);opacity:0}100%{opacity:0}}
+        @keyframes aiUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+        @media(max-width:480px){#aiFloatingAssistant{right:14px;bottom:14px}#aiFloatingPanel{width:min(340px,calc(100vw - 28px))}}
+    `;
+    document.head.appendChild(style);
 
-        if (!response.ok) return;
-
-        const data = await response.json();
-
-        if (!data.admin || document.getElementById('ai-floating-widget')) {
-            return;
-        }
-
-        const style = document.createElement('style');
-        style.textContent = `
-            #ai-floating-widget{position:fixed;right:24px;bottom:24px;z-index:1080;font-family:inherit}
-            #ai-floating-bubble{width:64px;height:64px;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary-hover));box-shadow:0 10px 28px rgba(0,0,0,.22);position:relative;animation:aiBubbleFloat 2.4s ease-in-out infinite;transition:transform .2s ease,box-shadow .2s ease}
-            #ai-floating-bubble::before,#ai-floating-bubble::after{content:"";position:absolute;inset:-5px;border:2px solid var(--primary);border-radius:50%;opacity:0;animation:aiBubblePulse 2.4s ease-out infinite;pointer-events:none}
-            #ai-floating-bubble::after{animation-delay:1.2s}
-            #ai-floating-bubble:hover{transform:scale(1.08);box-shadow:0 14px 34px rgba(0,0,0,.28)}
-            #ai-floating-bubble i{position:relative;z-index:2;animation:aiBubbleIcon 1.8s ease-in-out infinite}
-            @keyframes aiBubbleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-            @keyframes aiBubblePulse{0%{transform:scale(.88);opacity:.7}70%{transform:scale(1.45);opacity:0}100%{transform:scale(1.45);opacity:0}}
-            @keyframes aiBubbleIcon{0%,100%{transform:rotate(0deg) scale(1)}50%{transform:rotate(8deg) scale(1.08)}}
-            #ai-floating-window{display:none;position:absolute;right:0;bottom:72px;width:min(390px,calc(100vw - 28px));height:min(600px,calc(100vh - 100px));background:#fff;border:1px solid #dce5ee;border-radius:18px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.22)}
-            #ai-floating-window.open{display:flex;flex-direction:column}
-            .ai-head{padding:14px 16px;background:linear-gradient(135deg,var(--primary),var(--primary-hover));color:#fff;display:flex;align-items:center;justify-content:space-between}
-            .ai-head-main{display:flex;align-items:center;gap:10px}.ai-head-icon{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.15);display:grid;place-items:center}
-            .ai-close{border:0;background:transparent;color:#fff;font-size:20px}.ai-messages{flex:1;overflow:auto;padding:14px;background:var(--light-bg)}
-            .ai-msg{max-width:88%;padding:10px 12px;border-radius:13px;margin-bottom:9px;white-space:pre-wrap;font-size:14px;line-height:1.45}
-            .ai-msg.bot{background:var(--card-bg);border:1px solid var(--border-soft)}.ai-msg.user{margin-left:auto;background:var(--primary);color:#fff}
-            .ai-suggestions{padding:10px;background:#f5f8fb;display:flex;gap:6px;flex-wrap:wrap}.ai-suggestion{border:1px solid #d0dce7;background:#fff;border-radius:999px;padding:6px 9px;font-size:12px;color:var(--primary);cursor:pointer}
-            .ai-form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border-soft)}.ai-input{flex:1;border:1px solid var(--border-soft);border-radius:11px;padding:9px;resize:none}.ai-send{width:44px;border:0;border-radius:11px;background:var(--primary);color:#fff}
-            @media(max-width:600px){#ai-floating-widget{right:12px;bottom:12px}}
-        `;
-        document.head.appendChild(style);
-
-        const widget = document.createElement('div');
-        widget.id = 'ai-floating-widget';
-        widget.innerHTML = `
-            <div id="ai-floating-window" role="dialog" aria-label="Chat IA">
-                <div class="ai-head">
-                    <div class="ai-head-main"><div class="ai-head-icon"><i class="bi bi-stars"></i></div><div><strong>Chat IA</strong><div style="font-size:11px;opacity:.8">Asistente del restaurante</div></div></div>
-                    <button class="ai-close" type="button" aria-label="Cerrar">×</button>
-                </div>
-                <div class="ai-messages" id="ai-floating-messages"><div class="ai-msg bot">Hola. ¿Qué deseas consultar del restaurante?</div></div>
-                <div class="ai-suggestions">
-                    <button class="ai-suggestion" data-question="¿Cuáles son los 5 productos más vendidos?">Más vendidos</button>
-                    <button class="ai-suggestion" data-question="¿Cuánto se vendió hoy?">Ventas de hoy</button>
-                    <button class="ai-suggestion" data-question="¿Qué productos tienen poco stock?">Stock bajo</button>
-                </div>
-                <form class="ai-form" id="ai-floating-form">
-                    <textarea class="ai-input" id="ai-floating-input" rows="1" maxlength="500" placeholder="Escribe una consulta..."></textarea>
-                    <button class="ai-send" type="submit" aria-label="Enviar"><i class="bi bi-send-fill"></i></button>
-                </form>
+    const root = document.createElement('div');
+    root.id = 'aiFloatingAssistant';
+    root.innerHTML = `
+        <div id="aiFloatingPanel" role="dialog" aria-label="Inteligencia Artificial">
+            <div class="ai-float-head">
+                <div><strong><i class="bi bi-stars me-1"></i> Inteligencia Artificial</strong><small>Asistente del restaurante</small></div>
+                <button type="button" class="btn btn-sm text-white" id="aiFloatClose" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
             </div>
-            <button id="ai-floating-bubble" type="button" aria-label="Abrir Chat IA" title="Chat IA"><i class="bi bi-stars fs-4"></i></button>
-        `;
-        document.body.appendChild(widget);
+            <div class="ai-float-body">
+                <button class="ai-float-option" data-ai-url="{{ route('ai.chat') }}"><i class="bi bi-chat-dots"></i><strong>Chat IA</strong><br><small class="text-muted ms-4">Haz preguntas en lenguaje natural.</small></button>
+                <button class="ai-float-option" data-ai-url="{{ route('ai.assistant') }}"><i class="bi bi-graph-up"></i><strong>Asistente IA</strong><br><small class="text-muted ms-4">Analiza ventas, productos e inventario.</small></button>
+                <button class="ai-float-option" data-ai-url="{{ route('settings.index') }}#ia"><i class="bi bi-sliders"></i><strong>Configuración IA</strong><br><small class="text-muted ms-4">Configura las opciones del sistema.</small></button>
+            </div>
+            <div class="ai-float-foot"><a href="{{ route('ai.assistant') }}">Abrir centro de Inteligencia IA <i class="bi bi-arrow-right"></i></a></div>
+        </div>
+        <button id="aiFloatingButton" type="button" aria-label="Abrir Inteligencia Artificial" aria-expanded="false"><i class="bi bi-stars"></i></button>
+    `;
+    document.body.appendChild(root);
 
-        const panel=widget.querySelector('#ai-floating-window');
-        const bubble=widget.querySelector('#ai-floating-bubble');
-        const close=widget.querySelector('.ai-close');
-        const form=widget.querySelector('#ai-floating-form');
-        const input=widget.querySelector('#ai-floating-input');
-        const messages=widget.querySelector('#ai-floating-messages');
-        const send=widget.querySelector('.ai-send');
+    const button = document.getElementById('aiFloatingButton');
+    const panel = document.getElementById('aiFloatingPanel');
+    const close = document.getElementById('aiFloatClose');
 
-        const add=(text,type='bot')=>{const el=document.createElement('div');el.className=`ai-msg ${type}`;el.textContent=text;messages.appendChild(el);messages.scrollTop=messages.scrollHeight};
-
-        const ask=async(q)=>{
-            q=q.trim(); if(!q||send.disabled)return;
-            add(q,'user'); input.value=''; send.disabled=true;
-            try{
-                const csrf=document.querySelector('meta[name="csrf-token"]')?.content||'';
-                const res=await fetch('/ai/chat/ask',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json','X-CSRF-TOKEN':csrf},credentials:'same-origin',body:JSON.stringify({message:q})});
-                const body=await res.json();
-                add(body.success?body.answer:(body.message||'No fue posible procesar la consulta.'));
-            }catch(e){add('No se pudo establecer comunicación con el servidor.')}
-            finally{send.disabled=false;input.focus()}
-        };
-
-        bubble.addEventListener('click',()=>{panel.classList.toggle('open');if(panel.classList.contains('open'))input.focus()});
-        close.addEventListener('click',()=>panel.classList.remove('open'));
-        form.addEventListener('submit',e=>{e.preventDefault();ask(input.value)});
-        widget.querySelectorAll('.ai-suggestion').forEach(b=>b.addEventListener('click',()=>ask(b.dataset.question)));
-    } catch (e) {
-        console.warn('Chat IA flotante no disponible.');
-    }
+    const toggle = () => {
+        const open = panel.classList.toggle('open');
+        button.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    button.addEventListener('click', toggle);
+    close.addEventListener('click', () => { panel.classList.remove('open'); button.setAttribute('aria-expanded','false'); });
+    root.querySelectorAll('[data-ai-url]').forEach(el => el.addEventListener('click', () => { window.location.href = el.dataset.aiUrl; }));
+    document.addEventListener('click', e => { if (!root.contains(e.target)) { panel.classList.remove('open'); button.setAttribute('aria-expanded','false'); } });
 });
