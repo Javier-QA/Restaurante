@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Cache\RateLimiting\Limit;
 use App\Models\Setting;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,6 +24,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Limita las consultas que consumen servicios de IA.
+        // Cada administrador puede realizar hasta 5 solicitudes por minuto.
+        RateLimiter::for('ai', function ($request) {
+            return Limit::perMinute(5)->by(
+                $request->user()?->id ?: $request->ip()
+            );
+        });
+
         // Compartir el símbolo de moneda con TODAS las vistas
         // Usamos un try-catch para evitar errores si la tabla settings aún no existe (durante migraciones)
         try {

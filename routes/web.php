@@ -501,7 +501,7 @@ Route::resource(
         Route::post(
             '/ai/chat/ask',
             [AiChatController::class, 'ask']
-        )->name('ai.chat.ask');
+        )->middleware('throttle:ai')->name('ai.chat.ask');
 
         // Asistente IA
         Route::get(
@@ -512,7 +512,7 @@ Route::resource(
         Route::post(
             '/ai/assistant/ask',
             [AiAssistantController::class, 'ask']
-        )->name('ai.assistant.ask');
+        )->middleware('throttle:ai')->name('ai.assistant.ask');
 
         Route::get(
             '/ai/assistant/history',
