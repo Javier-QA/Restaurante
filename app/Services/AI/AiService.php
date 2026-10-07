@@ -5,6 +5,7 @@ namespace App\Services\AI;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 use Throwable;
@@ -24,7 +25,10 @@ class AiService
             '/'
         );
 
-        $this->model = (string) config('services.gemini.model');
+        $this->model = (string) (
+            Setting::where('key', 'ai_model')->value('value')
+            ?: config('services.gemini.model')
+        );
     }
 
     /**
@@ -36,6 +40,28 @@ class AiService
         float $temperature = 0.2,
         int $maxTokens = 1500
     ): string {
+        $provider = (string) (
+            Setting::where('key', 'ai_provider')->value('value')
+            ?: 'gemini'
+        );
+
+        $enabled = (string) (
+            Setting::where('key', 'ai_enabled')->value('value')
+            ?? '1'
+        );
+
+        if ($enabled !== '1') {
+            throw new RuntimeException(
+                'La inteligencia artificial está desactivada en la configuración del sistema.'
+            );
+        }
+
+        if ($provider !== 'gemini') {
+            throw new RuntimeException(
+                'El proveedor seleccionado todavía no está disponible.'
+            );
+        }
+
         if (empty($this->apiKey)) {
             throw new RuntimeException(
                 'La API Key de Gemini no está configurada.'
@@ -131,7 +157,19 @@ class AiService
      */
     public function isConfigured(): bool
     {
-        return !empty($this->apiKey)
+        $enabled = (string) (
+            Setting::where('key', 'ai_enabled')->value('value')
+            ?? '1'
+        );
+
+        $provider = (string) (
+            Setting::where('key', 'ai_provider')->value('value')
+            ?: 'gemini'
+        );
+
+        return $enabled === '1'
+            && $provider === 'gemini'
+            && !empty($this->apiKey)
             && !empty($this->baseUrl)
             && !empty($this->model);
     }
