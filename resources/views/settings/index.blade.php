@@ -703,6 +703,23 @@ button[type="submit"].btn-primary:hover {
                              DATOS DE LA EMPRESA
                         ================================================== --}}
 
+<style>
+#settingsTicketPreview.settings-precuenta{width:100%;max-width:78mm;margin:auto;padding:18px 14px;background:#fff!important;color:#000!important;font:12px/1.35 'Courier New',Courier,monospace;border:1px solid #dce3ea;border-radius:10px;box-sizing:border-box}
+#settingsTicketPreview .sp-header{text-align:center;border-bottom:1px dashed #000;padding-bottom:10px;margin-bottom:10px}
+#settingsTicketPreview img{max-width:60px;max-height:70px;object-fit:contain;filter:grayscale(100%);margin-bottom:5px}
+#settingsTicketPreview .sp-name{font-size:14px;font-weight:bold;text-transform:uppercase}
+#settingsTicketPreview .sp-bold{font-weight:bold;margin-top:3px}
+#settingsTicketPreview .sp-gap{margin-top:5px}
+#settingsTicketPreview table{width:100%;border-collapse:collapse;margin-top:5px;color:#000!important;font:inherit}
+#settingsTicketPreview th,#settingsTicketPreview td{padding:2px 0;background:#fff!important;color:#000!important;text-align:left;border:0}
+#settingsTicketPreview thead tr{border-bottom:1px solid #000}
+#settingsTicketPreview th:first-child{width:10%}
+#settingsTicketPreview th:last-child,#settingsTicketPreview td:last-child{width:30%;text-align:right}
+#settingsTicketPreview .sp-totals{margin-top:14px;border-top:1px solid #000;padding-top:5px}
+#settingsTicketPreview .sp-row{display:flex;justify-content:space-between;gap:8px;margin-bottom:2px}
+#settingsTicketPreview .sp-total{font-size:16px;font-weight:bold;margin-top:5px;border-top:1px dashed #000;padding-top:5px}
+#settingsTicketPreview .sp-footer{margin-top:16px;border-top:1px dashed #000;padding-top:5px;font-size:10px;text-align:center}
+</style>
 <div class="row g-4 align-items-start"><div class="col-xl-8">                        <h5 class="fw-bold text-primary mb-3">
 
                             <i class="bi bi-shop me-2"></i>
@@ -773,7 +790,7 @@ button[type="submit"].btn-primary:hover {
                                 <div id="settingsTicketPreview" class="settings-precuenta">
  <div class="sp-header">
  @if(!empty($settings['company_logo']))
- <img id="ticketPreviewLogo" src="{{ asset('storage/'.$settings['company_logo']) }}" alt="Logo">
+ <img id="ticketPreviewLogo" style="width:60px;height:70px;max-width:60px;max-height:70px;object-fit:contain" src="{{ asset('storage/'.$settings['company_logo']) }}" alt="Logo">
  @else
  <img id="ticketPreviewLogo" alt="Logo" hidden>
  @endif
@@ -2780,22 +2797,4 @@ html[data-color-mode="dark"] .bi-qr-code::before {
 </script>
 @endpush
 
-@push('styles')
-<style>
-#settingsTicketPreview.settings-precuenta{width:100%;max-width:78mm;margin:auto;padding:18px 14px;background:#fff!important;color:#000!important;font:12px/1.35 'Courier New',Courier,monospace;border:1px solid #dce3ea;border-radius:10px;box-sizing:border-box}
-#settingsTicketPreview .sp-header{text-align:center;border-bottom:1px dashed #000;padding-bottom:10px;margin-bottom:10px}
-#settingsTicketPreview img{max-width:60px;max-height:70px;object-fit:contain;filter:grayscale(100%);margin-bottom:5px}
-#settingsTicketPreview .sp-name{font-size:14px;font-weight:bold;text-transform:uppercase}
-#settingsTicketPreview .sp-bold{font-weight:bold;margin-top:3px}
-#settingsTicketPreview .sp-gap{margin-top:5px}
-#settingsTicketPreview table{width:100%;border-collapse:collapse;margin-top:5px;color:#000!important;font:inherit}
-#settingsTicketPreview th,#settingsTicketPreview td{padding:2px 0;background:#fff!important;color:#000!important;text-align:left;border:0}
-#settingsTicketPreview thead tr{border-bottom:1px solid #000}
-#settingsTicketPreview th:first-child{width:10%}
-#settingsTicketPreview th:last-child,#settingsTicketPreview td:last-child{width:30%;text-align:right}
-#settingsTicketPreview .sp-totals{margin-top:14px;border-top:1px solid #000;padding-top:5px}
-#settingsTicketPreview .sp-row{display:flex;justify-content:space-between;gap:8px;margin-bottom:2px}
-#settingsTicketPreview .sp-total{font-size:16px;font-weight:bold;margin-top:5px;border-top:1px dashed #000;padding-top:5px}
-#settingsTicketPreview .sp-footer{margin-top:16px;border-top:1px dashed #000;padding-top:5px;font-size:10px;text-align:center}
-</style>
-@endpush
+
