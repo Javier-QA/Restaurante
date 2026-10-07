@@ -106,3 +106,13 @@ html[data-color-mode="dark"] :is(.sys-ia,.chat-root,#toastWrap){
 html[data-color-mode="dark"] .sys-ia .alert-light{background:var(--dm-surface-2);color:var(--dm-text);border-color:var(--dm-border)!important}
 
 .sys-ia{--chart-fill:color-mix(in srgb,var(--primary) 15%,transparent)}
+
+/* Dialog headers follow the same palette as the system. */
+.sys-ia :is(#mdlCfg,#mdlEsq) .modal-header{
+ background:linear-gradient(135deg,var(--dark-bg),var(--dark-bg-2))!important;
+ color:#fff!important;border-bottom:0!important;padding:1.25rem 1.5rem;
+}
+.sys-ia :is(#mdlCfg,#mdlEsq) .modal-header :is(.modal-title,h5,h6,i){color:#fff!important}
+.sys-ia :is(#mdlCfg,#mdlEsq) .modal-header .btn-close{filter:brightness(0) invert(1);opacity:.9}
+.sys-ia :is(#mdlCfg,#mdlEsq) .modal-content{overflow:hidden}
+.sys-ia #mdlCfg .form-check-input:checked{background-color:var(--primary);border-color:var(--primary)}
