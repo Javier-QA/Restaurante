@@ -11885,19 +11885,6 @@ html[data-color-mode="dark"]
 }
 
 
-/* AJUSTE CHAT IA - ELIMINAR ESPACIO SUPERIOR DEL CONTENIDO */
-.main-content {
-    padding-top: 0 !important;
-}
 
-.main-content > .container-fluid {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-}
-
-.top-navbar + .container-fluid {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-}
 
 </style>
