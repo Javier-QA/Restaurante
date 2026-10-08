@@ -7237,7 +7237,7 @@ html[data-color-mode="dark"]
 
                     @elseif(request()->routeIs('pos.*'))
 
-                        Punto de Venta
+                        Mesas del salón
 
 
                     @elseif(request()->routeIs('delivery.*'))
@@ -7262,7 +7262,7 @@ html[data-color-mode="dark"]
 
                     @elseif(request()->routeIs('credit_notes.*'))
 
-                        Notas de Crédito
+                        Facturación Electrónica
 
 
                     @elseif(request()->routeIs('daily_summaries.*'))
@@ -7277,7 +7277,7 @@ html[data-color-mode="dark"]
 
                     @elseif(request()->routeIs('reservations.*'))
 
-                        Reservas
+                        Agenda del restaurante
 
 
                     @elseif(request()->routeIs('kitchen.*'))
@@ -7287,7 +7287,7 @@ html[data-color-mode="dark"]
 
                     @elseif(request()->routeIs('categories.*'))
 
-                        Categorías
+                        Catálogo
 
 
                     @elseif(request()->routeIs('users.*'))
