@@ -1,13 +1,14 @@
-/* Asistente IA: preguntas en lenguaje natural -> tabla + gráfico + resumen + SQL + CSV */
+﻿/* Asistente IA: preguntas en lenguaje natural -> tabla + gráfico + resumen + SQL + CSV */
 (() => {
   const { $, esc, money, toast, call, mdl } = window.SP;
   const API = window.API_IA;
   const SUG = ['¿Cuáles fueron los 10 platos más vendidos este mes?', 'Ventas por día de los últimos 15 días', '¿Cuánto vendimos por método de pago esta semana?', 'Ventas por mozo este mes',
     '¿Cuál es el stock actual de los insumos?', 'Utilidad por categoría este mes', '¿Qué horas tienen más ventas?', 'Gastos por categoría este mes'];
   const MONEY = /(total|importe|ingreso|venta|monto|utilidad|costo|precio|valor|deuda|gasto|margen|saldo|promedio|propina|descuento|impuesto|ticket)/i;
-  const NOMONEY = /(pct|porcentaje|cantidad|num_|nro|veces|minutos|hora|pedidos|ordenes|unidades|clientes|visitas|stock)/i;
+  const NOMONEY = /(pct|porcentaje|cantidad|num_|nro|veces|minutos|hora|pedidos|ordenes|unidades|clientes|visitas|total_productos|total_insumos|stock)/i;
   const nf = (n, d = 0) => window.SP.num(n, d);
-  const cel = (v, c) => v === null || v === undefined ? '—' : typeof v === 'number' ? (MONEY.test(c) && !NOMONEY.test(c) ? money(v) : nf(v, Number.isInteger(v) ? 0 : 2)) : esc(String(v));
+  const hour = (v, c) => /^hora(?:_|$)/i.test(c) && Number.isInteger(v) && v >= 0 && v <= 23 ? `${v % 12 || 12}:00${v < 12 ? 'am' : 'pm'}` : null;
+  const cel = (v, c) => v === null || v === undefined ? '—' : typeof v === 'number' ? (hour(v, c) ?? (MONEY.test(c) && !NOMONEY.test(c) ? money(v) : nf(v, Number.isInteger(v) ? 0 : 2))) : esc(String(v));
   const chartTheme = () => { const c = getComputedStyle(document.querySelector('.sys-ia')); return { primary: c.getPropertyValue('--accent').trim(), text: c.getPropertyValue('--muted').trim(), line: c.getPropertyValue('--line').trim(), surface: c.getPropertyValue('--card').trim() }; };
   let chartResult;
   new MutationObserver(() => { if (chartResult) dibujar(chartResult.r, chartResult.g); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-color-mode'] });
@@ -60,35 +61,59 @@
 
   function star() { const b = $('#iaStar'); if (b && last) b.innerHTML = `<i class="bi ${last.favorito ? 'bi-star-fill text-warning' : 'bi-star'}"></i>`; }
   function mostrar(r) {
-    last = r; if (chart) { chart.destroy(); chart = null; }
-    const n = r.filas.length, g = r.grafico || { tipo: 'none' };
+    last = r; chartResult = null; if (chart) { chart.destroy(); chart = null; }
+    const n = r.filas.length;
+    let g = r.grafico || { tipo: 'none' };
+    if (g.tipo === 'none' && n > 1 && r.columnas.length > 1) {
+      const yi = r.columnas.findIndex((c, i) => r.filas.some(f => typeof f[i] === 'number'));
+      const xi = r.columnas.findIndex((c, i) => i !== yi);
+      if (yi >= 0 && xi >= 0) g = { tipo: 'bar', x: r.columnas[xi], y: r.columnas[yi] };
+    }
+    const canChart = n > 1 && g.tipo !== 'none' && r.columnas.includes(g.x) && r.columnas.includes(g.y);
     $('#iaOut').innerHTML = `<div class="card-x h-auto ia-res"><div class="body">
       <div class="d-flex align-items-start gap-2 flex-wrap"><div class="flex-grow-1"><h5>${esc(r.titulo)}</h5><div class="ia-meta">${nf(n)} fila${n === 1 ? '' : 's'}${r.truncado ? ' (límite alcanzado)' : ''} · ${r.ms} ms · «${esc(r.pregunta)}»</div></div>
         <div class="d-flex gap-1"><button class="mini-btn" id="iaStar" title="Favorita"></button><a class="mini-btn" href="${API}?action=csv&id=${r.id}" title="Exportar CSV"><i class="bi bi-filetype-csv"></i></a><button class="mini-btn" id="iaSqlB" title="Ver SQL"><i class="bi bi-code-slash"></i></button></div></div>
       <div id="iaSum"></div>
-      ${g.tipo !== 'none' && n > 1 ? '<div class="ia-chart"><canvas id="iaCv"></canvas></div>' : ''}
+      ${canChart ? `<div class="d-flex justify-content-end gap-1 flex-wrap my-2" role="group" aria-label="Tipo de gráfico">
+        ${[['bar','Barras'],['line','Líneas'],['pie','Torta']].map(([tipo, label]) => `<button type="button" class="btn btn-soft sm" data-chart-type="${tipo}" aria-pressed="false">${label}</button>`).join('')}
+      </div><div class="ia-chart"><canvas id="iaCv"></canvas></div>` : ''}
       ${n ? `<div class="ia-tbl mt-2"><table class="tbl"><thead><tr>${r.columnas.map((c, i) => `<th class="${r.filas.some(f => typeof f[i] === 'number') ? 'text-end' : ''}">${esc(c.replace(/_/g, ' '))}</th>`).join('')}</tr></thead><tbody>${r.filas.map(f => `<tr>${f.map((v, i) => `<td class="${typeof v === 'number' ? 'text-end' : ''}">${cel(v, r.columnas[i])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : '<div class="text-center text-muted py-4">La consulta no devolvió resultados para ese período.</div>'}
       <div class="form-check mt-3 small"><input class="form-check-input" type="checkbox" id="iaSeg"><label class="form-check-label" for="iaSeg">Mi próxima pregunta es de seguimiento de este resultado (p. ej. «ahora solo delivery»)</label></div>
       <pre class="ia-sql" id="iaSql" hidden>${esc(r.sql)}</pre></div></div>`;
     star(); $('#iaStar').onclick = async () => { const v = last.favorito ? 0 : 1; try { await call(API, 'favorito', { method: 'POST', body: { id: last.id, valor: v } }); last.favorito = v; star(); estado(); } catch (x) { toast(x.message, 'err'); } };
     $('#iaSqlB').onclick = () => { const s = $('#iaSql'); s.hidden = !s.hidden; };
-    if (g.tipo !== 'none' && n > 1) dibujar(r, g);
+    if (canChart) {
+      const selectChart = tipo => {
+        g = { ...g, tipo };
+        $('#iaOut').querySelectorAll('[data-chart-type]').forEach(button => {
+          const selected = button.dataset.chartType === tipo;
+          button.classList.toggle('btn-accent', selected);
+          button.classList.toggle('btn-soft', !selected);
+          button.setAttribute('aria-pressed', String(selected));
+        });
+        dibujar(r, g);
+      };
+      $('#iaOut').querySelectorAll('[data-chart-type]').forEach(button => {
+        button.onclick = () => selectChart(button.dataset.chartType);
+      });
+      selectChart(g.tipo);
+    }
     $('#iaOut').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
   function dibujar(r, g) {
     chartResult = { r, g };
     if (chart) { chart.destroy(); chart = null; }
-    const theme = chartTheme(), COL = [theme.primary, getComputedStyle(document.body).getPropertyValue('--dark-bg-2').trim(), '#10b981', '#8b5cf6', '#f59e0b', '#ef4444'];
+    const theme = chartTheme(), COL = ['#ff8a00', '#168bd2', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4', '#ec4899', '#84cc16', '#a78bfa'];
     const xi = r.columnas.indexOf(g.x), yi = r.columnas.indexOf(g.y); if (xi < 0 || yi < 0 || !window.Chart) return;
-    const lab = r.filas.map(f => String(f[xi] ?? '—').slice(0, 40)), val = r.filas.map(f => f[yi]);
+    const lab = r.filas.map(f => String(hour(f[xi], g.x) ?? f[xi] ?? '—').slice(0, 40)), val = r.filas.map(f => f[yi]);
     const paymentColors = { yape: '#742284', plin: '#00a884', efectivo: '#198754', cash: '#198754', tarjeta: '#0d6efd', card: '#0d6efd' };
     const paymentKey = label => String(label).normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
     const isPayment = /metodo.*pago|medio.*pago|payment|forma.*pago/i.test(g.x) || lab.every(label => paymentColors[paymentKey(label)]);
-    const colors = lab.map((label, i) => isPayment ? (paymentColors[paymentKey(label)] || (/transfer/.test(paymentKey(label)) ? '#0b84c6' : '#64748b')) : COL[i % COL.length]);
+    const colors = lab.map((label, i) => isPayment ? (paymentColors[paymentKey(label)] || (/transfer/.test(paymentKey(label)) ? '#0b84c6' : '#64748b')) : (COL[i] || `hsl(${(i * 137.508) % 360} 72% 52%)`));
     const money_ = MONEY.test(g.y) && !NOMONEY.test(g.y), fmt = v => money_ ? money(v) : nf(v, Number.isInteger(v) ? 0 : 2);
     const horiz = g.tipo === 'bar' && (lab.length > 8 || lab.some(l => l.length > 14));
     const cfg = { type: g.tipo === 'line' ? 'line' : g.tipo === 'pie' ? 'doughnut' : 'bar', data: { labels: lab, datasets: [{ label: g.y.replace(/_/g, ' '), data: val,
-      backgroundColor: g.tipo === 'pie' || (g.tipo === 'bar' && isPayment) ? colors : g.tipo === 'line' ? getComputedStyle(document.querySelector('.sys-ia')).getPropertyValue('--chart-fill').trim() : theme.primary, borderColor: g.tipo === 'pie' ? theme.surface : theme.primary, borderWidth: 2, hoverBorderWidth: 2,
+      backgroundColor: g.tipo === 'pie' || (g.tipo === 'bar' && isPayment) ? colors : g.tipo === 'line' ? getComputedStyle(document.querySelector('.sys-ia')).getPropertyValue('--chart-fill').trim() : theme.primary, borderColor: g.tipo === 'pie' ? theme.surface : theme.primary, borderWidth: g.tipo === 'bar' ? 0 : 2, hoverBorderWidth: g.tipo === 'bar' ? 0 : 2,
       borderRadius: g.tipo === 'bar' ? 6 : 0, fill: g.tipo === 'line', tension: .3, pointRadius: g.tipo === 'line' ? 3 : 0 }] },
       options: { responsive: true, maintainAspectRatio: false, indexAxis: horiz ? 'y' : 'x', plugins: { legend: { display: g.tipo === 'pie', position: 'bottom', labels: { color: theme.text, generateLabels: c => Chart.overrides.doughnut.plugins.legend.labels.generateLabels(c).map(item => ({ ...item, lineWidth: 0 })) } }, tooltip: { callbacks: { label: c => ' ' + (g.tipo === 'pie' ? c.label + ': ' : '') + fmt(c.parsed.y ?? c.parsed.x ?? c.parsed) } } },
         scales: g.tipo === 'pie' ? {} : { [horiz ? 'x' : 'y']: { beginAtZero: true, grid: { color: theme.line }, ticks: { color: theme.text, callback: v => fmt(v) } }, [horiz ? 'y' : 'x']: { grid: { display: false }, ticks: { color: theme.text } } } } };
@@ -136,3 +161,4 @@
 
   estado();
 })();
+

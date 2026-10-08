@@ -38,4 +38,12 @@ class SysIaSecurityTest extends TestCase
             $this->assertSame($name, \App\Services\SysIa\ia_empresa());
         }
     }
+    public function test_hour_cannot_be_extracted_from_date_only_column(): void
+    {
+        require_once app_path('Services/SysIa/core.php');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('fecha no contiene hora');
+        \App\Services\SysIa\ia_validar_sql('SELECT HOUR(v.fecha) AS hora_venta, COUNT(*) AS cantidad_pedidos FROM v_ia_sys_ventas v GROUP BY HOUR(v.fecha)');
+    }
+
 }

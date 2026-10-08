@@ -69,15 +69,15 @@ class DailySummaryBuilder
                 ->setEstado('1')                 // 1 = Agregar, 2 = Modificar, 3 = Anular
                 ->setClienteTipo($this->guessDocType($o->client_document))
                 ->setClienteNro($o->client_document ?: '-')
-                ->setTotal((float) $o->total)
-                ->setMtoOperGravadas((float) $o->total_gravada ?: ($o->total ? round($o->total / (1 + $this->config->igvFactor()), 2) : 0))
+                ->setTotal((float) $o->collected_total)
+                ->setMtoOperGravadas((float) $o->total_gravada ?: ($o->collected_total ? round($o->collected_total / (1 + $this->config->igvFactor()), 2) : 0))
                 ->setMtoOperExoneradas((float) $o->total_exonerada)
                 ->setMtoOperInafectas((float) $o->total_inafecta)
                 ->setMtoOperGratuitas((float) $o->total_gratuita)
-                ->setMtoIGV((float) $o->igv ?: round((float) $o->total - ((float) $o->total / (1 + $this->config->igvFactor())), 2));
+                ->setMtoIGV((float) $o->igv ?: round((float) $o->collected_total - ((float) $o->collected_total / (1 + $this->config->igvFactor())), 2));
 
             $details[] = $detail;
-            $totalAmount += (float) $o->total;
+            $totalAmount += (float) $o->collected_total;
         }
 
         // 4. Cabecera Summary
@@ -118,7 +118,7 @@ class DailySummaryBuilder
                     'document_type' => '03',
                     'serie' => $order->serie,
                     'correlativo' => $order->correlativo,
-                    'total_amount' => $order->total,
+                    'total_amount' => $order->collected_total,
                 ]);
             }
 

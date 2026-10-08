@@ -2173,12 +2173,6 @@ html[data-color-mode="dark"]
    INGRESO ACTUAL
 ============================================================ */
 
-html[data-color-mode="dark"]
-#donutChart {
-
-    filter:
-        brightness(1.18);
-}
 
 
 /*
@@ -3347,12 +3341,6 @@ html[data-color-mode="dark"] .goal-bar-pct {
     box-shadow: none !important;
 }
 
-/* Cuando la meta ya fue alcanzada */
-html[data-color-mode="dark"] .goal-fill-complete .goal-bar-pct {
-    background: rgba(34, 197, 94, .16) !important;
-    color: #86efac !important;
-    border-color: rgba(74, 222, 128, .32) !important;
-}
 
 </style>
 
@@ -3502,7 +3490,7 @@ html[data-color-mode="dark"] .kpi-stock.kpi-ok::before {
 
 /* Tarjeta */
 html[data-color-mode="dark"] #donutChart {
-    filter: brightness(1.35) saturate(1.15);
+    filter: none;
 }
 
 /* 0% central */

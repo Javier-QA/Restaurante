@@ -400,7 +400,7 @@ class DeliveryController extends Controller
                 true
             );
 
-            $totalBase = (float) $order->total;
+            $totalBase = $totalDue;
 
             $totalGravada = 0;
             $igv = 0;
@@ -514,8 +514,9 @@ class DeliveryController extends Controller
         }
 
         return redirect()
-            ->route('delivery.index')
-            ->with('success', $message);
+            ->route('delivery.index', ['print_order' => $order->id])
+            ->with('success', $message)
+            ->with('print_order_id', $order->id);
     }
 
     /* ══════════════════════════════════════════════

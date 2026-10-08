@@ -47,7 +47,7 @@ class ReportController extends Controller
         // 2. RENDIMIENTO DE PERSONAL
         $salesByWaiter = Order::select(
             'users.name',
-            DB::raw('SUM(total) as total_sales'),
+            DB::raw('SUM('.Order::collectedTotalSql().') as total_sales'),
             DB::raw('COUNT(orders.id) as orders_count')
         )
             ->join('users', 'orders.user_id', '=', 'users.id')
@@ -132,7 +132,7 @@ class ReportController extends Controller
         $totalSales = Order::where('status', 'completed')
             ->whereDate('paid_at', '>=', $startDate)
             ->whereDate('paid_at', '<=', $endDate)
-            ->sum('total');
+            ->sumCollected();
 
         // Cantidad de pedidos
         $ordersCount = Order::where('status', 'completed')
@@ -178,7 +178,7 @@ class ReportController extends Controller
         // Rendimiento del personal
         $salesByWaiter = Order::select(
             'users.name',
-            DB::raw('SUM(total) as total_sales'),
+            DB::raw('SUM('.Order::collectedTotalSql().') as total_sales'),
             DB::raw('COUNT(orders.id) as orders_count')
         )
             ->join('users', 'orders.user_id', '=', 'users.id')

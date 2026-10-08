@@ -7,10 +7,8 @@ use App\Models\Order;
 use Greenter\Model\Client\Client as GClient;
 use Greenter\Model\Company\Address;
 use Greenter\Model\Company\Company;
-use Greenter\Model\Sale\Document;
 use Greenter\Model\Sale\Legend;
 use Greenter\Model\Sale\Note;
-use Greenter\Model\Sale\SaleDetail;
 
 /**
  * Convierte una CreditNote (vinculada a una Order) en un objeto Note de Greenter (tipo 07).
@@ -29,33 +27,8 @@ class CreditNoteBuilder
         }
 
         $isFactura = $order->document_type === 'Factura';
-        $igvFactor = $this->config->igvFactor();
-        $denom     = 1 + $igvFactor;
 
-        // Detalles (replicamos los del comprobante afectado)
-        $details = [];
-        foreach ($order->details as $line) {
-            $product         = $line->product;
-            $precioVentaUnit = (float) $line->price;
-            $valorUnit       = round($precioVentaUnit / $denom, 6);
-            $cantidad        = (float) $line->quantity;
-            $valorVenta      = round($valorUnit * $cantidad, 2);
-            $igvLinea        = round($valorVenta * $igvFactor, 2);
-
-            $details[] = (new SaleDetail())
-                ->setCodProducto((string) ($product->id ?? '-'))
-                ->setUnidad('NIU')
-                ->setCantidad($cantidad)
-                ->setDescripcion($product->name ?? 'Producto')
-                ->setMtoBaseIgv($valorVenta)
-                ->setPorcentajeIgv($this->config->igvRate())
-                ->setIgv($igvLinea)
-                ->setTipAfeIgv('10')
-                ->setTotalImpuestos($igvLinea)
-                ->setMtoValorVenta($valorVenta)
-                ->setMtoValorUnitario($valorUnit)
-                ->setMtoPrecioUnitario(round($precioVentaUnit, 2));
-        }
+        $details = (new InvoiceBuilder($this->config))->buildDetails($order, (float) $cn->total);
 
         $client  = $this->buildClient($order, $isFactura);
         $company = $this->buildCompany();

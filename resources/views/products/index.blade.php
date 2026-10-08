@@ -153,12 +153,14 @@
                             </td>
                             <td class="fw-bold text-primary">S/ {{ number_format($product->price, 2) }}</td>
                             <td>
-                                @if(is_null($product->stock))
+                                @if(!$product->controls_stock)
+                                    <span class="text-muted small">Sin control de stock</span>
+                                @elseif(is_null($product->stock))
                                     <span class="text-muted small">--</span>
-                                @elseif($product->stock <= 5)
-                                    <span class="badge bg-warning text-dark border border-warning">Bajo: {{ $product->stock_display }}</span>
+                                @elseif($product->stock <= ($product->minimum_stock ?? 5))
+                                    <span class="badge bg-warning text-dark border border-warning">Bajo: {{ $product->stock_display }} {{ $product->unit_display }}</span>
                                 @else
-                                    <span class="badge bg-light text-success border border-success fw-bold">{{ $product->stock_display }}</span>
+                                    <span class="badge bg-light text-success border border-success fw-bold">{{ $product->stock_display }} {{ $product->unit_display }}</span>
                                 @endif
                             </td>
                             <td class="text-center">
@@ -172,6 +174,7 @@
                             <td class="text-end pe-4">
                                 <div class="product-actions">
 
+    @if($product->controls_stock)
     <button type="button"
             class="product-action product-action-stock"
             data-bs-toggle="modal"
@@ -179,6 +182,7 @@
             title="Ajustar stock">
         <i class="bi bi-arrow-left-right"></i>
     </button>
+    @endif
 
     <a href="{{ route('products.edit', ['product' => $product->id, 'page' => $products->currentPage()]) }}"
        class="product-action product-action-edit"
@@ -267,7 +271,7 @@
                         </span>
 
                         <strong>
-                            {{ $product->stock_display }}
+                            {{ $product->stock_display }} {{ $product->unit_display }}
                         </strong>
 
                     </div>
@@ -310,7 +314,7 @@
                     <div class="col-md-6">
 
                         <label class="stock-field-label">
-                            Cantidad
+                            Cantidad ({{ $product->unit_display }})
                             <span class="text-danger">*</span>
                         </label>
 
@@ -319,9 +323,9 @@
                             <i class="bi bi-box-seam stock-field-icon"></i>
 
                             <input type="number"
-                                   name="quantity" step="0.001"
+                                   name="quantity" step="{{ in_array($product->unit_display, ['und', 'paq', 'caja']) ? '1' : '0.001' }}"
                                    class="form-control stock-form-control"
-                                   min="0.001"
+                                   min="{{ in_array($product->unit_display, ['und', 'paq', 'caja']) ? '1' : '0.001' }}"
                                    placeholder="Ej. 10"
                                    required>
 

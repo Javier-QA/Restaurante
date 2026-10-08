@@ -434,16 +434,29 @@
 
 <div class="container-fluid inventory-page">
 
-    {{-- ENCABEZADO --}}
-    <div class="inventory-header">
-
-        <div>
-
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
             <a href="{{ route('products.index') }}"
                class="inventory-back">
                 <i class="bi bi-arrow-left"></i>
                 Volver a Productos
             </a>
+            <form method="POST" action="{{ route('inventory.logs.reset') }}">
+                @csrf
+                @method('DELETE')
+                <button type="button" class="btn btn-outline-danger rounded-pill d-inline-flex align-items-center justify-content-center px-3" style="border: 1.5px solid rgba(220, 53, 69, .45) !important; background-color: rgba(220, 53, 69, .12) !important; color: #dc3545 !important; min-height: 40px; font-weight: 600;"
+                        onclick="confirmResetKardex(this)">
+                    <i class="bi bi-trash3 me-1"></i> Vaciar Kardex y poner stock en cero
+                </button>
+            </form>
+
+    </div>
+
+    {{-- ENCABEZADO --}}
+    <div class="inventory-header">
+
+        <div>
+
+
 
             <h2 class="inventory-title">
                 <i class="bi bi-clock-history me-2"></i>Kardex de Movimientos
@@ -510,6 +523,7 @@
                         <th>Usuario</th>
                         <th class="text-center">Cantidad</th>
                         <th class="text-center">Saldo</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
 
@@ -628,7 +642,7 @@
                                         ? 'positive'
                                         : ($log->quantity < 0 ? 'negative' : 'neutral') }}">
 
-                                    {{ $log->quantity > 0 ? '+' : '' }}{{ $log->quantity }}
+                                    {{ $log->quantity > 0 ? '+' : '' }}{{ rtrim(rtrim(number_format((float) $log->quantity, 3, '.', ''), '0'), '.') }} {{ $log->product?->unit_display }}
 
                                 </span>
 
@@ -639,9 +653,20 @@
                             <td class="text-center">
 
                                 <span class="inventory-stock">
-                                    {{ $log->new_stock }}
+                                    {{ rtrim(rtrim(number_format((float) $log->new_stock, 3, '.', ''), '0'), '.') }} {{ $log->product?->unit_display }}
                                 </span>
 
+                            </td>
+                            <td class="text-center">
+                                <form method="POST" action="{{ route('inventory.logs.destroy', $log->id) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="btn btn-sm btn-outline-danger rounded-pill"
+                                            aria-label="Eliminar registro del Kardex" title="Eliminar registro"
+                                            onclick="confirmDeleteKardex(this)">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
                             </td>
 
                         </tr>
@@ -650,7 +675,7 @@
                     @empty
 
                         <tr>
-                            <td colspan="7"
+                            <td colspan="8"
                                 class="inventory-empty">
 
                                 <div class="inventory-empty-icon">
@@ -925,5 +950,28 @@ html[data-color-mode="dark"] .inventory-empty-text {
 }
 
 </style>
+
+<script>
+function confirmResetKardex(button) {
+    SystemNotify.confirm({
+        type: 'warning',
+        title: 'Vaciar Kardex y reiniciar stock',
+        text: 'Se eliminarán TODOS los movimientos del Kardex y el stock de TODOS los productos con control de stock quedará en 0. Esta acción no se puede deshacer.',
+        confirmText: 'Eliminar todo y poner stock en 0',
+        icon: 'bi-trash3',
+        onConfirm: function () { button.closest('form').requestSubmit(); }
+    });
+}
+function confirmDeleteKardex(button) {
+    SystemNotify.confirm({
+        type: 'warning',
+        title: 'Eliminar registro del Kardex',
+        text: 'Se eliminará este registro del historial. Esta acción no cambia el stock actual y no se puede deshacer.',
+        confirmText: 'Eliminar registro',
+        icon: 'bi-trash3',
+        onConfirm: function () { button.closest('form').requestSubmit(); }
+    });
+}
+</script>
 
 @endsection

@@ -667,7 +667,7 @@
                                     </td>
 
                                     <td class="text-end fw-bold">
-                                        S/ {{ number_format($order->total, 2) }}
+                                        S/ {{ number_format($order->collected_total, 2) }}
                                     </td>
 
                                     <td class="text-center pe-4">

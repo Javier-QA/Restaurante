@@ -76,12 +76,13 @@
                         <select name="category_id" class="form-select" required>
                             <option value="" selected disabled>-- Seleccionar --</option>
                             @foreach($categories as $cat)
-                                <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                                <option value="{{ $cat->id }}">{{ $cat->name }}{{ !$cat->is_active ? ' (oculta en POS)' : '' }}</option>
                             @endforeach
                         </select>
                     </div>
                 </div>
 
+                @include('products.inventory-fields')
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
                         <label class="form-label fw-bold small text-muted">Costo Unitario</label>
@@ -118,7 +119,7 @@
         Controlar stock de este producto
     </label>
     <small class="d-block text-muted ms-5" style="font-size: 0.75rem;">
-        Actívalo para productos que se controlan por unidades. Si el producto tiene receta, se controlarán sus ingredientes.
+        Actívalo para controlar existencias por la unidad de medida seleccionada. Si el producto tiene receta, se controlarán sus ingredientes.
     </small>
 </div>
 <div class="product-digital-options bg-primary bg-opacity-10 border border-primary border-opacity-25 rounded-3 mb-4 p-3">

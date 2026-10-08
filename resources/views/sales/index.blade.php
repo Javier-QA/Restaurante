@@ -425,7 +425,7 @@
                                             {{ $payment['label'] }}
                                         </span>
                                     </td>
-                                    <td class="text-end fw-bold">{{ number_format($order->total, 2) }}</td>
+                                    <td class="text-end fw-bold">{{ number_format($order->collected_total, 2) }}</td>
                                     <td class="text-center">
                                         <a href="{{ route('sales.ticket', $order->id) }}" target="_blank" class="btn btn-sm btn-outline-dark"><i class="bi bi-printer"></i></a>
                                     </td>

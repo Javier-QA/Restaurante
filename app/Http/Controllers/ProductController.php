@@ -15,7 +15,7 @@ class ProductController extends Controller
     {
         $request->validate(['search' => 'nullable|string|max:100']);
         $search = trim((string) $request->input('search', ''));
-        $products = Product::with('category')
+        $products = Product::with('category')->whereNull('deleted_at')
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($query) use ($search) {
                     $query->where('name', 'like', '%'.$search.'%');
@@ -29,7 +29,7 @@ class ProductController extends Controller
 
     public function create()
     {
-        $categories = Category::where('is_active', true)->get();
+        $categories = Category::orderBy('name')->get();
 
         return view('products.create', compact('categories'));
     }
@@ -44,11 +44,15 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
             'cost' => 'nullable|numeric|min:0',
+            'unit' => 'nullable|in:kg,g,lt,ml,und,paq,caja',
+            'minimum_stock' => 'nullable|numeric|min:0|max:99999999999',
             'promotional_price' => 'nullable|numeric|min:0',
             'barcode' => 'nullable|string|max:50|unique:products,barcode', // <--- NUEVO
             'image' => 'nullable|image|max:2048',
             'stock' => 'nullable|numeric|min:0|max:99999999999',
         ]);
+
+        $this->validateWholeInventory($request, $request->input('unit') ?: 'und', ['stock', 'minimum_stock']);
 
         $data = array_diff_key($validated, array_flip(['ingredients']));
 
@@ -63,6 +67,8 @@ class ProductController extends Controller
         $data['is_chef_recommendation'] = $request->has('is_chef_recommendation');
         $data['is_new'] = $request->has('is_new');
         $data['is_active'] = true;
+        $data['unit'] = $request->input('unit') ?: 'und';
+        $data['minimum_stock'] = $request->input('minimum_stock') ?? 5;
         $data['cost'] = $request->cost ?? 0;
 
         \Illuminate\Support\Facades\DB::transaction(function () use ($request, $data) {
@@ -81,12 +87,14 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        $categories = Category::where('is_active', true)->get();
+        abort_if($product->deleted_at !== null, 404);
+        $categories = Category::orderBy('name')->get();
         // Solo productos configurados como insumos.
         // Los productos disponibles para la venta no deben aparecer en la receta.
         $ingredients = Product::where('id', '!=', $product->id)
             ->where('is_active', true)
             ->where('is_saleable', false)
+            ->where('controls_stock', true)->whereNull('deleted_at')
             ->orderBy('name')
             ->get();
 
@@ -95,6 +103,7 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
+        abort_if($product->deleted_at !== null, 404);
         // 1. Validación (Barcode único excepto para este producto)
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -103,6 +112,8 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
             'cost' => 'nullable|numeric|min:0',
+            'unit' => 'nullable|in:kg,g,lt,ml,und,paq,caja',
+            'minimum_stock' => 'nullable|numeric|min:0|max:99999999999',
             'promotional_price' => 'nullable|numeric|min:0',
             'barcode' => 'nullable|string|max:50|unique:products,barcode,'.$product->id, // <--- NUEVO
             'image' => 'nullable|image|max:2048',
@@ -110,13 +121,21 @@ class ProductController extends Controller
             'ingredients.*' => 'nullable|numeric|min:0|max:999999',
         ]);
 
+        $this->validateWholeInventory($request, $request->input('unit') ?: ($product->unit ?: 'und'), ['minimum_stock']);
+
         foreach ($request->input('ingredients', []) as $id => $qty) {
-            if ((float) $qty > 0 && ((int) $id === $product->id || ! Product::whereKey($id)->where('is_active', true)->where('is_saleable', false)->exists())) {
+            if ((float) $qty > 0 && ((int) $id === $product->id || ! Product::whereKey($id)->where('is_active', true)->where('is_saleable', false)->where('controls_stock', true)->whereNull('deleted_at')->exists())) {
                 throw \Illuminate\Validation\ValidationException::withMessages(['ingredients' => 'La receta solo puede incluir insumos activos.']);
             }
         }
         $data = array_diff_key($validated, array_flip(['ingredients']));
 
+        // Once assigned, units cannot be relabelled without converting stock and recipes.
+        if ($product->unit && $request->filled('unit') && $request->unit !== $product->unit) {
+            throw \Illuminate\Validation\ValidationException::withMessages(['unit' => 'La unidad ya está asignada. Cree un nuevo insumo para otra unidad; cambiarla alteraría stock, costos y recetas.']);
+        }
+        if (!$request->filled('unit')) { unset($data['unit']); }
+        if (!$request->filled('minimum_stock')) { unset($data['minimum_stock']); }
         $oldImage = $product->image;
         $newImage = null;
         if ($request->hasFile('image')) {
@@ -140,7 +159,7 @@ class ProductController extends Controller
                 $syncData = [];
                 foreach ($request->input('ingredients', []) as $id => $qty) {
                     if ((float) $qty > 0) {
-                        if ((int) $id === $product->id || ! Product::whereKey($id)->where('is_active', true)->where('is_saleable', false)->exists()) {
+                        if ((int) $id === $product->id || ! Product::whereKey($id)->where('is_active', true)->where('is_saleable', false)->where('controls_stock', true)->whereNull('deleted_at')->exists()) {
                             throw \Illuminate\Validation\ValidationException::withMessages(['ingredients' => 'La receta solo puede incluir insumos activos.']);
                         }
                         $syncData[$id] = ['quantity' => $qty];
@@ -164,15 +183,28 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        // Eliminado lógico (desactivar) en lugar de borrar para mantener historial
-        $product->update(['is_active' => false]);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($product) {
+            $product = Product::whereKey($product->id)->lockForUpdate()->firstOrFail();
+            if (\Illuminate\Support\Facades\DB::table('product_ingredients')
+                ->join('products', 'products.id', '=', 'product_ingredients.product_id')
+                ->where('ingredient_id', $product->id)->whereNull('products.deleted_at')->exists()) {
+                throw \Illuminate\Validation\ValidationException::withMessages(['product' => 'El insumo está asociado a una receta. Retírelo de la receta antes de eliminarlo.']);
+            }
+            if (\App\Models\OrderDetail::where('product_id', $product->id)->whereHas('order', fn ($q) => $q->where('status', 'pending'))->exists()) {
+                throw \Illuminate\Validation\ValidationException::withMessages(['product' => 'El producto tiene pedidos pendientes. Complete o cancele esos pedidos antes de eliminarlo.']);
+            }
+            $product->is_active = false;
+            $product->deleted_at = now();
+            $product->save();
+        });
 
-        return redirect()->route('products.index')->with('success', 'Producto eliminado (desactivado).');
+        return redirect()->route('products.index')->with('success', 'Producto eliminado correctamente.');
     }
 
     // Funciones extra para ajustes rápidos
     public function toggleStatus(Product $product)
     {
+        abort_if($product->deleted_at !== null, 404);
         $product->update(['is_active' => ! $product->is_active]);
 
         return back();
@@ -180,7 +212,10 @@ class ProductController extends Controller
 
     public function adjustStock(Request $request, Product $product)
     {
+        abort_if($product->deleted_at !== null || ! $product->controls_stock, 404);
         $request->validate(['quantity' => 'required|numeric|min:0.001|max:99999999999', 'type' => 'required|in:add,sub']);
+
+        $this->validateWholeInventory($request, $product->unit ?: 'und', ['quantity']);
 
         \Illuminate\Support\Facades\DB::transaction(function () use ($request, $product) {
             $product = Product::whereKey($product->id)->lockForUpdate()->firstOrFail();
@@ -201,5 +236,21 @@ class ProductController extends Controller
         });
 
         return back()->with('success', 'Stock ajustado.');
+    }
+    private function validateWholeInventory(Request $request, string $unit, array $fields): void
+    {
+        if (!in_array($unit, ['und', 'paq', 'caja'], true)) {
+            return;
+        }
+        foreach ($fields as $field) {
+            if ($request->filled($field)) {
+                $value = (float) $request->input($field);
+                if (floor($value) !== $value) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        $field => 'Unidades, paquetes y cajas requieren cantidades enteras.',
+                    ]);
+                }
+            }
+        }
     }
 }

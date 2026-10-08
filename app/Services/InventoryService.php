@@ -30,6 +30,9 @@ class InventoryService
         ksort($requirements);
         foreach ($requirements as $id => $quantity) {
             $product = Product::whereKey($id)->lockForUpdate()->firstOrFail();
+            if ($product->deleted_at !== null || ! $product->is_active || ! $product->controls_stock) {
+                throw ValidationException::withMessages(['stock' => "El insumo {$product->name} no está disponible para consumir stock. Revise la receta."]);
+            }
             $old = (float) $product->stock;
             $quantity = round($quantity, 3);
             if ($old + 0.000001 < $quantity) {

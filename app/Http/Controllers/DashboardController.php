@@ -22,7 +22,7 @@ class DashboardController extends Controller
         // ─── KPIs del día ─────────────────────────────────────────────────────
         $totalSalesToday = Order::where('status', 'completed')
             ->whereDate('paid_at', $today)
-            ->sum('total');
+            ->sumCollected();
 
         $ordersCountToday = Order::where('status', 'completed')
             ->whereDate('paid_at', $today)
@@ -37,14 +37,15 @@ class DashboardController extends Controller
 
         $lowStockProducts = Product::where('is_active', true)
             ->where('controls_stock', true)
-            ->where('stock', '<=', 5)
+            ->whereNull('deleted_at')
+            ->whereColumn('stock', '<=', 'minimum_stock')
             ->count();
 
         // ─── Ventas del mes actual ─────────────────────────────────────────────
         $totalSalesMonth = Order::where('status', 'completed')
             ->whereYear('paid_at', $year)
             ->whereMonth('paid_at', Carbon::now()->month)
-            ->sum('total');
+            ->sumCollected();
 
         // ─── Meta mensual (de configuración o 5000 por defecto) ───────────────
         $monthlyGoal = (float) (Setting::where('key', 'monthly_goal')->value('value') ?? 5000);
@@ -55,7 +56,7 @@ class DashboardController extends Controller
         // ─── Datos mensuales para el Line Chart (año actual) ──────────────────
         $monthlySalesRaw = Order::where('status', 'completed')
             ->whereYear('paid_at', $year)
-            ->select(DB::raw('MONTH(paid_at) as month'), DB::raw('SUM(total) as total'))
+            ->select(DB::raw('MONTH(paid_at) as month'), DB::raw('SUM('.Order::collectedTotalSql().') as total'))
             ->groupBy('month')
             ->pluck('total', 'month')
             ->toArray();
@@ -130,7 +131,7 @@ class DashboardController extends Controller
             $chartLabels[] = $date->locale('es')->isoFormat('dd D');
             $chartValues[] = Order::where('status', 'completed')
                 ->whereDate('paid_at', $date->format('Y-m-d'))
-                ->sum('total');
+                ->sumCollected();
         }
 
         return view('dashboard', compact(

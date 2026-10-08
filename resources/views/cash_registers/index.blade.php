@@ -367,7 +367,7 @@
             </p>
         </div>
 
-        @if($stats['total'] > 0)
+        @if($stats['total'] > 0 && auth()->user()->role === 'admin')
             <button type="button"
                     class="btn btn-danger fw-semibold px-3 py-2"
                     style="border-radius:10px;" onclick="confirmDeleteAllCashRegisters()">
@@ -643,22 +643,20 @@
 
 
 
+<form id="deleteAllCashRegistersForm" action="{{ route('cash_registers.destroy_all') }}" method="POST" class="d-none">
+    @csrf
+    @method('DELETE')
+</form>
 <script id="cash-register-system-confirmations">
 function confirmDeleteAllCashRegisters() {
-    const form = if (!form) return;
-
+    const form = document.getElementById('deleteAllCashRegistersForm');
+    if (!form) return;
     SystemNotify.confirm({
-        type: 'danger',
-        title: 'Eliminar historial de caja',
-        text: 'Se eliminarán todos los turnos de caja. Las ventas y gastos se conservarán y el próximo turno comenzará desde #1. Esta acción no se puede deshacer.',
-        confirmText: 'Eliminar todo',
-        icon: 'bi-trash3',
-        onConfirm: function () {
-            form.submit();
-        }
+        type: 'danger', title: 'Eliminar historial de caja',
+        text: 'Se eliminarán los turnos de caja. Las ventas y gastos se conservarán. Esta acción no se puede deshacer.',
+        confirmText: 'Eliminar todo', icon: 'bi-trash3', onConfirm: function () { form.submit(); }
     });
 }
-
 function confirmDeleteCashRegister(button) {
     const action = button.dataset.action;
     const id = button.dataset.id;
@@ -681,30 +679,7 @@ function confirmDeleteCashRegister(button) {
     });
 }
 </script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
 
-    if (!modal) {
-        return;
-    }
-
-    modal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-
-        if (!button) {
-            return;
-        }
-
-        const id = button.getAttribute('data-id');
-        const action = button.getAttribute('data-action');
-
-        document.getElementById('deleteCashRegisterNumber').textContent =
-            'Turno #' + id;
-
-        document.getElementById('deleteCashRegisterForm').action = action;
-    });
-});
-</script>
 
 
 <style>

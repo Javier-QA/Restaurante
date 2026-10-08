@@ -249,6 +249,9 @@ function ia_validar_sql(string $sql): string
     if (! preg_match('/^\s*(select|with)\b/i', $t)) {
         throw new RuntimeException('Consulta rechazada: debe empezar por SELECT.');
     }
+    if (preg_match('/\bHOUR\s*\(\s*(?:[a-z_][a-z0-9_]*\s*\.\s*)?fecha\s*\)/i', $t)) {
+        throw new RuntimeException('Consulta rechazada: fecha no contiene hora; usa la columna hora para agrupar ventas por horario.');
+    }
     $prohibidas = 'insert|update|delete|replace|drop|alter|create|truncate|rename|grant|revoke|call|execute|prepare|deallocate|handler|into|outfile|dumpfile|load_file|load|sleep|benchmark|get_lock|release_lock|master_pos_wait|'
         .'information_schema|performance_schema|mysql|sys|user|current_user|session_user|system_user|database|schema|version|connection_id|row_count|found_rows|last_insert_id|recursive|set|use|show|lock|unlock|procedure|analyse|for|describe|explain|optimize|repair|flush|kill|shutdown';
     if (preg_match('/\b('.$prohibidas.')\b/i', $t, $m)) {
@@ -279,6 +282,8 @@ function ia_pdo(): PDO
     \Illuminate\Support\Facades\DB::purge('sys_ia_read');
     $p = \Illuminate\Support\Facades\DB::connection('sys_ia_read')->getPdo();
     $p->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+    // Reject aggregate queries that silently combine a random hour with all orders.
+    $p->exec("SET SESSION sql_mode = CONCAT_WS(',', NULLIF(@@SESSION.sql_mode, ''), 'ONLY_FULL_GROUP_BY')");
     try {
         $p->exec("SET time_zone = '-05:00'");
     } catch (Throwable $e) {
@@ -408,8 +413,9 @@ function ia_reglas(): string
 - Moneda: soles ('.MONEDA.'). Los precios incluyen IGV '.cfg('igv', 18).' %.
 - INGRESOS / VENTAS: usa v_ia_sys_ventas con estado = \'pagado\' y agrupa por la columna fecha. Los pedidos anulados, abiertos o en cocina no son ingresos. «Ticket promedio» = AVG(total). «Venta sin IGV» = total - impuesto.
 - PLATOS MÁS VENDIDOS: SUM(cantidad) en v_ia_sys_detalle_ventas con estado_pedido = \'pagado\' AND estado_item <> \'anulado\'. «Más rentables» = SUM(utilidad).
-- Tipos de pedido: salon, llevar, delivery. Métodos de pago: efectivo, tarjeta, yape, plin, transferencia. «Mozo» = vendedor/atendió. «Horas pico» = HOUR / columna hora.
-- No hay compras ni proveedores registrados en este esquema. No inventes esas tablas. Stock mínimo y unidad no están configurados. Fecha de venta usa updated_at (no hay timestamp independiente de cobro); explica esta limitación cuando sea relevante.
+- Tipos de pedido: salon, llevar, delivery. Métodos de pago: efectivo, tarjeta, yape, plin, transferencia. «Mozo» = vendedor/atendió. «Horas pico»: usa directamente la columna hora de v_ia_sys_ventas, agrupa GROUP BY hora y ordena COUNT(*) DESC si se piden más pedidos, o SUM(total) DESC si se pide mayor ingreso. Nunca uses HOUR(fecha): fecha es DATE y pierde la hora; HOUR(fecha) devuelve cero. Presenta horarios en formato de 12 horas con am/pm: 20 = 8:00pm, 0 = 12:00am, 12 = 12:00pm. Nunca escribas 20 horas. Si muestras un intervalo, usa 8:00pm–8:59pm e indica el período consultado. Si no indican período, usa todo el historial y dilo.
+- No hay compras ni proveedores registrados en este esquema. No inventes esas tablas. Las vistas de inventario incluyen unidad, stock_minimo y stock_bajo. La fecha de venta usa paid_at; para cobros antiguos se conserva una fecha estimada. COUNT de productos cuenta registros de productos distintos; SUM(stock) cuenta existencias. Nunca describas un COUNT de productos como unidades disponibles.
+- UNIDAD DE MEDIDA: cuando pregunten por productos en unidades, kilos, gramos, litros, paquetes o cajas, usa la columna unidad de v_ia_sys_insumos. Códigos: und, kg, g, lt, ml, paq, caja. Para unidades filtra unidad = \'und\'; nunca busques unid, kg o gramos en el nombre del producto. Para listar productos de venta y su categoría/precio, une v_ia_sys_insumos i con v_ia_sys_productos p ON p.id=i.id y filtra i.activo=1 AND p.activo=1. Devuelve nombre, unidad y stock; COUNT cuenta productos distintos, no unidades de stock. Una porción llamada 10 unid. no indica la unidad de inventario ni el stock disponible.
 - Los valores de estado/tipo van en MINÚSCULAS, tal como aparecen en las descripciones.
 - Usa SOLO las vistas y columnas listadas (nunca tablas reales). Sintaxis MySQL/MariaDB. Una sola sentencia SELECT (puede usar WITH), sin punto y coma ni comentarios.
 - Alias de columnas en español, en minúscula con guion bajo (p. ej. total_ventas, cantidad_vendida). No uses como alias los nombres de tablas reales (productos, clientes, pedidos, compras, gastos, mesas, reservas…).
@@ -476,7 +482,7 @@ function ia_resumir(string $pregunta, array $cols, array $filas): string
     $datos = json_encode(['columnas' => $cols, 'filas' => array_slice($filas, 0, 25), 'total_filas' => count($filas)], JSON_UNESCAPED_UNICODE);
 
     return trim(ia_llamar([
-        ['role' => 'system', 'content' => 'Eres analista de un restaurante. Resume en 1 o 2 frases en español, con cifras exactas de los datos (moneda '.MONEDA.'), la respuesta a la pregunta. No inventes nada y no uses markdown.'],
+        ['role' => 'system', 'content' => 'Eres analista de un restaurante. Resume en 1 o 2 frases en español, con cifras exactas de los datos. Expresa las horas en formato de 12 horas, por ejemplo 20 como 8:00pm (moneda '.MONEDA.'), la respuesta a la pregunta. No inventes nada y no uses markdown.'],
         ['role' => 'user', 'content' => "Pregunta: $pregunta\nDatos: $datos"],
     ], 300));
 }
@@ -556,7 +562,7 @@ function ia_chat(string $msg, array $hist = []): array
     }
     $datos = json_encode(['columnas' => $res['columnas'], 'filas' => array_slice($res['filas'], 0, 30), 'total_filas' => count($res['filas'])], JSON_UNESCAPED_UNICODE);
     $texto = trim(ia_llamar([
-        ['role' => 'system', 'content' => 'Eres el asistente de un restaurante. Redacta en español una respuesta breve y clara (máx. 4 frases) a la pregunta usando SOLO los datos dados, con cifras exactas (moneda '.MONEDA.'). Si hay una lista, menciona los primeros elementos; el resto se ve en «Ver datos». Si no hay filas, dilo. Puedes usar **negrita** para cifras clave. Sin tablas ni listas largas.'],
+        ['role' => 'system', 'content' => 'Eres el asistente de un restaurante. Redacta en español una respuesta breve y clara (máx. 4 frases) a la pregunta usando SOLO los datos dados, con cifras exactas. Los conteos de productos no son unidades de stock: distingue COUNT de productos de SUM(stock). Expresa horarios en formato de 12 horas con am/pm, por ejemplo 20 como 8:00pm, nunca 20 horas. Usa moneda solo para importes (moneda '.MONEDA.'). Si hay una lista, menciona los primeros elementos; el resto se ve en «Ver datos». Si no hay filas, dilo. Puedes usar **negrita** para cifras clave. Sin tablas ni listas largas.'],
         ['role' => 'user', 'content' => "Pregunta: $msg\nDatos: $datos"],
     ], 400));
 

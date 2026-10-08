@@ -527,7 +527,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource(
             'categories',
             CategoryController::class
-        );
+        )->only(['index', 'store', 'update', 'destroy']);
 
         // =====================================================
         // PRODUCTOS E INVENTARIO
@@ -546,7 +546,29 @@ Route::middleware(['auth'])->group(function () {
         Route::resource(
             'products',
             ProductController::class
-        );
+        )->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+
+        Route::delete('/inventory/logs/reset/all', function () {
+            Illuminate\Support\Facades\DB::transaction(function () {
+                $products = App\Models\Product::where('controls_stock', true)
+                    ->orderBy('id')->lockForUpdate()->get();
+                foreach ($products as $product) {
+                    $product->stock = 0;
+                    $product->save();
+                }
+                App\Models\InventoryLog::query()->delete();
+            });
+
+            return redirect()->route('inventory.logs')
+                ->with('success', 'Kardex vaciado y stock de productos controlados reiniciado a cero.');
+        })->name('inventory.logs.reset');
+
+        Route::delete('/inventory/logs/{inventoryLog}', function (App\Models\InventoryLog $inventoryLog) {
+            $inventoryLog->delete();
+
+            return redirect()->route('inventory.logs')
+                ->with('success', 'Registro del Kardex eliminado. El stock actual no cambió.');
+        })->name('inventory.logs.destroy');
 
         Route::get('/inventory/logs', function () {
 
@@ -555,7 +577,7 @@ Route::middleware(['auth'])->group(function () {
                 'user'
             )
                 ->orderBy('created_at', 'desc')
-                ->paginate(10);
+                ->paginate(20);
 
             return view(
                 'products.kardex',
@@ -571,7 +593,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource(
             'users',
             UserController::class
-        );
+        )->only(['index', 'store', 'update', 'destroy']);
 
         Route::get(
             '/settings',

@@ -226,7 +226,7 @@ class SunatService
             $order->serie,
             $order->correlativo,
             number_format((float) $order->igv, 2, '.', ''),
-            number_format((float) $order->total, 2, '.', ''),
+            number_format((float) $order->collected_total, 2, '.', ''),
             ($order->paid_at ?? $order->created_at ?? now())->format('Y-m-d'),
             $this->guessClientDocType($order->client_document),
             $order->client_document ?: '-',

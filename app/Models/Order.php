@@ -54,6 +54,22 @@ class Order extends Model
         'total_gratuita' => 'decimal:2',
     ];
 
+    /** Products remain in total; delivery is recorded separately for existing orders. */
+    public function getCollectedTotalAttribute(): float
+    {
+        return round((float) $this->total + (float) ($this->delivery?->delivery_fee ?? 0), 2);
+    }
+
+    public static function collectedTotalSql(): string
+    {
+        return '(orders.total + COALESCE((SELECT SUM(delivery_fee) FROM deliveries WHERE deliveries.order_id = orders.id), 0))';
+    }
+
+    public function scopeSumCollected($query): float
+    {
+        return (float) $query->sum(\Illuminate\Support\Facades\DB::raw(self::collectedTotalSql()));
+    }
+
     public function scopePendingForClosing($query)
     {
         return $query->where('status', 'pending')

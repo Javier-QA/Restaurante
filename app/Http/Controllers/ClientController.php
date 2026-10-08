@@ -36,13 +36,13 @@ class ClientController extends Controller
         // 1. Historial de Órdenes (Completadas)
         $orders = $client->orders()
             ->where('status', 'completed')
-            ->orderBy('created_at', 'desc')
+            ->orderBy('paid_at', 'desc')->with('delivery')
             ->get();
 
         // 2. Estadísticas Financieras
-        $totalSpent = $orders->sum('total');
+        $totalSpent = $orders->sum('collected_total');
         $visitCount = $orders->count();
-        $lastVisit = $orders->first() ? $orders->first()->created_at : null;
+        $lastVisit = $orders->first() ? $orders->first()->paid_at : null;
 
         // 3. Calcular Nivel VIP
         $rank = 'Nuevo';

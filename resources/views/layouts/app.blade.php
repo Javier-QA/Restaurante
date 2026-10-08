@@ -6474,109 +6474,7 @@ html[data-color-mode="dark"]
 
 </style>
 
-<style id="sidebar-groups-professional">
-
-/* ==========================================================
-   GRUPOS DESPLEGABLES DEL SIDEBAR
-   ========================================================== */
-
-.sidebar-menu .sidebar-group {
-    margin: 5px 0;
-}
-
-.sidebar-menu .sidebar-group-toggle {
-    width: 100%;
-    min-height: 38px;
-
-    display: flex;
-    align-items: center;
-
-    padding: 7px 11px;
-
-    border: 0;
-    border-radius: 10px;
-
-    background: transparent;
-    color: rgba(255,255,255,.48);
-
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: .75px;
-    text-transform: uppercase;
-
-    cursor: pointer;
-
-    transition:
-        color .18s ease,
-        background .18s ease;
-}
-
-.sidebar-menu .sidebar-group-toggle:hover {
-    color: rgba(255,255,255,.82);
-    background: rgba(255,255,255,.045);
-}
-
-.sidebar-group-title {
-    min-width: 0;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.sidebar-group-arrow {
-    margin-left: auto;
-
-    font-size: 11px;
-
-    transition:
-        transform .22s cubic-bezier(.4,0,.2,1);
-}
-
-.sidebar-group.open .sidebar-group-arrow {
-    transform: rotate(90deg);
-}
-
-
-/* Contenido desplegable */
-
-.sidebar-group-content {
-    display: grid;
-    grid-template-rows: 0fr;
-
-    opacity: .55;
-
-    transition:
-        grid-template-rows .25s cubic-bezier(.4,0,.2,1),
-        opacity .20s ease;
-}
-
-.sidebar-group-content-inner {
-    min-height: 0;
-    overflow: hidden;
-}
-
-.sidebar-group.open .sidebar-group-content {
-    grid-template-rows: 1fr;
-    opacity: 1;
-}
-
-.sidebar-group.open .sidebar-group-content-inner {
-    padding-top: 3px;
-    padding-bottom: 4px;
-}
-
-
-/* Categoría original reemplazada por el nuevo botón */
-
-.sidebar-menu .sidebar-group > .menu-category {
-    display: none !important;
-}
-
-
-/* ==========================================================
-   TOOLTIP PROFESIONAL EN MODO COMPRIMIDO
-   ========================================================== */
-
+<style id="sidebar-icon-tooltip-style">
 .sidebar-icon-tooltip {
     position: fixed;
 
@@ -6645,138 +6543,9 @@ html[data-color-mode="dark"]
 }
 
 
-/* ==========================================================
-   COMPORTAMIENTO CUANDO EL SIDEBAR ESTÁ COMPRIMIDO
-   ========================================================== */
-
-@media (min-width: 992px) {
-
-    body.sidebar-collapsed
-    .sidebar-group-toggle {
-        width: 30px !important;
-        height: 1px !important;
-        min-height: 1px !important;
-
-        margin: 15px auto 10px !important;
-        padding: 0 !important;
-
-        background:
-            rgba(255,255,255,.12) !important;
-
-        border-radius: 20px !important;
-
-        pointer-events: none;
-    }
-
-    body.sidebar-collapsed
-    .sidebar-group-title,
-
-    body.sidebar-collapsed
-    .sidebar-group-arrow {
-        display: none !important;
-    }
-
-    /*
-       Al comprimir, mostramos todos los iconos.
-       No tiene sentido esconderlos dentro de submenús
-       cuando ya no podemos ver el título del grupo.
-    */
-
-    body.sidebar-collapsed
-    .sidebar-group-content {
-        display: block !important;
-
-        opacity: 1 !important;
-
-        grid-template-rows: none !important;
-    }
-
-    body.sidebar-collapsed
-    .sidebar-group-content-inner {
-        overflow: visible !important;
-        padding: 0 !important;
-    }
-}
-
 </style>
 
-<style id="sidebar-expand-all-style">
 
-.sidebar-expand-all-control {
-    margin: 4px 10px 10px;
-    padding-bottom: 10px;
-
-    border-bottom: 1px solid rgba(255,255,255,.08);
-}
-
-.sidebar-expand-all-btn {
-    width: 100%;
-    min-height: 36px;
-
-    padding: 7px 10px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: 10px;
-
-    background: rgba(255,255,255,.045);
-    color: rgba(255,255,255,.72);
-
-    font-size: 11px;
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition:
-        background .18s ease,
-        border-color .18s ease,
-        color .18s ease;
-}
-
-.sidebar-expand-all-btn:hover {
-    background: rgba(255,255,255,.09);
-    border-color: rgba(255,255,255,.14);
-    color: #fff;
-}
-
-.sidebar-expand-all-left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.sidebar-expand-all-left > i {
-    font-size: 13px;
-}
-
-.sidebar-expand-all-arrow {
-    font-size: 11px;
-
-    transition:
-        transform .22s cubic-bezier(.4,0,.2,1);
-}
-
-.sidebar-expand-all-btn.all-open
-.sidebar-expand-all-arrow {
-    transform: rotate(180deg);
-}
-
-
-/* Ocultarlo cuando el sidebar esté comprimido */
-
-@media (min-width: 992px) {
-
-    body.sidebar-collapsed
-    .sidebar-expand-all-control {
-        display: none !important;
-    }
-
-}
-
-</style>
 
 <style id="sidebar-tooltip-only-style">
 
@@ -10475,7 +10244,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-<script id="sidebar-groups-professional">
+<script id="sidebar-icon-tooltip-events">
 document.addEventListener('DOMContentLoaded', function () {
 
     const menu = document.querySelector('#sidebar .sidebar-menu');
@@ -10483,207 +10252,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!menu) {
         return;
     }
-
-
-    /* ======================================================
-       1. CREAR GRUPOS DESPLEGABLES AUTOMÁTICAMENTE
-       ====================================================== */
-
-    const categories = Array.from(
-        menu.querySelectorAll(':scope > .menu-category')
-    );
-
-
-    categories.forEach(function (category, index) {
-
-        const title =
-            category.textContent
-                .replace(/\s+/g, ' ')
-                .trim();
-
-        if (!title) {
-            return;
-        }
-
-
-        const elements = [];
-
-        let sibling = category.nextElementSibling;
-
-
-        while (
-            sibling &&
-            !sibling.classList.contains('menu-category')
-        ) {
-
-            elements.push(sibling);
-
-            sibling = sibling.nextElementSibling;
-        }
-
-
-        if (!elements.length) {
-            return;
-        }
-
-
-        const group =
-            document.createElement('div');
-
-        group.className = 'sidebar-group';
-
-
-        const toggle =
-            document.createElement('button');
-
-        toggle.type = 'button';
-        toggle.className = 'sidebar-group-toggle';
-
-        toggle.setAttribute(
-            'aria-expanded',
-            'false'
-        );
-
-
-        const titleElement =
-            document.createElement('span');
-
-        titleElement.className =
-            'sidebar-group-title';
-
-        titleElement.textContent = title;
-
-
-        const arrow =
-            document.createElement('i');
-
-        arrow.className =
-            'bi bi-chevron-right sidebar-group-arrow';
-
-
-        toggle.appendChild(titleElement);
-        toggle.appendChild(arrow);
-
-
-        const content =
-            document.createElement('div');
-
-        content.className =
-            'sidebar-group-content';
-
-
-        const inner =
-            document.createElement('div');
-
-        inner.className =
-            'sidebar-group-content-inner';
-
-
-        category.parentNode.insertBefore(
-            group,
-            category
-        );
-
-
-        group.appendChild(category);
-        group.appendChild(toggle);
-        group.appendChild(content);
-
-        content.appendChild(inner);
-
-
-        elements.forEach(function (element) {
-            inner.appendChild(element);
-        });
-
-
-        const hasActive =
-            !!inner.querySelector('.nav-link.active');
-
-
-        /*
-           Abrimos automáticamente:
-           - el grupo donde está la página actual
-           - Operaciones inicialmente si ninguno está activo
-        */
-
-        if (hasActive) {
-            group.classList.add('open');
-
-            toggle.setAttribute(
-                'aria-expanded',
-                'true'
-            );
-        }
-
-
-        toggle.addEventListener(
-            'click',
-            function () {
-
-                if (
-                    document.body.classList.contains(
-                        'sidebar-collapsed'
-                    )
-                ) {
-                    return;
-                }
-
-
-                const willOpen =
-                    !group.classList.contains('open');
-
-
-                /*
-                   Comportamiento tipo acordeón:
-                   un grupo principal abierto a la vez.
-                */
-
-                menu
-                    .querySelectorAll('.sidebar-group.open')
-                    .forEach(function (other) {
-
-                        if (other === group) {
-                            return;
-                        }
-
-                        other.classList.remove('open');
-
-                        const otherToggle =
-                            other.querySelector(
-                                '.sidebar-group-toggle'
-                            );
-
-                        if (otherToggle) {
-                            otherToggle.setAttribute(
-                                'aria-expanded',
-                                'false'
-                            );
-                        }
-                    });
-
-
-                group.classList.toggle(
-                    'open',
-                    willOpen
-                );
-
-                toggle.setAttribute(
-                    'aria-expanded',
-                    willOpen
-                        ? 'true'
-                        : 'false'
-                );
-            }
-        );
-
-    });
-    /*
-       No abrir ningún grupo automáticamente.
-       Solo permanece abierto el grupo que contiene
-       la opción activa de la página actual.
-    */
-}
 
 
     /* ======================================================
@@ -10867,206 +10435,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-<script id="sidebarExpandAllControl">
-document.addEventListener('DOMContentLoaded', function () {
 
-    const menu =
-        document.querySelector('#sidebar .sidebar-menu');
-
-    if (!menu) {
-        return;
-    }
-
-
-    const groups =
-        Array.from(
-            menu.querySelectorAll('.sidebar-group')
-        );
-
-    if (!groups.length) {
-        return;
-    }
-
-
-    /* ===============================================
-       CREAR CONTROL GENERAL
-       =============================================== */
-
-    const control =
-        document.createElement('div');
-
-    control.className =
-        'sidebar-expand-all-control';
-
-
-    const button =
-        document.createElement('button');
-
-    button.type = 'button';
-
-    button.className =
-        'sidebar-expand-all-btn';
-
-    button.innerHTML = `
-        <span class="sidebar-expand-all-left">
-
-            <i class="bi bi-layout-sidebar-inset"></i>
-
-            <span class="sidebar-expand-all-text">
-                Desplegar todo
-            </span>
-
-        </span>
-
-        <i class="
-            bi
-            bi-chevron-down
-            sidebar-expand-all-arrow
-        "></i>
-    `;
-
-
-    control.appendChild(button);
-
-    menu.insertBefore(
-        control,
-        menu.firstChild
-    );
-
-
-    const text =
-        button.querySelector(
-            '.sidebar-expand-all-text'
-        );
-
-
-    /* ===============================================
-       ACTUALIZAR TEXTO DEL BOTÓN
-       =============================================== */
-
-    function updateButton() {
-
-        const allOpen =
-            groups.every(function (group) {
-                return group.classList.contains('open');
-            });
-
-
-        button.classList.toggle(
-            'all-open',
-            allOpen
-        );
-
-
-        text.textContent =
-            allOpen
-                ? 'Contraer todo'
-                : 'Desplegar todo';
-
-
-        button.title =
-            allOpen
-                ? 'Contraer todas las secciones'
-                : 'Desplegar todas las secciones';
-
-    }
-
-
-    /* ===============================================
-       ABRIR / CERRAR TODOS
-       =============================================== */
-
-    button.addEventListener(
-        'click',
-        function () {
-
-            const allOpen =
-                groups.every(function (group) {
-                    return group.classList.contains('open');
-                });
-
-
-            const shouldOpen =
-                !allOpen;
-
-
-            groups.forEach(function (group) {
-
-                group.classList.toggle(
-                    'open',
-                    shouldOpen
-                );
-
-
-                const toggle =
-                    group.querySelector(
-                        '.sidebar-group-toggle'
-                    );
-
-
-                if (toggle) {
-
-                    toggle.setAttribute(
-                        'aria-expanded',
-                        shouldOpen
-                            ? 'true'
-                            : 'false'
-                    );
-
-                }
-
-            });
-
-
-            updateButton();
-
-        }
-    );
-
-
-    /* ===============================================
-       SI EL USUARIO ABRE/CIERRA UN GRUPO MANUALMENTE
-       ACTUALIZAMOS EL CONTROL GENERAL
-       =============================================== */
-
-    groups.forEach(function (group) {
-
-        const toggle =
-            group.querySelector(
-                '.sidebar-group-toggle'
-            );
-
-
-        if (!toggle) {
-            return;
-        }
-
-
-        toggle.addEventListener(
-            'click',
-            function () {
-
-                /*
-                   El listener anterior del grupo se ejecuta
-                   primero. Esperamos al siguiente ciclo para
-                   leer su estado definitivo.
-                */
-
-                setTimeout(
-                    updateButton,
-                    0
-                );
-
-            }
-        );
-
-    });
-
-
-    updateButton();
-
-});
-</script>
 
 <script id="sidebar-tooltip-only-script">
 
@@ -11285,6 +10654,40 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 </script>
+@php
+    $automaticPrintId = request()->integer('print_order') ?: session('print_order_id');
+    $automaticPrintOrder = $automaticPrintId
+        ? \App\Models\Order::whereKey($automaticPrintId)->where('status', 'completed')->first()
+        : null;
+@endphp
+@if($automaticPrintOrder && in_array(auth()->user()->role, ['admin', 'cashier', 'waiter']))
+<script>
+window.addEventListener('load', function () {
+    if (!@json((bool) session('success')) && window.SystemNotify) {
+        SystemNotify.success('Pago registrado correctamente.', 'Venta cobrada');
+    }
+    const url = new URL(window.location.href);
+    url.searchParams.delete('print_order');
+    window.history.replaceState(window.history.state, '', url.toString());
+
+    const frame = document.createElement('iframe');
+    frame.title = 'Comprobante de la venta';
+    frame.style.cssText = 'position:fixed;left:-10000px;top:0;width:320px;height:600px;border:0;';
+    frame.onload = function () {
+        setTimeout(function () {
+            try {
+                frame.contentWindow.focus();
+                frame.contentWindow.print();
+            } catch (error) {
+                SystemNotify.error('No se pudo abrir la impresión. Reimprime desde Historial de ventas.');
+            }
+        }, 500);
+    };
+    frame.src = @json(route('sales.ticket', $automaticPrintOrder->id));
+    document.body.appendChild(frame);
+});
+</script>
+@endif
 </body>
 </html>
 
