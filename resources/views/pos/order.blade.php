@@ -187,7 +187,7 @@
                 <label id="noteAreaLabel" for="noteText" class="form-label fw-semibold">Indicaciones para cocina</label><textarea id="noteText" class="form-control" rows="3" maxlength="255" placeholder="Ejemplo: sin cebolla, sin picante..."></textarea>
             </div>
             <div class="modal-footer pos-move-footer">
-                <button type="button" class="btn btn-warning w-100 btn-sm text-dark fw-bold" onclick="saveNote()">Guardar Nota</button>
+                <button type="button" class="btn system-palette-button w-100 btn-sm fw-bold" onclick="saveNote()">Guardar Nota</button>
             </div>
         </div>
     </div>

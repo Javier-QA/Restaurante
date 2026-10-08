@@ -39,3 +39,15 @@ html body .modal .modal-content:not(:has(.modal-header, .user-modal-header, .sys
     border-top-left-radius: inherit;
     border-top-right-radius: inherit;
 }
+
+html body .modal .system-palette-button {
+    background: var(--primary, #ff8c00) !important;
+    border-color: var(--primary, #ff8c00) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+html body .modal .system-palette-button:is(:hover, :focus-visible, :active) {
+    background: var(--primary-hover, var(--primary)) !important;
+    border-color: var(--primary-hover, var(--primary)) !important;
+    color: #ffffff !important;
+}
