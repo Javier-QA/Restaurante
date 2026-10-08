@@ -18,8 +18,7 @@ class ProductController extends Controller
         $products = Product::with('category')
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($query) use ($search) {
-                    $query->where('name', 'like', '%'.$search.'%')
-                        ->orWhere('barcode', 'like', '%'.$search.'%');
+                    $query->where('name', 'like', '%'.$search.'%');
                 });
             })
             ->orderBy('created_at', 'desc')->orderBy('id', 'desc')

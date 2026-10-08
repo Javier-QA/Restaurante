@@ -70,6 +70,26 @@
     border-color: #fecaca;
     background: #fff1f2;
 }
+
+.inventory-clear-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 100px;
+    min-height: 42px;
+    padding: 0 18px !important;
+    border: 1px solid var(--text-muted, #64748b) !important;
+    border-radius: 8px;
+    color: var(--text-main, #334155) !important;
+    background: var(--card-bg, #fff);
+    text-align: center;
+    line-height: 1 !important;
+}
+.inventory-clear-btn:hover,
+.inventory-clear-btn:focus-visible {
+    background: var(--light-bg, #f1f5f9);
+    border-color: var(--text-main, #334155) !important;
+}
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -93,10 +113,10 @@
         <div class="d-flex flex-wrap gap-2">
             <input id="inventorySearch" name="search" type="search" maxlength="100"
                    value="{{ $search }}" class="form-control flex-grow-1" style="flex-basis: 240px"
-                   placeholder="Nombre o código de barras">
+                   placeholder="Nombre del producto">
             <button type="submit" class="btn btn-primary"><i class="bi bi-search me-1"></i>Buscar</button>
             @if($search !== '')
-                <a href="{{ route('products.index') }}" class="btn btn-outline-secondary">Limpiar</a>
+                <a href="{{ route('products.index') }}" class="btn btn-outline-secondary inventory-clear-btn">Limpiar</a>
             @endif
         </div>
         <div class="small text-muted mt-2">{{ $products->total() }} productos encontrados</div>
@@ -132,12 +152,6 @@
                                     @endif
                                     <div>
                                         <div class="fw-bold text-dark">{{ $product->name }}</div>
-
-                                        @if($product->barcode)
-                                            <small class="text-muted d-block" style="font-size: 0.75rem;">
-                                                <i class="bi bi-upc-scan me-1"></i>{{ $product->barcode }}
-                                            </small>
-                                        @endif
 
                                         @if(!$product->is_saleable)
                                             <span class="badge bg-secondary" style="font-size: 0.65rem;"><i class="bi bi-eye-slash me-1"></i>Solo Insumo</span>
