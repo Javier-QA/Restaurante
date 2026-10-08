@@ -531,14 +531,32 @@ function ia_resumen_chat_local(array $cols, array $filas, string $pregunta = '')
     $date = now('America/Lima');
     $period = '';
     if (preg_match('/\bayer\b/u', $question)) {
-        $period = 'Periodo solicitado: Ayer ('.$date->subDay()->format('d/m/Y').").\n";
+        $period = 'Ayer, '.$date->subDay()->locale('es')->translatedFormat('j \d\e F \d\e Y');
     } elseif (preg_match('/\bhoy\b/u', $question)) {
-        $period = 'Periodo solicitado: Hoy ('.$date->format('d/m/Y').").\n";
+        $period = 'Hoy, '.$date->locale('es')->translatedFormat('j \d\e F \d\e Y');
     } elseif (preg_match('/\beste mes\b/u', $question)) {
-        $period = 'Periodo solicitado: Del '.$date->copy()->startOfMonth()->format('d/m/Y').' al '.$date->format('d/m/Y').".\n";
+        $period = 'Este mes, del '.$date->copy()->startOfMonth()->format('d/m/Y').' al '.$date->format('d/m/Y');
     }
+    if (count($filas) === 1 && count($cols) <= 2) {
+        $row = (array) $filas[0];
+        $sales = $orders = null;
+        foreach ($cols as $i => $col) {
+            $value = $row[$col] ?? $row[$i] ?? null;
+            if (is_numeric($value) && in_array(mb_strtolower($col), ['total_ventas', 'ventas_totales', 'total_vendido'], true)) {
+                $sales = MONEDA.number_format((float) $value, 2);
+            }
+            if (is_numeric($value) && in_array(mb_strtolower($col), ['numero_pedidos', 'cantidad_pedidos', 'pedidos'], true)) {
+                $orders = (int) $value;
+            }
+        }
+        if ($sales !== null && ($orders !== null || count($cols) === 1)) {
+            return ($period !== '' ? $period.', vendimos ' : 'Se registraron ventas por ').$sales
+                .($orders !== null ? ' en '.$orders.' '.($orders === 1 ? 'pedido' : 'pedidos') : '').'.';
+        }
+    }
+    $intro = $period !== '' ? $period.":\n" : '';
     if (count($filas) <= 1) {
-        return $period.ia_resumen_local($cols, $filas);
+        return $intro.ia_resumen_local($cols, $filas);
     }
     $lines = [];
     foreach (array_slice($filas, 0, 5) as $i => $fila) {
@@ -548,7 +566,7 @@ function ia_resumen_chat_local(array $cols, array $filas, string $pregunta = '')
         $lines[] = 'Puedes ver los demás resultados en «Ver datos».';
     }
 
-    return $period.implode("\n", $lines);
+    return $intro.implode("\n", $lines);
 }
 
 /* ------------------------------------------------------------------ */
