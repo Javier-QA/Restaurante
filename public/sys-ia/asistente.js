@@ -5,7 +5,7 @@
   const SUG = ['¿Cuáles fueron los 10 platos más vendidos este mes?', 'Ventas por día de los últimos 15 días', '¿Cuánto vendimos por método de pago esta semana?', 'Ventas por mozo este mes',
     '¿Cuál es el stock actual de los insumos?', 'Utilidad por categoría este mes', '¿Qué horas tienen más ventas?', 'Gastos por categoría este mes'];
   const MONEY = /(total|importe|ingreso|venta|monto|utilidad|costo|precio|valor|deuda|gasto|margen|saldo|promedio|propina|descuento|impuesto|ticket)/i;
-  const NOMONEY = /(pct|porcentaje|cantidad|num_|nro|veces|minutos|hora|pedidos|ordenes|unidades|clientes|visitas|stock)/i;
+  const NOMONEY = /(pct|porcentaje|cantidad|num_|nro|veces|minutos|hora|pedidos|ordenes|unidades|clientes|visitas|total_productos|total_insumos|stock)/i;
   const nf = (n, d = 0) => window.SP.num(n, d);
   const cel = (v, c) => v === null || v === undefined ? '—' : typeof v === 'number' ? (MONEY.test(c) && !NOMONEY.test(c) ? money(v) : nf(v, Number.isInteger(v) ? 0 : 2)) : esc(String(v));
   const chartTheme = () => { const c = getComputedStyle(document.querySelector('.sys-ia')); return { primary: c.getPropertyValue('--accent').trim(), text: c.getPropertyValue('--muted').trim(), line: c.getPropertyValue('--line').trim(), surface: c.getPropertyValue('--card').trim() }; };
