@@ -489,14 +489,6 @@
                 Historial de movimientos
             </h6>
 
-            <form method="POST" action="{{ route('inventory.logs.reset') }}">
-                @csrf
-                @method('DELETE')
-                <button type="button" class="btn btn-outline-danger rounded-pill"
-                        onclick="confirmResetKardex(this)">
-                    <i class="bi bi-trash3 me-1"></i> Vaciar Kardex y poner stock en cero
-                </button>
-            </form>
             <span class="inventory-count">
                 {{ $logs->total() }}
                 {{ $logs->total() === 1 ? 'movimiento' : 'movimientos' }}
@@ -504,6 +496,17 @@
 
         </div>
 
+
+        <div class="d-flex justify-content-end flex-wrap px-3 pb-3">
+            <form method="POST" action="{{ route('inventory.logs.reset') }}">
+                @csrf
+                @method('DELETE')
+                <button type="button" class="btn btn-outline-danger rounded-pill d-inline-flex align-items-center justify-content-center px-3" style="border: 1.5px solid currentColor !important; min-height: 40px; font-weight: 600;"
+                        onclick="confirmResetKardex(this)">
+                    <i class="bi bi-trash3 me-1"></i> Vaciar Kardex y poner stock en cero
+                </button>
+            </form>
+        </div>
 
         <div class="table-responsive">
 
