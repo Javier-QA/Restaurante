@@ -83,6 +83,11 @@ body {
 }
 
 .preview-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    line-height: 1.2;
     min-width: 105px;
     padding: 9px 16px;
     border-radius: 8px;
