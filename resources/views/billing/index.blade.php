@@ -830,8 +830,8 @@
 
                                     @if($o->isReceipt() && in_array($o->sunat_status, ['PENDING', 'ERROR', 'REJECTED']))
                                         <a href="{{ route('daily_summaries.index') }}" class="btn btn-outline-warning"
-                                           title="Ver resumen diario" aria-label="Ver resumen diario">
-                                            <i class="bi bi-file-earmark-text"></i>
+                                           title="Reintentar" aria-label="Reintentar">
+                                            <i class="bi bi-arrow-repeat"></i>
                                         </a>
                                     @endif
 

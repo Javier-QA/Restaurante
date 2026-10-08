@@ -84,7 +84,7 @@
 
         @if($order->isReceipt() && in_array($order->sunat_status, ['PENDING','ERROR','REJECTED']))
             <a href="{{ route('daily_summaries.index') }}" class="btn btn-outline-warning">
-                <i class="bi bi-file-earmark-text"></i> Ver resumen diario
+                <i class="bi bi-arrow-repeat"></i> Reintentar
             </a>
         @endif
 
