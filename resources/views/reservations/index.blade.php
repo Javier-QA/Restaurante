@@ -1036,18 +1036,18 @@
 }
 
 .status-confirmed {
-    color: #15803d;
-    background: #dcfce7;
+    color: var(--ink-green, #15803d);
+    background: var(--surface-green, #dcfce7);
 }
 
 .status-pending {
-    color: #b45309;
-    background: #fef3c7;
+    color: var(--ink-amber, #b45309);
+    background: var(--surface-amber, #fef3c7);
 }
 
 .status-cancelled {
-    color: #b91c1c;
-    background: #fee2e2;
+    color: var(--ink-red, #b91c1c);
+    background: var(--surface-red, #fee2e2);
 }
 
 .reservation-detail {
@@ -1065,7 +1065,7 @@
 }
 
 .detail-time {
-    color: #dc2626;
+    color: var(--ink-red, #dc2626);
 }
 
 .detail-table {
@@ -1078,7 +1078,7 @@
 }
 
 .reservation-time {
-    color: #dc2626;
+    color: var(--ink-red, #dc2626);
 }
 
 .reservation-table {
@@ -1088,31 +1088,31 @@
 .reservation-confirm-btn {
     min-height: 44px;
     border-radius: 12px;
-    background: #f0fdf4;
+    background: var(--surface-green, #f0fdf4);
     border: 1px solid #bbf7d0;
     color: #16803d;
     font-weight: 700;
 }
 
 .reservation-confirm-btn:hover {
-    background: #dcfce7;
+    background: var(--surface-green, #dcfce7);
     border-color: #86efac;
-    color: #166534;
+    color: var(--ink-green, #166534);
 }
 
 .reservation-cancel-btn {
     min-height: 44px;
     border-radius: 12px;
-    background: #fff1f2;
-    border: 1px solid #fecdd3;
-    color: #dc2626;
+    background: var(--surface-red, #fff1f2);
+    border: 1px solid var(--surface-red, #fecdd3);
+    color: var(--ink-red, #dc2626);
     font-weight: 700;
 }
 
 .reservation-cancel-btn:hover {
-    background: #fee2e2;
+    background: var(--surface-red, #fee2e2);
     border-color: #fda4af;
-    color: #b91c1c;
+    color: var(--ink-red, #b91c1c);
 }
 
 .reservation-edit-btn {
@@ -1140,9 +1140,9 @@
 }
 
 .reservation-delete-btn:hover {
-    background: #fee2e2;
-    border-color: #fecaca;
-    color: #dc2626;
+    background: var(--surface-red, #fee2e2);
+    border-color: var(--surface-red, #fecaca);
+    color: var(--ink-red, #dc2626);
 }
 
 .reservation-empty {
@@ -1426,18 +1426,18 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 
 .reservation-confirm-icon.confirm {
-    background: #f0fdf4;
+    background: var(--surface-green, #f0fdf4);
     color: #16803d;
 }
 
 .reservation-confirm-icon.cancel {
-    background: #fff7ed;
+    background: var(--surface-amber, #fff7ed);
     color: #ea580c;
 }
 
 .reservation-confirm-icon.delete {
-    background: #fff1f2;
-    color: #dc2626;
+    background: var(--surface-red, #fff1f2);
+    color: var(--ink-red, #dc2626);
 }
 
 .reservation-confirm-title {
@@ -1589,8 +1589,8 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 
 .reservations-page .row.g-3.mb-4 > div:nth-child(1) .reservation-stat-icon {
-    background: #eff6ff;
-    color: #2563eb !important;
+    background: var(--surface-blue, #eff6ff);
+    color: var(--ink-blue, #2563eb) !important;
 }
 
 .reservations-page .row.g-3.mb-4 > div:nth-child(2) .reservation-stat {
@@ -1598,7 +1598,7 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 
 .reservations-page .row.g-3.mb-4 > div:nth-child(2) .reservation-stat-icon {
-    background: #fff7ed;
+    background: var(--surface-amber, #fff7ed);
     color: #f59e0b !important;
 }
 
@@ -1607,8 +1607,8 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 
 .reservations-page .row.g-3.mb-4 > div:nth-child(3) .reservation-stat-icon {
-    background: #f0fdf4;
-    color: #16a34a !important;
+    background: var(--surface-green, #f0fdf4);
+    color: var(--ink-green, #16a34a) !important;
 }
 
 .reservations-page .row.g-3.mb-4 > div:nth-child(4) .reservation-stat {
@@ -1616,7 +1616,7 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 
 .reservations-page .row.g-3.mb-4 > div:nth-child(4) .reservation-stat-icon {
-    background: #faf5ff;
+    background: var(--surface-purple, #faf5ff);
     color: #9333ea !important;
 }
 </style>
@@ -1658,8 +1658,8 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 
 .reservation-kpi-today .reservation-kpi-icon {
-    background: #eff6ff;
-    color: #2563eb;
+    background: var(--surface-blue, #eff6ff);
+    color: var(--ink-blue, #2563eb);
 }
 
 /* Pendientes - naranja */
@@ -1668,7 +1668,7 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 
 .reservation-kpi-pending .reservation-kpi-icon {
-    background: #fff7ed;
+    background: var(--surface-amber, #fff7ed);
     color: #f59e0b;
 }
 
@@ -1678,8 +1678,8 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 
 .reservation-kpi-confirmed .reservation-kpi-icon {
-    background: #f0fdf4;
-    color: #16a34a;
+    background: var(--surface-green, #f0fdf4);
+    color: var(--ink-green, #16a34a);
 }
 
 /* Personas - morado */
@@ -1688,7 +1688,7 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 
 .reservation-kpi-people .reservation-kpi-icon {
-    background: #faf5ff;
+    background: var(--surface-purple, #faf5ff);
     color: #9333ea;
 }
 
@@ -1742,20 +1742,20 @@ document.addEventListener('DOMContentLoaded', function () {
     letter-spacing: .08em;
     padding: 3px 8px;
     border-radius: 20px;
-    background: #eff6ff;
+    background: var(--surface-blue, #eff6ff);
     color: var(--text-main, #172033);
 }
 
 .reservation-kpi-pending .reservation-kpi-badge {
-    background: #fff7ed;
+    background: var(--surface-amber, #fff7ed);
 }
 
 .reservation-kpi-confirmed .reservation-kpi-badge {
-    background: #f0fdf4;
+    background: var(--surface-green, #f0fdf4);
 }
 
 .reservation-kpi-people .reservation-kpi-badge {
-    background: #faf5ff;
+    background: var(--surface-purple, #faf5ff);
 }
 
 @media (max-width: 575.98px) {
@@ -1987,16 +1987,16 @@ html[data-color-mode="dark"] .reservation-card .reservation-note {
 }
 
 .reservation-card .reservation-confirm-btn {
-    background: #effff4 !important;
+    background: var(--surface-green, #effff4) !important;
     border: 1px solid #b7e8c7 !important;
     color: #16803d !important;
     border-radius: 12px !important;
 }
 
 .reservation-card .reservation-cancel-btn {
-    background: #fff1f2 !important;
+    background: var(--surface-red, #fff1f2) !important;
     border: 1px solid #f3b8c0 !important;
-    color: #dc2626 !important;
+    color: var(--ink-red, #dc2626) !important;
     border-radius: 12px !important;
 }
 
@@ -2098,7 +2098,7 @@ html[data-color-mode="dark"] .reservation-card .reservation-note {
 
 /* Confirmar */
 .reservation-card .reservation-confirm-btn {
-    background: #effff4 !important;
+    background: var(--surface-green, #effff4) !important;
     border: 1px solid #b7e8c7 !important;
     color: #16803d !important;
     border-radius: 12px !important;
@@ -2106,9 +2106,9 @@ html[data-color-mode="dark"] .reservation-card .reservation-note {
 
 /* Cancelar */
 .reservation-card .reservation-cancel-btn {
-    background: #fff1f2 !important;
+    background: var(--surface-red, #fff1f2) !important;
     border: 1px solid #f3b8c0 !important;
-    color: #dc2626 !important;
+    color: var(--ink-red, #dc2626) !important;
     border-radius: 12px !important;
 }
 

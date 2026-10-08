@@ -76,23 +76,23 @@
     }
 
     .billing-kpi.accepted::before {
-        background: linear-gradient(180deg, #16a34a, #86efac, #fff);
+        background: linear-gradient(180deg, #16a34a, #86efac, var(--card-bg, #fff));
     }
 
     .billing-kpi.observed::before {
-        background: linear-gradient(180deg, #f59e0b, #fcd34d, #fff);
+        background: linear-gradient(180deg, #f59e0b, #fcd34d, var(--card-bg, #fff));
     }
 
     .billing-kpi.pending::before {
-        background: linear-gradient(180deg, #64748b, #cbd5e1, #fff);
+        background: linear-gradient(180deg, #64748b, #cbd5e1, var(--card-bg, #fff));
     }
 
     .billing-kpi.error::before {
-        background: linear-gradient(180deg, #dc2626, #fca5a5, #fff);
+        background: linear-gradient(180deg, #dc2626, #fca5a5, var(--card-bg, #fff));
     }
 
     .billing-kpi.rejected::before {
-        background: linear-gradient(180deg, #b91c1c, #fca5a5, #fff);
+        background: linear-gradient(180deg, #b91c1c, #fca5a5, var(--card-bg, #fff));
     }
 
     .billing-kpi-content {
@@ -114,28 +114,28 @@
     }
 
     .billing-kpi.accepted .billing-kpi-icon {
-        background: #dcfce7;
-        color: #16a34a;
+        background: var(--surface-green, #dcfce7);
+        color: var(--ink-green, #16a34a);
     }
 
     .billing-kpi.observed .billing-kpi-icon {
-        background: #fef3c7;
-        color: #d97706;
+        background: var(--surface-amber, #fef3c7);
+        color: var(--ink-amber, #d97706);
     }
 
     .billing-kpi.pending .billing-kpi-icon {
-        background: #f1f5f9;
-        color: #64748b;
+        background: var(--surface-neutral, #f1f5f9);
+        color: var(--ink-neutral, #64748b);
     }
 
     .billing-kpi.error .billing-kpi-icon {
-        background: #fee2e2;
-        color: #dc2626;
+        background: var(--surface-red, #fee2e2);
+        color: var(--ink-red, #dc2626);
     }
 
     .billing-kpi.rejected .billing-kpi-icon {
-        background: #fee2e2;
-        color: #b91c1c;
+        background: var(--surface-red, #fee2e2);
+        color: var(--ink-red, #b91c1c);
     }
 
     .billing-kpi-label {
@@ -252,7 +252,7 @@
     }
 
     .billing-table-card tbody tr:hover {
-        background: color-mix(in srgb, var(--primary) 3%, white);
+        background: color-mix(in srgb, var(--primary) 3%, var(--card-bg, white));
     }
 
     .billing-table-card tbody td {
@@ -283,7 +283,7 @@
     }
 
     .billing-document-type.factura {
-        background: color-mix(in srgb, var(--primary) 10%, white);
+        background: color-mix(in srgb, var(--primary) 10%, var(--card-bg, white));
         color: var(--primary);
     }
 
@@ -381,8 +381,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #fef3c7;
-        color: #d97706;
+        background: var(--surface-amber, #fef3c7);
+        color: var(--ink-amber, #d97706);
         font-size: 1.65rem;
     }
 
@@ -1024,7 +1024,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     .billing-header-actions .btn-outline-warning {
         border-color: #f59e0b !important;
-        color: #d97706 !important;
+        color: var(--ink-amber, #d97706) !important;
     }
 
     .billing-header-actions .btn-outline-info {
@@ -1038,11 +1038,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     .billing-header-actions .btn-outline-warning:hover {
-        background: #fffbeb !important;
+        background: var(--surface-amber, #fffbeb) !important;
     }
 
     .billing-header-actions .btn-outline-info:hover {
-        background: #eff6ff !important;
+        background: var(--surface-blue, #eff6ff) !important;
     }
 
     .billing-header-actions .btn i {
@@ -1058,12 +1058,12 @@ document.addEventListener('DOMContentLoaded', function () {
             180deg,
             #059669,
             #6ee7b7,
-            #ffffff
+            var(--card-bg, #ffffff)
         ) !important;
     }
 
     .billing-kpi.accepted .billing-kpi-icon {
-        background: #f0fdf4 !important;
+        background: var(--surface-green, #f0fdf4) !important;
         color: #059669 !important;
     }
 

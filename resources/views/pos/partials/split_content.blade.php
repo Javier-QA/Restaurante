@@ -886,8 +886,8 @@ window.lookupSplitClientByDocument = async function() {
 }
 
 .split-page .table thead th {
-    background: #f8fafc !important;
-    color: #64748b;
+    background: var(--surface-neutral, #f8fafc) !important;
+    color: var(--ink-neutral, #64748b);
     border-bottom: 1px solid var(--split-border);
     padding-top: .8rem;
     padding-bottom: .8rem;
@@ -927,7 +927,7 @@ window.lookupSplitClientByDocument = async function() {
 .split-page .split-qty {
     min-width: 42px;
     border-color: #d9e1e8;
-    background: #fff;
+    background: var(--card-bg, #fff);
 }
 
 .split-page .input-group .btn {
@@ -948,13 +948,13 @@ window.lookupSplitClientByDocument = async function() {
 
 /* ZONA DE COBRO */
 .split-payment-panel {
-    background: #f8fafc !important;
+    background: var(--surface-neutral, #f8fafc) !important;
     border-top: 1px solid var(--split-border) !important;
     padding: 1.4rem !important;
 }
 
 .split-section-label {
-    color: #334155;
+    color: var(--text-main, #334155);
     font-size: .82rem;
     font-weight: 800;
     margin-bottom: .55rem;
@@ -966,10 +966,10 @@ window.lookupSplitClientByDocument = async function() {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fff !important;
+    background: var(--card-bg, #fff) !important;
     border: 1px solid #d9e2ea !important;
     border-radius: 10px !important;
-    color: #475569 !important;
+    color: var(--ink-neutral, #475569) !important;
     font-size: .84rem;
     transition: all .15s ease;
 }
@@ -990,7 +990,7 @@ window.lookupSplitClientByDocument = async function() {
 
 /* DATOS DEL CLIENTE */
 #splitClientData {
-    background: #fff;
+    background: var(--card-bg, #fff);
     border: 1px solid var(--split-border);
     border-radius: 12px;
     padding: 1rem;
@@ -1034,7 +1034,7 @@ window.lookupSplitClientByDocument = async function() {
 }
 
 .split-payment-yape {
-    background: #faf5ff !important;
+    background: var(--surface-purple, #faf5ff) !important;
     border-color: #d9c0ec !important;
     color: #742284 !important;
 }
@@ -1071,14 +1071,14 @@ window.lookupSplitClientByDocument = async function() {
 
 /* EFECTIVO */
 .split-cash-group {
-    background: #fff;
+    background: var(--card-bg, #fff);
     border: 1px solid #cfe7da;
     border-radius: 12px;
     padding: 1rem;
 }
 
 #splitReceivedAmount {
-    background: #fff !important;
+    background: var(--card-bg, #fff) !important;
     border-color: #a9d9c1 !important;
     font-size: 1.05rem !important;
     color: #17212b !important;
@@ -1096,7 +1096,7 @@ window.lookupSplitClientByDocument = async function() {
 /* TARJETA */
 .split-card-amount {
     padding: .9rem 1rem;
-    background: #fff;
+    background: var(--card-bg, #fff);
     border: 1px solid #c9daf2;
     border-radius: 12px;
     align-items: center;
@@ -1114,7 +1114,7 @@ window.lookupSplitClientByDocument = async function() {
     padding: 1rem;
     border-radius: 12px;
     text-align: center;
-    background: #fff;
+    background: var(--card-bg, #fff);
 }
 
 .split-yape-box {
@@ -1145,13 +1145,13 @@ window.lookupSplitClientByDocument = async function() {
     object-fit: contain;
     margin: .5rem auto .8rem;
     padding: 5px;
-    background: #fff;
+    background: var(--card-bg, #fff);
     border-radius: 10px;
 }
 
 .split-qr-empty {
     padding: 1.25rem .5rem;
-    color: #94a3b8;
+    color: var(--ink-neutral, #94a3b8);
 }
 
 .split-qr-empty i {
@@ -1166,7 +1166,7 @@ window.lookupSplitClientByDocument = async function() {
     justify-content: space-between;
     padding: .75rem .85rem;
     border-radius: 9px;
-    background: #f8fafc;
+    background: var(--surface-neutral, #f8fafc);
     font-weight: 700;
 }
 
@@ -1209,12 +1209,12 @@ window.lookupSplitClientByDocument = async function() {
     gap: .35rem;
     border-radius: 10px;
     border-color: #d7e0e8;
-    color: #475569;
+    color: var(--ink-neutral, #475569);
     font-weight: 700;
 }
 
 .split-back-btn:hover {
-    background: #fff;
+    background: var(--card-bg, #fff);
     color: var(--split-navy);
     border-color: var(--split-navy);
 }
@@ -1381,11 +1381,11 @@ html[data-color-mode="dark"] .split-back-btn:hover {
 
 /* Título e icono - modo claro */
 .split-page-title {
-    color: #111827 !important;
+    color: var(--text-main, #111827) !important;
 }
 
 .split-page-title i {
-    color: #111827 !important;
+    color: var(--text-main, #111827) !important;
 }
 
 /* Subtítulo - modo claro */
@@ -1455,9 +1455,9 @@ html[data-color-mode="dark"] .split-page-subtitle {
 /* ---------- TIPO DE COMPROBANTE ---------- */
 
 .split-doc-btn {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border: 1.5px solid #d6dee8 !important;
-    color: #334155 !important;
+    color: var(--text-main, #334155) !important;
     box-shadow: none !important;
     font-weight: 700;
 }
@@ -1483,25 +1483,25 @@ html[data-color-mode="dark"] .split-page-subtitle {
 
 /* Estado normal */
 .split-payment-cash {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border-color: #b9ddcb !important;
     color: #168a5b !important;
 }
 
 .split-payment-card {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border-color: #bfd4f4 !important;
     color: #2563a9 !important;
 }
 
 .split-payment-yape {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border-color: #dcc8e8 !important;
     color: #742284 !important;
 }
 
 .split-payment-plin {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border-color: #b8dfd9 !important;
     color: #087f70 !important;
 }
@@ -1541,9 +1541,9 @@ html[data-color-mode="dark"] .split-page-subtitle {
 /* ---------- BOTÓN VOLVER ---------- */
 
 .split-back-btn {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border: 1.5px solid #cbd5e1 !important;
-    color: #334155 !important;
+    color: var(--text-main, #334155) !important;
     box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
 }
 
@@ -1971,25 +1971,25 @@ html[data-color-mode="dark"]
 /* ---------- MODO CLARO: NO SELECCIONADOS ---------- */
 
 .split-payment-cash {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border: 1.5px solid #65b88d !important;
     color: #14764d !important;
 }
 
 .split-payment-card {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border: 1.5px solid #7da9da !important;
     color: #245f9f !important;
 }
 
 .split-payment-yape {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border: 1.5px solid #b77bc2 !important;
     color: #762985 !important;
 }
 
 .split-payment-plin {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border: 1.5px solid #64b8ac !important;
     color: #08786b !important;
 }
@@ -2112,7 +2112,7 @@ html[data-color-mode="dark"] .split-plin-box .split-qr-title {
 
 /* QR: mantener fondo blanco para lectura */
 html[data-color-mode="dark"] .split-qr-image {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border: 5px solid #ffffff !important;
     border-radius: 10px !important;
 }
@@ -2457,7 +2457,7 @@ html[data-color-mode="dark"] #splitPlinQr .split-qr-amount {
 
 /* EFECTIVO */
 html:not([data-color-mode="dark"]) #splitCashGroup {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border: 1.5px solid #198754 !important;
 }
 
@@ -2468,13 +2468,13 @@ html:not([data-color-mode="dark"]) #splitReceivedAmount {
 
 /* TARJETA */
 html:not([data-color-mode="dark"]) #splitCardAmount {
-    background: #eff6ff !important;
+    background: var(--surface-blue, #eff6ff) !important;
     border: 1.5px solid #347fc6 !important;
 }
 
 /* YAPE */
 html:not([data-color-mode="dark"]) #splitYapeQr {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border: 1.5px solid #9b47aa !important;
 }
 
@@ -2485,7 +2485,7 @@ html:not([data-color-mode="dark"]) #splitYapeQr .split-qr-amount {
 
 /* PLIN */
 html:not([data-color-mode="dark"]) #splitPlinQr {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border: 1.5px solid #159687 !important;
 }
 

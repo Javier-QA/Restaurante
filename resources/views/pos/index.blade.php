@@ -204,7 +204,7 @@
 
     .pos-table-free {
         border-color: #22c55e;
-        color: #15803d;
+        color: var(--ink-green, #15803d);
     }
 
     .pos-table-free::before {
@@ -215,7 +215,7 @@
 
     .pos-table-busy {
         border-color: #ef4444;
-        color: #dc2626;
+        color: var(--ink-red, #dc2626);
     }
 
     .pos-table-busy::before {
@@ -226,7 +226,7 @@
 
     .pos-table-reserved {
         border-color: #f59e0b;
-        color: #92400e;
+        color: var(--ink-amber, #92400e);
     }
 
     .pos-table-reserved::before {
@@ -262,19 +262,19 @@
     /* Icono central */
     .pos-table-free .bi-display,
     .pos-table-free .bi-display-fill {
-        color: #16a34a !important;
+        color: var(--ink-green, #16a34a) !important;
         opacity: .75 !important;
     }
 
     .pos-table-busy .bi-display,
     .pos-table-busy .bi-display-fill {
-        color: #dc2626 !important;
+        color: var(--ink-red, #dc2626) !important;
         opacity: .85 !important;
     }
 
     .pos-table-reserved .bi-display,
     .pos-table-reserved .bi-display-fill {
-        color: #d97706 !important;
+        color: var(--ink-amber, #d97706) !important;
         opacity: .8 !important;
     }
 
@@ -291,7 +291,7 @@
 
     .pos-table-card .bg-warning {
         background: #f59e0b !important;
-        color: #1f2937 !important;
+        color: var(--text-main, #1f2937) !important;
     }
 
     /* Asegurar lectura de consumo */
@@ -304,11 +304,11 @@
     /* VISIBILIDAD FINAL DE MESAS */
 
     .pos-table-card {
-        background-color: #ffffff !important;
+        background-color: var(--card-bg, #ffffff) !important;
     }
 
     .pos-table-card > div:first-child span {
-        color: #1f2937 !important;
+        color: var(--text-main, #1f2937) !important;
         font-size: .82rem !important;
         font-weight: 800 !important;
     }
@@ -330,7 +330,7 @@
 
     .pos-table-card .bg-warning {
         background-color: #f59e0b !important;
-        color: #111827 !important;
+        color: var(--text-main, #111827) !important;
     }
 
 

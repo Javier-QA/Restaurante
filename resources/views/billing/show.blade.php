@@ -522,7 +522,7 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        background: color-mix(in srgb, var(--primary) 10%, white);
+        background: color-mix(in srgb, var(--primary) 10%, var(--card-bg, white));
         color: var(--primary);
         font-size: 1.05rem;
     }
@@ -615,7 +615,7 @@
         margin-top: 7px;
         padding: 13px 14px;
         border-radius: 12px;
-        background: color-mix(in srgb, var(--primary) 9%, white);
+        background: color-mix(in srgb, var(--primary) 9%, var(--card-bg, white));
         color: var(--text-main, #111827);
         font-size: .90rem;
         font-weight: 800;
@@ -836,8 +836,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #fef3c7;
-        color: #d97706;
+        background: var(--surface-amber, #fef3c7);
+        color: var(--ink-amber, #d97706);
         font-size: 1.65rem;
     }
 
@@ -966,7 +966,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .billing-detail-actions .btn-outline-secondary {
         background: var(--card-bg, #fff);
         border-color: #94a3b8 !important;
-        color: #475569;
+        color: var(--ink-neutral, #475569);
     }
 
     /* XML */
@@ -980,14 +980,14 @@ document.addEventListener('DOMContentLoaded', function () {
     .billing-detail-actions .btn-outline-success {
         background: var(--card-bg, #fff);
         border-color: #22c55e !important;
-        color: #15803d;
+        color: var(--ink-green, #15803d);
     }
 
     /* Nota de crédito / Reintentar */
     .billing-detail-actions .btn-outline-warning {
         background: var(--card-bg, #fff);
         border-color: #f59e0b !important;
-        color: #d97706;
+        color: var(--ink-amber, #d97706);
     }
 
     .billing-detail-actions .btn i {
@@ -1047,7 +1047,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     .billing-back:hover {
-        background: color-mix(in srgb, var(--primary) 7%, white);
+        background: color-mix(in srgb, var(--primary) 7%, var(--card-bg, white));
         border-color: var(--primary);
         color: var(--primary);
         transform: translateY(-1px);
@@ -1121,7 +1121,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .billing-grand-total {
         margin-top: 7px;
         padding: 11px 12px;
-        background: color-mix(in srgb, var(--primary) 10%, white);
+        background: color-mix(in srgb, var(--primary) 10%, var(--card-bg, white));
     }
 
     /* Columna derecha */
@@ -1210,7 +1210,7 @@ document.addEventListener('DOMContentLoaded', function () {
         padding: 13px 14px;
         border-top: 1px solid var(--border-soft, #e5e7eb);
         border-radius: 10px;
-        background: color-mix(in srgb, var(--primary) 7%, white);
+        background: color-mix(in srgb, var(--primary) 7%, var(--card-bg, white));
         color: var(--text-main, #111827);
     }
 

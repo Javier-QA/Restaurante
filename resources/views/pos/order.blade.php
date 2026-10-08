@@ -1604,7 +1604,7 @@ window.lookupClientByDocument = async function() {
         position: relative;
         border-radius: 16px;
         border: 2px solid var(--pal-border);
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
         cursor: pointer;
         overflow: hidden;
         transition: transform .18s, box-shadow .18s, border-color .18s;
@@ -2018,7 +2018,7 @@ window.lookupClientByDocument = async function() {
 
     .pos-payment-btn {
         border: 1px solid var(--pos-border, #dce7f1) !important;
-        background: #ffffff !important;
+        background: var(--card-bg, #ffffff) !important;
         color: var(--pos-text, #172033) !important;
         padding: 10px 8px;
         border-radius: 10px;
@@ -2064,7 +2064,7 @@ window.lookupClientByDocument = async function() {
     .pos-payment-yape {
         color: #742284 !important;
         border-color: #742284 !important;
-        background: #ffffff !important;
+        background: var(--card-bg, #ffffff) !important;
     }
 
     .pos-payment-yape:hover {
@@ -2087,7 +2087,7 @@ window.lookupClientByDocument = async function() {
     .pos-payment-plin {
         color: #00a884 !important;
         border-color: #00a884 !important;
-        background: #ffffff !important;
+        background: var(--card-bg, #ffffff) !important;
     }
 
     .pos-payment-plin:hover {
@@ -2113,7 +2113,7 @@ window.lookupClientByDocument = async function() {
     .pos-payment-cash {
         color: #198754 !important;
         border-color: #198754 !important;
-        background: #ffffff !important;
+        background: var(--card-bg, #ffffff) !important;
     }
 
     .pos-payment-cash:hover {
@@ -2136,7 +2136,7 @@ window.lookupClientByDocument = async function() {
     .pos-payment-card {
         color: #0d6efd !important;
         border-color: #0d6efd !important;
-        background: #ffffff !important;
+        background: var(--card-bg, #ffffff) !important;
     }
 
     .pos-payment-card:hover {
@@ -2201,14 +2201,14 @@ window.lookupClientByDocument = async function() {
     }
 
     .pos-client-search-icon {
-        background: #ffffff !important;
+        background: var(--card-bg, #ffffff) !important;
         border-color: var(--pos-border, #dce7f1) !important;
         color: var(--primary, #ff8c00) !important;
     }
 
     .pos-client-search .form-control {
         border-color: var(--pos-border, #dce7f1) !important;
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
     }
 
     .pos-client-search .form-control:focus {
@@ -2217,14 +2217,14 @@ window.lookupClientByDocument = async function() {
     }
 
     .pos-client-clear {
-        background: #ffffff !important;
+        background: var(--card-bg, #ffffff) !important;
         border: 1px solid var(--pos-border, #dce7f1) !important;
         color: var(--pos-muted, #64748b) !important;
     }
 
     .pos-client-clear:hover {
-        color: #dc2626 !important;
-        background: #fff1f2 !important;
+        color: var(--ink-red, #dc2626) !important;
+        background: var(--surface-red, #fff1f2) !important;
     }
 
 
@@ -2242,7 +2242,7 @@ window.lookupClientByDocument = async function() {
         overflow-y: auto;
         overflow-x: hidden;
 
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
 
         border: 1px solid
             var(--pos-border, #dce7f1);
@@ -2291,7 +2291,7 @@ window.lookupClientByDocument = async function() {
             color-mix(
                 in srgb,
                 var(--primary, #ff8c00) 8%,
-                white
+                var(--card-bg, white)
             );
 
         transform: translateX(2px);
@@ -2316,7 +2316,7 @@ window.lookupClientByDocument = async function() {
             color-mix(
                 in srgb,
                 var(--primary, #ff8c00) 12%,
-                white
+                var(--card-bg, white)
             );
 
         color:
@@ -2413,7 +2413,7 @@ window.lookupClientByDocument = async function() {
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #fff4e6;
+        background: var(--surface-amber, #fff4e6);
         color: var(--primary, #ff8c00);
         font-size: 1.8rem;
     }
@@ -2538,7 +2538,7 @@ window.lookupClientByDocument = async function() {
 
         padding: 0 12px;
 
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
 
         border: 1px solid
             var(--pos-border, #dce7f1);
@@ -2585,7 +2585,7 @@ window.lookupClientByDocument = async function() {
 
         padding: 6px;
 
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
 
         border: 1px solid
             var(--pos-border, #dce7f1);
@@ -2631,7 +2631,7 @@ window.lookupClientByDocument = async function() {
             color-mix(
                 in srgb,
                 var(--primary, #ff8c00) 8%,
-                white
+                var(--card-bg, white)
             );
     }
 
@@ -2656,7 +2656,7 @@ window.lookupClientByDocument = async function() {
             color-mix(
                 in srgb,
                 var(--primary, #ff8c00) 12%,
-                white
+                var(--card-bg, white)
             );
 
         color:
@@ -2718,7 +2718,7 @@ window.lookupClientByDocument = async function() {
     padding: 14px;
     border: 1px solid var(--pos-border, #dce7f1);
     border-radius: 14px;
-    background: #ffffff;
+    background: var(--card-bg, #ffffff);
 }
 
 .pos-qr-title {
@@ -2732,8 +2732,8 @@ window.lookupClientByDocument = async function() {
     object-fit: contain;
     padding: 8px;
     border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    background: #ffffff;
+    border: 1px solid var(--surface-neutral, #e5e7eb);
+    background: var(--card-bg, #ffffff);
 }
 
 .pos-qr-empty {
@@ -2743,8 +2743,8 @@ window.lookupClientByDocument = async function() {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    color: #64748b;
-    background: #ffffff;
+    color: var(--ink-neutral, #64748b);
+    background: var(--card-bg, #ffffff);
     border-radius: 12px;
 }
 
@@ -2757,13 +2757,13 @@ window.lookupClientByDocument = async function() {
 .pos-qr-amount {
     padding: 10px 12px;
     border-radius: 12px;
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
+    background: var(--card-bg, #ffffff);
+    border: 1px solid var(--surface-neutral, #e5e7eb);
 }
 
 .pos-qr-amount span {
     display: block;
-    color: #64748b;
+    color: var(--ink-neutral, #64748b);
     font-size: .72rem;
     margin-bottom: 2px;
 }
@@ -2772,7 +2772,7 @@ window.lookupClientByDocument = async function() {
     display: block;
     font-size: 1.35rem;
     font-weight: 800;
-    color: #172033;
+    color: var(--text-main, #172033);
 }
 
 #yapeQrBox .pos-qr-amount strong {
@@ -2788,21 +2788,21 @@ window.lookupClientByDocument = async function() {
 .pos-digital-payment-amount {
     padding: 12px 14px;
     text-align: center;
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
+    background: var(--card-bg, #ffffff);
+    border: 1px solid var(--surface-neutral, #e5e7eb);
     border-radius: 12px;
 }
 
 .pos-digital-payment-amount span {
     display: block;
-    color: #64748b;
+    color: var(--ink-neutral, #64748b);
     font-size: .72rem;
     margin-bottom: 2px;
 }
 
 .pos-digital-payment-amount strong {
     display: block;
-    color: #172033;
+    color: var(--text-main, #172033);
     font-size: 1.45rem;
     font-weight: 800;
 }
@@ -2814,7 +2814,7 @@ window.lookupClientByDocument = async function() {
     padding: 11px 14px;
     border-radius: 12px;
     text-align: center;
-    background: #ffffff;
+    background: var(--card-bg, #ffffff);
 }
 
 .pos-method-amount span,
@@ -2822,7 +2822,7 @@ window.lookupClientByDocument = async function() {
     display: block;
     font-size: .72rem;
     margin-bottom: 2px;
-    color: #64748b;
+    color: var(--ink-neutral, #64748b);
 }
 
 .pos-method-amount strong,
@@ -2835,7 +2835,7 @@ window.lookupClientByDocument = async function() {
 /* TARJETA */
 .pos-method-card {
     border: 1px solid #0d6efd;
-    background: #eff6ff;
+    background: var(--surface-blue, #eff6ff);
 }
 
 .pos-method-card strong {
@@ -2887,7 +2887,7 @@ window.lookupClientByDocument = async function() {
 
 #receivedAmount {
     border: 2px solid #198754 !important;
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     color: #198754 !important;
     border-radius: 10px;
     font-weight: 800 !important;
@@ -2922,20 +2922,20 @@ window.lookupClientByDocument = async function() {
         color-mix(
             in srgb,
             var(--primary, #ff8c00) 8%,
-            white
+            var(--card-bg, white)
         );
     border: 1px solid
         color-mix(
             in srgb,
             var(--primary, #ff8c00) 25%,
-            white
+            var(--card-bg, white)
         );
 }
 
 .pos-options-total span {
     display: block;
     font-size: .72rem;
-    color: #64748b;
+    color: var(--ink-neutral, #64748b);
 }
 
 .pos-options-total strong {
@@ -3090,13 +3090,13 @@ html[data-color-mode="dark"] #cart-container i {
 
 /* Panel derecho */
 html:not([data-color-mode="dark"]) .pos-cart-panel {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border-left: 1px solid var(--border-soft) !important;
 }
 
 /* Cabecera Cuenta Actual */
 html:not([data-color-mode="dark"]) .pos-cart-header {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border-bottom: 1px solid var(--border-soft) !important;
 }
 
@@ -3109,7 +3109,7 @@ html:not([data-color-mode="dark"]) .pos-cart-header h6 i {
 
 /* Cuerpo de la cuenta */
 html:not([data-color-mode="dark"]) #cart-container {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     color: var(--text-main) !important;
 }
 
@@ -3132,7 +3132,7 @@ html:not([data-color-mode="dark"]) #cart-container .text-muted {
     border: 1px solid #cbd5e1 !important;
     border-radius: 8px !important;
 
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     color: var(--text-main) !important;
 
     padding: 6px 11px !important;
@@ -3145,7 +3145,7 @@ html:not([data-color-mode="dark"]) #cart-container .text-muted {
 
 .pos-back-btn:hover {
     border-color: var(--primary) !important;
-    background: color-mix(in srgb, var(--primary) 7%, white) !important;
+    background: color-mix(in srgb, var(--primary) 7%, var(--card-bg, white)) !important;
     color: var(--primary) !important;
 }
 
@@ -3381,7 +3381,7 @@ html[data-color-mode="dark"] #optionsModal .form-control::placeholder {
     border: 0 !important;
     border-radius: 16px !important;
     overflow: hidden;
-    background: #ffffff;
+    background: var(--card-bg, #ffffff);
     box-shadow: 0 20px 50px rgba(15, 23, 42, .22) !important;
 }
 
@@ -3412,7 +3412,7 @@ html[data-color-mode="dark"] #optionsModal .form-control::placeholder {
 #moveTableModal .pos-move-label {
     display: block;
     margin-bottom: 8px;
-    color: #334155;
+    color: var(--text-main, #334155);
     font-size: .82rem;
     font-weight: 700;
 }
@@ -3422,8 +3422,8 @@ html[data-color-mode="dark"] #optionsModal .form-control::placeholder {
     padding: 10px 42px 10px 13px;
     border: 1px solid #d8e1eb !important;
     border-radius: 10px !important;
-    background: #ffffff !important;
-    color: #172033 !important;
+    background: var(--card-bg, #ffffff) !important;
+    color: var(--text-main, #172033) !important;
     box-shadow: none !important;
 }
 
@@ -3833,7 +3833,7 @@ html[data-color-mode="dark"] #checkoutModal .pos-qr-box {
 }
 
 html[data-color-mode="dark"] #checkoutModal .pos-qr-image {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     padding: 8px !important;
     border-radius: 10px !important;
 }
@@ -4143,23 +4143,23 @@ html[data-color-mode="dark"] #checkoutModal #plinQrBox .pos-qr-amount strong {
 
 /* YAPE - MODO CLARO */
 html:not([data-color-mode="dark"]) #checkoutModal #yapeQrBox {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border-color: #9b47aa !important;
 }
 
 html:not([data-color-mode="dark"]) #checkoutModal #yapeQrBox .pos-qr-amount {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border: 1.5px solid #9b47aa !important;
 }
 
 /* PLIN - MODO CLARO */
 html:not([data-color-mode="dark"]) #checkoutModal #plinQrBox {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border-color: #159687 !important;
 }
 
 html:not([data-color-mode="dark"]) #checkoutModal #plinQrBox .pos-qr-amount {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border: 1.5px solid #159687 !important;
 }
 
@@ -4237,7 +4237,7 @@ html[data-color-mode="dark"] #checkoutModal #changeAmount {
 
 /* Contenedor exterior: neutro + borde verde */
 html:not([data-color-mode="dark"]) #checkoutModal #cashInputGroup {
-    background: #ffffff !important;
+    background: var(--card-bg, #ffffff) !important;
     border: 1.5px solid #198754 !important;
 }
 
@@ -4250,7 +4250,7 @@ html:not([data-color-mode="dark"]) #checkoutModal #receivedAmount {
 
 /* Textos */
 html:not([data-color-mode="dark"]) #checkoutModal #cashInputGroup .form-label {
-    color: #111827 !important;
+    color: var(--text-main, #111827) !important;
 }
 
 html:not([data-color-mode="dark"]) #checkoutModal #changeAmount {

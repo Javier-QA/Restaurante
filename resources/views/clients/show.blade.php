@@ -237,7 +237,7 @@
     }
 
     .client-stat-card.spent::before {
-        background: linear-gradient(180deg, #3b82f6 0%, #93c5fd 55%, #dbeafe 100%);
+        background: linear-gradient(180deg, #3b82f6 0%, #93c5fd 55%, var(--surface-blue, #dbeafe) 100%);
     }
 
     .client-stat-card.visits {
@@ -245,7 +245,7 @@
     }
 
     .client-stat-card.visits::before {
-        background: linear-gradient(180deg, #22c55e 0%, #86efac 55%, #dcfce7 100%);
+        background: linear-gradient(180deg, #22c55e 0%, #86efac 55%, var(--surface-green, #dcfce7) 100%);
     }
 
     .client-stat-card.favorite {
@@ -253,7 +253,7 @@
     }
 
     .client-stat-card.favorite::before {
-        background: linear-gradient(180deg, #f59e0b 0%, #fbbf24 48%, #ffedd5 100%);
+        background: linear-gradient(180deg, #f59e0b 0%, #fbbf24 48%, var(--surface-amber, #ffedd5) 100%);
     }
 
     .client-stat-top {
@@ -284,17 +284,17 @@
     }
 
     .client-stat-card.spent .client-stat-icon {
-        background: #eff6ff;
+        background: var(--surface-blue, #eff6ff);
         color: var(--profile-blue);
     }
 
     .client-stat-card.visits .client-stat-icon {
-        background: #f0fdf4;
+        background: var(--surface-green, #f0fdf4);
         color: var(--profile-green);
     }
 
     .client-stat-card.favorite .client-stat-icon {
-        background: #fffbeb;
+        background: var(--surface-amber, #fffbeb);
         color: var(--profile-amber);
     }
 

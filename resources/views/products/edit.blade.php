@@ -158,14 +158,14 @@
         padding: 14px 16px;
         border: 1px solid #bbf7d0;
         border-radius: 11px;
-        background: #f0fdf4;
+        background: var(--surface-green, #f0fdf4);
     }
 
     .product-profitability-head {
         display: flex;
         align-items: center;
         gap: 7px;
-        color: #166534;
+        color: var(--ink-green, #166534);
         font-size: .77rem;
         font-weight: 800;
     }
@@ -179,7 +179,7 @@
 
     .product-profitability-description {
         margin: 3px 0 0;
-        color: #15803d;
+        color: var(--ink-green, #15803d);
         font-size: .67rem;
     }
 
@@ -189,7 +189,7 @@
 
     .profit-stat span {
         display: block;
-        color: #64748b;
+        color: var(--ink-neutral, #64748b);
         font-size: .61rem;
         font-weight: 800;
         text-transform: uppercase;
@@ -203,7 +203,7 @@
     }
 
     .profit-stat.margin strong {
-        color: #15803d;
+        color: var(--ink-green, #15803d);
     }
 
     /* Opciones */
@@ -394,16 +394,16 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border: 1px solid #fecaca;
+        border: 1px solid var(--surface-red, #fecaca);
         border-radius: 8px;
-        background: #ffffff;
-        color: #dc2626;
+        background: var(--card-bg, #ffffff);
+        color: var(--ink-red, #dc2626);
     }
 
     .recipe-remove:hover {
-        background: #fff1f2;
+        background: var(--surface-red, #fff1f2);
         border-color: #fca5a5;
-        color: #b91c1c;
+        color: var(--ink-red, #b91c1c);
     }
 
     /* Botón guardar */

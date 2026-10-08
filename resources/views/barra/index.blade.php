@@ -415,12 +415,12 @@ html:not([data-color-mode="dark"]) .bar-status-preparing i {
 #barra-orders .card-header.bg-warning {
     background: #fbbf24 !important;
     border-color: #fbbf24 !important;
-    color: #1f2937 !important;
+    color: var(--text-main, #1f2937) !important;
 }
 
 #bar-orders .card-header.bg-warning *,
 #barra-orders .card-header.bg-warning * {
-    color: #1f2937 !important;
+    color: var(--text-main, #1f2937) !important;
     -webkit-text-fill-color: #1f2937 !important;
 }
 

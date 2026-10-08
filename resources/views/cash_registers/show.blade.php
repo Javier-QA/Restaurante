@@ -69,7 +69,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: color-mix(in srgb, var(--primary) 10%, white);
+        background: color-mix(in srgb, var(--primary) 10%, var(--card-bg, white));
         color: var(--primary);
         font-size: 1.15rem;
         margin-bottom: 13px;
@@ -127,8 +127,8 @@
     }
 
     .total-sales-box {
-        background: color-mix(in srgb, var(--primary) 7%, white);
-        border: 1px solid color-mix(in srgb, var(--primary) 20%, white);
+        background: color-mix(in srgb, var(--primary) 7%, var(--card-bg, white));
+        border: 1px solid color-mix(in srgb, var(--primary) 20%, var(--card-bg, white));
         border-radius: 12px;
         padding: 15px 16px;
         margin-top: 16px;
@@ -149,21 +149,21 @@
     }
 
     .difference-exact {
-        background: #f0fdf4;
+        background: var(--surface-green, #f0fdf4);
         border: 1px solid #86efac;
-        color: #15803d;
+        color: var(--ink-green, #15803d);
     }
 
     .difference-surplus {
-        background: #eff6ff;
+        background: var(--surface-blue, #eff6ff);
         border: 1px solid #93c5fd;
-        color: #1d4ed8;
+        color: var(--ink-blue, #1d4ed8);
     }
 
     .difference-shortage {
-        background: #fff1f2;
+        background: var(--surface-red, #fff1f2);
         border: 1px solid #fca5a5;
-        color: #dc2626;
+        color: var(--ink-red, #dc2626);
     }
 
     .expense-table th {

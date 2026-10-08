@@ -503,14 +503,14 @@ html[data-color-mode="dark"] .card .btn-outline-danger:hover {
 #kitchen-orders .card-header.bg-warning {
     background: #fbbf24 !important;
     border-color: #fbbf24 !important;
-    color: #1f2937 !important;
+    color: var(--text-main, #1f2937) !important;
 }
 
 #kitchen-orders .card-header.bg-warning h5,
 #kitchen-orders .card-header.bg-warning small,
 #kitchen-orders .card-header.bg-warning span,
 #kitchen-orders .card-header.bg-warning i {
-    color: #1f2937 !important;
+    color: var(--text-main, #1f2937) !important;
     -webkit-text-fill-color: #1f2937 !important;
 }
 
@@ -534,7 +534,7 @@ html[data-color-mode="dark"] #kitchen-orders .card-header.bg-warning h5,
 html[data-color-mode="dark"] #kitchen-orders .card-header.bg-warning small,
 html[data-color-mode="dark"] #kitchen-orders .card-header.bg-warning span,
 html[data-color-mode="dark"] #kitchen-orders .card-header.bg-warning i {
-    color: #1f2937 !important;
+    color: var(--text-main, #1f2937) !important;
     -webkit-text-fill-color: #1f2937 !important;
 }
 

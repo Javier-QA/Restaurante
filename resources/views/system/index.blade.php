@@ -132,15 +132,15 @@
     }
 
     .restore .maintenance-icon {
-        color: #2563eb;
-        background: #eff6ff;
-        border: 1px solid #bfdbfe;
+        color: var(--ink-blue, #2563eb);
+        background: var(--surface-blue, #eff6ff);
+        border: 1px solid var(--surface-blue, #bfdbfe);
     }
 
     .reset .maintenance-icon {
-        color: #dc2626;
-        background: #fff1f2;
-        border: 1px solid #fecaca;
+        color: var(--ink-red, #dc2626);
+        background: var(--surface-red, #fff1f2);
+        border: 1px solid var(--surface-red, #fecaca);
     }
 
     .maintenance-card-title {
@@ -229,7 +229,7 @@
         margin-bottom: 14px;
         padding: 11px 12px;
 
-        border: 1px solid #fecaca;
+        border: 1px solid var(--surface-red, #fecaca);
         border-radius: 9px;
 
         background: #fffafa;
@@ -242,7 +242,7 @@
 
         margin-bottom: 8px;
 
-        color: #b91c1c;
+        color: var(--ink-red, #b91c1c);
 
         font-size: .65rem;
         font-weight: 800;
@@ -389,15 +389,15 @@
     }
 
     .maintenance-modal-icon.warning {
-        background: #eff6ff;
-        border: 1px solid #bfdbfe;
-        color: #2563eb;
+        background: var(--surface-blue, #eff6ff);
+        border: 1px solid var(--surface-blue, #bfdbfe);
+        color: var(--ink-blue, #2563eb);
     }
 
     .maintenance-modal-icon.danger {
-        background: #fff1f2;
-        border: 1px solid #fecaca;
-        color: #dc2626;
+        background: var(--surface-red, #fff1f2);
+        border: 1px solid var(--surface-red, #fecaca);
+        color: var(--ink-red, #dc2626);
     }
 
     .maintenance-modal h5 {
@@ -427,15 +427,15 @@
     }
 
     .maintenance-warning-box.warning {
-        border: 1px solid #bfdbfe;
-        background: #eff6ff;
-        color: #1e40af;
+        border: 1px solid var(--surface-blue, #bfdbfe);
+        background: var(--surface-blue, #eff6ff);
+        color: var(--ink-blue, #1e40af);
     }
 
     .maintenance-warning-box.danger {
-        border: 1px solid #fecaca;
-        background: #fff1f2;
-        color: #991b1b;
+        border: 1px solid var(--surface-red, #fecaca);
+        background: var(--surface-red, #fff1f2);
+        color: var(--ink-red, #991b1b);
     }
 
     @media (max-width: 991.98px) {
@@ -504,7 +504,7 @@
 
     .maintenance-file-clear {
         display: none;
-        color: #dc2626;
+        color: var(--ink-red, #dc2626);
     }
 
     .maintenance-file-clear.is-visible {
@@ -512,7 +512,7 @@
     }
 
     .maintenance-file-clear:hover {
-        color: #dc2626;
+        color: var(--ink-red, #dc2626);
         border-color: rgba(220, 38, 38, .35);
         background: rgba(220, 38, 38, .07);
     }
@@ -620,13 +620,13 @@
     }
 
     .maintenance-toast.success .maintenance-toast-icon {
-        color: #15803d;
-        background: #f0fdf4;
+        color: var(--ink-green, #15803d);
+        background: var(--surface-green, #f0fdf4);
     }
 
     .maintenance-toast.error .maintenance-toast-icon {
-        color: #dc2626;
-        background: #fff1f2;
+        color: var(--ink-red, #dc2626);
+        background: var(--surface-red, #fff1f2);
     }
 
     .maintenance-toast.info .maintenance-toast-icon {

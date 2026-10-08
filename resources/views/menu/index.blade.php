@@ -95,7 +95,7 @@
             }
 
             section .product-card {
-            background: #fff;
+            background: var(--card-bg, #fff);
             border-radius: 16px;
             margin: 0;
             padding: 12px;
@@ -132,7 +132,7 @@
             align-items: center;
             gap: 12px;
             padding: 0 16px;
-            background: #fff;
+            background: var(--card-bg, #fff);
             border: 1px solid #eceef1;
             border-radius: 16px;
             box-shadow: 0 7px 24px rgba(0, 0, 0, .10);
@@ -175,7 +175,7 @@
             border: 0;
             border-radius: 9px;
             background: #f1f3f5;
-            color: #6b7280;
+            color: var(--ink-neutral, #6b7280);
             cursor: pointer;
         }
 
@@ -184,7 +184,7 @@
         }
 
         .search-clear:hover {
-            background: #e5e7eb;
+            background: var(--surface-neutral, #e5e7eb);
             color: var(--dark);
         }
 
@@ -192,7 +192,7 @@
             display: none;
             padding: 12px 4px 0;
             text-align: center;
-            color: #6b7280;
+            color: var(--ink-neutral, #6b7280);
             font-size: .82rem;
             font-weight: 500;
         }
@@ -209,7 +209,7 @@
         .category-nav::-webkit-scrollbar { display: none; } /* Chrome */
         .category-pill {
             background: rgba(255,255,255,.96);
-            color: #475569;
+            color: var(--ink-neutral, #475569);
             padding: 9px 16px;
             border-radius: 13px;
             font-weight: 650;
@@ -218,7 +218,7 @@
             box-shadow: 0 3px 12px rgba(15,23,42,.06);
             text-decoration: none;
             transition: all .2s ease;
-            border: 1px solid #e5e7eb;
+            border: 1px solid var(--surface-neutral, #e5e7eb);
         }
 
         .category-pill:hover {
@@ -228,8 +228,8 @@
         }
         .category-pill.active,
 .category-pill:active {
-            background: #fff7ed;
-            color: #c2410c;
+            background: var(--surface-amber, #fff7ed);
+            color: var(--ink-amber, #c2410c);
             border-color: #fed7aa;
             box-shadow: 0 4px 14px rgba(194,65,12,.10);
         }
@@ -258,7 +258,7 @@
 
         /* PRODUCT CARD */
         .product-card {
-            background: #fff;
+            background: var(--card-bg, #fff);
             border-radius: 16px;
             margin: 0;
             padding: 12px;
@@ -306,7 +306,7 @@
         }
         .product-desc {
             font-size: .78rem;
-            color: #6b7280;
+            color: var(--ink-neutral, #6b7280);
             margin-bottom: 6px;
             display: -webkit-box;
             -webkit-line-clamp: 2;

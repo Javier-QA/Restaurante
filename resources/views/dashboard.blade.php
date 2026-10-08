@@ -939,7 +939,7 @@ document.addEventListener('DOMContentLoaded', function () {
     background: linear-gradient(
         180deg,
         var(--dash-primary) 0%,
-        color-mix(in srgb, var(--dash-primary) 25%, white) 65%,
+        color-mix(in srgb, var(--dash-primary) 25%, var(--card-bg, white)) 65%,
         white 100%
     );
 }
@@ -948,7 +948,7 @@ document.addEventListener('DOMContentLoaded', function () {
     background: linear-gradient(
         180deg,
         var(--dash-accent-1) 0%,
-        color-mix(in srgb, var(--dash-accent-1) 25%, white) 65%,
+        color-mix(in srgb, var(--dash-accent-1) 25%, var(--card-bg, white)) 65%,
         white 100%
     );
 }
@@ -957,7 +957,7 @@ document.addEventListener('DOMContentLoaded', function () {
     background: linear-gradient(
         180deg,
         var(--dash-accent-2) 0%,
-        color-mix(in srgb, var(--dash-accent-2) 25%, white) 65%,
+        color-mix(in srgb, var(--dash-accent-2) 25%, var(--card-bg, white)) 65%,
         white 100%
     );
 }
@@ -976,7 +976,7 @@ document.addEventListener('DOMContentLoaded', function () {
     background: linear-gradient(
         180deg,
         var(--dash-accent-4) 0%,
-        color-mix(in srgb, var(--dash-accent-4) 25%, white) 65%,
+        color-mix(in srgb, var(--dash-accent-4) 25%, var(--card-bg, white)) 65%,
         white 100%
     );
 }
@@ -993,27 +993,27 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     .kpi-sales .kpi-icon-wrap {
-        background: color-mix(in srgb, var(--dash-primary) 12%, white);
+        background: color-mix(in srgb, var(--dash-primary) 12%, var(--card-bg, white));
         color: var(--dash-primary);
     }
 
     .kpi-tables .kpi-icon-wrap {
-        background: color-mix(in srgb, var(--dash-accent-1) 12%, white);
+        background: color-mix(in srgb, var(--dash-accent-1) 12%, var(--card-bg, white));
         color: var(--dash-accent-1);
     }
 
     .kpi-month .kpi-icon-wrap {
-        background: color-mix(in srgb, var(--dash-accent-2) 12%, white);
+        background: color-mix(in srgb, var(--dash-accent-2) 12%, var(--card-bg, white));
         color: var(--dash-accent-2);
     }
 
     .kpi-stock.kpi-alert .kpi-icon-wrap {
-        background: #fff1f2;
+        background: var(--surface-red, #fff1f2);
         color: #ef4444;
     }
 
     .kpi-stock.kpi-ok .kpi-icon-wrap {
-        background: color-mix(in srgb, var(--dash-accent-4) 12%, white);
+        background: color-mix(in srgb, var(--dash-accent-4) 12%, var(--card-bg, white));
         color: var(--dash-accent-4);
     }
 
@@ -1059,7 +1059,7 @@ document.addEventListener('DOMContentLoaded', function () {
         letter-spacing: .08em;
         padding: 3px 8px;
         border-radius: 20px;
-        background: color-mix(in srgb, var(--dash-accent-1) 9%, white);
+        background: color-mix(in srgb, var(--dash-accent-1) 9%, var(--card-bg, white));
         color: var(--dash-dark);
         text-decoration: none;
     }
@@ -1122,7 +1122,7 @@ document.addEventListener('DOMContentLoaded', function () {
         justify-content: center;
         flex-shrink: 0;
         font-size: 1.2rem;
-        background: color-mix(in srgb, var(--dash-primary) 12%, white);
+        background: color-mix(in srgb, var(--dash-primary) 12%, var(--card-bg, white));
         color: var(--dash-primary);
         transition: background .25s, color .25s, transform .25s;
     }
@@ -1181,7 +1181,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .goal-bar-track {
         width: 100%;
         height: 16px;
-        background: color-mix(in srgb, var(--dash-accent-1) 9%, white);
+        background: color-mix(in srgb, var(--dash-accent-1) 9%, var(--card-bg, white));
         border-radius: 20px;
         position: relative;
         overflow: hidden;
@@ -1209,7 +1209,7 @@ document.addEventListener('DOMContentLoaded', function () {
     background: linear-gradient(
         90deg,
         #ffffff 0%,
-        color-mix(in srgb, var(--dash-accent-4) 18%, white) 22%,
+        color-mix(in srgb, var(--dash-accent-4) 18%, var(--card-bg, white)) 22%,
         var(--dash-accent-4) 100%
     );
 }
@@ -1218,7 +1218,7 @@ document.addEventListener('DOMContentLoaded', function () {
     background: linear-gradient(
         90deg,
         #ffffff 0%,
-        color-mix(in srgb, var(--dash-accent-1) 18%, white) 22%,
+        color-mix(in srgb, var(--dash-accent-1) 18%, var(--card-bg, white)) 22%,
         var(--dash-accent-1) 100%
     );
 }
@@ -1227,7 +1227,7 @@ document.addEventListener('DOMContentLoaded', function () {
     background: linear-gradient(
         90deg,
         #ffffff 0%,
-        color-mix(in srgb, var(--dash-accent-2) 18%, white) 22%,
+        color-mix(in srgb, var(--dash-accent-2) 18%, var(--card-bg, white)) 22%,
         var(--dash-accent-2) 100%
     );
 }
@@ -1236,7 +1236,7 @@ document.addEventListener('DOMContentLoaded', function () {
     background: linear-gradient(
         90deg,
         #ffffff 0%,
-        color-mix(in srgb, var(--dash-primary) 18%, white) 22%,
+        color-mix(in srgb, var(--dash-primary) 18%, var(--card-bg, white)) 22%,
         var(--dash-primary) 100%
     );
 }
@@ -1245,7 +1245,7 @@ document.addEventListener('DOMContentLoaded', function () {
     background: linear-gradient(
         90deg,
         #ffffff 0%,
-        color-mix(in srgb, var(--dash-primary) 22%, white) 20%,
+        color-mix(in srgb, var(--dash-primary) 22%, var(--card-bg, white)) 20%,
         var(--dash-primary) 100%
     );
 
@@ -1349,8 +1349,8 @@ document.addEventListener('DOMContentLoaded', function () {
         border: 0;
         background: linear-gradient(
             135deg,
-            color-mix(in srgb, var(--dash-primary) 12%, white),
-            color-mix(in srgb, var(--dash-accent-1) 10%, white)
+            color-mix(in srgb, var(--dash-primary) 12%, var(--card-bg, white)),
+            color-mix(in srgb, var(--dash-accent-1) 10%, var(--card-bg, white))
         );
         color: var(--dash-text);
     }
@@ -3307,7 +3307,7 @@ html[data-color-mode="dark"] .text-muted {
 
 /* Indicador porcentual situado sobre la barra */
 html[data-color-mode="dark"] .goal-progress-message {
-    color: #94a3b8 !important;
+    color: var(--ink-neutral, #94a3b8) !important;
 }
 
 /* Elementos claros dentro del progreso */
@@ -3789,7 +3789,7 @@ html[data-color-mode="dark"] .goal-icon-wrap i {
 
 
 .rooms-legend-item.is-available {
-    color: #15803d;
+    color: var(--ink-green, #15803d);
 }
 
 
@@ -4076,7 +4076,7 @@ html[data-color-mode="dark"] .goal-icon-wrap i {
 
 .is-available
 .dashboard-table-icon {
-    color: #16a34a;
+    color: var(--ink-green, #16a34a);
     background: #ecfdf3;
 }
 
@@ -4084,7 +4084,7 @@ html[data-color-mode="dark"] .goal-icon-wrap i {
 .is-busy
 .dashboard-table-icon {
     color: #e11d48;
-    background: #fff1f2;
+    background: var(--surface-red, #fff1f2);
 }
 
 
@@ -4096,7 +4096,7 @@ html[data-color-mode="dark"] .goal-icon-wrap i {
 
 .is-available
 .dashboard-table-status {
-    color: #16a34a;
+    color: var(--ink-green, #16a34a);
 }
 
 
@@ -4151,7 +4151,7 @@ html[data-color-mode="dark"] .goal-icon-wrap i {
 
 .is-available
 .dashboard-table-detail strong {
-    color: #15803d;
+    color: var(--ink-green, #15803d);
 }
 
 
@@ -4746,7 +4746,7 @@ html[data-color-mode="dark"] .goal-bar-fill {
         color-mix(in srgb, var(--dash-primary) 22%, #07111c) 0%,
         color-mix(in srgb, var(--dash-primary) 70%, #07111c) 28%,
         var(--dash-primary) 58%,
-        color-mix(in srgb, var(--dash-primary) 38%, white) 100%
+        color-mix(in srgb, var(--dash-primary) 38%, var(--card-bg, white)) 100%
     ) !important;
 
 }

@@ -54,7 +54,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: color-mix(in srgb, var(--primary) 11%, white);
+        background: color-mix(in srgb, var(--primary) 11%, var(--card-bg, white));
         color: var(--primary);
         font-size: 1.3rem;
         flex-shrink: 0;
@@ -83,15 +83,15 @@
         padding: 16px;
         margin-bottom: 25px;
         border-radius: 14px;
-        background: color-mix(in srgb, var(--primary) 6%, white);
-        border: 1px solid color-mix(in srgb, var(--primary) 17%, white);
+        background: color-mix(in srgb, var(--primary) 6%, var(--card-bg, white));
+        border: 1px solid color-mix(in srgb, var(--primary) 17%, var(--card-bg, white));
     }
 
     .cash-info-icon {
         width: 38px;
         height: 38px;
         border-radius: 10px;
-        background: color-mix(in srgb, var(--primary) 12%, white);
+        background: color-mix(in srgb, var(--primary) 12%, var(--card-bg, white));
         color: var(--primary);
         display: flex;
         align-items: center;

@@ -165,7 +165,7 @@
 }
 
 .client-action.view {
-    color: #2563eb;
+    color: var(--ink-blue, #2563eb);
 }
 
 .client-action.edit {
@@ -173,7 +173,7 @@
 }
 
 .client-action.delete {
-    color: #dc2626;
+    color: var(--ink-red, #dc2626);
 }
 
 .client-action.view:hover,
@@ -184,9 +184,9 @@
 }
 
 .client-action.delete:hover {
-    background: #fff1f2;
-    border-color: #fecdd3;
-    color: #dc2626;
+    background: var(--surface-red, #fff1f2);
+    border-color: var(--surface-red, #fecdd3);
+    color: var(--ink-red, #dc2626);
 }
 
 .client-modal-content {
@@ -233,7 +233,7 @@
         180deg,
         #f59e0b 0%,
         #fbbf24 50%,
-        #ffedd5 100%
+        var(--surface-amber, #ffedd5) 100%
     );
 }
 
@@ -251,7 +251,7 @@
     justify-content: center;
     flex-shrink: 0;
     border-radius: 12px;
-    background: #fff7ed;
+    background: var(--surface-amber, #fff7ed);
     color: #f59e0b;
     font-size: 1.05rem;
 }
@@ -282,7 +282,7 @@
 }
 
 .client-field-label .required {
-    color: #dc2626;
+    color: var(--ink-red, #dc2626);
 }
 
 .client-input-group {
@@ -389,7 +389,7 @@
         90deg,
         #dc2626 0%,
         #fb7185 55%,
-        #fecdd3 100%
+        var(--surface-red, #fecdd3) 100%
     );
 }
 
@@ -400,10 +400,10 @@
     align-items: center;
     justify-content: center;
     margin: 0 auto 17px;
-    border: 1px solid #fecdd3;
+    border: 1px solid var(--surface-red, #fecdd3);
     border-radius: 20px;
-    background: #fff1f2;
-    color: #dc2626;
+    background: var(--surface-red, #fff1f2);
+    color: var(--ink-red, #dc2626);
     font-size: 1.55rem;
 }
 
@@ -434,10 +434,10 @@
     gap: 7px;
     margin: 16px 0 0;
     padding: 9px 12px;
-    border: 1px solid #fecdd3;
+    border: 1px solid var(--surface-red, #fecdd3);
     border-radius: 10px;
-    background: #fff1f2;
-    color: #b91c1c;
+    background: var(--surface-red, #fff1f2);
+    color: var(--ink-red, #b91c1c);
     font-size: .75rem;
     font-weight: 650;
 }

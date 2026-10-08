@@ -295,7 +295,7 @@
     }
 
     .pos-cart-summary .btn-light {
-        background: #ffffff !important;
+        background: var(--card-bg, #ffffff) !important;
         border-color: var(--pos-border, #dce7f1) !important;
         color: var(--pos-muted, #64748b) !important;
     }

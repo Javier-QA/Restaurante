@@ -51,3 +51,51 @@ html body .modal .system-palette-button:is(:hover, :focus-visible, :active) {
     border-color: var(--primary-hover, var(--primary)) !important;
     color: #ffffff !important;
 }
+
+/* Shared surfaces and readable status colors for the dark theme.
+   Light mode keeps each component's existing fallback color. */
+html[data-color-mode="dark"] {
+    --surface-neutral: #203248;
+    --surface-green: #16372d;
+    --surface-red: #3c2330;
+    --surface-blue: #1b304e;
+    --surface-amber: #3a3023;
+    --surface-purple: #302744;
+    --surface-teal: #16363b;
+    --ink-neutral: #c4d2e1;
+    --ink-green: #86efac;
+    --ink-red: #fca5a5;
+    --ink-blue: #93c5fd;
+    --ink-amber: #fcd34d;
+    --ink-purple: #d8b4fe;
+    --ink-teal: #99f6e4;
+    --bs-success-bg-subtle: var(--surface-green);
+    --bs-success-text-emphasis: var(--ink-green);
+    --bs-success-border-subtle: #315c49;
+    --bs-danger-bg-subtle: var(--surface-red);
+    --bs-danger-text-emphasis: var(--ink-red);
+    --bs-danger-border-subtle: #704151;
+    --bs-warning-bg-subtle: var(--surface-amber);
+    --bs-warning-text-emphasis: var(--ink-amber);
+    --bs-warning-border-subtle: #655039;
+    --bs-info-bg-subtle: var(--surface-teal);
+    --bs-info-text-emphasis: var(--ink-teal);
+    --bs-info-border-subtle: #31565b;
+    --bs-primary-bg-subtle: color-mix(in srgb, var(--primary) 15%, var(--card-bg));
+    --bs-primary-text-emphasis: var(--text-main);
+    --bs-secondary-bg-subtle: var(--surface-neutral);
+    --bs-secondary-text-emphasis: var(--ink-neutral);
+}
+
+/* Native autofill must remain readable when the browser fills a dark form. */
+html[data-color-mode="dark"] body :is(.form-control, .form-select):-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px var(--card-bg) inset !important;
+    -webkit-text-fill-color: var(--text-main) !important;
+    caret-color: var(--text-main);
+}
+html[data-color-mode="dark"] body :is(.form-control, .form-select):disabled,
+html[data-color-mode="dark"] body .form-control[readonly] {
+    background-color: var(--light-bg) !important;
+    color: var(--text-main) !important;
+    opacity: 1;
+}

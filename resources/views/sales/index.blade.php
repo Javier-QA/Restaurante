@@ -10,7 +10,7 @@
         padding: 20px 22px;
         min-height: 132px;
         border-radius: 16px;
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
         box-shadow: 0 2px 14px rgba(15, 23, 42, .07);
         position: relative;
         overflow: hidden;
@@ -29,7 +29,7 @@
         left: 0;
         width: 5px;
         height: 100%;
-        background: linear-gradient(180deg, var(--kpi-color) 0%, color-mix(in srgb, var(--kpi-color) 25%, white) 65%, white 100%);
+        background: linear-gradient(180deg, var(--kpi-color) 0%, color-mix(in srgb, var(--kpi-color) 25%, var(--card-bg, white)) 65%, white 100%);
         border-radius: 16px 0 0 16px;
     }
 
@@ -57,14 +57,14 @@
         font-weight: 600;
         letter-spacing: .05em;
         text-transform: uppercase;
-        color: #64748b;
+        color: var(--ink-neutral, #64748b);
         margin-bottom: 4px;
     }
 
     .sales-kpi-value {
         font-size: 1.55rem;
         font-weight: 800;
-        color: #0f172a;
+        color: var(--text-main, #0f172a);
         line-height: 1.1;
         margin-bottom: 5px;
         white-space: nowrap;
@@ -72,7 +72,7 @@
 
     .sales-kpi-sub {
         font-size: .72rem;
-        color: #64748b;
+        color: var(--ink-neutral, #64748b);
         display: flex;
         align-items: center;
     }
@@ -95,9 +95,9 @@
         gap: 6px;
         padding: 5px;
         margin: 14px 16px;
-        background: #f1f5f9;
+        background: var(--surface-neutral, #f1f5f9);
         border-radius: 14px;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--surface-neutral, #e2e8f0);
     }
 
     .sales-history-tabs .nav-link {
@@ -106,18 +106,18 @@
         padding: 9px 16px;
         font-size: .82rem;
         font-weight: 700;
-        color: #64748b;
+        color: var(--ink-neutral, #64748b);
         background: transparent;
         transition: all .2s ease;
     }
 
     .sales-history-tabs .nav-link:hover {
-        background: #ffffff;
-        color: #0f172a;
+        background: var(--card-bg, #ffffff);
+        color: var(--text-main, #0f172a);
     }
 
     .sales-history-tabs .nav-link.active {
-        background: #ffffff !important;
+        background: var(--card-bg, #ffffff) !important;
         color: #198754 !important;
         box-shadow: 0 2px 8px rgba(15, 23, 42, .10);
     }
@@ -157,38 +157,38 @@
     }
 
     .sales-action-report {
-        color: #334155;
-        background: #f1f5f9;
+        color: var(--text-main, #334155);
+        background: var(--surface-neutral, #f1f5f9);
         border-color: #cbd5e1;
     }
 
     .sales-action-report i {
         color: #1e293b;
-        background: #e2e8f0;
+        background: var(--surface-neutral, #e2e8f0);
     }
 
     .sales-action-report:hover {
-        color: #0f172a;
-        background: #e2e8f0;
+        color: var(--text-main, #0f172a);
+        background: var(--surface-neutral, #e2e8f0);
         border-color: #94a3b8;
         transform: translateY(-1px);
         box-shadow: 0 5px 12px rgba(15, 23, 42, .10);
     }
 
     .sales-action-expense {
-        color: #dc2626;
-        background: #fff1f2;
-        border-color: #fecaca;
+        color: var(--ink-red, #dc2626);
+        background: var(--surface-red, #fff1f2);
+        border-color: var(--surface-red, #fecaca);
     }
 
     .sales-action-expense i {
-        color: #dc2626;
-        background: #ffe4e6;
+        color: var(--ink-red, #dc2626);
+        background: var(--surface-red, #ffe4e6);
     }
 
     .sales-action-expense:hover {
-        color: #b91c1c;
-        background: #ffe4e6;
+        color: var(--ink-red, #b91c1c);
+        background: var(--surface-red, #ffe4e6);
         border-color: #fca5a5;
         transform: translateY(-1px);
         box-shadow: 0 5px 12px rgba(220, 38, 38, .12);
@@ -644,7 +644,7 @@ html[data-color-mode="dark"] .sales-kpi .sales-kpi-badge {
     color: color-mix(
         in srgb,
         var(--kpi-color) 82%,
-        white
+        var(--card-bg, white)
     ) !important;
 
     border-color: color-mix(

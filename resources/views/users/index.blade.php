@@ -175,20 +175,20 @@
     }
 
     .user-avatar.admin {
-        background: #fff1f2;
-        color: #dc2626;
-        border: 1px solid #fecaca;
+        background: var(--surface-red, #fff1f2);
+        color: var(--ink-red, #dc2626);
+        border: 1px solid var(--surface-red, #fecaca);
     }
 
     .user-avatar.cashier {
-        background: #eff6ff;
-        color: #2563eb;
-        border: 1px solid #bfdbfe;
+        background: var(--surface-blue, #eff6ff);
+        color: var(--ink-blue, #2563eb);
+        border: 1px solid var(--surface-blue, #bfdbfe);
     }
 
     .user-avatar.waiter {
-        background: #f0fdf4;
-        color: #16a34a;
+        background: var(--surface-green, #f0fdf4);
+        color: var(--ink-green, #16a34a);
         border: 1px solid #bbf7d0;
     }
 
@@ -226,21 +226,21 @@
     }
 
     .user-role.admin {
-        border: 1px solid #fecaca;
-        background: #fff1f2;
-        color: #dc2626;
+        border: 1px solid var(--surface-red, #fecaca);
+        background: var(--surface-red, #fff1f2);
+        color: var(--ink-red, #dc2626);
     }
 
     .user-role.cashier {
-        border: 1px solid #bfdbfe;
-        background: #eff6ff;
-        color: #2563eb;
+        border: 1px solid var(--surface-blue, #bfdbfe);
+        background: var(--surface-blue, #eff6ff);
+        color: var(--ink-blue, #2563eb);
     }
 
     .user-role.waiter {
         border: 1px solid #bbf7d0;
-        background: #f0fdf4;
-        color: #15803d;
+        background: var(--surface-green, #f0fdf4);
+        color: var(--ink-green, #15803d);
     }
 
     .user-email {
@@ -275,27 +275,27 @@
     }
 
     .user-action-edit {
-        border: 1px solid #bfdbfe;
-        background: #eff6ff;
-        color: #2563eb;
+        border: 1px solid var(--surface-blue, #bfdbfe);
+        background: var(--surface-blue, #eff6ff);
+        color: var(--ink-blue, #2563eb);
     }
 
     .user-action-edit:hover {
         border-color: #93c5fd;
-        background: #dbeafe;
-        color: #1d4ed8;
+        background: var(--surface-blue, #dbeafe);
+        color: var(--ink-blue, #1d4ed8);
     }
 
     .user-action-delete {
-        border: 1px solid #fecaca;
-        background: #fff1f2;
-        color: #dc2626;
+        border: 1px solid var(--surface-red, #fecaca);
+        background: var(--surface-red, #fff1f2);
+        color: var(--ink-red, #dc2626);
     }
 
     .user-action-delete:hover {
         border-color: #fca5a5;
-        background: #fee2e2;
-        color: #b91c1c;
+        background: var(--surface-red, #fee2e2);
+        color: var(--ink-red, #b91c1c);
     }
 
     .user-action-disabled {
@@ -502,10 +502,10 @@
         align-items: center;
         justify-content: center;
         margin: 2px auto 12px;
-        border: 1px solid #fecaca;
+        border: 1px solid var(--surface-red, #fecaca);
         border-radius: 50%;
-        background: #fff1f2;
-        color: #dc2626;
+        background: var(--surface-red, #fff1f2);
+        color: var(--ink-red, #dc2626);
         font-size: 1.15rem;
     }
 
@@ -1321,23 +1321,23 @@
 
 /* Administrador */
 .user-avatar.admin {
-    background: #fff1f2 !important;
-    border: 1px solid #fecaca !important;
-    color: #dc2626 !important;
+    background: var(--surface-red, #fff1f2) !important;
+    border: 1px solid var(--surface-red, #fecaca) !important;
+    color: var(--ink-red, #dc2626) !important;
 }
 
 /* Cajero */
 .user-avatar.cashier {
-    background: #eff6ff !important;
-    border: 1px solid #bfdbfe !important;
-    color: #2563eb !important;
+    background: var(--surface-blue, #eff6ff) !important;
+    border: 1px solid var(--surface-blue, #bfdbfe) !important;
+    color: var(--ink-blue, #2563eb) !important;
 }
 
 /* Mozo */
 .user-avatar.waiter {
-    background: #f0fdf4 !important;
+    background: var(--surface-green, #f0fdf4) !important;
     border: 1px solid #bbf7d0 !important;
-    color: #15803d !important;
+    color: var(--ink-green, #15803d) !important;
 }
 
 /* Nombre */
@@ -1464,7 +1464,7 @@ html[data-color-mode="dark"] .user-action-delete:hover {
 /* Acción deshabilitada */
 html[data-color-mode="dark"] .user-action-disabled {
     background: #17283d !important;
-    color: #64748b !important;
+    color: var(--ink-neutral, #64748b) !important;
     border-color: #29445f !important;
 }
 
@@ -1588,14 +1588,14 @@ html[data-color-mode="dark"] .user-modal-field:has(.user-role-select)::after {
 /* Cocina */
 .user-role.kitchen {
     color: #ea580c;
-    background: #fff7ed;
+    background: var(--surface-amber, #fff7ed);
     border: 1px solid #fdba74;
 }
 
 /* Barra */
 .user-role.bar {
-    color: #2563eb;
-    background: #eff6ff;
+    color: var(--ink-blue, #2563eb);
+    background: var(--surface-blue, #eff6ff);
     border: 1px solid #93c5fd;
 }
 
@@ -1620,15 +1620,15 @@ html[data-color-mode="dark"] .user-role.bar {
 /* Avatar Cocina - mismo estilo visual que los demás */
 .user-avatar.kitchen {
     color: #ea580c !important;
-    background: #fff7ed !important;
+    background: var(--surface-amber, #fff7ed) !important;
     border: 1px solid #fed7aa !important;
 }
 
 /* Avatar Barra */
 .user-avatar.bar {
-    color: #2563eb !important;
-    background: #eff6ff !important;
-    border: 1px solid #bfdbfe !important;
+    color: var(--ink-blue, #2563eb) !important;
+    background: var(--surface-blue, #eff6ff) !important;
+    border: 1px solid var(--surface-blue, #bfdbfe) !important;
 }
 
 /* Modo oscuro */

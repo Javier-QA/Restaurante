@@ -8,7 +8,7 @@
     ========================================================= */
 
     .theme-section {
-        background: linear-gradient(135deg, #f8fbff 0%, #ffffff 100%);
+        background: linear-gradient(135deg, #f8fbff 0%, var(--card-bg, #ffffff) 100%);
         border: 1px solid #e4edf5;
         border-radius: 20px;
         padding: 22px;
@@ -72,7 +72,7 @@
     .theme-description {
         font-size: .71rem;
         line-height: 1.4;
-        color: #64748b;
+        color: var(--ink-neutral, #64748b);
     }
 
     .theme-check {
@@ -191,14 +191,14 @@
         margin-top: 20px;
         border-radius: 17px;
         overflow: hidden;
-        border: 1px solid #e2e8f0;
-        background: #ffffff;
+        border: 1px solid var(--surface-neutral, #e2e8f0);
+        background: var(--card-bg, #ffffff);
     }
 
     .theme-live-preview-header {
         padding: 12px 16px;
         background: white;
-        border-bottom: 1px solid #e2e8f0;
+        border-bottom: 1px solid var(--surface-neutral, #e2e8f0);
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -352,7 +352,7 @@
 }
 
 .settings-page-header + .card form h5 > i {
-    color: #111827 !important;
+    color: var(--text-main, #111827) !important;
     font-size: .9rem;
 }
 
@@ -712,14 +712,14 @@ button[type="submit"].btn-primary:hover {
                         ================================================== --}}
 
 <style>
-#settingsTicketPreview.settings-precuenta{width:100%;max-width:78mm;margin:auto;padding:18px 14px;background:#fff!important;color:#000!important;font:12px/1.35 'Courier New',Courier,monospace;border:1px solid #dce3ea;border-radius:10px;box-sizing:border-box}
+#settingsTicketPreview.settings-precuenta{width:100%;max-width:78mm;margin:auto;padding:18px 14px;background:var(--card-bg, #fff)!important;color:#000!important;font:12px/1.35 'Courier New',Courier,monospace;border:1px solid #dce3ea;border-radius:10px;box-sizing:border-box}
 #settingsTicketPreview .sp-header{text-align:center;border-bottom:1px dashed #000;padding-bottom:10px;margin-bottom:10px}
 #settingsTicketPreview img{max-width:60px;max-height:70px;object-fit:contain;filter:grayscale(100%);margin-bottom:5px}
 #settingsTicketPreview .sp-name{font-size:14px;font-weight:bold;text-transform:uppercase}
 #settingsTicketPreview .sp-bold{font-weight:bold;margin-top:3px}
 #settingsTicketPreview .sp-gap{margin-top:5px}
 #settingsTicketPreview table{width:100%;border-collapse:collapse;margin-top:5px;color:#000!important;font:inherit}
-#settingsTicketPreview th,#settingsTicketPreview td{padding:2px 0;background:#fff!important;color:#000!important;text-align:left;border:0}
+#settingsTicketPreview th,#settingsTicketPreview td{padding:2px 0;background:var(--card-bg, #fff)!important;color:#000!important;text-align:left;border:0}
 #settingsTicketPreview thead tr{border-bottom:1px solid #000}
 #settingsTicketPreview th:first-child{width:10%}
 #settingsTicketPreview th:last-child,#settingsTicketPreview td:last-child{width:30%;text-align:right}

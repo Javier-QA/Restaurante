@@ -56,7 +56,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
         color: var(--cn-primary);
         font-size: 1.2rem;
     }
@@ -71,7 +71,7 @@
     .credit-filter {
         border: 1px solid var(--cn-border);
         border-radius: 14px;
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
         box-shadow: 0 4px 18px rgba(15,23,42,.04);
         margin-bottom: 18px;
     }
@@ -121,7 +121,7 @@
         border: 1px solid var(--cn-border);
         border-radius: 14px;
         overflow: hidden;
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
         box-shadow: 0 5px 20px rgba(15,23,42,.045);
     }
 
@@ -151,9 +151,9 @@
     }
 
     .credit-table thead th {
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
         border-bottom: 1px solid var(--cn-border);
-        color: #475569;
+        color: var(--ink-neutral, #475569);
         font-size: .67rem;
         font-weight: 800;
         text-transform: uppercase;
@@ -177,7 +177,7 @@
     }
 
     .credit-table tbody tr:hover {
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
     }
 
     .credit-number {
@@ -189,7 +189,7 @@
 
     .credit-date {
         font-size: .74rem;
-        color: #475569;
+        color: var(--ink-neutral, #475569);
         white-space: nowrap;
     }
 
@@ -216,8 +216,8 @@
         justify-content: center;
         border: 1px solid var(--cn-border);
         border-radius: 7px;
-        background: #ffffff;
-        color: #475569;
+        background: var(--card-bg, #ffffff);
+        color: var(--ink-neutral, #475569);
         font-size: .75rem;
     }
 
@@ -225,7 +225,7 @@
         max-width: 260px;
         font-size: .74rem;
         line-height: 1.35;
-        color: #475569;
+        color: var(--ink-neutral, #475569);
     }
 
     .credit-reason-code {
@@ -234,8 +234,8 @@
         padding: 2px 5px;
         border: 1px solid #dbe1e8;
         border-radius: 4px;
-        background: #ffffff;
-        color: #334155;
+        background: var(--card-bg, #ffffff);
+        color: var(--text-main, #334155);
         font-size: .65rem;
         font-weight: 800;
     }
@@ -260,28 +260,28 @@
     }
 
     .credit-status.accepted {
-        color: #166534;
-        background: #f0fdf4;
+        color: var(--ink-green, #166534);
+        background: var(--surface-green, #f0fdf4);
         border-color: #bbf7d0;
     }
 
     .credit-status.observed {
-        color: #92400e;
-        background: #fffbeb;
-        border-color: #fde68a;
+        color: var(--ink-amber, #92400e);
+        background: var(--surface-amber, #fffbeb);
+        border-color: var(--surface-amber, #fde68a);
     }
 
     .credit-status.pending {
-        color: #475569;
-        background: #ffffff;
+        color: var(--ink-neutral, #475569);
+        background: var(--card-bg, #ffffff);
         border-color: #cbd5e1;
     }
 
     .credit-status.rejected,
     .credit-status.error {
-        color: #991b1b;
-        background: #fff1f2;
-        border-color: #fecaca;
+        color: var(--ink-red, #991b1b);
+        background: var(--surface-red, #fff1f2);
+        border-color: var(--surface-red, #fecaca);
     }
 
     .credit-actions {
@@ -321,15 +321,15 @@
         align-items: center;
         justify-content: center;
         border-radius: 14px;
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
         border: 1px solid var(--cn-border);
-        color: #64748b;
+        color: var(--ink-neutral, #64748b);
         font-size: 1.25rem;
     }
 
     .credit-empty-title {
         margin: 0 0 4px;
-        color: #334155;
+        color: var(--text-main, #334155);
         font-size: .85rem;
         font-weight: 800;
     }
@@ -342,7 +342,7 @@
     .credit-pagination {
         padding: 14px 18px;
         border-top: 1px solid var(--cn-border);
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
     }
 
     @media (max-width: 992px) {
@@ -355,8 +355,8 @@
         }
     }
 
-.credit-back { padding: 7px 12px !important; border: 1px solid #94a3b8 !important; border-radius: 8px !important; background: #ffffff !important; color: #475569 !important; }
-.credit-back:hover { background: #ffffff !important; border-color: #64748b !important; color: #0f172a !important; }
+.credit-back { padding: 7px 12px !important; border: 1px solid #94a3b8 !important; border-radius: 8px !important; background: var(--card-bg, #ffffff) !important; color: var(--ink-neutral, #475569) !important; }
+.credit-back:hover { background: var(--card-bg, #ffffff) !important; border-color: #64748b !important; color: var(--text-main, #0f172a) !important; }
 
     /* ===== Diseño unificado Notas de Crédito ===== */
 
@@ -558,12 +558,12 @@
     }
 
     .credit-actions .btn-outline-secondary {
-        color: #475569;
+        color: var(--ink-neutral, #475569);
         border-color: var(--border-soft);
     }
 
     .credit-actions .btn-outline-secondary:hover {
-        color: #0f172a;
+        color: var(--text-main, #0f172a);
         border-color: #94a3b8;
         background: var(--light-bg);
     }
@@ -576,29 +576,29 @@
     .credit-actions .btn-outline-dark:hover {
         color: var(--primary);
         border-color: var(--primary);
-        background: color-mix(in srgb, var(--primary) 7%, white);
+        background: color-mix(in srgb, var(--primary) 7%, var(--card-bg, white));
     }
 
     .credit-actions .btn-outline-success {
-        color: #15803d;
+        color: var(--ink-green, #15803d);
         border-color: #bbf7d0;
     }
 
     .credit-actions .btn-outline-success:hover {
-        color: #166534;
+        color: var(--ink-green, #166534);
         border-color: #86efac;
-        background: #f0fdf4;
+        background: var(--surface-green, #f0fdf4);
     }
 
     .credit-actions .btn-outline-warning {
-        color: #b45309;
-        border-color: #fde68a;
+        color: var(--ink-amber, #b45309);
+        border-color: var(--surface-amber, #fde68a);
     }
 
     .credit-actions .btn-outline-warning:hover {
-        color: #92400e;
+        color: var(--ink-amber, #92400e);
         border-color: #fcd34d;
-        background: #fffbeb;
+        background: var(--surface-amber, #fffbeb);
     }
 
     /* Estado vacío */

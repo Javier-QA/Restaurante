@@ -605,7 +605,7 @@
             color-mix(
                 in srgb,
                 var(--report-primary) 12%,
-                white
+                var(--card-bg, white)
             );
     }
 
@@ -615,7 +615,7 @@
             color-mix(
                 in srgb,
                 var(--report-accent-1) 12%,
-                white
+                var(--card-bg, white)
             );
     }
 
@@ -625,7 +625,7 @@
             color-mix(
                 in srgb,
                 var(--report-accent-2) 12%,
-                white
+                var(--card-bg, white)
             );
     }
 
@@ -635,7 +635,7 @@
             color-mix(
                 in srgb,
                 var(--report-accent-4) 12%,
-                white
+                var(--card-bg, white)
             );
     }
 
@@ -698,7 +698,7 @@
             color-mix(
                 in srgb,
                 var(--report-primary) 11%,
-                white
+                var(--card-bg, white)
             );
         color: var(--report-primary);
         display: flex;
@@ -764,7 +764,7 @@
             color-mix(
                 in srgb,
                 var(--report-accent-2) 12%,
-                white
+                var(--card-bg, white)
             );
         color: var(--report-accent-2);
     }
@@ -902,9 +902,9 @@
     }
 
     .status-critical {
-        color: #dc2626;
-        background: #fff1f2;
-        border-color: #fecaca;
+        color: var(--ink-red, #dc2626);
+        background: var(--surface-red, #fff1f2);
+        border-color: var(--surface-red, #fecaca);
     }
 
     .status-low {
@@ -913,13 +913,13 @@
             color-mix(
                 in srgb,
                 var(--report-primary) 10%,
-                white
+                var(--card-bg, white)
             );
         border-color:
             color-mix(
                 in srgb,
                 var(--report-primary) 25%,
-                white
+                var(--card-bg, white)
             );
     }
 
@@ -929,13 +929,13 @@
             color-mix(
                 in srgb,
                 var(--report-accent-1) 10%,
-                white
+                var(--card-bg, white)
             );
         border-color:
             color-mix(
                 in srgb,
                 var(--report-accent-1) 25%,
-                white
+                var(--card-bg, white)
             );
     }
 </style>
@@ -1636,7 +1636,7 @@ html[data-color-mode="dark"] .report-header-icon i {
 /* Segundo puesto */
 .report-ranking-header + .card-body
 .report-table tbody tr:nth-child(2) .rank-badge {
-    background: #eff6ff !important;
+    background: var(--surface-blue, #eff6ff) !important;
     color: #0284c7 !important;
     border: 1px solid #bae6fd;
 }
@@ -1645,7 +1645,7 @@ html[data-color-mode="dark"] .report-header-icon i {
 /* Tercer puesto */
 .report-ranking-header + .card-body
 .report-table tbody tr:nth-child(3) .rank-badge {
-    background: #ecfdf5 !important;
+    background: var(--surface-green, #ecfdf5) !important;
     color: #059669 !important;
     border: 1px solid #a7f3d0;
 }
@@ -1654,7 +1654,7 @@ html[data-color-mode="dark"] .report-header-icon i {
 /* Cuarto puesto */
 .report-ranking-header + .card-body
 .report-table tbody tr:nth-child(4) .rank-badge {
-    background: #fff7ed !important;
+    background: var(--surface-amber, #fff7ed) !important;
     color: #ea580c !important;
     border: 1px solid #fed7aa;
 }
@@ -1663,8 +1663,8 @@ html[data-color-mode="dark"] .report-header-icon i {
 /* Quinto puesto */
 .report-ranking-header + .card-body
 .report-table tbody tr:nth-child(5) .rank-badge {
-    background: #f1f5f9 !important;
-    color: #475569 !important;
+    background: var(--surface-neutral, #f1f5f9) !important;
+    color: var(--ink-neutral, #475569) !important;
     border: 1px solid #cbd5e1;
 }
 
@@ -1682,9 +1682,9 @@ html[data-color-mode="dark"] .report-header-icon i {
 
     border-radius: 8px;
 
-    color: #15803d;
+    color: var(--ink-green, #15803d);
 
-    background: #f0fdf4;
+    background: var(--surface-green, #f0fdf4);
 
     border: 1px solid #bbf7d0;
 
@@ -1728,9 +1728,9 @@ html[data-color-mode="dark"] .report-header-icon i {
 /* Crítico */
 .report-ranking-header + .card-body
 .status-critical {
-    color: #dc2626 !important;
-    background: #fff1f2 !important;
-    border-color: #fecaca !important;
+    color: var(--ink-red, #dc2626) !important;
+    background: var(--surface-red, #fff1f2) !important;
+    border-color: var(--surface-red, #fecaca) !important;
 }
 
 

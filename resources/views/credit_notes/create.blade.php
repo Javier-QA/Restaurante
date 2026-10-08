@@ -60,7 +60,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
         color: var(--cn-black);
         font-size: 1.15rem;
         flex-shrink: 0;
@@ -69,7 +69,7 @@
     .cn-card {
         border: 1px solid var(--cn-border);
         border-radius: 15px;
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
         box-shadow: 0 6px 22px rgba(15,23,42,.05);
         overflow: hidden;
     }
@@ -77,7 +77,7 @@
     .cn-card-header {
         padding: 17px 22px;
         border-bottom: 1px solid var(--cn-border);
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
     }
 
     .cn-card-header h6 {
@@ -105,14 +105,14 @@
         margin-bottom: 22px;
         border: 1px solid #dbe1e8;
         border-radius: 9px;
-        background: #ffffff;
-        color: #475569;
+        background: var(--card-bg, #ffffff);
+        color: var(--ink-neutral, #475569);
         font-size: .76rem;
         line-height: 1.45;
     }
 
     .cn-info i {
-        color: #334155;
+        color: var(--text-main, #334155);
         font-size: .95rem;
         margin-top: 1px;
     }
@@ -120,13 +120,13 @@
     .cn-label {
         display: block;
         margin-bottom: 6px;
-        color: #334155;
+        color: var(--text-main, #334155);
         font-size: .75rem;
         font-weight: 800;
     }
 
     .cn-required {
-        color: #991b1b;
+        color: var(--ink-red, #991b1b);
     }
 
     .cn-select,
@@ -167,7 +167,7 @@
 
     .cn-document-header {
         padding: 13px 16px;
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
         border-bottom: 1px solid var(--cn-border);
         display: flex;
         align-items: center;
@@ -175,7 +175,7 @@
     }
 
     .cn-document-header i {
-        color: #475569;
+        color: var(--ink-neutral, #475569);
     }
 
     .cn-document-header span {
@@ -194,7 +194,7 @@
         align-items: center;
         gap: 20px;
         min-height: 42px;
-        border-bottom: 1px solid #f1f5f9;
+        border-bottom: 1px solid var(--surface-neutral, #f1f5f9);
         font-size: .76rem;
     }
 
@@ -219,7 +219,7 @@
         padding: 5px 9px;
         border: 1px solid #dbe1e8;
         border-radius: 7px;
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
         font-weight: 800;
     }
 
@@ -260,7 +260,7 @@
     .cn-footer-note {
         margin-top: 14px;
         text-align: center;
-        color: #94a3b8;
+        color: var(--ink-neutral, #94a3b8);
         font-size: .66rem;
     }
 

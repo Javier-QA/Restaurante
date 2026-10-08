@@ -46,7 +46,7 @@
         gap: 7px;
         padding: 8px 13px;
         border-radius: 20px;
-        background: color-mix(in srgb, var(--accent-2, #16a34a) 10%, white);
+        background: color-mix(in srgb, var(--accent-2, #16a34a) 10%, var(--card-bg, white));
         color: var(--accent-2, #16803d);
         font-size: .75rem;
         font-weight: 700;
@@ -91,19 +91,19 @@
     }
 
     .cash-kpi.initial::before {
-        background: linear-gradient(180deg, #2563eb, #93c5fd, #fff);
+        background: linear-gradient(180deg, #2563eb, #93c5fd, var(--card-bg, #fff));
     }
 
     .cash-kpi.cash::before {
-        background: linear-gradient(180deg, #16a34a, #86efac, #fff);
+        background: linear-gradient(180deg, #16a34a, #86efac, var(--card-bg, #fff));
     }
 
     .cash-kpi.digital::before {
-        background: linear-gradient(180deg, #7c3aed, #c4b5fd, #fff);
+        background: linear-gradient(180deg, #7c3aed, #c4b5fd, var(--card-bg, #fff));
     }
 
     .cash-kpi.expense::before {
-        background: linear-gradient(180deg, #ea580c, #fdba74, #fff);
+        background: linear-gradient(180deg, #ea580c, #fdba74, var(--card-bg, #fff));
     }
 
     .cash-kpi-icon {
@@ -118,22 +118,22 @@
     }
 
     .initial .cash-kpi-icon {
-        background: #eff6ff;
-        color: #2563eb;
+        background: var(--surface-blue, #eff6ff);
+        color: var(--ink-blue, #2563eb);
     }
 
     .cash .cash-kpi-icon {
-        background: #f0fdf4;
-        color: #16a34a;
+        background: var(--surface-green, #f0fdf4);
+        color: var(--ink-green, #16a34a);
     }
 
     .digital .cash-kpi-icon {
-        background: #faf5ff;
-        color: #7c3aed;
+        background: var(--surface-purple, #faf5ff);
+        color: var(--ink-purple, #7c3aed);
     }
 
     .expense .cash-kpi-icon {
-        background: #fff7ed;
+        background: var(--surface-amber, #fff7ed);
         color: #ea580c;
     }
 
@@ -178,7 +178,7 @@
         align-items: center;
         justify-content: center;
         border-radius: 10px;
-        background: color-mix(in srgb, var(--primary) 10%, white);
+        background: color-mix(in srgb, var(--primary) 10%, var(--card-bg, white));
         color: var(--primary);
         font-size: 1.05rem;
     }
@@ -251,8 +251,8 @@
     .expected-box {
         padding: 22px;
         border-radius: 16px;
-        background: color-mix(in srgb, var(--primary) 7%, white);
-        border: 1px solid color-mix(in srgb, var(--primary) 20%, white);
+        background: color-mix(in srgb, var(--primary) 7%, var(--card-bg, white));
+        border: 1px solid color-mix(in srgb, var(--primary) 20%, var(--card-bg, white));
         text-align: center;
         margin-bottom: 22px;
     }

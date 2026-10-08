@@ -34,7 +34,7 @@
         background: linear-gradient(
             180deg,
             var(--primary) 0%,
-            color-mix(in srgb, var(--primary) 45%, white) 55%,
+            color-mix(in srgb, var(--primary) 45%, var(--card-bg, white)) 55%,
             #ffffff 100%
         );
         border-radius: 16px 0 0 16px;
@@ -54,7 +54,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: color-mix(in srgb, var(--primary) 10%, white);
+        background: color-mix(in srgb, var(--primary) 10%, var(--card-bg, white));
         color: var(--primary);
         font-size: 1.25rem;
     }
@@ -139,7 +139,7 @@
         width: 34px;
         height: 34px;
         border-radius: 10px;
-        background: color-mix(in srgb, var(--primary) 12%, white);
+        background: color-mix(in srgb, var(--primary) 12%, var(--card-bg, white));
         color: var(--primary);
         display: flex;
         align-items: center;
@@ -176,28 +176,28 @@
     }
 
     .status-open {
-        background: #fff7ed;
-        color: #c2410c;
+        background: var(--surface-amber, #fff7ed);
+        color: var(--ink-amber, #c2410c);
     }
 
     .status-closed {
-        background: #f1f5f9;
-        color: #475569;
+        background: var(--surface-neutral, #f1f5f9);
+        color: var(--ink-neutral, #475569);
     }
 
     .difference-exact {
-        background: #f0fdf4;
-        color: #15803d;
+        background: var(--surface-green, #f0fdf4);
+        color: var(--ink-green, #15803d);
     }
 
     .difference-surplus {
-        background: #eff6ff;
-        color: #1d4ed8;
+        background: var(--surface-blue, #eff6ff);
+        color: var(--ink-blue, #1d4ed8);
     }
 
     .difference-shortage {
-        background: #fff1f2;
-        color: #dc2626;
+        background: var(--surface-red, #fff1f2);
+        color: var(--ink-red, #dc2626);
     }
 
     .history-action {
@@ -212,8 +212,8 @@
     }
 
     .history-action-view {
-        background: color-mix(in srgb, var(--primary) 10%, white);
-        border: 1px solid color-mix(in srgb, var(--primary) 22%, white);
+        background: color-mix(in srgb, var(--primary) 10%, var(--card-bg, white));
+        border: 1px solid color-mix(in srgb, var(--primary) 22%, var(--card-bg, white));
         color: var(--primary);
     }
 
@@ -223,9 +223,9 @@
     }
 
     .history-action-pdf {
-        background: #fff1f2;
-        border: 1px solid #fecdd3;
-        color: #dc2626;
+        background: var(--surface-red, #fff1f2);
+        border: 1px solid var(--surface-red, #fecdd3);
+        color: var(--ink-red, #dc2626);
     }
 
     .history-action-pdf:hover {
@@ -234,9 +234,9 @@
     }
 
     .history-action-delete {
-        background: #fff1f2;
-        border: 1px solid #fecdd3;
-        color: #dc2626;
+        background: var(--surface-red, #fff1f2);
+        border: 1px solid var(--surface-red, #fecdd3);
+        color: var(--ink-red, #dc2626);
         cursor: pointer;
     }
 
@@ -297,7 +297,7 @@
         justify-content: center;
         margin-left: -1px;
         border: 1px solid var(--border-soft);
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
         color: var(--primary);
         text-decoration: none;
         font-size: .82rem;
@@ -327,13 +327,13 @@
     .history-pages li:not(.active):not(.disabled) a:hover {
         position: relative;
         z-index: 1;
-        background: color-mix(in srgb, var(--primary) 8%, white);
+        background: color-mix(in srgb, var(--primary) 8%, var(--card-bg, white));
         border-color: var(--primary);
     }
 
     .history-pages li.disabled span {
-        color: #94a3b8;
-        background: #ffffff;
+        color: var(--ink-neutral, #94a3b8);
+        background: var(--card-bg, #ffffff);
         cursor: default;
     }
 

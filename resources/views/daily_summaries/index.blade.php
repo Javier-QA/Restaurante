@@ -21,8 +21,8 @@
         margin-bottom: 12px;
         border: 1px solid #94a3b8;
         border-radius: 8px;
-        background: #ffffff;
-        color: #475569;
+        background: var(--card-bg, #ffffff);
+        color: var(--ink-neutral, #475569);
         font-size: .78rem;
         font-weight: 700;
         text-decoration: none;
@@ -30,9 +30,9 @@
     }
 
     .ds-back:hover {
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
         border-color: #64748b;
-        color: #0f172a;
+        color: var(--text-main, #0f172a);
     }
 
     .ds-title {
@@ -79,7 +79,7 @@
     .ds-create-head {
         padding: 15px 18px;
         border-bottom: 1px solid var(--ds-border);
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
     }
 
     .ds-create-head strong {
@@ -101,7 +101,7 @@
 
     .ds-label {
         margin-bottom: 6px;
-        color: #475569;
+        color: var(--ink-neutral, #475569);
         font-size: .72rem;
         font-weight: 800;
     }
@@ -139,16 +139,16 @@
         align-items: flex-start;
         gap: 8px;
         padding: 10px 12px;
-        border: 1px solid #dbeafe;
+        border: 1px solid var(--surface-blue, #dbeafe);
         border-radius: 8px;
-        background: #eff6ff;
-        color: #475569;
+        background: var(--surface-blue, #eff6ff);
+        color: var(--ink-neutral, #475569);
         font-size: .72rem;
         line-height: 1.5;
     }
 
     .ds-info i {
-        color: #2563eb;
+        color: var(--ink-blue, #2563eb);
         margin-top: 1px;
     }
 
@@ -183,8 +183,8 @@
     .ds-table thead th {
         padding: 11px 14px;
         border-bottom: 1px solid var(--ds-border);
-        background: #ffffff;
-        color: #64748b;
+        background: var(--card-bg, #ffffff);
+        color: var(--ink-neutral, #64748b);
         font-size: .66rem;
         font-weight: 800;
         text-transform: uppercase;
@@ -195,13 +195,13 @@
     .ds-table tbody td {
         padding: 13px 14px;
         border-color: #edf2f7;
-        color: #334155;
+        color: var(--text-main, #334155);
         font-size: .78rem;
         vertical-align: middle;
     }
 
     .ds-table tbody tr.ds-main-row:hover td {
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
     }
 
     .ds-identifier {
@@ -213,7 +213,7 @@
         display: inline-block;
         max-width: 180px;
         overflow: hidden;
-        color: #475569;
+        color: var(--ink-neutral, #475569);
         font-size: .68rem;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -232,33 +232,33 @@
     }
 
     .ds-status.accepted {
-        color: #166534;
-        background: #f0fdf4;
+        color: var(--ink-green, #166534);
+        background: var(--surface-green, #f0fdf4);
         border-color: #bbf7d0;
     }
 
     .ds-status.observed {
-        color: #92400e;
-        background: #fffbeb;
-        border-color: #fde68a;
+        color: var(--ink-amber, #92400e);
+        background: var(--surface-amber, #fffbeb);
+        border-color: var(--surface-amber, #fde68a);
     }
 
     .ds-status.ticket {
         color: #075985;
-        background: #eff6ff;
+        background: var(--surface-blue, #eff6ff);
         border-color: #bae6fd;
     }
 
     .ds-status.pending {
-        color: #475569;
-        background: #ffffff;
+        color: var(--ink-neutral, #475569);
+        background: var(--card-bg, #ffffff);
         border-color: #cbd5e1;
     }
 
     .ds-status.error {
-        color: #991b1b;
-        background: #fff1f2;
-        border-color: #fecaca;
+        color: var(--ink-red, #991b1b);
+        background: var(--surface-red, #fff1f2);
+        border-color: var(--surface-red, #fecaca);
     }
 
     .ds-action {
@@ -269,36 +269,36 @@
         height: 34px;
         padding: 0;
         border-radius: 7px !important;
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
     }
 
     .ds-detail-row td {
         padding: 0 14px 14px !important;
-        background: #ffffff !important;
+        background: var(--card-bg, #ffffff) !important;
     }
 
     .ds-detail-box {
         padding: 12px 14px;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--surface-neutral, #e2e8f0);
         border-radius: 9px;
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
     }
 
     .ds-response {
         margin-bottom: 8px;
-        color: #475569;
+        color: var(--ink-neutral, #475569);
         font-size: .72rem;
     }
 
     .ds-consulted {
         margin-bottom: 8px;
-        color: #64748b;
+        color: var(--ink-neutral, #64748b);
         font-size: .68rem;
     }
 
     .ds-included-title {
         margin-bottom: 7px;
-        color: #334155;
+        color: var(--text-main, #334155);
         font-size: .7rem;
         font-weight: 800;
     }
@@ -310,8 +310,8 @@
         padding: 5px 8px;
         border: 1px solid #dbe1e8;
         border-radius: 6px;
-        background: #ffffff;
-        color: #475569;
+        background: var(--card-bg, #ffffff);
+        color: var(--ink-neutral, #475569);
         font-size: .67rem;
         font-weight: 700;
     }
@@ -319,20 +319,20 @@
     .ds-empty {
         padding: 45px 20px !important;
         text-align: center;
-        color: #64748b !important;
+        color: var(--ink-neutral, #64748b) !important;
     }
 
     .ds-empty i {
         display: block;
         margin-bottom: 8px;
-        color: #94a3b8;
+        color: var(--ink-neutral, #94a3b8);
         font-size: 1.7rem;
     }
 
     .ds-footer {
         padding: 12px 16px;
         border-top: 1px solid var(--ds-border);
-        background: #ffffff;
+        background: var(--card-bg, #ffffff);
     }
 
     @media (max-width: 768px) {

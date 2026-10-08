@@ -36,13 +36,13 @@
 
 /* Ajustar stock */
 .product-action-stock {
-    color: #475569;
+    color: var(--ink-neutral, #475569);
 }
 
 .product-action-stock:hover {
-    color: #0f172a;
+    color: var(--text-main, #0f172a);
     border-color: #94a3b8;
-    background: #ffffff;
+    background: var(--card-bg, #ffffff);
 }
 
 /* Editar */
@@ -56,19 +56,19 @@
     background: color-mix(
         in srgb,
         var(--primary) 7%,
-        white
+        var(--card-bg, white)
     );
 }
 
 /* Desactivar */
 .product-action-delete {
-    color: #dc2626;
+    color: var(--ink-red, #dc2626);
 }
 
 .product-action-delete:hover {
-    color: #b91c1c;
-    border-color: #fecaca;
-    background: #fff1f2;
+    color: var(--ink-red, #b91c1c);
+    border-color: var(--surface-red, #fecaca);
+    background: var(--surface-red, #fff1f2);
 }
 
 </style>
@@ -511,8 +511,8 @@ function submitDeleteProduct() {
     align-items: center;
     justify-content: center;
     border-radius: 14px;
-    background: #fff1f2;
-    color: #dc2626;
+    background: var(--surface-red, #fff1f2);
+    color: var(--ink-red, #dc2626);
     font-size: 1.1rem;
 }
 
@@ -540,8 +540,8 @@ function submitDeleteProduct() {
     padding: 11px 12px;
     border: 1px solid #fed7aa;
     border-radius: 9px;
-    background: #fff7ed;
-    color: #9a3412;
+    background: var(--surface-amber, #fff7ed);
+    color: var(--ink-amber, #9a3412);
     font-size: .7rem;
     line-height: 1.45;
     text-align: left;
@@ -1101,20 +1101,20 @@ html[data-color-mode="dark"] .product-delete-modal .product-delete-btn i {
 .product-status-active {
     background: #ecfdf3 !important;
     border-color: #22c55e !important;
-    color: #15803d !important;
+    color: var(--ink-green, #15803d) !important;
 }
 
 .product-status-active:hover {
-    background: #dcfce7 !important;
+    background: var(--surface-green, #dcfce7) !important;
     border-color: #16a34a !important;
-    color: #166534 !important;
+    color: var(--ink-green, #166534) !important;
 }
 
 /* INACTIVO */
 .product-status-inactive {
-    background: #f8fafc !important;
+    background: var(--surface-neutral, #f8fafc) !important;
     border-color: #94a3b8 !important;
-    color: #64748b !important;
+    color: var(--ink-neutral, #64748b) !important;
 }
 
 
@@ -1137,7 +1137,7 @@ html[data-color-mode="dark"] .product-status-active:hover {
 html[data-color-mode="dark"] .product-status-inactive {
     background: rgba(148, 163, 184, .10) !important;
     border-color: #64748b !important;
-    color: #94a3b8 !important;
+    color: var(--ink-neutral, #94a3b8) !important;
 }
 
 html[data-color-mode="dark"] .product-status-inactive:hover {

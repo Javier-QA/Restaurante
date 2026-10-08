@@ -269,21 +269,21 @@
 }
 
 .inventory-movement.sale {
-    border-color: #bfdbfe;
-    background: #eff6ff;
-    color: #2563eb;
+    border-color: var(--surface-blue, #bfdbfe);
+    background: var(--surface-blue, #eff6ff);
+    color: var(--ink-blue, #2563eb);
 }
 
 .inventory-movement.entry {
     border-color: #bbf7d0;
-    background: #f0fdf4;
-    color: #15803d;
+    background: var(--surface-green, #f0fdf4);
+    color: var(--ink-green, #15803d);
 }
 
 .inventory-movement.adjustment {
-    border-color: #fecaca;
-    background: #fff1f2;
-    color: #dc2626;
+    border-color: var(--surface-red, #fecaca);
+    background: var(--surface-red, #fff1f2);
+    color: var(--ink-red, #dc2626);
 }
 
 /* NOTA */
@@ -344,13 +344,13 @@
 }
 
 .inventory-quantity.positive {
-    background: #f0fdf4;
-    color: #15803d;
+    background: var(--surface-green, #f0fdf4);
+    color: var(--ink-green, #15803d);
 }
 
 .inventory-quantity.negative {
-    background: #fff1f2;
-    color: #dc2626;
+    background: var(--surface-red, #fff1f2);
+    color: var(--ink-red, #dc2626);
 }
 
 .inventory-quantity.neutral {
