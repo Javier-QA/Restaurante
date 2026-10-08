@@ -510,6 +510,7 @@
                         <th>Usuario</th>
                         <th class="text-center">Cantidad</th>
                         <th class="text-center">Saldo</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
 
@@ -643,6 +644,17 @@
                                 </span>
 
                             </td>
+                            <td class="text-center">
+                                <form method="POST" action="{{ route('inventory.logs.destroy', $log->id) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="btn btn-sm btn-outline-danger rounded-pill"
+                                            aria-label="Eliminar registro del Kardex" title="Eliminar registro"
+                                            onclick="confirmDeleteKardex(this)">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
+                            </td>
 
                         </tr>
 
@@ -650,7 +662,7 @@
                     @empty
 
                         <tr>
-                            <td colspan="7"
+                            <td colspan="8"
                                 class="inventory-empty">
 
                                 <div class="inventory-empty-icon">
@@ -925,5 +937,18 @@ html[data-color-mode="dark"] .inventory-empty-text {
 }
 
 </style>
+
+<script>
+function confirmDeleteKardex(button) {
+    SystemNotify.confirm({
+        type: 'warning',
+        title: 'Eliminar registro del Kardex',
+        text: 'Se eliminará este registro del historial. Esta acción no cambia el stock actual y no se puede deshacer.',
+        confirmText: 'Eliminar registro',
+        icon: 'bi-trash3',
+        onConfirm: function () { button.closest('form').requestSubmit(); }
+    });
+}
+</script>
 
 @endsection
