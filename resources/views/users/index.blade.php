@@ -1095,6 +1095,18 @@
 
 
                 <div class="mb-3">
+                    <label for="edit_saved_password" class="form-label user-modal-label">Contraseña actual</label>
+                    <div class="user-modal-field user-password-field">
+                        <i class="bi bi-lock"></i>
+                        <input type="password" id="edit_saved_password" class="form-control user-modal-control"
+                               readonly autocomplete="off" placeholder="Consultando contraseña…">
+                        <button type="button" class="user-password-toggle" data-password-target="edit_saved_password"
+                                aria-label="Mostrar contraseña" title="Mostrar contraseña"><i class="bi bi-eye"></i></button>
+                    </div>
+                    <span class="user-modal-help" id="edit_saved_password_help"></span>
+                </div>
+
+                <div class="mb-3">
                     <label for="edit_current_password" class="form-label user-modal-label">Contraseña anterior</label>
                     <div class="user-modal-field user-password-field">
                         <i class="bi bi-lock"></i>
@@ -1106,7 +1118,7 @@
                     </div>
                     <span class="user-modal-help" id="edit_previous_password_help"></span>
                 </div>
-                <p class="user-modal-help mb-3">La contraseña guardada no se muestra. Puedes ver las contraseñas que escribes con el botón del ojo.</p>
+
 
                 <div class="row g-3">
 
@@ -1214,7 +1226,33 @@
 
 
 <script>
+    let userPasswordRequest = null;
     function editUser(user) {
+        if (userPasswordRequest) userPasswordRequest.abort();
+        userPasswordRequest = new AbortController();
+        const saved = document.getElementById('edit_saved_password');
+        const savedHelp = document.getElementById('edit_saved_password_help');
+        saved.value = '';
+        saved.type = 'password';
+        saved.placeholder = 'Consultando contraseña…';
+        savedHelp.textContent = '';
+        fetch("{{ url('/users') }}/" + user.id + '/current-password', {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': @json(csrf_token()), 'Accept': 'application/json' },
+            signal: userPasswordRequest.signal,
+            cache: 'no-store'
+        }).then(function (response) {
+            if (!response.ok) throw new Error('No se pudo consultar la contraseña.');
+            return response.json();
+        }).then(function (data) {
+            saved.value = data.password || '';
+            saved.placeholder = data.password ? '' : 'Contraseña no disponible';
+            savedHelp.textContent = data.message;
+        }).catch(function (error) {
+            if (error.name === 'AbortError') return;
+            saved.placeholder = 'No se pudo consultar';
+            savedHelp.textContent = 'No se pudo consultar la contraseña. Vuelve a abrir el formulario.';
+        });
         const ownAccount = Number(user.id) === Number(@json(auth()->id()));
         const previous = document.getElementById('edit_current_password');
         const password = document.getElementById('edit_user_password');
@@ -1687,6 +1725,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
     document.getElementById('editUserModal').addEventListener('hidden.bs.modal', function () {
+        if (userPasswordRequest) userPasswordRequest.abort();
+        document.getElementById('edit_saved_password').value = '';
         document.querySelectorAll('#editUserModal input[type="password"], #editUserModal input[name="password"], #editUserModal input[name="current_password"], #editUserModal input[name="password_confirmation"]').forEach(function (input) {
             input.value = '';
             input.type = 'password';

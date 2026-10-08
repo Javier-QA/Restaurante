@@ -590,6 +590,9 @@ Route::middleware(['auth'])->group(function () {
         // CONFIGURACIÓN Y USUARIOS
         // =====================================================
 
+        Route::post('/users/{user}/current-password', [UserController::class, 'currentPassword'])
+            ->middleware('throttle:30,1')->name('users.current_password');
+
         Route::resource(
             'users',
             UserController::class

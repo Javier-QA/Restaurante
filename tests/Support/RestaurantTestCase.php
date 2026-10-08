@@ -23,7 +23,7 @@ abstract class RestaurantTestCase extends TestCase
                 $table->id();
                 $table->timestamps();
                 $columns = match ($name) {
-                    'users' => ['name', 'email', 'password', 'role'],
+                    'users' => ['name', 'email', 'password', 'role', 'recoverable_password'],
                     'cash_registers' => ['user_id', 'closed_by', 'opening_time', 'closing_time', 'opening_amount', 'closing_amount', 'expected_amount', 'difference', 'status', 'notes'],
                     'orders' => ['table_id', 'user_id', 'client_id', 'status', 'total', 'discount', 'tip', 'payment_method', 'received_amount', 'change_amount', 'document_type', 'client_name', 'client_document', 'cash_register_id', 'serie', 'correlativo', 'subtotal', 'igv', 'total_gravada', 'sunat_status', 'paid_at'],
                     'order_details' => ['order_id', 'product_id', 'quantity', 'price', 'status', 'note'],

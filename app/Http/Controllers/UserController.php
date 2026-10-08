@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -28,12 +29,14 @@ class UserController extends Controller
             'role' => 'required|in:admin,cashier,waiter,kitchen,bar',
         ], $this->validationMessages());
 
-        User::create([
+        $user = new User([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
         ]);
+
+        $user->forceFill(['recoverable_password' => $request->password])->save();
 
         return redirect()->back()->with('success', 'Usuario registrado correctamente.');
     }
@@ -61,7 +64,11 @@ class UserController extends Controller
             $data['password'] = Hash::make($request->password);
         }
 
-        $user->update($data);
+        $user->fill($data);
+        if ($request->filled('password')) {
+            $user->forceFill(['recoverable_password' => $request->password]);
+        }
+        $user->save();
 
         return redirect()->back()->with('success', 'Datos actualizados.');
     }
@@ -80,9 +87,39 @@ class UserController extends Controller
         if (empty($data['password'])) {
             unset($data['password']);
         }
-        $user->update($data);
+        $user->fill($data);
+        if ($request->filled('password')) {
+            $user->forceFill(['recoverable_password' => $request->password]);
+        }
+        $user->save();
 
         return back()->with('success', 'Perfil actualizado correctamente.');
+    }
+
+    public function currentPassword(Request $request, User $user)
+    {
+        abort_unless($request->user()->role === 'admin', 403);
+        $password = null;
+        try {
+            $stored = $user->recoverable_password;
+            if (is_string($stored) && Hash::check($stored, $user->password)) {
+                $password = $stored;
+            }
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            // Una copia cifrada con otra clave nunca se muestra como contraseña válida.
+        }
+        Log::info('Consulta de contraseña de usuario', [
+            'admin_id' => $request->user()->id,
+            'user_id' => $user->id,
+            'available' => $password !== null,
+        ]);
+
+        return response()->json([
+            'password' => $password,
+            'message' => $password === null
+                ? 'Esta contraseña se guardó antes de habilitar la consulta. Establece una nueva para poder verla aquí.'
+                : 'Contraseña actual guardada.',
+        ])->header('Cache-Control', 'no-store, private')->header('Pragma', 'no-cache');
     }
 
     private function verifyPreviousPassword(Request $request, User $user): void
