@@ -3347,12 +3347,6 @@ html[data-color-mode="dark"] .goal-bar-pct {
     box-shadow: none !important;
 }
 
-/* Cuando la meta ya fue alcanzada */
-html[data-color-mode="dark"] .goal-fill-complete .goal-bar-pct {
-    background: rgba(34, 197, 94, .16) !important;
-    color: #86efac !important;
-    border-color: rgba(74, 222, 128, .32) !important;
-}
 
 </style>
 
