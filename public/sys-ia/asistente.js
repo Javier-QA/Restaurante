@@ -1,4 +1,4 @@
-/* Asistente IA: preguntas en lenguaje natural -> tabla + gráfico + resumen + SQL + CSV */
+﻿/* Asistente IA: preguntas en lenguaje natural -> tabla + gráfico + resumen + SQL + CSV */
 (() => {
   const { $, esc, money, toast, call, mdl } = window.SP;
   const API = window.API_IA;
@@ -161,3 +161,4 @@
 
   estado();
 })();
+
