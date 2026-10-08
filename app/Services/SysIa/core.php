@@ -409,7 +409,7 @@ function ia_reglas(): string
 - INGRESOS / VENTAS: usa v_ia_sys_ventas con estado = \'pagado\' y agrupa por la columna fecha. Los pedidos anulados, abiertos o en cocina no son ingresos. «Ticket promedio» = AVG(total). «Venta sin IGV» = total - impuesto.
 - PLATOS MÁS VENDIDOS: SUM(cantidad) en v_ia_sys_detalle_ventas con estado_pedido = \'pagado\' AND estado_item <> \'anulado\'. «Más rentables» = SUM(utilidad).
 - Tipos de pedido: salon, llevar, delivery. Métodos de pago: efectivo, tarjeta, yape, plin, transferencia. «Mozo» = vendedor/atendió. «Horas pico» = HOUR / columna hora.
-- No hay compras ni proveedores registrados en este esquema. No inventes esas tablas. Stock mínimo y unidad no están configurados. Fecha de venta usa updated_at (no hay timestamp independiente de cobro); explica esta limitación cuando sea relevante.
+- No hay compras ni proveedores registrados en este esquema. No inventes esas tablas. Las vistas de inventario incluyen unidad, stock_minimo y stock_bajo. La fecha de venta usa paid_at; para cobros antiguos se conserva una fecha estimada. COUNT de productos cuenta registros de productos distintos; SUM(stock) cuenta existencias. Nunca describas un COUNT de productos como unidades disponibles.
 - Los valores de estado/tipo van en MINÚSCULAS, tal como aparecen en las descripciones.
 - Usa SOLO las vistas y columnas listadas (nunca tablas reales). Sintaxis MySQL/MariaDB. Una sola sentencia SELECT (puede usar WITH), sin punto y coma ni comentarios.
 - Alias de columnas en español, en minúscula con guion bajo (p. ej. total_ventas, cantidad_vendida). No uses como alias los nombres de tablas reales (productos, clientes, pedidos, compras, gastos, mesas, reservas…).
@@ -556,7 +556,7 @@ function ia_chat(string $msg, array $hist = []): array
     }
     $datos = json_encode(['columnas' => $res['columnas'], 'filas' => array_slice($res['filas'], 0, 30), 'total_filas' => count($res['filas'])], JSON_UNESCAPED_UNICODE);
     $texto = trim(ia_llamar([
-        ['role' => 'system', 'content' => 'Eres el asistente de un restaurante. Redacta en español una respuesta breve y clara (máx. 4 frases) a la pregunta usando SOLO los datos dados, con cifras exactas (moneda '.MONEDA.'). Si hay una lista, menciona los primeros elementos; el resto se ve en «Ver datos». Si no hay filas, dilo. Puedes usar **negrita** para cifras clave. Sin tablas ni listas largas.'],
+        ['role' => 'system', 'content' => 'Eres el asistente de un restaurante. Redacta en español una respuesta breve y clara (máx. 4 frases) a la pregunta usando SOLO los datos dados, con cifras exactas. Los conteos de productos no son unidades de stock: distingue COUNT de productos de SUM(stock). Usa moneda solo para importes (moneda '.MONEDA.'). Si hay una lista, menciona los primeros elementos; el resto se ve en «Ver datos». Si no hay filas, dilo. Puedes usar **negrita** para cifras clave. Sin tablas ni listas largas.'],
         ['role' => 'user', 'content' => "Pregunta: $msg\nDatos: $datos"],
     ], 400));
 
