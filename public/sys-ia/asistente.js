@@ -7,7 +7,8 @@
   const MONEY = /(total|importe|ingreso|venta|monto|utilidad|costo|precio|valor|deuda|gasto|margen|saldo|promedio|propina|descuento|impuesto|ticket)/i;
   const NOMONEY = /(pct|porcentaje|cantidad|num_|nro|veces|minutos|hora|pedidos|ordenes|unidades|clientes|visitas|total_productos|total_insumos|stock)/i;
   const nf = (n, d = 0) => window.SP.num(n, d);
-  const cel = (v, c) => v === null || v === undefined ? '—' : typeof v === 'number' ? (MONEY.test(c) && !NOMONEY.test(c) ? money(v) : nf(v, Number.isInteger(v) ? 0 : 2)) : esc(String(v));
+  const hour = (v, c) => /^hora(?:_|$)/i.test(c) && Number.isInteger(v) && v >= 0 && v <= 23 ? `${v % 12 || 12}:00${v < 12 ? 'am' : 'pm'}` : null;
+  const cel = (v, c) => v === null || v === undefined ? '—' : typeof v === 'number' ? (hour(v, c) ?? (MONEY.test(c) && !NOMONEY.test(c) ? money(v) : nf(v, Number.isInteger(v) ? 0 : 2))) : esc(String(v));
   const chartTheme = () => { const c = getComputedStyle(document.querySelector('.sys-ia')); return { primary: c.getPropertyValue('--accent').trim(), text: c.getPropertyValue('--muted').trim(), line: c.getPropertyValue('--line').trim(), surface: c.getPropertyValue('--card').trim() }; };
   let chartResult;
   new MutationObserver(() => { if (chartResult) dibujar(chartResult.r, chartResult.g); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-color-mode'] });
