@@ -12,7 +12,8 @@ class SectionTitleTest extends TestCase
     {
         $sections = [
             'Operaciones' => ['pos.index', 'delivery.show', 'reservations.index', 'sales.index', 'kitchen.index', 'barra.index'],
-            'Caja / Arqueo' => ['cash_registers.create', 'billing.show', 'credit_notes.index', 'daily_summaries.index'],
+            'Caja / Arqueo' => ['cash_registers.create'],
+            'Facturación Electrónica' => ['billing.show', 'credit_notes.index', 'daily_summaries.index'],
             'Gestión' => ['clients.index', 'categories.index', 'products.edit', 'tables.index', 'users.index', 'settings.index', 'system.index'],
             'Inteligencia' => ['ai.assistant', 'ai.chat', 'assistant.index', 'chatbot.index'],
             'General' => ['dashboard', 'reports.index'],
