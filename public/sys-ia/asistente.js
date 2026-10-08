@@ -80,7 +80,7 @@
       ${n ? `<div class="ia-tbl mt-2"><table class="tbl"><thead><tr>${r.columnas.map((c, i) => `<th class="${r.filas.some(f => typeof f[i] === 'number') ? 'text-end' : ''}">${esc(c.replace(/_/g, ' '))}</th>`).join('')}</tr></thead><tbody>${r.filas.map(f => `<tr>${f.map((v, i) => `<td class="${typeof v === 'number' ? 'text-end' : ''}">${cel(v, r.columnas[i])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : '<div class="text-center text-muted py-4">La consulta no devolvió resultados para ese período.</div>'}
       <div class="form-check mt-3 small"><input class="form-check-input" type="checkbox" id="iaSeg"><label class="form-check-label" for="iaSeg">Mi próxima pregunta es de seguimiento de este resultado (p. ej. «ahora solo delivery»)</label></div>
       <pre class="ia-sql" id="iaSql" hidden>${esc(r.sql)}</pre></div></div>`;
-    star(); $('#iaStar').onclick = async () => { const v = last.favorito ? 0 : 1; try { await call(API, 'favorito', { method: 'POST', body: { id: last.id, valor: v } }); last.favorito = v; star(); estado(); } catch (x) { toast(x.message, 'err'); } };
+    star(); $('#iaStar').onclick = async () => { const v = last.favorito ? 0 : 1; try { await call(API, 'favorito', { method: 'POST', body: { id: last.id, valor: v } }); last.favorito = v; star(); toast(v ? 'Consulta guardada en favoritos' : 'Consulta retirada de favoritos'); estado(); } catch (x) { toast(x.message, 'err'); } };
     $('#iaSqlB').onclick = () => { const s = $('#iaSql'); s.hidden = !s.hidden; };
     if (canChart) {
       const selectChart = tipo => {
