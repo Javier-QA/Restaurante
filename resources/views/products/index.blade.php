@@ -107,22 +107,21 @@
     </div>
 </div>
 
-<form action="{{ route('products.index') }}" method="GET" class="card border-0 shadow-sm mb-3">
-    <div class="card-body">
-        <label for="inventorySearch" class="form-label fw-bold">Buscar producto</label>
-        <div class="d-flex flex-wrap gap-2">
+<form id="inventorySearchForm" action="{{ route('products.index') }}" method="GET" class="mb-3">
+    <label for="inventorySearch" class="visually-hidden">Buscar producto por nombre</label>
+    <div class="d-flex align-items-center gap-2">
+        <div class="position-relative flex-grow-1">
+            <i class="bi bi-search position-absolute top-50 translate-middle-y text-muted" style="left: 14px; pointer-events: none"></i>
             <input id="inventorySearch" name="search" type="search" maxlength="100"
-                   value="{{ $search }}" class="form-control flex-grow-1" style="flex-basis: 240px"
-                   placeholder="Nombre del producto">
-            <button type="submit" class="btn btn-primary"><i class="bi bi-search me-1"></i>Buscar</button>
-            @if($search !== '')
-                <a href="{{ route('products.index') }}" class="btn btn-outline-secondary inventory-clear-btn">Limpiar</a>
-            @endif
+                   value="{{ $search }}" class="form-control" style="padding-left: 40px; min-height: 42px"
+                   placeholder="Buscar producto por nombre…" autocomplete="off" aria-controls="inventoryResults">
         </div>
-        <div class="small text-muted mt-2">{{ $products->total() }} productos encontrados</div>
+        <a id="inventoryClear" href="{{ route('products.index') }}" class="btn btn-outline-secondary inventory-clear-btn">Limpiar</a>
     </div>
+    <div id="inventorySearchStatus" class="small text-muted mt-2" role="status" aria-live="polite">{{ $products->total() }} productos encontrados</div>
 </form>
 
+<div id="inventoryResults" data-total="{{ $products->total() }}">
 <div class="card border-0 shadow-sm">
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -406,6 +405,64 @@
 </div>
 
 
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('inventorySearchForm');
+    const input = document.getElementById('inventorySearch');
+    const status = document.getElementById('inventorySearchStatus');
+    let timer;
+    let controller;
+    let requestId = 0;
+    async function searchInventory() {
+        clearTimeout(timer);
+        if (controller) controller.abort();
+        controller = new AbortController();
+        const currentId = ++requestId;
+        const url = new URL(form.action);
+        const term = input.value.trim();
+        if (term) url.searchParams.set('search', term);
+        status.textContent = 'Buscando…';
+        const results = document.getElementById('inventoryResults');
+        results.setAttribute('aria-busy', 'true');
+        try {
+            const response = await fetch(url, {signal: controller.signal});
+            if (!response.ok) throw new Error('Search failed');
+            const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
+            const updated = doc.getElementById('inventoryResults');
+            if (!updated) throw new Error('Missing results');
+            if (currentId !== requestId) return;
+            results.replaceWith(updated);
+            status.textContent = updated.dataset.total + ' productos encontrados';
+            history.replaceState(null, '', url);
+        } catch (error) {
+            if (error.name !== 'AbortError' && currentId === requestId) {
+                status.textContent = 'No se pudo actualizar. Pulsa Enter para reintentar.';
+            }
+        } finally {
+            if (currentId === requestId) document.getElementById('inventoryResults').removeAttribute('aria-busy');
+        }
+    }
+    input.addEventListener('input', () => {
+        if (controller) controller.abort();
+        ++requestId;
+        clearTimeout(timer);
+        timer = setTimeout(searchInventory, 250);
+    });
+    form.addEventListener('submit', event => {
+        event.preventDefault();
+        searchInventory();
+    });
+    document.getElementById('inventoryClear').addEventListener('click', event => {
+        event.preventDefault();
+        input.value = '';
+        input.focus();
+        searchInventory();
+    });
+});
+</script>
 
 <script>
 let deleteProductFormId = null;
