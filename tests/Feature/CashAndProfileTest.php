@@ -101,6 +101,31 @@ class CashAndProfileTest extends RestaurantTestCase
                 'Finaliza los pedidos pendientes antes de cerrar la caja. Pedidos: #'.$order->id.' (mesa ID '.$order->table_id.')');
     }
 
+    public function test_delivery_board_includes_active_orders_from_previous_days(): void
+    {
+        $active = \App\Models\Delivery::create(['status' => 'pending', 'created_at' => now()->subDays(2)]);
+        $active->forceFill(['created_at' => now()->subDays(2)])->save();
+        $closed = \App\Models\Delivery::create(['status' => 'delivered']);
+        $closed->forceFill(['created_at' => now()->subDays(2)])->save();
+        $ids = \App\Models\Delivery::visibleOnBoard()->pluck('id')->all();
+        $this->assertContains($active->id, $ids);
+        $this->assertNotContains($closed->id, $ids);
+    }
+
+    public function test_close_page_identifies_orders_without_delivery_records(): void
+    {
+        $this->openRegister();
+        $order = $this->order($this->product());
+        $order->update(['table_id' => null]);
+        $this->get(route('cash_registers.close'))->assertOk()
+            ->assertSee('Pedido #'.$order->id)
+            ->assertSee('Sin mesa ni registro Delivery.');
+        $this->postJson('/cash-registers/close', ['closing_amount' => 50])
+            ->assertUnprocessable()
+            ->assertJsonPath('errors.cash_register.0',
+                'Finaliza los pedidos pendientes antes de cerrar la caja. Pedidos: #'.$order->id.' (sin mesa ni registro Delivery)');
+    }
+
     public function test_delivery_shipping_is_included_in_cash_arqueo(): void
     {
         $register = $this->openRegister();

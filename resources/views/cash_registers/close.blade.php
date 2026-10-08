@@ -523,6 +523,26 @@
                             </div>
                         </div>
 
+                        @if($pendingOrders->isNotEmpty())
+                            <div class="alert alert-warning">
+                                <strong>Pedidos que bloquean el cierre</strong>
+                                <ul class="mb-0 mt-2">
+                                    @foreach($pendingOrders as $pendingOrder)
+                                        <li>
+                                            Pedido #{{ $pendingOrder->id }} · {{ $pendingOrder->created_at?->format('d/m/Y H:i') }}
+                                            @if($pendingOrder->delivery)
+                                                <a href="{{ route('delivery.show', $pendingOrder->delivery) }}">Abrir Delivery #{{ $pendingOrder->delivery->id }}</a>
+                                            @elseif($pendingOrder->table_id)
+                                                · Mesa ID {{ $pendingOrder->table_id }}
+                                            @else
+                                                · Sin mesa ni registro Delivery. Requiere revisión del registro.
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <form id="cashCloseForm" action="{{ route('cash_registers.processClose') }}" method="POST">
                             @csrf
 

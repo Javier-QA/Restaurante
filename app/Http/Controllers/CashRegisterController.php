@@ -302,6 +302,8 @@ class CashRegisterController extends Controller
             + $totalSalesCash
             - $totalExpenses;
 
+        $pendingOrders = \App\Models\Order::pendingForClosing()->with('delivery')->orderBy('id')->get();
+
         return view('cash_registers.close', compact(
             'cashRegister',
             'expectedAmount',
@@ -310,7 +312,8 @@ class CashRegisterController extends Controller
             'totalSalesYape',
             'totalSalesPlin',
             'totalSales',
-            'totalExpenses'
+            'totalExpenses',
+            'pendingOrders'
         ));
     }
 
@@ -326,14 +329,11 @@ class CashRegisterController extends Controller
             if (! $cashRegister) {
                 throw \Illuminate\Validation\ValidationException::withMessages(['cash_register' => 'No existe ninguna caja abierta.']);
             }
-            $pendingOrders = \App\Models\Order::where('status', 'pending')
-                ->whereNull('paid_at')
-                ->whereHas('details', fn ($query) => $query->where('quantity', '>', 0))
-                ->orderBy('id')
-                ->get(['id', 'table_id']);
+            $pendingOrders = \App\Models\Order::pendingForClosing()
+                ->with('delivery')->orderBy('id')->get();
             if ($pendingOrders->isNotEmpty()) {
                 $references = $pendingOrders->map(fn ($order) => '#'.$order->id.
-                    ($order->table_id ? ' (mesa ID '.$order->table_id.')' : ' (sin mesa; revisar Delivery)'))
+                    ($order->table_id ? ' (mesa ID '.$order->table_id.')' : ($order->delivery ? ' (Delivery #'.$order->delivery->id.')' : ' (sin mesa ni registro Delivery)')))
                     ->implode(', ');
                 throw \Illuminate\Validation\ValidationException::withMessages([
                     'cash_register' => 'Finaliza los pedidos pendientes antes de cerrar la caja. Pedidos: '.$references,

@@ -23,7 +23,7 @@ class DeliveryController extends Controller
     public function index()
     {
         $deliveries = Delivery::with(['order.details.product', 'driver', 'client'])
-            ->today()
+            ->visibleOnBoard()
             ->orderBy('created_at', 'desc')
             ->get()
             ->groupBy('status');
@@ -51,7 +51,7 @@ class DeliveryController extends Controller
     public function orders()
     {
         $deliveries = Delivery::with(['order.details.product', 'driver', 'client'])
-            ->today()
+            ->visibleOnBoard()
             ->orderBy('created_at', 'desc')
             ->get()
             ->groupBy('status');

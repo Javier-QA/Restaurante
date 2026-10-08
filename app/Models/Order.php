@@ -54,6 +54,13 @@ class Order extends Model
         'total_gratuita' => 'decimal:2',
     ];
 
+    public function scopePendingForClosing($query)
+    {
+        return $query->where('status', 'pending')
+            ->whereNull('paid_at')
+            ->whereHas('details', fn ($query) => $query->where('quantity', '>', 0));
+    }
+
     public function table()
     {
         return $this->belongsTo(Table::class);
