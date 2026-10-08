@@ -489,6 +489,14 @@
                 Historial de movimientos
             </h6>
 
+            <form method="POST" action="{{ route('inventory.logs.reset') }}">
+                @csrf
+                @method('DELETE')
+                <button type="button" class="btn btn-outline-danger rounded-pill"
+                        onclick="confirmResetKardex(this)">
+                    <i class="bi bi-trash3 me-1"></i> Vaciar Kardex y poner stock en cero
+                </button>
+            </form>
             <span class="inventory-count">
                 {{ $logs->total() }}
                 {{ $logs->total() === 1 ? 'movimiento' : 'movimientos' }}
@@ -939,6 +947,16 @@ html[data-color-mode="dark"] .inventory-empty-text {
 </style>
 
 <script>
+function confirmResetKardex(button) {
+    SystemNotify.confirm({
+        type: 'warning',
+        title: 'Vaciar Kardex y reiniciar stock',
+        text: 'Se eliminarán TODOS los movimientos del Kardex y el stock de TODOS los productos con control de stock quedará en 0. Esta acción no se puede deshacer.',
+        confirmText: 'Eliminar todo y poner stock en 0',
+        icon: 'bi-trash3',
+        onConfirm: function () { button.closest('form').requestSubmit(); }
+    });
+}
 function confirmDeleteKardex(button) {
     SystemNotify.confirm({
         type: 'warning',
