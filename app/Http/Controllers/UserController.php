@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -42,8 +44,11 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,'.$user->id,
             'role' => 'required|in:admin,cashier,waiter,kitchen,bar',
-            'password' => 'nullable|string|min:8|max:255',
+            'password' => 'nullable|string|min:8|max:255|confirmed',
+            'current_password' => ['nullable', 'string', 'max:255', Rule::requiredIf($request->filled('password') && (int) $user->id === (int) Auth::id())],
         ], $this->validationMessages());
+
+        $this->verifyPreviousPassword($request, $user);
 
         $data = [
             'name' => $request->name,
@@ -67,14 +72,27 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,'.$user->id,
-            'password' => 'nullable|string|min:8|max:255',
+            'password' => 'nullable|string|min:8|max:255|confirmed',
+            'current_password' => ['nullable', 'string', 'max:255', Rule::requiredIf($request->filled('password') && (int) $user->id === (int) Auth::id())],
         ], $this->validationMessages());
+        $this->verifyPreviousPassword($request, $user);
+        unset($data['current_password']);
         if (empty($data['password'])) {
             unset($data['password']);
         }
         $user->update($data);
 
         return back()->with('success', 'Perfil actualizado correctamente.');
+    }
+
+    private function verifyPreviousPassword(Request $request, User $user): void
+    {
+        if ($request->filled('password') && $request->filled('current_password')
+            && ! Hash::check($request->input('current_password'), $user->password)) {
+            throw ValidationException::withMessages([
+                'current_password' => 'La contraseña anterior no es correcta.',
+            ]);
+        }
     }
 
     private function validationMessages(): array
@@ -85,6 +103,8 @@ class UserController extends Controller
             'max' => 'El campo :attribute no debe superar :max caracteres.',
             'email.email' => 'Ingresa un correo electrónico válido.',
             'email.unique' => 'Este correo electrónico ya pertenece a otro usuario.',
+            'password.confirmed' => 'La confirmación no coincide con la nueva contraseña.',
+            'current_password.required' => 'Ingresa tu contraseña anterior para cambiarla.',
             'password.min' => 'La contraseña debe tener al menos :min caracteres.',
             'role.in' => 'Selecciona un rol válido.',
         ];

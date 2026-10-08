@@ -7641,6 +7641,19 @@ html[data-color-mode="dark"]
                             </div>
 
 
+                            <div class="profile-field mb-3">
+                                <label for="profilePreviousPassword" class="profile-label">Contraseña anterior</label>
+                                <div class="profile-input-wrapper">
+                                    <span class="profile-input-icon"><i class="bi bi-lock"></i></span>
+                                    <input type="password" id="profilePreviousPassword" name="current_password"
+                                           class="form-control profile-input profile-password-input" autocomplete="off"
+                                           maxlength="255" placeholder="Obligatoria si cambias tu contraseña">
+                                    <button type="button" class="profile-password-toggle" data-profile-password="profilePreviousPassword"
+                                            aria-label="Mostrar contraseña" title="Mostrar contraseña"><i class="bi bi-eye"></i></button>
+                                </div>
+                                <div class="profile-help">La contraseña guardada no se muestra. El ojo permite ver lo que escribes.</div>
+                            </div>
+
                             <div class="profile-field mb-0">
 
                                 <label
@@ -7659,6 +7672,7 @@ html[data-color-mode="dark"]
                                     <input
                                         type="password"
                                         id="profilePassword"
+                                        minlength="8" maxlength="255"
                                         name="password"
                                         class="form-control profile-input profile-password-input"
                                         placeholder="Ingresa una nueva contraseña"
@@ -7685,6 +7699,18 @@ html[data-color-mode="dark"]
                                 </div>
 
                             </div>
+                            <div class="profile-field mt-3">
+                                <label for="profilePasswordConfirmation" class="profile-label">Confirmar nueva contraseña</label>
+                                <div class="profile-input-wrapper">
+                                    <span class="profile-input-icon"><i class="bi bi-key"></i></span>
+                                    <input type="password" id="profilePasswordConfirmation" name="password_confirmation"
+                                           class="form-control profile-input profile-password-input" autocomplete="new-password"
+                                           maxlength="255" placeholder="Repite la nueva contraseña">
+                                    <button type="button" class="profile-password-toggle" data-profile-password="profilePasswordConfirmation"
+                                            aria-label="Mostrar contraseña" title="Mostrar contraseña"><i class="bi bi-eye"></i></button>
+                                </div>
+                            </div>
+
 
                         </div>
 
@@ -10688,6 +10714,42 @@ window.addEventListener('load', function () {
 });
 </script>
 @endif
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const password = document.getElementById('profilePassword');
+    const previous = document.getElementById('profilePreviousPassword');
+    const confirmation = document.getElementById('profilePasswordConfirmation');
+    if (!password || !previous || !confirmation) return;
+    password.addEventListener('input', function () {
+        previous.required = password.value.length > 0;
+        confirmation.required = password.value.length > 0;
+    });
+    document.querySelectorAll('[data-profile-password]').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const input = document.getElementById(button.dataset.profilePassword);
+            const show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            button.querySelector('i').className = show ? 'bi bi-eye-slash' : 'bi bi-eye';
+            button.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
+            button.title = show ? 'Ocultar contraseña' : 'Mostrar contraseña';
+        });
+    });
+    const modal = password.closest('.modal');
+    if (modal) modal.addEventListener('hidden.bs.modal', function () {
+        [previous, password, confirmation].forEach(function (input) {
+            input.value = '';
+            input.type = 'password';
+            input.required = false;
+        });
+        modal.querySelectorAll('.profile-password-toggle').forEach(function (button) {
+            button.querySelector('i').className = 'bi bi-eye';
+            button.setAttribute('aria-label', 'Mostrar contraseña');
+            button.title = 'Mostrar contraseña';
+        });
+    });
+});
+</script>
+
 </body>
 </html>
 

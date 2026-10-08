@@ -1094,6 +1094,20 @@
                 </div>
 
 
+                <div class="mb-3">
+                    <label for="edit_current_password" class="form-label user-modal-label">Contraseña anterior</label>
+                    <div class="user-modal-field user-password-field">
+                        <i class="bi bi-lock"></i>
+                        <input type="password" name="current_password" id="edit_current_password"
+                               class="form-control user-modal-control" autocomplete="off" maxlength="255"
+                               placeholder="Escribe la contraseña anterior">
+                        <button type="button" class="user-password-toggle" data-password-target="edit_current_password"
+                                aria-label="Mostrar contraseña" title="Mostrar contraseña"><i class="bi bi-eye"></i></button>
+                    </div>
+                    <span class="user-modal-help" id="edit_previous_password_help"></span>
+                </div>
+                <p class="user-modal-help mb-3">La contraseña guardada no se muestra. Puedes ver las contraseñas que escribes con el botón del ojo.</p>
+
                 <div class="row g-3">
 
                     <div class="col-md-6">
@@ -1109,7 +1123,7 @@
        name="password"
        id="edit_user_password" minlength="8" maxlength="255"
        class="form-control user-modal-control"
-       placeholder="Opcional">
+       placeholder="Mínimo 8 caracteres" autocomplete="new-password">
 
 <button type="button"
         class="user-password-toggle edit-password-toggle"
@@ -1152,6 +1166,18 @@
 
                 </div>
 
+                <div class="mt-3">
+                    <label for="edit_password_confirmation" class="form-label user-modal-label">Confirmar nueva contraseña</label>
+                    <div class="user-modal-field user-password-field">
+                        <i class="bi bi-lock"></i>
+                        <input type="password" name="password_confirmation" id="edit_password_confirmation"
+                               class="form-control user-modal-control" autocomplete="new-password" maxlength="255"
+                               placeholder="Repite la nueva contraseña">
+                        <button type="button" class="user-password-toggle" data-password-target="edit_password_confirmation"
+                                aria-label="Mostrar contraseña" title="Mostrar contraseña"><i class="bi bi-eye"></i></button>
+                    </div>
+                </div>
+
             </div>
 
 
@@ -1189,6 +1215,27 @@
 
 <script>
     function editUser(user) {
+        const ownAccount = Number(user.id) === Number(@json(auth()->id()));
+        const previous = document.getElementById('edit_current_password');
+        const password = document.getElementById('edit_user_password');
+        const confirmation = document.getElementById('edit_password_confirmation');
+        [previous, password, confirmation].forEach(function (input) {
+            input.value = '';
+            input.type = 'password';
+            input.required = false;
+        });
+        document.querySelectorAll('#editUserModal .user-password-toggle').forEach(function (button) {
+            button.setAttribute('aria-label', 'Mostrar contraseña');
+            button.title = 'Mostrar contraseña';
+            button.querySelector('i').className = 'bi bi-eye';
+        });
+        document.getElementById('edit_previous_password_help').textContent = ownAccount
+            ? 'Obligatoria al cambiar tu propia contraseña.'
+            : 'Opcional: como administrador puedes establecer una nueva contraseña si el usuario olvidó la anterior.';
+        password.oninput = function () {
+            previous.required = ownAccount && password.value.length > 0;
+            confirmation.required = password.value.length > 0;
+        };
         document.getElementById('edit_name').value = user.name;
         document.getElementById('edit_email').value = user.email;
         document.getElementById('edit_role').value = user.role;
@@ -1623,3 +1670,27 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 @endsection
+<style>
+.user-password-field { position: relative; }
+.user-password-field input { padding-right: 48px !important; }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-password-target]').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const input = document.getElementById(button.dataset.passwordTarget);
+            const show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            button.querySelector('i').className = show ? 'bi bi-eye-slash' : 'bi bi-eye';
+            button.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
+            button.title = show ? 'Ocultar contraseña' : 'Mostrar contraseña';
+        });
+    });
+    document.getElementById('editUserModal').addEventListener('hidden.bs.modal', function () {
+        document.querySelectorAll('#editUserModal input[type="password"], #editUserModal input[name="password"], #editUserModal input[name="current_password"], #editUserModal input[name="password_confirmation"]').forEach(function (input) {
+            input.value = '';
+            input.type = 'password';
+        });
+    });
+});
+</script>

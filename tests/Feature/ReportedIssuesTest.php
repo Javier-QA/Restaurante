@@ -64,7 +64,7 @@ class ReportedIssuesTest extends RestaurantTestCase
         (new UserController)->update(Request::create('/', 'POST', ['name' => 'Nuevo nombre', 'email' => $user->email, 'role' => 'cashier', 'password' => null]), $user);
         $this->assertSame('Nuevo nombre', $user->fresh()->name);
         $this->assertSame($password, $user->fresh()->password);
-        (new UserController)->update(Request::create('/', 'POST', ['name' => 'Nuevo nombre', 'email' => $user->email, 'role' => 'cashier', 'password' => 'nueva123']), $user);
+        (new UserController)->update(Request::create('/', 'POST', ['name' => 'Nuevo nombre', 'email' => $user->email, 'role' => 'cashier', 'password' => 'nueva123', 'password_confirmation' => 'nueva123']), $user);
         $this->assertTrue(Hash::check('nueva123', $user->fresh()->password));
     }
 

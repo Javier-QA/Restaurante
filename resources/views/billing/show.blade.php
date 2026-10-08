@@ -82,7 +82,13 @@
             </a>
         @endif
 
-        @if(in_array($order->sunat_status, ['PENDING','ERROR','REJECTED']))
+        @if($order->isReceipt() && in_array($order->sunat_status, ['PENDING','ERROR','REJECTED']))
+            <a href="{{ route('daily_summaries.index') }}" class="btn btn-outline-warning">
+                <i class="bi bi-file-earmark-text"></i> Ver resumen diario
+            </a>
+        @endif
+
+        @if(!$order->isReceipt() && in_array($order->sunat_status, ['PENDING','ERROR','REJECTED']))
             <form method="POST"
                   action="{{ route('billing.retry', $order) }}"
                   id="billingRetryForm"
@@ -756,7 +762,7 @@
 </style>
 
     {{-- Modal de reintento SUNAT --}}
-    @if(in_array($order->sunat_status, ['PENDING','ERROR','REJECTED']))
+    @if(!$order->isReceipt() && in_array($order->sunat_status, ['PENDING','ERROR','REJECTED']))
 
         <div class="modal fade"
              id="billingRetryModal"
@@ -875,7 +881,7 @@
     }
 </style>
 
-@if(in_array($order->sunat_status, ['PENDING','ERROR','REJECTED']))
+@if(!$order->isReceipt() && in_array($order->sunat_status, ['PENDING','ERROR','REJECTED']))
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
