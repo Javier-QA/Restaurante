@@ -2173,12 +2173,6 @@ html[data-color-mode="dark"]
    INGRESO ACTUAL
 ============================================================ */
 
-html[data-color-mode="dark"]
-#donutChart {
-
-    filter:
-        brightness(1.18);
-}
 
 
 /*
@@ -3496,7 +3490,7 @@ html[data-color-mode="dark"] .kpi-stock.kpi-ok::before {
 
 /* Tarjeta */
 html[data-color-mode="dark"] #donutChart {
-    filter: brightness(1.35) saturate(1.15);
+    filter: none;
 }
 
 /* 0% central */
