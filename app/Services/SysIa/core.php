@@ -149,43 +149,31 @@ function ia_llamar(array $mensajes, int $maxTokens = 900): string
         throw new RuntimeException('Demasiadas consultas a la IA. Espera un minuto.');
     }
     \Illuminate\Support\Facades\RateLimiter::hit($key, 60);
-    $h = ['Content-Type: application/json'];
-    if ($c['clave'] !== '') {
-        $h[] = 'Authorization: Bearer '.$c['clave'];
-    }
     $endpoint = rtrim($c['url'], '/');
     if (! str_ends_with($endpoint, '/chat/completions')) {
         $endpoint .= '/chat/completions';
     }
-    $ch = curl_init($endpoint);
-    curl_setopt_array($ch, [
-        CURLOPT_POST => true, CURLOPT_HTTPHEADER => $h, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 25, CURLOPT_CONNECTTIMEOUT => 5,
-        CURLOPT_POSTFIELDS => json_encode(['model' => $c['modelo'], 'messages' => $mensajes, 'temperature' => 0, 'max_tokens' => $maxTokens], JSON_UNESCAPED_UNICODE),
-    ]);
-    $cafile = ini_get('curl.cainfo') ?: ini_get('openssl.cafile');
-    if (! $cafile) {
-        $loc = storage_path('app/cacert.pem');
-        if (is_file($loc)) {
-            curl_setopt($ch, CURLOPT_CAINFO, $loc);
+    try {
+        $response = app(ProviderClient::class)->send($endpoint, $c, [
+            'model' => $c['modelo'], 'messages' => $mensajes,
+            'temperature' => 0, 'max_tokens' => $maxTokens,
+        ]);
+    } catch (\Illuminate\Http\Client\ConnectionException $e) {
+        $err = $e->getMessage();
+        if (stripos($err, 'SSL') !== false || stripos($err, 'certificate') !== false) {
+            throw new RuntimeException('Error de certificado SSL al conectar con la IA. En Laragon revisa curl.cainfo en php.ini.');
         }
+        throw new RuntimeException('No se pudo conectar con la IA. Revisa tu conexión a internet y la URL configurada.');
     }
-    $res = curl_exec($ch);
-    $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $err = curl_error($ch);
-    curl_close($ch);
-    if ($res === false) {
-        if (stripos($err, 'SSL') !== false) {
-            throw new RuntimeException('Error de certificado SSL al conectar con la IA. En Laragon revisa curl.cainfo en php.ini. Detalle: '.$err);
-        }
-        throw new RuntimeException('No se pudo conectar con el proveedor de IA ('.$err.'). Revisa tu conexión a internet y la URL.');
-    }
+    $res = $response->body();
+    $code = $response->status();
     $d = json_decode($res, true);
     if ($code >= 400) {
         $msg = match (true) {
             $code === 401 || $code === 403 => 'La clave de la IA no es válida o no tiene permiso. Revísala en «Configurar IA».',
             $code === 429 => 'Se alcanzó el límite de solicitudes o la cuota del proveedor de IA. Espera un minuto e inténtalo otra vez.',
             $code === 404 => 'No se encontró el modelo o la URL de la IA. Revisa el nombre del modelo (p. ej. gemini-3.5-flash-lite o gemini-3.5-flash) y la URL.',
-            $code >= 500 => 'El proveedor de IA tiene problemas en este momento. Inténtalo en unos minutos.',
+            $code >= 500 => 'La API de IA devolvió un error temporal (HTTP '.$code.'). Inténtalo nuevamente.',
             default => 'El proveedor de IA rechazó la petición ('.$code.').',
         };
         throw new RuntimeException($msg);
