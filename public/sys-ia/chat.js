@@ -16,7 +16,7 @@
 
   const fmtTxt = (t) => esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
   const MONEY = /(total|importe|ingreso|venta|monto|utilidad|costo|precio|valor|deuda|gasto|margen|saldo|promedio|propina|descuento|impuesto|ticket)/i;
-  const cel = (v, c) => v === null ? '—' : typeof v === 'number' ? (MONEY.test(c) && !/pct|porcentaje|cantidad|num_|nro|pedidos|ordenes|unidades|clientes|visitas|stock|veces|minutos|hora/i.test(c) ? money(v) : nf(v, Number.isInteger(v) ? 0 : 2)) : esc(String(v));
+  const cel = (v, c) => v === null ? '—' : typeof v === 'number' ? (MONEY.test(c) && !/pct|porcentaje|cantidad|num_|nro|pedidos|ordenes|unidades|clientes|visitas|total_productos|total_insumos|stock|veces|minutos|hora/i.test(c) ? money(v) : nf(v, Number.isInteger(v) ? 0 : 2)) : esc(String(v));
 
   function build() {
     if (root) return;
