@@ -249,6 +249,9 @@ function ia_validar_sql(string $sql): string
     if (! preg_match('/^\s*(select|with)\b/i', $t)) {
         throw new RuntimeException('Consulta rechazada: debe empezar por SELECT.');
     }
+    if (preg_match('/\bHOUR\s*\(\s*(?:[a-z_][a-z0-9_]*\s*\.\s*)?fecha\s*\)/i', $t)) {
+        throw new RuntimeException('Consulta rechazada: fecha no contiene hora; usa la columna hora para agrupar ventas por horario.');
+    }
     $prohibidas = 'insert|update|delete|replace|drop|alter|create|truncate|rename|grant|revoke|call|execute|prepare|deallocate|handler|into|outfile|dumpfile|load_file|load|sleep|benchmark|get_lock|release_lock|master_pos_wait|'
         .'information_schema|performance_schema|mysql|sys|user|current_user|session_user|system_user|database|schema|version|connection_id|row_count|found_rows|last_insert_id|recursive|set|use|show|lock|unlock|procedure|analyse|for|describe|explain|optimize|repair|flush|kill|shutdown';
     if (preg_match('/\b('.$prohibidas.')\b/i', $t, $m)) {
@@ -279,6 +282,8 @@ function ia_pdo(): PDO
     \Illuminate\Support\Facades\DB::purge('sys_ia_read');
     $p = \Illuminate\Support\Facades\DB::connection('sys_ia_read')->getPdo();
     $p->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+    // Reject aggregate queries that silently combine a random hour with all orders.
+    $p->exec("SET SESSION sql_mode = CONCAT_WS(',', NULLIF(@@SESSION.sql_mode, ''), 'ONLY_FULL_GROUP_BY')");
     try {
         $p->exec("SET time_zone = '-05:00'");
     } catch (Throwable $e) {
@@ -408,7 +413,7 @@ function ia_reglas(): string
 - Moneda: soles ('.MONEDA.'). Los precios incluyen IGV '.cfg('igv', 18).' %.
 - INGRESOS / VENTAS: usa v_ia_sys_ventas con estado = \'pagado\' y agrupa por la columna fecha. Los pedidos anulados, abiertos o en cocina no son ingresos. «Ticket promedio» = AVG(total). «Venta sin IGV» = total - impuesto.
 - PLATOS MÁS VENDIDOS: SUM(cantidad) en v_ia_sys_detalle_ventas con estado_pedido = \'pagado\' AND estado_item <> \'anulado\'. «Más rentables» = SUM(utilidad).
-- Tipos de pedido: salon, llevar, delivery. Métodos de pago: efectivo, tarjeta, yape, plin, transferencia. «Mozo» = vendedor/atendió. «Horas pico» = HOUR / columna hora.
+- Tipos de pedido: salon, llevar, delivery. Métodos de pago: efectivo, tarjeta, yape, plin, transferencia. «Mozo» = vendedor/atendió. «Horas pico»: usa directamente la columna hora de v_ia_sys_ventas, agrupa GROUP BY hora y ordena COUNT(*) DESC si se piden más pedidos, o SUM(total) DESC si se pide mayor ingreso. Nunca uses HOUR(fecha): fecha es DATE y pierde la hora; HOUR(fecha) devuelve cero. Muestra el intervalo HH:00–HH:59 y el período consultado. Si no indican período, usa todo el historial y dilo.
 - No hay compras ni proveedores registrados en este esquema. No inventes esas tablas. Las vistas de inventario incluyen unidad, stock_minimo y stock_bajo. La fecha de venta usa paid_at; para cobros antiguos se conserva una fecha estimada. COUNT de productos cuenta registros de productos distintos; SUM(stock) cuenta existencias. Nunca describas un COUNT de productos como unidades disponibles.
 - UNIDAD DE MEDIDA: cuando pregunten por productos en unidades, kilos, gramos, litros, paquetes o cajas, usa la columna unidad de v_ia_sys_insumos. Códigos: und, kg, g, lt, ml, paq, caja. Para unidades filtra unidad = \'und\'; nunca busques unid, kg o gramos en el nombre del producto. Para listar productos de venta y su categoría/precio, une v_ia_sys_insumos i con v_ia_sys_productos p ON p.id=i.id y filtra i.activo=1 AND p.activo=1. Devuelve nombre, unidad y stock; COUNT cuenta productos distintos, no unidades de stock. Una porción llamada 10 unid. no indica la unidad de inventario ni el stock disponible.
 - Los valores de estado/tipo van en MINÚSCULAS, tal como aparecen en las descripciones.
