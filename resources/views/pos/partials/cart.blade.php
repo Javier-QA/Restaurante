@@ -81,11 +81,11 @@
                                                 style="font-size: 0.8rem;"
                                                 onclick="updateQty({{ $detail->id }}, {{ $detail->quantity - 1 }})">-</button>
 
-                                        <input type="text"
-                                               class="form-control pos-cart-quantity text-center px-0 py-0 fw-bold"
-                                               value="{{ $detail->quantity }}"
-                                               readonly
-                                               style="font-size: 0.85rem;">
+                                        <span class="pos-cart-quantity text-center px-0 py-0 fw-bold"
+                                              aria-label="Cantidad"
+                                              style="font-size: 0.85rem; flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center;">
+                                            {{ $detail->quantity }}
+                                        </span>
 
                                         <button class="btn btn-outline-primary px-1 py-0"
                                                 style="font-size: 0.8rem;"
@@ -366,3 +366,18 @@ html[data-color-mode="dark"] .pos-cart-body tbody tr:hover > td {
 
 
 
+
+<style>
+#cart-container .pos-cart-body .pos-cart-quantity {
+    background: var(--card-bg, #ffffff) !important;
+    color: var(--text-main, #172033) !important;
+    -webkit-text-fill-color: currentColor !important;
+    border: 1px solid var(--border-soft, #dce7f1) !important;
+}
+html[data-color-mode="dark"] #cart-container .pos-cart-body .pos-cart-quantity {
+    background: #203248 !important;
+    color: #e8f0f7 !important;
+    -webkit-text-fill-color: #e8f0f7 !important;
+    border-color: #304860 !important;
+}
+</style>
