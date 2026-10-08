@@ -48,10 +48,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,'.$user->id,
             'role' => 'required|in:admin,cashier,waiter,kitchen,bar',
             'password' => 'nullable|string|min:8|max:255|confirmed',
-            'current_password' => ['nullable', 'string', 'max:255', Rule::requiredIf($request->filled('password') && (int) $user->id === (int) Auth::id())],
         ], $this->validationMessages());
-
-        $this->verifyPreviousPassword($request, $user);
 
         $data = [
             'name' => $request->name,

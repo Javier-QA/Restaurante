@@ -1098,26 +1098,15 @@
                     <label for="edit_saved_password" class="form-label user-modal-label">Contraseña actual</label>
                     <div class="user-modal-field user-password-field">
                         <i class="bi bi-lock"></i>
-                        <input type="password" id="edit_saved_password" class="form-control user-modal-control"
+                        <input type="text" id="edit_saved_password" class="form-control user-modal-control"
                                readonly autocomplete="off" placeholder="Consultando contraseña…">
                         <button type="button" class="user-password-toggle" data-password-target="edit_saved_password"
-                                aria-label="Mostrar contraseña" title="Mostrar contraseña"><i class="bi bi-eye"></i></button>
+                                aria-label="Ocultar contraseña" title="Ocultar contraseña"><i class="bi bi-eye-slash"></i></button>
                     </div>
                     <span class="user-modal-help" id="edit_saved_password_help"></span>
                 </div>
 
-                <div class="mb-3">
-                    <label for="edit_current_password" class="form-label user-modal-label">Contraseña anterior</label>
-                    <div class="user-modal-field user-password-field">
-                        <i class="bi bi-lock"></i>
-                        <input type="password" name="current_password" id="edit_current_password"
-                               class="form-control user-modal-control" autocomplete="off" maxlength="255"
-                               placeholder="Escribe la contraseña anterior">
-                        <button type="button" class="user-password-toggle" data-password-target="edit_current_password"
-                                aria-label="Mostrar contraseña" title="Mostrar contraseña"><i class="bi bi-eye"></i></button>
-                    </div>
-                    <span class="user-modal-help" id="edit_previous_password_help"></span>
-                </div>
+
 
 
                 <div class="row g-3">
@@ -1233,7 +1222,7 @@
         const saved = document.getElementById('edit_saved_password');
         const savedHelp = document.getElementById('edit_saved_password_help');
         saved.value = '';
-        saved.type = 'password';
+        saved.type = 'text';
         saved.placeholder = 'Consultando contraseña…';
         savedHelp.textContent = '';
         fetch("{{ url('/users') }}/" + user.id + '/current-password', {
@@ -1253,25 +1242,20 @@
             saved.placeholder = 'No se pudo consultar';
             savedHelp.textContent = 'No se pudo consultar la contraseña. Vuelve a abrir el formulario.';
         });
-        const ownAccount = Number(user.id) === Number(@json(auth()->id()));
-        const previous = document.getElementById('edit_current_password');
         const password = document.getElementById('edit_user_password');
         const confirmation = document.getElementById('edit_password_confirmation');
-        [previous, password, confirmation].forEach(function (input) {
+        [password, confirmation].forEach(function (input) {
             input.value = '';
             input.type = 'password';
             input.required = false;
         });
         document.querySelectorAll('#editUserModal .user-password-toggle').forEach(function (button) {
-            button.setAttribute('aria-label', 'Mostrar contraseña');
-            button.title = 'Mostrar contraseña';
-            button.querySelector('i').className = 'bi bi-eye';
+            const visible = button.dataset.passwordTarget === 'edit_saved_password';
+            button.setAttribute('aria-label', visible ? 'Ocultar contraseña' : 'Mostrar contraseña');
+            button.title = visible ? 'Ocultar contraseña' : 'Mostrar contraseña';
+            button.querySelector('i').className = visible ? 'bi bi-eye-slash' : 'bi bi-eye';
         });
-        document.getElementById('edit_previous_password_help').textContent = ownAccount
-            ? 'Obligatoria al cambiar tu propia contraseña.'
-            : 'Opcional: como administrador puedes establecer una nueva contraseña si el usuario olvidó la anterior.';
         password.oninput = function () {
-            previous.required = ownAccount && password.value.length > 0;
             confirmation.required = password.value.length > 0;
         };
         document.getElementById('edit_name').value = user.name;

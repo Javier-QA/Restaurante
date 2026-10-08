@@ -25,12 +25,11 @@ class PasswordChangeTest extends RestaurantTestCase
         $this->assertArrayNotHasKey('password', $user->fresh()->toArray());
     }
 
-    public function test_admin_changing_own_password_must_verify_previous_password(): void
+    public function test_admin_can_change_own_password_with_confirmation_without_previous_password(): void
     {
         $user = auth()->user();
         $data = ['name' => $user->name, 'email' => $user->email, 'role' => 'admin', 'password' => 'nueva12345', 'password_confirmation' => 'nueva12345'];
-        $this->put('/users/'.$user->id, $data)->assertSessionHasErrors('current_password');
-        $this->put('/users/'.$user->id, $data + ['current_password' => 'testing-password'])->assertSessionHasNoErrors();
+        $this->put('/users/'.$user->id, $data)->assertSessionHasNoErrors();
         $this->assertTrue(Hash::check('nueva12345', $user->fresh()->password));
     }
 
