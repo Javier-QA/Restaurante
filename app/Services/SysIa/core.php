@@ -510,6 +510,23 @@ function ia_resumen_local(array $cols, array $filas): string
     return (count($filas) > 1 ? 'Se encontraron '.count($filas).' resultados. Primer resultado: ' : '').implode('; ', $parts).'.';
 }
 
+/** Short database results can be presented without a second model request. */
+function ia_resumen_chat_local(array $cols, array $filas): string
+{
+    if (count($filas) <= 1) {
+        return ia_resumen_local($cols, $filas);
+    }
+    $lines = [];
+    foreach (array_slice($filas, 0, 5) as $i => $fila) {
+        $lines[] = ($i + 1).'. '.ia_resumen_local($cols, [$fila]);
+    }
+    if (count($filas) > 5) {
+        $lines[] = 'Puedes ver los demás resultados en «Ver datos».';
+    }
+
+    return implode("\n", $lines);
+}
+
 /* ------------------------------------------------------------------ */
 /*  Chat IA */
 /* ------------------------------------------------------------------ */
@@ -585,10 +602,10 @@ function ia_chat(string $msg, array $hist = []): array
     }
     $datos = json_encode(['columnas' => $res['columnas'], 'filas' => array_slice($res['filas'], 0, 30), 'total_filas' => count($res['filas'])], JSON_UNESCAPED_UNICODE);
     try {
-        $texto = ia_cfg()['resumen'] ? trim(ia_llamar([
+        $texto = ia_cfg()['resumen'] && count($res['filas']) > 10 ? trim(ia_llamar([
             ['role' => 'system', 'content' => 'Eres el asistente de un restaurante. Redacta en español una respuesta breve y clara (máx. 4 frases) a la pregunta usando SOLO los datos dados, con cifras exactas. Los conteos de productos no son unidades de stock: distingue COUNT de productos de SUM(stock). Expresa horarios en formato de 12 horas con am/pm, por ejemplo 20 como 8:00pm, nunca 20 horas. Usa moneda solo para importes (moneda '.MONEDA.'). Si hay una lista, menciona los primeros elementos; el resto se ve en «Ver datos». Si no hay filas, dilo. Puedes usar **negrita** para cifras clave. Sin tablas ni listas largas.'],
             ['role' => 'user', 'content' => "Pregunta: $msg\nDatos: $datos"],
-        ], 400)) : ia_resumen_local($res['columnas'], $res['filas']);
+        ], 400)) : ia_resumen_chat_local($res['columnas'], $res['filas']);
     } catch (RuntimeException $e) {
         $texto = ia_resumen_local($res['columnas'], $res['filas']);
     }
