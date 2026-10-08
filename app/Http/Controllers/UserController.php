@@ -96,6 +96,17 @@ class UserController extends Controller
     public function currentPassword(Request $request, User $user)
     {
         abort_unless($request->user()->role === 'admin', 403);
+
+        return $this->passwordResponse($request, $user);
+    }
+
+    public function profileCurrentPassword(Request $request)
+    {
+        return $this->passwordResponse($request, $request->user());
+    }
+
+    private function passwordResponse(Request $request, User $user)
+    {
         $password = null;
         try {
             $stored = $user->recoverable_password;
@@ -106,7 +117,7 @@ class UserController extends Controller
             // Una copia cifrada con otra clave nunca se muestra como contraseña válida.
         }
         Log::info('Consulta de contraseña de usuario', [
-            'admin_id' => $request->user()->id,
+            'actor_id' => $request->user()->id,
             'user_id' => $user->id,
             'available' => $password !== null,
         ]);
@@ -124,7 +135,7 @@ class UserController extends Controller
         if ($request->filled('password') && $request->filled('current_password')
             && ! Hash::check($request->input('current_password'), $user->password)) {
             throw ValidationException::withMessages([
-                'current_password' => 'La contraseña anterior no es correcta.',
+                'current_password' => 'La contraseña actual no es correcta.',
             ]);
         }
     }
@@ -138,7 +149,7 @@ class UserController extends Controller
             'email.email' => 'Ingresa un correo electrónico válido.',
             'email.unique' => 'Este correo electrónico ya pertenece a otro usuario.',
             'password.confirmed' => 'La confirmación no coincide con la nueva contraseña.',
-            'current_password.required' => 'Ingresa tu contraseña anterior para cambiarla.',
+            'current_password.required' => 'Ingresa tu contraseña actual para cambiarla.',
             'password.min' => 'La contraseña debe tener al menos :min caracteres.',
             'role.in' => 'Selecciona un rol válido.',
         ];

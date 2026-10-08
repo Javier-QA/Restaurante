@@ -40,6 +40,9 @@ Route::get('/menu', [App\Http\Controllers\MenuController::class, 'index'])
 
 Route::middleware(['auth'])->group(function () {
 
+    Route::post('/profile/current-password', [UserController::class, 'profileCurrentPassword'])
+        ->middleware('throttle:30,1')->name('profile.current_password');
+
     Route::put('/profile', [UserController::class, 'profile'])->name('profile.update');
 
     // =========================================================

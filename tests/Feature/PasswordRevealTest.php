@@ -50,4 +50,14 @@ class PasswordRevealTest extends RestaurantTestCase
         auth()->logout();
         $this->postJson(route('users.current_password', $target))->assertUnauthorized();
     }
+    public function test_profile_password_endpoint_only_reads_authenticated_users_password(): void
+    {
+        $waiter = User::create(['name' => 'Mozo', 'email' => 'perfil@test.com', 'password' => 'MiClave123!', 'role' => 'waiter']);
+        $waiter->forceFill(['recoverable_password' => 'MiClave123!'])->save();
+        $this->actingAs($waiter)->post(route('profile.current_password'), ['user_id' => 1])
+            ->assertOk()->assertJsonPath('password', 'MiClave123!');
+        auth()->logout();
+        $this->postJson(route('profile.current_password'))->assertUnauthorized();
+    }
+
 }

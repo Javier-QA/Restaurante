@@ -7642,16 +7642,16 @@ html[data-color-mode="dark"]
 
 
                             <div class="profile-field mb-3">
-                                <label for="profilePreviousPassword" class="profile-label">Contraseña anterior</label>
+                                <label for="profileCurrentPassword" class="profile-label">Contraseña actual</label>
                                 <div class="profile-input-wrapper">
                                     <span class="profile-input-icon"><i class="bi bi-lock"></i></span>
-                                    <input type="password" id="profilePreviousPassword" name="current_password"
+                                    <input type="text" id="profileCurrentPassword" name="current_password"
                                            class="form-control profile-input profile-password-input" autocomplete="off"
-                                           maxlength="255" placeholder="Obligatoria si cambias tu contraseña">
-                                    <button type="button" class="profile-password-toggle" data-profile-password="profilePreviousPassword"
-                                            aria-label="Mostrar contraseña" title="Mostrar contraseña"><i class="bi bi-eye"></i></button>
+                                           maxlength="255" placeholder="Consultando contraseña actual…">
+                                    <button type="button" class="profile-password-toggle" data-profile-password="profileCurrentPassword"
+                                            aria-label="Ocultar contraseña" title="Ocultar contraseña"><i class="bi bi-eye-slash"></i></button>
                                 </div>
-                                <div class="profile-help">La contraseña guardada no se muestra. El ojo permite ver lo que escribes.</div>
+                                <div class="profile-help" id="profileCurrentPasswordHelp">Tu contraseña actual se carga al abrir el perfil.</div>
                             </div>
 
                             <div class="profile-field mb-0">
@@ -10717,7 +10717,7 @@ window.addEventListener('load', function () {
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const password = document.getElementById('profilePassword');
-    const previous = document.getElementById('profilePreviousPassword');
+    const previous = document.getElementById('profileCurrentPassword');
     const confirmation = document.getElementById('profilePasswordConfirmation');
     if (!password || !previous || !confirmation) return;
     password.addEventListener('input', function () {
@@ -10735,7 +10735,43 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
     const modal = password.closest('.modal');
+    let profilePasswordRequest = null;
+    if (modal) modal.addEventListener('show.bs.modal', function () {
+        if (profilePasswordRequest) profilePasswordRequest.abort();
+        profilePasswordRequest = new AbortController();
+        previous.value = '';
+        previous.type = 'text';
+        previous.readOnly = true;
+        previous.placeholder = 'Consultando contraseña actual…';
+        const help = document.getElementById('profileCurrentPasswordHelp');
+        const toggle = modal.querySelector('[data-profile-password="profileCurrentPassword"]');
+        toggle.querySelector('i').className = 'bi bi-eye-slash';
+        toggle.setAttribute('aria-label', 'Ocultar contraseña');
+        toggle.title = 'Ocultar contraseña';
+        help.textContent = '';
+        fetch(@json(route('profile.current_password')), {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': @json(csrf_token()), 'Accept': 'application/json' },
+            signal: profilePasswordRequest.signal,
+            cache: 'no-store'
+        }).then(function (response) {
+            if (!response.ok) throw new Error('No disponible');
+            return response.json();
+        }).then(function (data) {
+            previous.value = data.password || '';
+            previous.readOnly = !!data.password;
+            previous.placeholder = data.password ? '' : 'Ingresa tu contraseña actual';
+            help.textContent = data.password ? 'Contraseña actual guardada.'
+                : 'Esta contraseña es antigua y no se puede recuperar. Escríbela si deseas cambiarla; la nueva se mostrará al volver a abrir tu perfil.';
+        }).catch(function (error) {
+            if (error.name === 'AbortError') return;
+            previous.readOnly = false;
+            previous.placeholder = 'Ingresa tu contraseña actual';
+            help.textContent = 'No se pudo cargar la contraseña. Puedes escribir tu contraseña actual para cambiarla.';
+        });
+    });
     if (modal) modal.addEventListener('hidden.bs.modal', function () {
+        if (profilePasswordRequest) profilePasswordRequest.abort();
         [previous, password, confirmation].forEach(function (input) {
             input.value = '';
             input.type = 'password';
