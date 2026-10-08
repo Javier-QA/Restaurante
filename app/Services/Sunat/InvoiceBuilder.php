@@ -32,54 +32,9 @@ class InvoiceBuilder
         $tipoDoc = $isFactura ? '01' : '03';
         $tipoMoneda = 'PEN';
 
-        // 1. Detalles (cálculo línea a línea con IGV incluido en el precio del POS)
-        $igvFactor = $this->config->igvFactor();          // 0.18
-        $denom = 1 + $igvFactor;                      // 1.18
-
-        $details = [];
-        $totalGravadaSinIgv = 0.0;
-        $totalIgv = 0.0;
-
-        $gross = (float) $order->details->sum(fn ($line) => $line->price * $line->quantity);
-        $remaining = round((float) $order->total, 2);
-        $baseRemaining = round((float) $order->total / $denom, 2);
-        $baseTotal = $baseRemaining;
-        foreach ($order->details as $index => $line) {
-            $product = $line->product;
-
-            // Precio del POS = precio de venta CON IGV
-            $cantidad = (float) $line->quantity;
-            $lineTotal = $index === $order->details->count() - 1 ? $remaining
-                : round($gross > 0 ? (float) $order->total * ((float) $line->price * $cantidad) / $gross : 0, 2);
-            $remaining = round($remaining - $lineTotal, 2);
-            $precioVentaUnit = $cantidad > 0 ? $lineTotal / $cantidad : 0;
-            $valorVenta = $index === $order->details->count() - 1 ? $baseRemaining
-                : round((float) $order->total > 0 ? $baseTotal * $lineTotal / (float) $order->total : 0, 2);
-            $baseRemaining = round($baseRemaining - $valorVenta, 2);
-            $valorUnit = $cantidad > 0 ? round($valorVenta / $cantidad, 6) : 0;
-            $igvLinea = round($lineTotal - $valorVenta, 2);
-
-            $totalGravadaSinIgv += $valorVenta;
-            $totalIgv += $igvLinea;
-
-            $details[] = (new SaleDetail)
-                ->setCodProducto((string) ($product->id ?? '-'))
-                ->setUnidad('NIU')                                // Unidad: Bien (NIU) o Servicio (ZZ)
-                ->setCantidad($cantidad)
-                ->setDescripcion($product->name ?? 'Producto')
-                ->setMtoBaseIgv($valorVenta)
-                ->setPorcentajeIgv($this->config->igvRate())
-                ->setIgv($igvLinea)
-                ->setTipAfeIgv('10')                              // 10 = Gravado - Operación Onerosa
-                ->setTotalImpuestos($igvLinea)
-                ->setMtoValorVenta($valorVenta)
-                ->setMtoValorUnitario($valorUnit)
-                ->setMtoPrecioUnitario(round($precioVentaUnit, 2));
-        }
-
-        // 2. Totales (con redondeo final)
-        $totalGravadaSinIgv = round($totalGravadaSinIgv, 2);
-        $totalIgv = round($totalIgv, 2);
+        $details = $this->buildDetails($order);
+        $totalGravadaSinIgv = round(array_sum(array_map(fn ($d) => $d->getMtoValorVenta(), $details)), 2);
+        $totalIgv = round(array_sum(array_map(fn ($d) => $d->getIgv(), $details)), 2);
         $totalImpuestos = $totalIgv;
         $totalVenta = round($totalGravadaSinIgv + $totalIgv, 2);
 
@@ -117,6 +72,57 @@ class InvoiceBuilder
             ]);
 
         return $invoice;
+    }
+
+    public function buildDetails(Order $order, ?float $total = null): array
+    {
+        $total ??= $order->collected_total;
+        $denom = 1 + $this->config->igvFactor();
+        $details = [];
+
+        $lines = $order->details->values()->map(fn ($line) => (object) [
+            'product' => $line->product, 'quantity' => $line->quantity, 'price' => $line->price,
+        ]);
+        $fee = (float) ($order->delivery?->delivery_fee ?? 0);
+        if ($fee > 0) {
+            $lines->push((object) ['product' => (object) ['id' => 'ENVIO', 'name' => 'Servicio de delivery'], 'quantity' => 1, 'price' => $fee]);
+        }
+        // Allocate discounts/tips to products; preserve the separately charged delivery fee.
+        $gross = (float) $order->details->sum(fn ($line) => $line->price * $line->quantity);
+        $remaining = round($total, 2);
+        $baseRemaining = round($total / $denom, 2);
+        $baseTotal = $baseRemaining;
+        foreach ($lines as $index => $line) {
+            $product = $line->product;
+
+            // Precio del POS = precio de venta CON IGV
+            $cantidad = (float) $line->quantity;
+            $lineTotal = $index === $lines->count() - 1 ? $remaining
+                : min(max(0, $remaining - $fee), round($gross > 0 ? ($total - $fee) * ((float) $line->price * $cantidad) / $gross : 0, 2));
+            $remaining = round($remaining - $lineTotal, 2);
+            $precioVentaUnit = $cantidad > 0 ? $lineTotal / $cantidad : 0;
+            $valorVenta = $index === $lines->count() - 1 ? $baseRemaining
+                : min($lineTotal, $baseRemaining, round($total > 0 ? $baseTotal * $lineTotal / $total : 0, 2));
+            $baseRemaining = round($baseRemaining - $valorVenta, 2);
+            $valorUnit = $cantidad > 0 ? round($valorVenta / $cantidad, 6) : 0;
+            $igvLinea = round($lineTotal - $valorVenta, 2);
+
+            $details[] = (new SaleDetail)
+                ->setCodProducto((string) ($product->id ?? '-'))
+                ->setUnidad($product->id === 'ENVIO' ? 'ZZ' : 'NIU')                                // Unidad: Bien (NIU) o Servicio (ZZ)
+                ->setCantidad($cantidad)
+                ->setDescripcion($product->name ?? 'Producto')
+                ->setMtoBaseIgv($valorVenta)
+                ->setPorcentajeIgv($this->config->igvRate())
+                ->setIgv($igvLinea)
+                ->setTipAfeIgv('10')                              // 10 = Gravado - Operación Onerosa
+                ->setTotalImpuestos($igvLinea)
+                ->setMtoValorVenta($valorVenta)
+                ->setMtoValorUnitario($valorUnit)
+                ->setMtoPrecioUnitario(round($precioVentaUnit, 2));
+        }
+
+        return $details;
     }
 
     private function buildClient(Order $order, bool $isFactura): GClient

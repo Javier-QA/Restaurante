@@ -87,12 +87,14 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
+        abort_if($product->deleted_at !== null, 404);
         $categories = Category::orderBy('name')->get();
         // Solo productos configurados como insumos.
         // Los productos disponibles para la venta no deben aparecer en la receta.
         $ingredients = Product::where('id', '!=', $product->id)
             ->where('is_active', true)
             ->where('is_saleable', false)
+            ->where('controls_stock', true)->whereNull('deleted_at')
             ->orderBy('name')
             ->get();
 
@@ -101,6 +103,7 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
+        abort_if($product->deleted_at !== null, 404);
         // 1. Validación (Barcode único excepto para este producto)
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -121,7 +124,7 @@ class ProductController extends Controller
         $this->validateWholeInventory($request, $request->input('unit') ?: ($product->unit ?: 'und'), ['minimum_stock']);
 
         foreach ($request->input('ingredients', []) as $id => $qty) {
-            if ((float) $qty > 0 && ((int) $id === $product->id || ! Product::whereKey($id)->where('is_active', true)->where('is_saleable', false)->exists())) {
+            if ((float) $qty > 0 && ((int) $id === $product->id || ! Product::whereKey($id)->where('is_active', true)->where('is_saleable', false)->where('controls_stock', true)->whereNull('deleted_at')->exists())) {
                 throw \Illuminate\Validation\ValidationException::withMessages(['ingredients' => 'La receta solo puede incluir insumos activos.']);
             }
         }
@@ -156,7 +159,7 @@ class ProductController extends Controller
                 $syncData = [];
                 foreach ($request->input('ingredients', []) as $id => $qty) {
                     if ((float) $qty > 0) {
-                        if ((int) $id === $product->id || ! Product::whereKey($id)->where('is_active', true)->where('is_saleable', false)->exists()) {
+                        if ((int) $id === $product->id || ! Product::whereKey($id)->where('is_active', true)->where('is_saleable', false)->where('controls_stock', true)->whereNull('deleted_at')->exists()) {
                             throw \Illuminate\Validation\ValidationException::withMessages(['ingredients' => 'La receta solo puede incluir insumos activos.']);
                         }
                         $syncData[$id] = ['quantity' => $qty];
@@ -180,10 +183,20 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        // Keep historical references while removing the product from the inventory list.
-        $product->is_active = false;
-        $product->deleted_at = now();
-        $product->save();
+        \Illuminate\Support\Facades\DB::transaction(function () use ($product) {
+            $product = Product::whereKey($product->id)->lockForUpdate()->firstOrFail();
+            if (\Illuminate\Support\Facades\DB::table('product_ingredients')
+                ->join('products', 'products.id', '=', 'product_ingredients.product_id')
+                ->where('ingredient_id', $product->id)->whereNull('products.deleted_at')->exists()) {
+                throw \Illuminate\Validation\ValidationException::withMessages(['product' => 'El insumo está asociado a una receta. Retírelo de la receta antes de eliminarlo.']);
+            }
+            if (\App\Models\OrderDetail::where('product_id', $product->id)->whereHas('order', fn ($q) => $q->where('status', 'pending'))->exists()) {
+                throw \Illuminate\Validation\ValidationException::withMessages(['product' => 'El producto tiene pedidos pendientes. Complete o cancele esos pedidos antes de eliminarlo.']);
+            }
+            $product->is_active = false;
+            $product->deleted_at = now();
+            $product->save();
+        });
 
         return redirect()->route('products.index')->with('success', 'Producto eliminado correctamente.');
     }
@@ -199,6 +212,7 @@ class ProductController extends Controller
 
     public function adjustStock(Request $request, Product $product)
     {
+        abort_if($product->deleted_at !== null || ! $product->controls_stock, 404);
         $request->validate(['quantity' => 'required|numeric|min:0.001|max:99999999999', 'type' => 'required|in:add,sub']);
 
         $this->validateWholeInventory($request, $product->unit ?: 'und', ['quantity']);

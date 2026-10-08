@@ -98,7 +98,7 @@ class CreditNoteController extends Controller
                 'reason_description' => $request->input('reason_description'),
                 'subtotal' => $order->total_gravada,
                 'igv' => $order->igv,
-                'total' => $order->total,
+                'total' => $order->collected_total,
                 'sunat_status' => 'PENDING',
                 'user_id' => Auth::id(),
             ]);

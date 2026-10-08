@@ -198,7 +198,7 @@
                     <div class="billing-total-row billing-grand-total">
                         <span>Total</span>
                         <strong>
-                            S/ {{ number_format($order->total, 2) }}
+                            S/ {{ number_format($order->collected_total, 2) }}
                         </strong>
                     </div>
 

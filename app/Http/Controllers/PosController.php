@@ -228,11 +228,19 @@ class PosController extends Controller
     public function moveTable(Request $request, Order $order)
     {
         $request->validate(['target_table_id' => 'required|exists:tables,id']);
-        if (Order::where('table_id', $request->target_table_id)->where('status', 'pending')->exists()) {
-            return redirect()->back()->with('error', 'Ocupada.');
-        }
-        $order->table_id = $request->target_table_id;
-        $order->save();
+        DB::transaction(function () use ($request, $order) {
+            // Lock tables in ID order before orders, as in normal POS creation.
+            Table::whereIn('id', [$order->table_id, $request->target_table_id])
+                ->orderBy('id')->lockForUpdate()->get();
+            $order = Order::whereKey($order->id)->lockForUpdate()->firstOrFail();
+            if ($order->status !== 'pending' || $order->paid_at || ! $order->table_id) {
+                throw \Illuminate\Validation\ValidationException::withMessages(['target_table_id' => 'Solo se pueden mover cuentas pendientes de una mesa.']);
+            }
+            if (Order::where('table_id', $request->target_table_id)->where('status', 'pending')->where('id', '!=', $order->id)->exists()) {
+                throw \Illuminate\Validation\ValidationException::withMessages(['target_table_id' => 'La mesa de destino está ocupada.']);
+            }
+            $order->update(['table_id' => $request->target_table_id]);
+        });
 
         return redirect()->route('pos.order', $request->target_table_id)->with('success', 'Mesa movida correctamente.');
     }

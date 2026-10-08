@@ -400,7 +400,7 @@ class DeliveryController extends Controller
                 true
             );
 
-            $totalBase = (float) $order->total;
+            $totalBase = $totalDue;
 
             $totalGravada = 0;
             $igv = 0;

@@ -323,9 +323,9 @@
                             <i class="bi bi-box-seam stock-field-icon"></i>
 
                             <input type="number"
-                                   name="quantity" step="0.001"
+                                   name="quantity" step="{{ in_array($product->unit_display, ['und', 'paq', 'caja']) ? '1' : '0.001' }}"
                                    class="form-control stock-form-control"
-                                   min="0.001"
+                                   min="{{ in_array($product->unit_display, ['und', 'paq', 'caja']) ? '1' : '0.001' }}"
                                    placeholder="Ej. 10"
                                    required>
 

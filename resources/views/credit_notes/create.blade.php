@@ -454,7 +454,7 @@
                             </span>
 
                             <span class="cn-document-value cn-total">
-                                S/ {{ number_format($order->total, 2) }}
+                                S/ {{ number_format($order->collected_total, 2) }}
                             </span>
                         </div>
 

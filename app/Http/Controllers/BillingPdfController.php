@@ -22,6 +22,7 @@ class BillingPdfController extends Controller
 
         return view('billing.pdf.a4', [
             'order'    => $order,
+            'documentLines' => (new \App\Services\Sunat\InvoiceBuilder(new SunatConfig()))->buildDetails($order),
             'config'   => new SunatConfig(),
             'qrBase64' => $this->buildQr($order),
             'company'  => $this->companyData(),
@@ -35,6 +36,7 @@ class BillingPdfController extends Controller
 
         return view('billing.pdf.ticket', [
             'order'    => $order,
+            'documentLines' => (new \App\Services\Sunat\InvoiceBuilder(new SunatConfig()))->buildDetails($order),
             'config'   => new SunatConfig(),
             'qrBase64' => $this->buildQr($order),
             'company'  => $this->companyData(),

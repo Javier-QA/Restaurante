@@ -19,11 +19,12 @@ class IngredientUnitsTest extends RestaurantTestCase
     {
         parent::setUp();
         Schema::table('products', function (Blueprint $table) {
+            $table->softDeletes();
             $table->boolean('is_chef_recommendation')->default(false);
             $table->boolean('is_new')->default(false);
         });
         Schema::create('categories', function (Blueprint $table) {
-            $table->id(); $table->string('name'); $table->boolean('is_active'); $table->timestamps();
+            $table->id(); $table->string('name'); $table->boolean('is_active'); $table->timestamps(); $table->softDeletes();
         });
         $migration = require database_path('migrations/2026_10_08_000002_add_inventory_units_to_products.php');
         $migration->up();

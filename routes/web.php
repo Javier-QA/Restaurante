@@ -527,7 +527,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource(
             'categories',
             CategoryController::class
-        );
+        )->only(['index', 'store', 'update', 'destroy']);
 
         // =====================================================
         // PRODUCTOS E INVENTARIO
@@ -546,7 +546,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource(
             'products',
             ProductController::class
-        );
+        )->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 
         Route::delete('/inventory/logs/reset/all', function () {
             Illuminate\Support\Facades\DB::transaction(function () {
@@ -593,7 +593,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource(
             'users',
             UserController::class
-        );
+        )->only(['index', 'store', 'update', 'destroy']);
 
         Route::get(
             '/settings',

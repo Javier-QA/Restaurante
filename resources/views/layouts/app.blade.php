@@ -10683,7 +10683,6 @@ document.addEventListener('DOMContentLoaded', function () {
        Solo permanece abierto el grupo que contiene
        la opción activa de la página actual.
     */
-}
 
 
     /* ======================================================

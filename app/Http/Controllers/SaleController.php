@@ -24,19 +24,19 @@ class SaleController extends Controller
         // 2. Totales generales de ventas
         $totalCash = (clone $ordersQuery)
             ->where('payment_method', 'cash')
-            ->sum('total');
+            ->sumCollected();
 
         $totalCard = (clone $ordersQuery)
             ->where('payment_method', 'card')
-            ->sum('total');
+            ->sumCollected();
 
         $totalYape = (clone $ordersQuery)
             ->where('payment_method', 'yape')
-            ->sum('total');
+            ->sumCollected();
 
         $totalPlin = (clone $ordersQuery)
             ->where('payment_method', 'plin')
-            ->sum('total');
+            ->sumCollected();
 
         $totalSales = $totalCash + $totalCard + $totalYape + $totalPlin;
 
@@ -99,15 +99,15 @@ class SaleController extends Controller
         $orders = Order::whereDate('paid_at', '>=', $startDate)
             ->whereDate('paid_at', '<=', $endDate)
             ->where('status', 'completed')
-            ->get();
+            ->with('delivery')->get();
 
         $stats = [
             'start_date' => Carbon::parse($startDate),
             'end_date' => Carbon::parse($endDate),
-            'cash' => $orders->where('payment_method', 'cash')->sum('total'),
-            'card' => $orders->where('payment_method', 'card')->sum('total'),
-            'yape' => $orders->where('payment_method', 'yape')->sum('total'),
-            'plin' => $orders->where('payment_method', 'plin')->sum('total'),
+            'cash' => $orders->where('payment_method', 'cash')->sum('collected_total'),
+            'card' => $orders->where('payment_method', 'card')->sum('collected_total'),
+            'yape' => $orders->where('payment_method', 'yape')->sum('collected_total'),
+            'plin' => $orders->where('payment_method', 'plin')->sum('collected_total'),
             'orders_count' => $orders->count(),
             'expenses' => 0,
         ];
