@@ -631,7 +631,7 @@
 
                                 <input type="text"
                                        class="form-control product-edit-input"
-                                       value="{{ $product->stock }}"
+                                       value="{{ $product->stock_display }}"
                                        readonly>
                             </div>
 
