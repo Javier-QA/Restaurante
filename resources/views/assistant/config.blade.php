@@ -2,7 +2,7 @@
  <form id="frmCfg" novalidate><div class="modal-header border-0 pb-0 px-4 pt-4"><h5 class="modal-title fw-bold"><i class="bi bi-gear me-2"></i>Configurar la IA</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
  <div class="modal-body px-4"><div class="row g-3">
   <div class="col-12"><label class="form-label">Proveedor</label><select class="form-select" name="proveedor" id="cProv"></select><div class="form-text" id="cAyuda"></div></div>
-  <div class="col-md-7"><label class="form-label">URL de la API</label><input class="form-control" name="url" id="cUrl" autocomplete="off"></div>
+  <div class="col-md-7"><label class="form-label">URL de la API</label><input class="form-control" name="url" id="cUrl" autocomplete="off"><div class="form-text">Esta dirección conecta el sistema con el proveedor; no es una página web. Usa «Probar conexión» para verificarla. Puedes pegar la URL base o la dirección completa de chat/completions.</div></div>
   <div class="col-md-5"><label class="form-label">Modelo</label><input class="form-control" name="modelo" id="cMod" autocomplete="off"></div>
   <div class="col-12"><label class="form-label">Clave (API key)</label><input type="password" class="form-control" name="clave" id="cKey" autocomplete="new-password"><div class="form-text" id="cKeyH"></div></div>
   <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="resumen" id="cRes"><label class="form-check-label" for="cRes">Generar un resumen en lenguaje natural de cada resultado (usa una segunda consulta a la IA)</label></div></div>

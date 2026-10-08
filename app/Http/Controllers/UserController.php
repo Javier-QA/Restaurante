@@ -24,7 +24,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|max:255',
             'role' => 'required|in:admin,cashier,waiter,kitchen,bar',
-        ]);
+        ], $this->validationMessages());
 
         User::create([
             'name' => $request->name,
@@ -43,7 +43,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,'.$user->id,
             'role' => 'required|in:admin,cashier,waiter,kitchen,bar',
             'password' => 'nullable|string|min:8|max:255',
-        ]);
+        ], $this->validationMessages());
 
         $data = [
             'name' => $request->name,
@@ -68,13 +68,26 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,'.$user->id,
             'password' => 'nullable|string|min:8|max:255',
-        ]);
+        ], $this->validationMessages());
         if (empty($data['password'])) {
             unset($data['password']);
         }
         $user->update($data);
 
         return back()->with('success', 'Perfil actualizado correctamente.');
+    }
+
+    private function validationMessages(): array
+    {
+        return [
+            'required' => 'El campo :attribute es obligatorio.',
+            'string' => 'El campo :attribute debe ser texto.',
+            'max' => 'El campo :attribute no debe superar :max caracteres.',
+            'email.email' => 'Ingresa un correo electrónico válido.',
+            'email.unique' => 'Este correo electrónico ya pertenece a otro usuario.',
+            'password.min' => 'La contraseña debe tener al menos :min caracteres.',
+            'role.in' => 'Selecciona un rol válido.',
+        ];
     }
 
     public function destroy(User $user)

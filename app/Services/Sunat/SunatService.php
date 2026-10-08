@@ -210,6 +210,7 @@ class SunatService
         }
 
         $summary->save();
+        app(DailySummarySynchronizer::class)->synchronize($summary);
 
         return $summary;
     }

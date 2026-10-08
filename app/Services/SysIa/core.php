@@ -139,6 +139,11 @@ function ia_llamar(array $mensajes, int $maxTokens = 900): string
     if (! function_exists('curl_init')) {
         throw new RuntimeException('Falta la extensión cURL de PHP (actívala en php.ini: extension=curl).');
     }
+    $cacheKey = 'sys-ia-response:'.hash('sha256', json_encode([auth()->id(), $c, $mensajes, $maxTokens]));
+    $cached = \Illuminate\Support\Facades\Cache::get($cacheKey);
+    if (is_string($cached)) {
+        return $cached;
+    }
     $key = 'sys-ia-provider:'.auth()->id();
     if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key, 20)) {
         throw new RuntimeException('Demasiadas consultas a la IA. Espera un minuto.');
@@ -148,9 +153,13 @@ function ia_llamar(array $mensajes, int $maxTokens = 900): string
     if ($c['clave'] !== '') {
         $h[] = 'Authorization: Bearer '.$c['clave'];
     }
-    $ch = curl_init(rtrim($c['url'], '/').'/chat/completions');
+    $endpoint = rtrim($c['url'], '/');
+    if (! str_ends_with($endpoint, '/chat/completions')) {
+        $endpoint .= '/chat/completions';
+    }
+    $ch = curl_init($endpoint);
     curl_setopt_array($ch, [
-        CURLOPT_POST => true, CURLOPT_HTTPHEADER => $h, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 60, CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_POST => true, CURLOPT_HTTPHEADER => $h, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 25, CURLOPT_CONNECTTIMEOUT => 5,
         CURLOPT_POSTFIELDS => json_encode(['model' => $c['modelo'], 'messages' => $mensajes, 'temperature' => 0, 'max_tokens' => $maxTokens], JSON_UNESCAPED_UNICODE),
     ]);
     $cafile = ini_get('curl.cainfo') ?: ini_get('openssl.cafile');
@@ -172,20 +181,21 @@ function ia_llamar(array $mensajes, int $maxTokens = 900): string
     }
     $d = json_decode($res, true);
     if ($code >= 400) {
-        $det = is_array($d) ? ($d['error']['message'] ?? ($d[0]['error']['message'] ?? '')) : '';
         $msg = match (true) {
             $code === 401 || $code === 403 => 'La clave de la IA no es válida o no tiene permiso. Revísala en «Configurar IA».',
-            $code === 429 => 'Se alcanzó el límite gratuito del proveedor de IA. Espera un minuto e inténtalo otra vez.',
+            $code === 429 => 'Se alcanzó el límite de solicitudes o la cuota del proveedor de IA. Espera un minuto e inténtalo otra vez.',
             $code === 404 => 'No se encontró el modelo o la URL de la IA. Revisa el nombre del modelo (p. ej. gemini-3.5-flash-lite o gemini-3.5-flash) y la URL.',
             $code >= 500 => 'El proveedor de IA tiene problemas en este momento. Inténtalo en unos minutos.',
             default => 'El proveedor de IA rechazó la petición ('.$code.').',
         };
-        throw new RuntimeException($msg.($det !== '' ? ' ['.mb_substr($det, 0, 160).']' : ''));
+        throw new RuntimeException($msg);
     }
     $t = $d['choices'][0]['message']['content'] ?? null;
     if (! is_string($t) || trim($t) === '') {
         throw new RuntimeException('La IA devolvió una respuesta vacía. Inténtalo de nuevo.');
     }
+
+    \Illuminate\Support\Facades\Cache::put($cacheKey, $t, 60);
 
     return $t;
 }
@@ -481,10 +491,35 @@ function ia_resumir(string $pregunta, array $cols, array $filas): string
 {
     $datos = json_encode(['columnas' => $cols, 'filas' => array_slice($filas, 0, 25), 'total_filas' => count($filas)], JSON_UNESCAPED_UNICODE);
 
-    return trim(ia_llamar([
-        ['role' => 'system', 'content' => 'Eres analista de un restaurante. Resume en 1 o 2 frases en español, con cifras exactas de los datos. Expresa las horas en formato de 12 horas, por ejemplo 20 como 8:00pm (moneda '.MONEDA.'), la respuesta a la pregunta. No inventes nada y no uses markdown.'],
-        ['role' => 'user', 'content' => "Pregunta: $pregunta\nDatos: $datos"],
-    ], 300));
+    try {
+        return trim(ia_llamar([
+            ['role' => 'system', 'content' => 'Eres analista de un restaurante. Resume en 1 o 2 frases en español, con cifras exactas de los datos. Expresa las horas en formato de 12 horas, por ejemplo 20 como 8:00pm (moneda '.MONEDA.'), la respuesta a la pregunta. No inventes nada y no uses markdown.'],
+            ['role' => 'user', 'content' => "Pregunta: $pregunta\nDatos: $datos"],
+        ], 300));
+    } catch (RuntimeException $e) {
+        return ia_resumen_local($cols, $filas);
+    }
+}
+
+function ia_resumen_local(array $cols, array $filas): string
+{
+    if (! $filas) {
+        return 'No se encontraron resultados para esta consulta.';
+    }
+    $parts = [];
+    $first = (array) $filas[0];
+    foreach (array_slice($cols, 0, 5) as $i => $col) {
+        $value = $first[$col] ?? $first[$i] ?? null;
+        if (is_scalar($value)) {
+            if (preg_match('/^(hora|hour)$/i', $col) && is_numeric($value)) {
+                $hour = (int) $value;
+                $value = ($hour % 12 ?: 12).':00'.($hour < 12 ? 'am' : 'pm');
+            }
+            $parts[] = str_replace('_', ' ', $col).': '.$value;
+        }
+    }
+
+    return (count($filas) > 1 ? 'Se encontraron '.count($filas).' resultados. Primer resultado: ' : '').implode('; ', $parts).'.';
 }
 
 /* ------------------------------------------------------------------ */
@@ -561,10 +596,14 @@ function ia_chat(string $msg, array $hist = []): array
         return ['texto' => 'No pude consultar eso con los datos disponibles ('.$err.'). ¿Puedes reformular la pregunta?'];
     }
     $datos = json_encode(['columnas' => $res['columnas'], 'filas' => array_slice($res['filas'], 0, 30), 'total_filas' => count($res['filas'])], JSON_UNESCAPED_UNICODE);
-    $texto = trim(ia_llamar([
-        ['role' => 'system', 'content' => 'Eres el asistente de un restaurante. Redacta en español una respuesta breve y clara (máx. 4 frases) a la pregunta usando SOLO los datos dados, con cifras exactas. Los conteos de productos no son unidades de stock: distingue COUNT de productos de SUM(stock). Expresa horarios en formato de 12 horas con am/pm, por ejemplo 20 como 8:00pm, nunca 20 horas. Usa moneda solo para importes (moneda '.MONEDA.'). Si hay una lista, menciona los primeros elementos; el resto se ve en «Ver datos». Si no hay filas, dilo. Puedes usar **negrita** para cifras clave. Sin tablas ni listas largas.'],
-        ['role' => 'user', 'content' => "Pregunta: $msg\nDatos: $datos"],
-    ], 400));
+    try {
+        $texto = ia_cfg()['resumen'] ? trim(ia_llamar([
+            ['role' => 'system', 'content' => 'Eres el asistente de un restaurante. Redacta en español una respuesta breve y clara (máx. 4 frases) a la pregunta usando SOLO los datos dados, con cifras exactas. Los conteos de productos no son unidades de stock: distingue COUNT de productos de SUM(stock). Expresa horarios en formato de 12 horas con am/pm, por ejemplo 20 como 8:00pm, nunca 20 horas. Usa moneda solo para importes (moneda '.MONEDA.'). Si hay una lista, menciona los primeros elementos; el resto se ve en «Ver datos». Si no hay filas, dilo. Puedes usar **negrita** para cifras clave. Sin tablas ni listas largas.'],
+            ['role' => 'user', 'content' => "Pregunta: $msg\nDatos: $datos"],
+        ], 400)) : ia_resumen_local($res['columnas'], $res['filas']);
+    } catch (RuntimeException $e) {
+        $texto = ia_resumen_local($res['columnas'], $res['filas']);
+    }
 
     return ['texto' => $texto, 'sql' => ia_validar_sql($sql),
         'tabla' => ['columnas' => $res['columnas'], 'filas' => array_slice($res['filas'], 0, 10), 'total' => count($res['filas'])]];

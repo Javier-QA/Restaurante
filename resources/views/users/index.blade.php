@@ -920,7 +920,7 @@
        name="password"
        id="create_user_password"
        class="form-control user-modal-control"
-       placeholder="Mínimo 6 caracteres"
+       placeholder="Mínimo 8 caracteres" minlength="8" maxlength="255"
        required>
 
 <button type="button"
@@ -1107,7 +1107,7 @@
 
                             <input type="password"
        name="password"
-       id="edit_user_password"
+       id="edit_user_password" minlength="8" maxlength="255"
        class="form-control user-modal-control"
        placeholder="Opcional">
 
