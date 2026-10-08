@@ -130,7 +130,7 @@
                                     {{-- Badge Stock --}}
                                     @if(!is_null($product->stock))
                                         <div class="pos-stock-badge {{ $product->stock <= 5 ? 'pos-stock-low' : 'pos-stock-ok' }}">
-                                            <i class="bi bi-box-seam me-1"></i>{{ $product->stock }}
+                                            <i class="bi bi-box-seam me-1"></i>{{ $product->stock_display }}
                                         </div>
                                     @endif
                                 </div>
