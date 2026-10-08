@@ -15,7 +15,7 @@ class ProductController extends Controller
     {
         $request->validate(['search' => 'nullable|string|max:100']);
         $search = trim((string) $request->input('search', ''));
-        $products = Product::with('category')
+        $products = Product::with('category')->whereNull('deleted_at')
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($query) use ($search) {
                     $query->where('name', 'like', '%'.$search.'%');
@@ -180,15 +180,18 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        // Eliminado lógico (desactivar) en lugar de borrar para mantener historial
-        $product->update(['is_active' => false]);
+        // Keep historical references while removing the product from the inventory list.
+        $product->is_active = false;
+        $product->deleted_at = now();
+        $product->save();
 
-        return redirect()->route('products.index')->with('success', 'Producto eliminado (desactivado).');
+        return redirect()->route('products.index')->with('success', 'Producto eliminado correctamente.');
     }
 
     // Funciones extra para ajustes rápidos
     public function toggleStatus(Product $product)
     {
+        abort_if($product->deleted_at !== null, 404);
         $product->update(['is_active' => ! $product->is_active]);
 
         return back();
