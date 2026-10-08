@@ -99,3 +99,18 @@ html[data-color-mode="dark"] body .form-control[readonly] {
     color: var(--text-main) !important;
     opacity: 1;
 }
+
+/* The cart quantity is readonly, but remains readable in either theme. */
+html body .main-content .form-control.pos-cart-quantity {
+    background: var(--card-bg) !important;
+    color: var(--text-main) !important;
+    -webkit-text-fill-color: var(--text-main) !important;
+    border-color: var(--border-soft) !important;
+    opacity: 1;
+}
+html[data-color-mode="dark"] body .main-content .form-control.pos-cart-quantity[readonly] {
+    background: var(--light-bg) !important;
+    color: var(--text-main) !important;
+    -webkit-text-fill-color: var(--text-main) !important;
+    border-color: var(--border-soft) !important;
+}

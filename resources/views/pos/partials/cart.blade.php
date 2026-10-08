@@ -82,7 +82,7 @@
                                                 onclick="updateQty({{ $detail->id }}, {{ $detail->quantity - 1 }})">-</button>
 
                                         <input type="text"
-                                               class="form-control text-center px-0 py-0 fw-bold bg-white border-secondary"
+                                               class="form-control pos-cart-quantity text-center px-0 py-0 fw-bold"
                                                value="{{ $detail->quantity }}"
                                                readonly
                                                style="font-size: 0.85rem;">
