@@ -326,8 +326,18 @@ class CashRegisterController extends Controller
             if (! $cashRegister) {
                 throw \Illuminate\Validation\ValidationException::withMessages(['cash_register' => 'No existe ninguna caja abierta.']);
             }
-            if (\App\Models\Order::where('status', 'pending')->exists()) {
-                throw \Illuminate\Validation\ValidationException::withMessages(['cash_register' => 'Finaliza los pedidos pendientes antes de cerrar la caja.']);
+            $pendingOrders = \App\Models\Order::where('status', 'pending')
+                ->whereNull('paid_at')
+                ->whereHas('details', fn ($query) => $query->where('quantity', '>', 0))
+                ->orderBy('id')
+                ->get(['id', 'table_id']);
+            if ($pendingOrders->isNotEmpty()) {
+                $references = $pendingOrders->map(fn ($order) => '#'.$order->id.
+                    ($order->table_id ? ' (mesa ID '.$order->table_id.')' : ' (sin mesa; revisar Delivery)'))
+                    ->implode(', ');
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'cash_register' => 'Finaliza los pedidos pendientes antes de cerrar la caja. Pedidos: '.$references,
+                ]);
             }
             $sales = $cashRegister->collectedSales('cash');
             $expenses = $cashRegister->expenses()->sum('amount');

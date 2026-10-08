@@ -72,6 +72,35 @@ class CashAndProfileTest extends RestaurantTestCase
         $this->assertSame('open', $register->fresh()->status);
     }
 
+    public function test_empty_pending_order_does_not_block_cash_close(): void
+    {
+        $register = $this->openRegister();
+        \App\Models\Order::create(['status' => 'pending', 'total' => 0, 'user_id' => auth()->id()]);
+        $this->post('/cash-registers/close', ['closing_amount' => 50])
+            ->assertRedirect(route('dashboard'));
+        $this->assertSame('closed', $register->fresh()->status);
+    }
+
+    public function test_paid_order_with_stale_pending_status_does_not_block_close(): void
+    {
+        $register = $this->openRegister();
+        $order = $this->order($this->product());
+        $order->update(['paid_at' => now()]);
+        $this->post('/cash-registers/close', ['closing_amount' => 50])
+            ->assertRedirect(route('dashboard'));
+        $this->assertSame('closed', $register->fresh()->status);
+    }
+
+    public function test_blocking_order_is_identified_in_the_message(): void
+    {
+        $this->openRegister();
+        $order = $this->order($this->product());
+        $this->postJson('/cash-registers/close', ['closing_amount' => 50])
+            ->assertUnprocessable()
+            ->assertJsonPath('errors.cash_register.0',
+                'Finaliza los pedidos pendientes antes de cerrar la caja. Pedidos: #'.$order->id.' (mesa ID '.$order->table_id.')');
+    }
+
     public function test_delivery_shipping_is_included_in_cash_arqueo(): void
     {
         $register = $this->openRegister();
