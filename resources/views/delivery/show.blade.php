@@ -1922,7 +1922,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 'Delivery actualizado: ' +
                 (data.driver_name || 'Sin asignar');
 
-            SystemNotify.success(driverUpdateMessage.innerText, 'Repartidor actualizado');
+            driverUpdateMessage.style.display = 'block';
 
         } catch (error) {
 
@@ -1934,7 +1934,7 @@ document.addEventListener('DOMContentLoaded', function () {
             driverUpdateMessage.innerText =
                 error.message || 'Error al actualizar el delivery.';
 
-            SystemNotify.error(driverUpdateMessage.innerText, 'No se pudo actualizar');
+            driverUpdateMessage.style.display = 'block';
 
         } finally {
 

@@ -326,9 +326,6 @@
                 );
             }
 
-            const result = await response.json();
-            if (!result.success) throw new Error(result.message || 'No se pudo actualizar el estado.');
-            SystemNotify.success(result.message || 'Estado actualizado correctamente.');
             await refreshKitchen();
 
         } catch (error) {
@@ -337,7 +334,6 @@
                 error
             );
 
-            SystemNotify.error('No se pudo actualizar el estado. Inténtalo nuevamente.');
             button.disabled = false;
         }
     });

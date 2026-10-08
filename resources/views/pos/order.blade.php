@@ -654,32 +654,15 @@
     const tableId = {{ $table->id }};
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    async function readPosCartResponse(response) {
-        if (response.redirected) throw new Error('La sesión cambió. Recarga la página para continuar.');
-        if (!response.ok) {
-            let message = 'No se pudo guardar el cambio. Inténtalo nuevamente.';
-            if ((response.headers.get('Content-Type') || '').includes('application/json')) {
-                const data = await response.json();
-                message = Object.values(data.errors || {}).flat()[0] || data.message || message;
-            } else {
-                const text = await response.text();
-                if (text && !text.includes('<') && text.length < 500) message = text;
-            }
-            throw new Error(message);
-        }
-        return response.text();
-    }
-
     window.addToOrder = function(productId) {
         fetch(`{{ url('/pos/order') }}/${tableId}/add`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
             body: JSON.stringify({ product_id: productId })
-        }).then(readPosCartResponse).then(html => {
+        }).then(r => r.text()).then(html => {
             document.getElementById('cart-container').innerHTML = html;
             updateCheckoutTotal();
-            SystemNotify.success('Producto agregado a la cuenta.');
-        }).catch(error => SystemNotify.error(error.message));
+        });
     };
 
     window.updateQty = function(id, qty) {
@@ -689,11 +672,10 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
                 body: JSON.stringify({ quantity: qty })
-            }).then(readPosCartResponse).then(html => {
+            }).then(r => r.text()).then(html => {
                 document.getElementById('cart-container').innerHTML = html;
                 updateCheckoutTotal();
-                SystemNotify.success(qty < 1 ? 'Producto retirado de la cuenta.' : 'Cantidad actualizada.');
-            }).catch(error => SystemNotify.error(error.message));
+            });
         };
 
         if (qty < 1) {
@@ -713,27 +695,128 @@
     };
 
     window.removeItem = function(id) {
-        SystemNotify.confirm({
-            type: 'danger', title: 'Retirar producto',
-            text: '¿Estás seguro de retirar este producto de la cuenta?',
-            confirmText: 'Retirar producto', icon: 'bi-trash3',
-            onConfirm: function () {
-                fetch(`{{ url('/pos/detail') }}/${id}`, {
-                    method: 'DELETE', headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
-                }).then(readPosCartResponse).then(html => {
-                    document.getElementById('cart-container').innerHTML = html;
-                    updateCheckoutTotal();
-                    SystemNotify.success('Producto retirado de la cuenta.');
-                }).catch(error => SystemNotify.error(error.message));
-            }
+        fetch(`{{ url('/pos/detail') }}/${id}`, {
+            method: 'DELETE',
+            headers: { 'X-CSRF-TOKEN': csrfToken }
+        }).then(r => r.text()).then(html => {
+            document.getElementById('cart-container').innerHTML = html;
+            updateCheckoutTotal();
         });
     };
 
     window.showPosNotification = function(message) {
-        SystemNotify.warning(message, 'Pedido pendiente de envío');
+        let notification = document.getElementById('posSystemNotification');
+
+        if (!notification) {
+            notification = document.createElement('div');
+            notification.id = 'posSystemNotification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 24px;
+                right: 24px;
+                z-index: 99999;
+                width: min(390px, calc(100vw - 48px));
+                background: var(--card-bg, #ffffff);
+                color: var(--text-main, #172033);
+                border: 1px solid var(--border-soft, #e5e7eb);
+                border-left: 5px solid var(--primary, #ff8c00);
+                border-radius: var(--radius-md, 12px);
+                box-shadow: var(--shadow-soft, 0 10px 30px rgba(0,0,0,.15));
+                padding: 14px 16px;
+                display: none;
+            `;
+
+            document.body.appendChild(notification);
+        }
+
+        notification.innerHTML = `
+            <div style="display:flex; align-items:flex-start; gap:12px;">
+                <i class="bi bi-exclamation-triangle-fill"
+                   style="color:var(--primary, #ff8c00); font-size:1.25rem;"></i>
+
+                <div style="flex:1;">
+                    <div style="font-weight:700; margin-bottom:2px;">
+                        Pedido pendiente de envío
+                    </div>
+                    <div style="font-size:.9rem;">
+                        ${message}
+                    </div>
+                </div>
+
+                <button type="button"
+                        onclick="this.closest('#posSystemNotification').style.display='none'"
+                        style="border:0;background:transparent;color:var(--text-muted,#6b7280);font-size:1.2rem;line-height:1;">
+                    &times;
+                </button>
+            </div>
+        `;
+
+        notification.style.display = 'block';
+
+        clearTimeout(window.posNotificationTimer);
+
+        window.posNotificationTimer = setTimeout(() => {
+            notification.style.display = 'none';
+        }, 4000);
     };
+
     window.showPosSuccessNotification = function(message) {
-        SystemNotify.success(message, 'Pedido enviado con éxito');
+        let notification = document.getElementById('posSuccessNotification');
+
+        if (!notification) {
+            notification = document.createElement('div');
+            notification.id = 'posSuccessNotification';
+
+            notification.style.cssText = `
+                position: fixed;
+                top: 24px;
+                right: 24px;
+                z-index: 99999;
+                width: min(390px, calc(100vw - 48px));
+                background: var(--card-bg, #ffffff);
+                color: var(--text-main, #172033);
+                border: 1px solid var(--border-soft, #e5e7eb);
+                border-left: 5px solid var(--accent-2, #198754);
+                border-radius: var(--radius-md, 12px);
+                box-shadow: var(--shadow-soft, 0 10px 30px rgba(0,0,0,.15));
+                padding: 14px 16px;
+                display: none;
+            `;
+
+            document.body.appendChild(notification);
+        }
+
+        notification.innerHTML = `
+            <div style="display:flex; align-items:flex-start; gap:12px;">
+
+                <i class="bi bi-check-circle-fill"
+                   style="color:var(--accent-2, #198754); font-size:1.25rem;"></i>
+
+                <div style="flex:1;">
+                    <div style="font-weight:700; margin-bottom:2px;">
+                        Pedido enviado con éxito
+                    </div>
+
+                    <div style="font-size:.9rem;">
+                        ${message}
+                    </div>
+                </div>
+
+                <button type="button"
+                        onclick="this.closest('#posSuccessNotification').style.display='none'"
+                        style="border:0;background:transparent;color:var(--text-muted,#6b7280);font-size:1.2rem;line-height:1;">
+                    &times;
+                </button>
+            </div>
+        `;
+
+        notification.style.display = 'block';
+
+        clearTimeout(window.posSuccessNotificationTimer);
+
+        window.posSuccessNotificationTimer = setTimeout(() => {
+            notification.style.display = 'none';
+        }, 4000);
     };
 
     window.confirmAndSendToKitchen = function(orderId) {
@@ -862,11 +945,10 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
             body: JSON.stringify({ discount: discount, tip: tip })
-        }).then(readPosCartResponse).then(html => {
+        }).then(r => r.text()).then(html => {
             document.getElementById('cart-container').innerHTML = html;
             updateCheckoutTotal();
-            SystemNotify.success('Descuento y propina actualizados.');
-        }).catch(error => SystemNotify.error(error.message));
+        });
     };
 
     // Busqueda instantanea de productos
@@ -942,10 +1024,7 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
             body: JSON.stringify({ note: note })
-        }).then(readPosCartResponse).then(html => {
-            document.getElementById('cart-container').innerHTML = html;
-            SystemNotify.success('Indicaciones guardadas correctamente.');
-        }).catch(error => SystemNotify.error(error.message));
+        }).then(r => r.text()).then(html => document.getElementById('cart-container').innerHTML = html);
     };
 
     // Cobro

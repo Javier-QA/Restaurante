@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderDetail;
-use Illuminate\Http\Request;
 
 class BarraController extends Controller
 {
@@ -75,13 +74,10 @@ class BarraController extends Controller
         ]);
     }
 
-    public function updateStatus(Request $request, OrderDetail $detail)
+    public function updateStatus(OrderDetail $detail)
     {
         // Seguridad: Barra solamente puede modificar productos de Barra
         if (!$detail->product || $detail->product->preparation_area !== 'barra') {
-            if ($request->expectsJson()) {
-                return response()->json(['success' => false, 'message' => 'Este producto no pertenece a Barra.'], 403);
-            }
             return redirect()
                 ->route('barra.index')
                 ->with('error', 'Este producto no pertenece a Barra.');
@@ -114,10 +110,6 @@ class BarraController extends Controller
             }
         }
 
-        if ($request->expectsJson()) {
-            return response()->json(['success' => true, 'message' => 'Estado actualizado correctamente.', 'status' => $detail->status]);
-        }
-
-        return redirect()->route('barra.index')->with('success', 'Estado actualizado correctamente.');
+        return redirect()->route('barra.index');
     }
 }

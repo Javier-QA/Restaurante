@@ -6625,7 +6625,6 @@ html[data-color-mode="dark"]
 
 </style>
     <link rel="stylesheet" href="{{ asset('css/system-feedback.css') }}?v={{ filemtime(public_path('css/system-feedback.css')) }}">
-    <script defer src="{{ asset('js/system-feedback.js') }}?v={{ filemtime(public_path('js/system-feedback.js')) }}"></script>
 </head>
 
 

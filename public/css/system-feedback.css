@@ -29,23 +29,6 @@ html body .modal :is(.modal-header, .user-modal-header) .btn-close {
     filter: invert(1) grayscale(1) brightness(2) !important;
     opacity: .8;
 }
-html body .system-confirm-modal .system-confirm-strip {
-    background: var(--primary) !important;
-}
-html body .system-confirm-modal .system-confirm-accept {
-    background: var(--primary) !important;
-    border-color: var(--primary) !important;
-    color: var(--modal-header-ink, #132338) !important;
-}
-html body .system-confirm-modal .system-confirm-accept:hover {
-    background: var(--primary-hover, var(--primary)) !important;
-}
-html body .system-toast {
-    border-left-color: var(--primary) !important;
-    border-top-color: color-mix(in srgb, var(--primary) 25%, var(--border-soft)) !important;
-    border-right-color: color-mix(in srgb, var(--primary) 25%, var(--border-soft)) !important;
-    border-bottom-color: color-mix(in srgb, var(--primary) 25%, var(--border-soft)) !important;
-}
 /* Compact confirmations without a separate heading still carry the palette accent. */
 html body .modal .modal-content:not(:has(.modal-header, .user-modal-header, .system-confirm-strip))::before {
     content: '';
