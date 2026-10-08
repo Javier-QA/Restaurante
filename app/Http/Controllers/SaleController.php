@@ -81,6 +81,10 @@ class SaleController extends Controller
 
     public function ticket(Order $order)
     {
+        if ($order->status === 'completed' && in_array($order->document_type, ['Boleta', 'Factura'], true)) {
+            return app(BillingPdfController::class)->ticket($order);
+        }
+
         $settings = Setting::pluck('value', 'key')->toArray();
         $settings['currency_symbol'] = $settings['currency_symbol'] ?? 'S/';
 
