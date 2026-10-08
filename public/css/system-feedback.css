@@ -3,8 +3,8 @@ html body .modal .modal-header,
 html body .modal .user-modal-header {
     background: var(--primary, #ff8c00) !important;
     background-image: none !important;
-    color: var(--modal-header-ink, #132338) !important;
-    border-bottom: 1px solid color-mix(in srgb, var(--primary) 75%, var(--modal-header-ink)) !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--primary) 75%, #ffffff) !important;
     border-radius: inherit;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
@@ -14,19 +14,19 @@ html body .modal .user-modal-header {
 html[data-color-mode] body .modal .modal-header,
 html[data-color-mode] body .modal .user-modal-header {
     background: var(--primary, #ff8c00) !important;
-    color: var(--modal-header-ink, #132338) !important;
+    color: #ffffff !important;
 }
 html body .modal :is(.modal-header, .user-modal-header) :is(h1, h2, h3, h4, h5, h6, p, span, small, i, .modal-title, .user-modal-title, .user-modal-subtitle, .profile-modal-title, .profile-modal-subtitle) {
-    color: var(--modal-header-ink, #132338) !important;
+    color: #ffffff !important;
     -webkit-text-fill-color: currentColor !important;
 }
 html body .modal :is(.modal-header, .user-modal-header) :is(.user-modal-icon, .profile-modal-icon, .category-modal-icon) {
-    background: color-mix(in srgb, var(--modal-header-ink) 10%, transparent) !important;
-    border-color: color-mix(in srgb, var(--modal-header-ink) 22%, transparent) !important;
+    background: color-mix(in srgb, #ffffff 10%, transparent) !important;
+    border-color: color-mix(in srgb, #ffffff 22%, transparent) !important;
     box-shadow: none !important;
 }
 html body .modal :is(.modal-header, .user-modal-header) .btn-close {
-    filter: var(--modal-close-filter, none) !important;
+    filter: invert(1) grayscale(1) brightness(2) !important;
     opacity: .8;
 }
 html body .system-confirm-modal .system-confirm-strip {
