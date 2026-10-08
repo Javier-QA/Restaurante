@@ -71,25 +71,6 @@
     background: #fff1f2;
 }
 
-.inventory-clear-btn {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    min-width: 100px;
-    min-height: 42px;
-    padding: 0 18px !important;
-    border: 1px solid var(--text-muted, #64748b) !important;
-    border-radius: 8px;
-    color: var(--text-main, #334155) !important;
-    background: var(--card-bg, #fff);
-    text-align: center;
-    line-height: 1 !important;
-}
-.inventory-clear-btn:hover,
-.inventory-clear-btn:focus-visible {
-    background: var(--light-bg, #f1f5f9);
-    border-color: var(--text-main, #334155) !important;
-}
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -116,7 +97,7 @@
                    value="{{ $search }}" class="form-control" style="padding-left: 40px; min-height: 42px"
                    placeholder="Buscar producto por nombre…" autocomplete="off" aria-controls="inventoryResults">
         </div>
-        <a id="inventoryClear" href="{{ route('products.index') }}" class="btn btn-outline-secondary inventory-clear-btn">Limpiar</a>
+        <a id="inventoryClear" href="{{ route('products.index') }}" class="btn btn-outline-secondary border border-secondary d-inline-flex align-items-center justify-content-center px-4">Limpiar</a>
     </div>
     <div id="inventorySearchStatus" class="small text-muted mt-2" role="status" aria-live="polite">{{ $products->total() }} productos encontrados</div>
 </form>
