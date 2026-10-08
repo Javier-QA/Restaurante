@@ -515,7 +515,8 @@ class DeliveryController extends Controller
 
         return redirect()
             ->route('delivery.index')
-            ->with('success', $message);
+            ->with('success', $message)
+            ->with('print_order_id', $order->id);
     }
 
     /* ══════════════════════════════════════════════
