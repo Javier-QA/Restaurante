@@ -1,7 +1,7 @@
 <div class="row g-3 mb-4">
     <div class="col-md-6">
         <label for="inventoryUnit" class="form-label fw-bold small">Unidad de medida</label>
-        <select id="inventoryUnit" name="unit" class="form-select" required>
+        <select style="appearance: auto !important; -webkit-appearance: menulist !important; background-image: none !important;" id="inventoryUnit" name="unit" class="form-select" required>
             @foreach(\App\Models\Product::UNITS as $code => $label)
                 <option value="{{ $code }}" @selected(old('unit', $product->unit ?? 'und') === $code)>{{ $label }}</option>
             @endforeach
@@ -19,3 +19,26 @@
         @error('minimum_stock')<div class="text-danger small">{{ $message }}</div>@enderror
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const unit = document.getElementById('inventoryUnit');
+    const form = unit.closest('form');
+    function updateInventoryPrecision() {
+        const wholeUnits = unit.value === 'und';
+        form.querySelectorAll('input[name="stock"], input[name="minimum_stock"]').forEach(function (input) {
+            input.step = wholeUnits ? '1' : '0.001';
+            if (input.value !== '' && Number.isInteger(Number(input.value))) {
+                input.value = String(Number(input.value));
+            }
+            input.setCustomValidity(wholeUnits && input.value !== '' && !Number.isInteger(Number(input.value))
+                ? 'Ingrese un número entero para unidades.' : '');
+        });
+    }
+    unit.addEventListener('change', updateInventoryPrecision);
+    form.querySelectorAll('input[name="stock"], input[name="minimum_stock"]').forEach(function (input) {
+        input.addEventListener('input', updateInventoryPrecision);
+    });
+    updateInventoryPrecision();
+});
+</script>
