@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Area;
 use App\Models\Order;
 use App\Models\Product;
-use App\Models\Area;
-use App\Models\Setting;
-use App\Models\OrderDetail;
-use App\Models\Category;
 use App\Models\Reservation;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -19,17 +16,17 @@ class DashboardController extends Controller
     {
         // ─── Config ───────────────────────────────────────────────────────────
         $currency = Setting::where('key', 'currency_symbol')->value('value') ?? 'S/';
-        $today    = Carbon::today();
-        $year     = Carbon::now()->year;
+        $today = Carbon::today();
+        $year = Carbon::now()->year;
 
         // ─── KPIs del día ─────────────────────────────────────────────────────
         $totalSalesToday = Order::where('status', 'completed')
-                                ->whereDate('created_at', $today)
-                                ->sum('total');
+            ->whereDate('paid_at', $today)
+            ->sum('total');
 
         $ordersCountToday = Order::where('status', 'completed')
-                                 ->whereDate('created_at', $today)
-                                 ->count();
+            ->whereDate('paid_at', $today)
+            ->count();
 
         // Mesas realmente ocupadas: pedidos pendientes asociados a una mesa.
         // distinct evita contar dos veces la misma mesa.
@@ -39,14 +36,15 @@ class DashboardController extends Controller
             ->count('table_id');
 
         $lowStockProducts = Product::where('is_active', true)
-                                   ->where('stock', '<=', 5)
-                                   ->count();
+            ->where('controls_stock', true)
+            ->where('stock', '<=', 5)
+            ->count();
 
         // ─── Ventas del mes actual ─────────────────────────────────────────────
         $totalSalesMonth = Order::where('status', 'completed')
-                                ->whereYear('created_at', $year)
-                                ->whereMonth('created_at', Carbon::now()->month)
-                                ->sum('total');
+            ->whereYear('paid_at', $year)
+            ->whereMonth('paid_at', Carbon::now()->month)
+            ->sum('total');
 
         // ─── Meta mensual (de configuración o 5000 por defecto) ───────────────
         $monthlyGoal = (float) (Setting::where('key', 'monthly_goal')->value('value') ?? 5000);
@@ -56,15 +54,15 @@ class DashboardController extends Controller
 
         // ─── Datos mensuales para el Line Chart (año actual) ──────────────────
         $monthlySalesRaw = Order::where('status', 'completed')
-            ->whereYear('created_at', $year)
-            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('SUM(total) as total'))
+            ->whereYear('paid_at', $year)
+            ->select(DB::raw('MONTH(paid_at) as month'), DB::raw('SUM(total) as total'))
             ->groupBy('month')
             ->pluck('total', 'month')
             ->toArray();
 
         $monthlyOrdersRaw = Order::where('status', 'completed')
-            ->whereYear('created_at', $year)
-            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as cnt'))
+            ->whereYear('paid_at', $year)
+            ->select(DB::raw('MONTH(paid_at) as month'), DB::raw('COUNT(*) as cnt'))
             ->groupBy('month')
             ->pluck('cnt', 'month')
             ->toArray();
@@ -76,12 +74,12 @@ class DashboardController extends Controller
             ->toArray();
 
         // Rellenar los 12 meses con 0 donde no haya datos
-        $monthlySales        = [];
-        $monthlyOrders       = [];
+        $monthlySales = [];
+        $monthlyOrders = [];
         $monthlyReservations = [];
         for ($m = 1; $m <= 12; $m++) {
-            $monthlySales[]        = round($monthlySalesRaw[$m] ?? 0, 2);
-            $monthlyOrders[]       = $monthlyOrdersRaw[$m] ?? 0;
+            $monthlySales[] = round($monthlySalesRaw[$m] ?? 0, 2);
+            $monthlyOrders[] = $monthlyOrdersRaw[$m] ?? 0;
             $monthlyReservations[] = $monthlyReservationsRaw[$m] ?? 0;
         }
 
@@ -98,12 +96,12 @@ class DashboardController extends Controller
             ->get();
 
         $radarLabels = $categoryStats->pluck('name')->toArray();
-        $radarData   = $categoryStats->pluck('total_qty')->map(fn($v) => (int)$v)->toArray();
+        $radarData = $categoryStats->pluck('total_qty')->map(fn ($v) => (int) $v)->toArray();
 
         // Si no hay datos suficientes, usar placeholders
         if (count($radarLabels) < 3) {
             $radarLabels = ['Entradas', 'Platos', 'Bebidas', 'Postres', 'Especiales'];
-            $radarData   = [0, 0, 0, 0, 0];
+            $radarData = [0, 0, 0, 0, 0];
         }
 
         // ─── Monitor de Mesas ─────────────────────────────────────────────────
@@ -131,8 +129,8 @@ class DashboardController extends Controller
             $date = Carbon::now()->subDays($i);
             $chartLabels[] = $date->locale('es')->isoFormat('dd D');
             $chartValues[] = Order::where('status', 'completed')
-                                   ->whereDate('created_at', $date->format('Y-m-d'))
-                                   ->sum('total');
+                ->whereDate('paid_at', $date->format('Y-m-d'))
+                ->sum('total');
         }
 
         return view('dashboard', compact(

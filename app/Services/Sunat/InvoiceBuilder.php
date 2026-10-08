@@ -21,9 +21,7 @@ use Greenter\Model\Sale\SaleDetail;
  */
 class InvoiceBuilder
 {
-    public function __construct(private SunatConfig $config)
-    {
-    }
+    public function __construct(private SunatConfig $config) {}
 
     /**
      * @param  Order  $order  Debe traer details.product, serie y correlativo asignados.
@@ -31,31 +29,40 @@ class InvoiceBuilder
     public function build(Order $order): Invoice
     {
         $isFactura = $order->document_type === 'Factura';
-        $tipoDoc   = $isFactura ? '01' : '03';
+        $tipoDoc = $isFactura ? '01' : '03';
         $tipoMoneda = 'PEN';
 
         // 1. Detalles (cálculo línea a línea con IGV incluido en el precio del POS)
         $igvFactor = $this->config->igvFactor();          // 0.18
-        $denom     = 1 + $igvFactor;                      // 1.18
+        $denom = 1 + $igvFactor;                      // 1.18
 
         $details = [];
         $totalGravadaSinIgv = 0.0;
-        $totalIgv           = 0.0;
+        $totalIgv = 0.0;
 
-        foreach ($order->details as $line) {
+        $gross = (float) $order->details->sum(fn ($line) => $line->price * $line->quantity);
+        $remaining = round((float) $order->total, 2);
+        $baseRemaining = round((float) $order->total / $denom, 2);
+        $baseTotal = $baseRemaining;
+        foreach ($order->details as $index => $line) {
             $product = $line->product;
 
             // Precio del POS = precio de venta CON IGV
-            $precioVentaUnit = (float) $line->price;
-            $valorUnit       = round($precioVentaUnit / $denom, 6);
-            $cantidad        = (float) $line->quantity;
-            $valorVenta      = round($valorUnit * $cantidad, 2);
-            $igvLinea        = round($valorVenta * $igvFactor, 2);
+            $cantidad = (float) $line->quantity;
+            $lineTotal = $index === $order->details->count() - 1 ? $remaining
+                : round($gross > 0 ? (float) $order->total * ((float) $line->price * $cantidad) / $gross : 0, 2);
+            $remaining = round($remaining - $lineTotal, 2);
+            $precioVentaUnit = $cantidad > 0 ? $lineTotal / $cantidad : 0;
+            $valorVenta = $index === $order->details->count() - 1 ? $baseRemaining
+                : round((float) $order->total > 0 ? $baseTotal * $lineTotal / (float) $order->total : 0, 2);
+            $baseRemaining = round($baseRemaining - $valorVenta, 2);
+            $valorUnit = $cantidad > 0 ? round($valorVenta / $cantidad, 6) : 0;
+            $igvLinea = round($lineTotal - $valorVenta, 2);
 
             $totalGravadaSinIgv += $valorVenta;
-            $totalIgv           += $igvLinea;
+            $totalIgv += $igvLinea;
 
-            $details[] = (new SaleDetail())
+            $details[] = (new SaleDetail)
                 ->setCodProducto((string) ($product->id ?? '-'))
                 ->setUnidad('NIU')                                // Unidad: Bien (NIU) o Servicio (ZZ)
                 ->setCantidad($cantidad)
@@ -72,9 +79,9 @@ class InvoiceBuilder
 
         // 2. Totales (con redondeo final)
         $totalGravadaSinIgv = round($totalGravadaSinIgv, 2);
-        $totalIgv           = round($totalIgv, 2);
-        $totalImpuestos     = $totalIgv;
-        $totalVenta         = round($totalGravadaSinIgv + $totalIgv, 2);
+        $totalIgv = round($totalIgv, 2);
+        $totalImpuestos = $totalIgv;
+        $totalVenta = round($totalGravadaSinIgv + $totalIgv, 2);
 
         // 3. Cliente
         $client = $this->buildClient($order, $isFactura);
@@ -83,13 +90,13 @@ class InvoiceBuilder
         $company = $this->buildCompany();
 
         // 5. Cabecera del comprobante
-        $invoice = (new Invoice())
+        $invoice = (new Invoice)
             ->setUblVersion('2.1')
             ->setTipoOperacion('0101')                            // 0101 = Venta interna
             ->setTipoDoc($tipoDoc)
             ->setSerie($order->serie)
             ->setCorrelativo((string) $order->correlativo)
-            ->setFechaEmision($order->created_at ?? now())
+            ->setFechaEmision($order->paid_at ?? $order->created_at ?? now())
             ->setTipoMoneda($tipoMoneda)
             ->setClient($client)
             ->setCompany($company)
@@ -104,9 +111,9 @@ class InvoiceBuilder
             ->setMtoImpVenta($totalVenta)
             ->setDetails($details)
             ->setLegends([
-                (new Legend())
+                (new Legend)
                     ->setCode('1000')                             // Monto en letras
-                    ->setValue($this->montoEnLetras($totalVenta) . ' SOLES'),
+                    ->setValue($this->montoEnLetras($totalVenta).' SOLES'),
             ]);
 
         return $invoice;
@@ -114,13 +121,13 @@ class InvoiceBuilder
 
     private function buildClient(Order $order, bool $isFactura): GClient
     {
-        $client = new GClient();
+        $client = new GClient;
 
         if ($isFactura) {
             $ruc = trim((string) $order->client_document);
             $razonSocial = trim((string) $order->client_name);
 
-            if (!preg_match('/^\d{11}$/', $ruc)) {
+            if (! preg_match('/^\d{11}$/', $ruc)) {
                 throw new \InvalidArgumentException(
                     'La Factura requiere un RUC válido de 11 dígitos.'
                 );
@@ -149,7 +156,7 @@ class InvoiceBuilder
 
     private function buildCompany(): Company
     {
-        $address = (new Address())
+        $address = (new Address)
             ->setUbigueo($this->config->ubigeo())
             ->setDepartamento($this->config->departamento())
             ->setProvincia($this->config->provincia())
@@ -159,7 +166,7 @@ class InvoiceBuilder
             ->setDireccion($this->config->direccion())
             ->setCodigoPais($this->config->codigoPais());
 
-        return (new Company())
+        return (new Company)
             ->setRuc($this->config->ruc())
             ->setRazonSocial($this->config->razonSocial())
             ->setNombreComercial($this->config->nombreComercial())
@@ -175,51 +182,62 @@ class InvoiceBuilder
         $entero = (int) floor($amount);
         $decimal = (int) round(($amount - $entero) * 100);
 
-        return strtoupper($this->numeroALetras($entero)) . sprintf(' CON %02d/100', $decimal);
+        return strtoupper($this->numeroALetras($entero)).sprintf(' CON %02d/100', $decimal);
     }
 
     private function numeroALetras(int $n): string
     {
-        if ($n === 0) return 'CERO';
-        if ($n < 0)  return 'MENOS ' . $this->numeroALetras(-$n);
+        if ($n === 0) {
+            return 'CERO';
+        }
+        if ($n < 0) {
+            return 'MENOS '.$this->numeroALetras(-$n);
+        }
 
         $unidades = ['', 'UNO', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE',
-                     'DIEZ', 'ONCE', 'DOCE', 'TRECE', 'CATORCE', 'QUINCE', 'DIECISEIS',
-                     'DIECISIETE', 'DIECIOCHO', 'DIECINUEVE', 'VEINTE'];
-        $decenas  = ['', '', 'VEINTI', 'TREINTA', 'CUARENTA', 'CINCUENTA',
-                     'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA'];
+            'DIEZ', 'ONCE', 'DOCE', 'TRECE', 'CATORCE', 'QUINCE', 'DIECISEIS',
+            'DIECISIETE', 'DIECIOCHO', 'DIECINUEVE', 'VEINTE'];
+        $decenas = ['', '', 'VEINTI', 'TREINTA', 'CUARENTA', 'CINCUENTA',
+            'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA'];
         $centenas = ['', 'CIENTO', 'DOSCIENTOS', 'TRESCIENTOS', 'CUATROCIENTOS',
-                     'QUINIENTOS', 'SEISCIENTOS', 'SETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS'];
+            'QUINIENTOS', 'SEISCIENTOS', 'SETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS'];
 
-        if ($n <= 20) return $unidades[$n];
+        if ($n <= 20) {
+            return $unidades[$n];
+        }
 
         if ($n < 100) {
             $d = intdiv($n, 10);
             $u = $n % 10;
             if ($d === 2) {
-                return $u === 0 ? 'VEINTE' : 'VEINTI' . strtolower($unidades[$u]);
+                return $u === 0 ? 'VEINTE' : 'VEINTI'.strtolower($unidades[$u]);
             }
-            return $decenas[$d] . ($u ? ' Y ' . $unidades[$u] : '');
+
+            return $decenas[$d].($u ? ' Y '.$unidades[$u] : '');
         }
 
         if ($n < 1000) {
-            if ($n === 100) return 'CIEN';
+            if ($n === 100) {
+                return 'CIEN';
+            }
             $c = intdiv($n, 100);
             $r = $n % 100;
-            return $centenas[$c] . ($r ? ' ' . $this->numeroALetras($r) : '');
+
+            return $centenas[$c].($r ? ' '.$this->numeroALetras($r) : '');
         }
 
         if ($n < 1_000_000) {
             $miles = intdiv($n, 1000);
             $resto = $n % 1000;
-            $prefijo = $miles === 1 ? 'MIL' : $this->numeroALetras($miles) . ' MIL';
-            return $prefijo . ($resto ? ' ' . $this->numeroALetras($resto) : '');
+            $prefijo = $miles === 1 ? 'MIL' : $this->numeroALetras($miles).' MIL';
+
+            return $prefijo.($resto ? ' '.$this->numeroALetras($resto) : '');
         }
 
         $millones = intdiv($n, 1_000_000);
-        $resto    = $n % 1_000_000;
-        $prefijo  = $millones === 1 ? 'UN MILLON' : $this->numeroALetras($millones) . ' MILLONES';
-        return $prefijo . ($resto ? ' ' . $this->numeroALetras($resto) : '');
+        $resto = $n % 1_000_000;
+        $prefijo = $millones === 1 ? 'UN MILLON' : $this->numeroALetras($millones).' MILLONES';
+
+        return $prefijo.($resto ? ' '.$this->numeroALetras($resto) : '');
     }
 }
-

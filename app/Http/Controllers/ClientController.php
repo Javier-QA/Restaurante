@@ -13,18 +13,20 @@ class ClientController extends Controller
     {
         // Listamos clientes con conteo de órdenes
         $clients = Client::withCount('orders')->orderBy('name')->paginate(10);
+
         return view('clients.index', compact('clients'));
     }
 
     public function create()
     {
-        return view('clients.create');
+        return view('clients.form');
     }
 
     public function store(Request $request)
     {
-        $request->validate(['name' => 'required', 'document_number' => 'nullable|unique:clients']);
-        Client::create($request->all());
+        $data = $request->validate($this->rules());
+        Client::create($data);
+
         return redirect()->route('clients.index')->with('success', 'Cliente registrado.');
     }
 
@@ -33,9 +35,9 @@ class ClientController extends Controller
     {
         // 1. Historial de Órdenes (Completadas)
         $orders = $client->orders()
-                         ->where('status', 'completed')
-                         ->orderBy('created_at', 'desc')
-                         ->get();
+            ->where('status', 'completed')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         // 2. Estadísticas Financieras
         $totalSpent = $orders->sum('total');
@@ -45,9 +47,16 @@ class ClientController extends Controller
         // 3. Calcular Nivel VIP
         $rank = 'Nuevo';
         $badgeColor = 'secondary';
-        if ($totalSpent > 1000) { $rank = 'Oro (VIP)'; $badgeColor = 'warning'; }
-        elseif ($totalSpent > 500) { $rank = 'Plata'; $badgeColor = 'secondary'; }
-        elseif ($totalSpent > 100) { $rank = 'Bronce'; $badgeColor = 'danger'; }
+        if ($totalSpent > 1000) {
+            $rank = 'Oro (VIP)';
+            $badgeColor = 'warning';
+        } elseif ($totalSpent > 500) {
+            $rank = 'Plata';
+            $badgeColor = 'secondary';
+        } elseif ($totalSpent > 100) {
+            $rank = 'Bronce';
+            $badgeColor = 'danger';
+        }
 
         // 4. Plato Favorito (Query avanzada)
         $favoriteDish = DB::table('order_details')
@@ -59,33 +68,46 @@ class ClientController extends Controller
             ->orderByDesc('total_qty')
             ->first();
 
-        $favoriteProduct = $favoriteDish ? $favoriteDish->name . ' (' . $favoriteDish->total_qty . ' veces)' : 'Aún sin datos';
+        $favoriteProduct = $favoriteDish ? $favoriteDish->name.' ('.$favoriteDish->total_qty.' veces)' : 'Aún sin datos';
 
         return view('clients.show', compact('client', 'orders', 'totalSpent', 'visitCount', 'lastVisit', 'rank', 'badgeColor', 'favoriteProduct'));
     }
 
     public function edit(Client $client)
     {
-        return view('clients.edit', compact('client'));
+        return view('clients.form', compact('client'));
     }
 
     public function update(Request $request, Client $client)
     {
-        $request->validate(['name' => 'required', 'document_number' => 'nullable|unique:clients,document_number,'.$client->id]);
-        $client->update($request->all());
+        $data = $request->validate($this->rules($client->id));
+        $client->update($data);
+
         return redirect()->route('clients.index')->with('success', 'Datos actualizados.');
     }
 
     public function destroy(Client $client)
     {
         $client->delete();
+
         return redirect()->route('clients.index')->with('success', 'Cliente eliminado.');
     }
+
+    private function rules(?int $id = null): array
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'document_number' => ['nullable', 'regex:/^(?:\d{8}|\d{11})$/', 'unique:clients,document_number'.($id ? ','.$id : '')],
+            'phone' => 'nullable|string|max:30', 'email' => 'nullable|email|max:255',
+            'address' => 'nullable|string|max:255',
+        ];
+    }
+
     public function findByDocument(string $document)
     {
         $document = preg_replace('/\D/', '', $document);
 
-        if (!in_array(strlen($document), [8, 11], true)) {
+        if (! in_array(strlen($document), [8, 11], true)) {
             return response()->json([
                 'found' => false,
                 'message' => 'Documento inválido.',
@@ -111,7 +133,7 @@ class ClientController extends Controller
             '/'
         );
 
-        if (!$token) {
+        if (! $token) {
             return response()->json([
                 'found' => false,
                 'message' => 'Factiliza no está configurado.',
@@ -128,7 +150,7 @@ class ClientController extends Controller
                 ->timeout(10)
                 ->get($endpoint);
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 return response()->json([
                     'found' => false,
                     'message' => 'No se pudo consultar el documento.',
@@ -137,7 +159,7 @@ class ClientController extends Controller
 
             $json = $response->json();
 
-            if (!($json['success'] ?? false) || empty($json['data'])) {
+            if (! ($json['success'] ?? false) || empty($json['data'])) {
                 return response()->json([
                     'found' => false,
                     'message' => $json['message'] ?? 'Documento no encontrado.',
@@ -150,7 +172,7 @@ class ClientController extends Controller
                 ? ($data['nombre_completo'] ?? null)
                 : ($data['nombre_o_razon_social'] ?? null);
 
-            if (!$name) {
+            if (! $name) {
                 return response()->json([
                     'found' => false,
                     'message' => 'La consulta no devolvió nombre.',

@@ -309,10 +309,9 @@
                             <i class="bi bi-box-seam stock-field-icon"></i>
 
                             <input type="number"
-                                   name="quantity"
+                                   name="quantity" step="0.001"
                                    class="form-control stock-form-control"
-                                   min="1"
-                                   step="1"
+                                   min="0.001"
                                    placeholder="Ej. 10"
                                    required>
 

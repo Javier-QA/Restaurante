@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\DailySummary;
 use App\Services\Sunat\DailySummaryBuilder;
-use App\Services\Sunat\SunatConfig;
 use App\Services\Sunat\SunatService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -40,13 +39,14 @@ class DailySummaryController extends Controller
         $refDate = Carbon::parse($request->input('reference_date'));
 
         try {
-            $built = (new DailySummaryBuilder(new SunatConfig()))
+            $built = app(DailySummaryBuilder::class)
                 ->build($refDate, Auth::id());
 
-            (new SunatService())->sendSummary($built['model'], $built['summary']);
+            app(SunatService::class)->sendSummary($built['model'], $built['summary']);
             $built['model']->refresh();
         } catch (\Throwable $e) {
             Log::error('DailySummary store', ['date' => $refDate->toDateString(), 'msg' => $e->getMessage()]);
+
             return back()->with('error', $e->getMessage());
         }
 
@@ -56,18 +56,19 @@ class DailySummaryController extends Controller
 
     public function check(DailySummary $summary)
     {
-        if (!$summary->ticket) {
+        if (! $summary->ticket) {
             return back()->with('error', 'El resumen no tiene ticket asignado.');
         }
 
         try {
-            (new SunatService())->checkSummaryTicket($summary);
+            app(SunatService::class)->checkSummaryTicket($summary);
             $summary->refresh();
         } catch (\Throwable $e) {
-            return back()->with('error', 'Excepción: ' . $e->getMessage());
+            return back()->with('error', 'Excepción: '.$e->getMessage());
         }
 
         $msg = "Resumen {$summary->identifier}: {$summary->sunat_status}";
+
         return back()->with($summary->sunat_status === 'ACCEPTED' ? 'success' : 'error', $msg);
     }
 
@@ -83,14 +84,15 @@ class DailySummaryController extends Controller
 
     private function stream(?string $relPath, string $mime)
     {
-        if (!$relPath || !Storage::disk('local')->exists($relPath)) {
+        if (! $relPath || ! Storage::disk('local')->exists($relPath)) {
             abort(404, 'Archivo no encontrado.');
         }
+
         return response()->stream(function () use ($relPath) {
             echo Storage::disk('local')->get($relPath);
         }, 200, [
-            'Content-Type'        => $mime,
-            'Content-Disposition' => 'attachment; filename="' . basename($relPath) . '"',
+            'Content-Type' => $mime,
+            'Content-Disposition' => 'attachment; filename="'.basename($relPath).'"',
         ]);
     }
 }

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Setting;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -36,8 +36,8 @@ class ReportController extends Controller
                 )
             )
             ->where('orders.status', 'completed')
-            ->whereDate('orders.created_at', '>=', $startDate)
-            ->whereDate('orders.created_at', '<=', $endDate)
+            ->whereDate('orders.paid_at', '>=', $startDate)
+            ->whereDate('orders.paid_at', '<=', $endDate)
             ->groupBy('categories.name')
             ->get();
 
@@ -46,14 +46,14 @@ class ReportController extends Controller
 
         // 2. RENDIMIENTO DE PERSONAL
         $salesByWaiter = Order::select(
-                'users.name',
-                DB::raw('SUM(total) as total_sales'),
-                DB::raw('COUNT(orders.id) as orders_count')
-            )
+            'users.name',
+            DB::raw('SUM(total) as total_sales'),
+            DB::raw('COUNT(orders.id) as orders_count')
+        )
             ->join('users', 'orders.user_id', '=', 'users.id')
             ->where('orders.status', 'completed')
-            ->whereDate('orders.created_at', '>=', $startDate)
-            ->whereDate('orders.created_at', '<=', $endDate)
+            ->whereDate('orders.paid_at', '>=', $startDate)
+            ->whereDate('orders.paid_at', '<=', $endDate)
             ->groupBy('users.name')
             ->orderByDesc('total_sales')
             ->get();
@@ -73,8 +73,8 @@ class ReportController extends Controller
                 )
             )
             ->where('orders.status', 'completed')
-            ->whereDate('orders.created_at', '>=', $startDate)
-            ->whereDate('orders.created_at', '<=', $endDate)
+            ->whereDate('orders.paid_at', '>=', $startDate)
+            ->whereDate('orders.paid_at', '<=', $endDate)
             ->groupBy('products.name')
             ->orderByDesc('qty')
             ->limit(5)
@@ -89,8 +89,8 @@ class ReportController extends Controller
                 DB::raw('SUM(order_details.quantity) as qty')
             )
             ->where('orders.status', 'completed')
-            ->whereDate('orders.created_at', '>=', $startDate)
-            ->whereDate('orders.created_at', '<=', $endDate)
+            ->whereDate('orders.paid_at', '>=', $startDate)
+            ->whereDate('orders.paid_at', '<=', $endDate)
             ->groupBy('products.name')
             ->orderBy('qty', 'asc')
             ->limit(5)
@@ -130,14 +130,14 @@ class ReportController extends Controller
 
         // Ventas totales
         $totalSales = Order::where('status', 'completed')
-            ->whereDate('created_at', '>=', $startDate)
-            ->whereDate('created_at', '<=', $endDate)
+            ->whereDate('paid_at', '>=', $startDate)
+            ->whereDate('paid_at', '<=', $endDate)
             ->sum('total');
 
         // Cantidad de pedidos
         $ordersCount = Order::where('status', 'completed')
-            ->whereDate('created_at', '>=', $startDate)
-            ->whereDate('created_at', '<=', $endDate)
+            ->whereDate('paid_at', '>=', $startDate)
+            ->whereDate('paid_at', '<=', $endDate)
             ->count();
 
         // Productos más vendidos
@@ -152,8 +152,8 @@ class ReportController extends Controller
                 )
             )
             ->where('orders.status', 'completed')
-            ->whereDate('orders.created_at', '>=', $startDate)
-            ->whereDate('orders.created_at', '<=', $endDate)
+            ->whereDate('orders.paid_at', '>=', $startDate)
+            ->whereDate('orders.paid_at', '<=', $endDate)
             ->groupBy('products.name')
             ->orderByDesc('qty')
             ->limit(5)
@@ -168,8 +168,8 @@ class ReportController extends Controller
                 DB::raw('SUM(order_details.quantity) as qty')
             )
             ->where('orders.status', 'completed')
-            ->whereDate('orders.created_at', '>=', $startDate)
-            ->whereDate('orders.created_at', '<=', $endDate)
+            ->whereDate('orders.paid_at', '>=', $startDate)
+            ->whereDate('orders.paid_at', '<=', $endDate)
             ->groupBy('products.name')
             ->orderBy('qty', 'asc')
             ->limit(5)
@@ -177,14 +177,14 @@ class ReportController extends Controller
 
         // Rendimiento del personal
         $salesByWaiter = Order::select(
-                'users.name',
-                DB::raw('SUM(total) as total_sales'),
-                DB::raw('COUNT(orders.id) as orders_count')
-            )
+            'users.name',
+            DB::raw('SUM(total) as total_sales'),
+            DB::raw('COUNT(orders.id) as orders_count')
+        )
             ->join('users', 'orders.user_id', '=', 'users.id')
             ->where('orders.status', 'completed')
-            ->whereDate('orders.created_at', '>=', $startDate)
-            ->whereDate('orders.created_at', '<=', $endDate)
+            ->whereDate('orders.paid_at', '>=', $startDate)
+            ->whereDate('orders.paid_at', '<=', $endDate)
             ->groupBy('users.name')
             ->orderByDesc('total_sales')
             ->get();
@@ -239,13 +239,12 @@ class ReportController extends Controller
         $pdf->setPaper('a4', 'portrait');
 
         $fileName =
-            'reporte_ventas_' .
-            $startDate .
-            '_al_' .
-            $endDate .
+            'reporte_ventas_'.
+            $startDate.
+            '_al_'.
+            $endDate.
             '.pdf';
 
         return $pdf->stream($fileName);
     }
 }
-

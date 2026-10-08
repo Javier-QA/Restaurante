@@ -45,11 +45,12 @@ class CreditNoteController extends Controller
         if ($q = $request->input('q')) {
             $query->where(function ($qq) use ($q) {
                 $qq->where('serie', 'like', "%{$q}%")
-                   ->orWhere('correlativo', 'like', "%{$q}%");
+                    ->orWhere('correlativo', 'like', "%{$q}%");
             });
         }
 
         $notes = $query->paginate(10)->withQueryString();
+
         return view('credit_notes.index', compact('notes'));
     }
 
@@ -63,8 +64,9 @@ class CreditNoteController extends Controller
         }
 
         $order->load('details.product');
+
         return view('credit_notes.create', [
-            'order'   => $order,
+            'order' => $order,
             'reasons' => self::REASON_CODES,
         ]);
     }
@@ -74,10 +76,13 @@ class CreditNoteController extends Controller
         abort_unless(in_array($order->document_type, ['Boleta', 'Factura']), 404);
 
         $request->validate([
-            'reason_code'        => 'required|string|in:01,02,03,06,07,13',
+            'reason_code' => 'required|string|in:01,02,03,06,07,13',
             'reason_description' => 'required|string|max:255',
         ]);
 
+        if ($order->sunat_status !== 'ACCEPTED') {
+            return back()->with('error', 'El comprobante debe estar aceptado antes de emitir una nota de crédito.');
+        }
         $isFactura = $order->document_type === 'Factura';
         $seriesKey = $isFactura ? 'nota_credito_factura' : 'nota_credito_boleta';
 
@@ -85,29 +90,30 @@ class CreditNoteController extends Controller
             $next = DocumentSeries::next($seriesKey);
 
             return CreditNote::create([
-                'order_id'           => $order->id,
-                'serie'              => $next['serie'],
-                'correlativo'        => $next['correlativo'],
-                'document_type'      => 'nota_credito',
-                'reason_code'        => $request->input('reason_code'),
+                'order_id' => $order->id,
+                'serie' => $next['serie'],
+                'correlativo' => $next['correlativo'],
+                'document_type' => 'nota_credito',
+                'reason_code' => $request->input('reason_code'),
                 'reason_description' => $request->input('reason_description'),
-                'subtotal'           => $order->total_gravada,
-                'igv'                => $order->igv,
-                'total'              => $order->total,
-                'sunat_status'       => 'PENDING',
-                'user_id'            => Auth::id(),
+                'subtotal' => $order->total_gravada,
+                'igv' => $order->igv,
+                'total' => $order->total,
+                'sunat_status' => 'PENDING',
+                'user_id' => Auth::id(),
             ]);
         });
 
         // Envío inmediato a SUNAT
         try {
-            (new SunatService())->sendCreditNote($cn);
+            (new SunatService)->sendCreditNote($cn);
             $cn->refresh();
         } catch (\Throwable $e) {
             Log::error('CreditNote sendInvoice', ['cn_id' => $cn->id, 'msg' => $e->getMessage()]);
         }
 
         $msg = "Nota de Crédito {$cn->full_number}: {$cn->sunat_status}";
+
         return redirect()->route('credit_notes.show', $cn)
             ->with($cn->sunat_status === 'ACCEPTED' ? 'success' : 'error', $msg);
     }
@@ -115,19 +121,21 @@ class CreditNoteController extends Controller
     public function show(CreditNote $creditNote)
     {
         $creditNote->load('order.details.product');
+
         return view('credit_notes.show', ['cn' => $creditNote]);
     }
 
     public function retry(CreditNote $creditNote)
     {
         try {
-            (new SunatService())->sendCreditNote($creditNote);
+            (new SunatService)->sendCreditNote($creditNote);
             $creditNote->refresh();
         } catch (\Throwable $e) {
-            return back()->with('error', 'Excepción: ' . $e->getMessage());
+            return back()->with('error', 'Excepción: '.$e->getMessage());
         }
 
         $msg = "Nota de Crédito {$creditNote->full_number}: {$creditNote->sunat_status}";
+
         return back()->with($creditNote->sunat_status === 'ACCEPTED' ? 'success' : 'error', $msg);
     }
 
@@ -143,14 +151,15 @@ class CreditNoteController extends Controller
 
     private function stream(?string $relPath, string $mime)
     {
-        if (!$relPath || !Storage::disk('local')->exists($relPath)) {
+        if (! $relPath || ! Storage::disk('local')->exists($relPath)) {
             abort(404, 'Archivo no encontrado.');
         }
+
         return response()->stream(function () use ($relPath) {
             echo Storage::disk('local')->get($relPath);
         }, 200, [
-            'Content-Type'        => $mime,
-            'Content-Disposition' => 'attachment; filename="' . basename($relPath) . '"',
+            'Content-Type' => $mime,
+            'Content-Disposition' => 'attachment; filename="'.basename($relPath).'"',
         ]);
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\CashRegister;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\CashRegister;
 
 class RequireOpenCashRegister
 {
@@ -18,7 +18,10 @@ class RequireOpenCashRegister
 
         // Admin, cajero y mozo necesitan que exista una caja global abierta.
         if ($user && in_array($user->role, ['admin', 'cashier', 'waiter'])) {
-            if (!CashRegister::where('status', 'open')->exists()) {
+            if (! CashRegister::where('status', 'open')->exists()) {
+                if (! $request->isMethod('GET')) {
+                    throw \Illuminate\Validation\ValidationException::withMessages(['cash_register' => 'Debe existir una caja abierta para realizar esta operación.']);
+                }
                 // Solo admin y cajero pueden abrir la caja.
                 if (in_array($user->role, ['admin', 'cashier'])) {
                     return redirect()->route('cash_registers.create')
@@ -26,8 +29,7 @@ class RequireOpenCashRegister
                 }
 
                 // El mozo no puede abrir caja.
-                return redirect()->route('pos.index')
-                    ->with('warning', 'No hay una caja abierta. Solicita al administrador o cajero que abra la caja.');
+                return response()->view('pos.closed', [], 200);
             }
         }
 

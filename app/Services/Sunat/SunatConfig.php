@@ -10,11 +10,13 @@ use App\Models\Setting;
 class SunatConfig
 {
     /** Endpoints SOAP de SUNAT */
-    public const ENDPOINT_BETA       = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService';
+    public const ENDPOINT_BETA = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService';
+
     public const ENDPOINT_PRODUCCION = 'https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService';
 
     /** Endpoints para Resumen Diario / Comunicación de Baja (envíoResumen) */
-    public const ENDPOINT_RC_BETA       = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService';
+    public const ENDPOINT_RC_BETA = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService';
+
     public const ENDPOINT_RC_PRODUCCION = 'https://www.sunat.gob.pe/ol-ti-itcpfegem/billService';
 
     /** Certificado público de demo (provisto por SUNAT/Greenter para BETA) */
@@ -112,8 +114,8 @@ class SunatConfig
     {
         $user = (string) $this->get('sunat_sol_user', 'MODDATOS');
 
-        if (!$this->isProduction() && !str_starts_with($user, $this->ruc())) {
-            return $this->ruc() . $user;
+        if (! $this->isProduction() && ! str_starts_with($user, $this->ruc())) {
+            return $this->ruc().$user;
         }
 
         return $user;
@@ -127,7 +129,12 @@ class SunatConfig
     public function certPath(): ?string
     {
         $path = $this->get('sunat_cert_path');
-        return $path ? storage_path('app/' . $path) : null;
+        if (! $path) {
+            return null;
+        }
+        $disk = \Illuminate\Support\Facades\Storage::disk('local');
+
+        return $disk->exists($path) ? $disk->path($path) : storage_path('app/'.$path);
     }
 
     public function certPassword(): string

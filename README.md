@@ -1,59 +1,72 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Restaurante — sistema de gestión y punto de venta
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplicación Laravel para pedidos por mesas, cocina y barra, caja, ventas, delivery/recojo, reservas, clientes, productos, recetas, inventario, facturación SUNAT y consultas con IA. El nombre, logo y colores del negocio se administran desde Configuración.
 
-## About Laravel
+## Requisitos
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP 8.2 o superior y Composer.
+- MySQL o MariaDB. Las vistas y consultas de IA requieren este motor.
+- Extensiones PHP: PDO MySQL, cURL, mbstring, XML/DOM, SOAP, OpenSSL, fileinfo y ZIP.
+- Node.js compatible con Vite 7 si se recompilan los recursos de frontend.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Actualizar una instalación en Laragon
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Primero genera una copia de seguridad desde Mantenimiento. Desde la terminal de VS Code:
 
-## Learning Laravel
+```powershell
+cd C:\laragon\www\restaurante
+git fetch origin
+git switch mejoras-integrales
+git pull --ff-only origin mejoras-integrales
+composer install
+php artisan optimize:clear
+php artisan migrate
+php artisan view:cache
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+No cambies `APP_KEY`: se utiliza para descifrar la clave del proveedor de IA existente. No ejecutes `migrate:fresh` ni `db:seed` sobre una base con información real.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+La migración nueva añade fecha de cobro, descripción de producto y stock/kardex con tres decimales; actualiza las vistas de IA. Los cobros históricos usan `updated_at` como estimación inicial. Los cobros nuevos guardan su fecha independiente.
 
-## Laravel Sponsors
+## Instalación nueva
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```powershell
+composer install
+Copy-Item .env.example .env
+php artisan key:generate
+```
 
-### Premium Partners
+Configura `DB_CONNECTION=mysql`, `DB_DATABASE`, `DB_USERNAME` y `DB_PASSWORD` en `.env`, crea esa base y ejecuta:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```powershell
+php artisan migrate
+php artisan db:seed
+php artisan storage:link
+npm install
+npm run build
+php artisan serve
+```
 
-## Contributing
+El seeder crea una cuenta local de demostración `admin@admin.com` con contraseña `password`. Cámbiala antes de utilizar el sistema con información real. Abre la caja para registrar pedidos y cobros.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Roles
 
-## Code of Conduct
+Administrador: gestión completa e IA. Cajero: caja, ventas y facturación. Mozo: pedidos, clientes, reservas y delivery. Cocina y barra: sus propias estaciones de preparación. Cada usuario puede actualizar su nombre y contraseña desde Mi Perfil sin cambiar su rol.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## IA y SUNAT
 
-## Security Vulnerabilities
+Consulta [docs/IA_SYS.md](docs/IA_SYS.md) para el chatbot y asistente. La configuración admite Gemini, Groq, OpenRouter, Ollama y otros proveedores compatibles con `/chat/completions`; la disponibilidad de cada modelo depende del proveedor. La IA consulta datos, genera tablas/gráficos y exporta CSV; no ejecuta cambios en los datos del negocio.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Para SUNAT configura ambiente, RUC, datos fiscales, credenciales y certificado en Configuración. Facturas: envío individual. Boletas: resumen diario. Certificados `.pfx` y `.p12`: disco privado. La aceptación por SUNAT requiere una prueba real con las credenciales del negocio.
 
-## License
+## Validación
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```powershell
+php artisan test
+php artisan route:list
+php artisan view:cache
+```
+
+Las pruebas funcionales utilizan SQLite en memoria y datos aislados; no conectan al proveedor de IA ni a SUNAT. La validación SQL adicional de la mejora se ejecutó con MariaDB 10.11 sobre una copia del respaldo incluido. Las pruebas de concurrencia entre varias conexiones y la inspección visual en Laragon siguen requiriendo comprobación local.
+
+Consulta [docs/MEJORAS.md](docs/MEJORAS.md) para los cambios y límites de datos históricos.

@@ -39,10 +39,12 @@ class Order extends Model
         'pdf_path',
         'hash',
         'sent_at',
+        'paid_at',
     ];
 
     protected $casts = [
         'sent_at' => 'datetime',
+        'paid_at' => 'datetime',
         'subtotal' => 'decimal:2',
         'igv' => 'decimal:2',
         'total' => 'decimal:2',
@@ -97,7 +99,7 @@ class Order extends Model
      */
     public function getFullNumberAttribute(): ?string
     {
-        if (!$this->serie || !$this->correlativo) {
+        if (! $this->serie || ! $this->correlativo) {
             return null;
         }
 

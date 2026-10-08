@@ -16,7 +16,7 @@ class CashRegister extends Model
         'expected_amount',
         'difference',
         'status',
-        'notes'
+        'notes',
     ];
 
     protected $casts = [
@@ -36,6 +36,16 @@ class CashRegister extends Model
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function collectedSales(string $method): float
+    {
+        $orders = $this->orders()->where('status', 'completed')->where('payment_method', $method);
+        $fees = Delivery::whereHas('order', fn ($query) => $query
+            ->where('cash_register_id', $this->id)->where('status', 'completed')->where('payment_method', $method))
+            ->where('status', 'delivered')->sum('delivery_fee');
+
+        return round((float) $orders->sum('total') + (float) $fees, 2);
     }
 
     public function expenses()

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Expense;
 use App\Models\Order;
-use App\Models\Setting;
-use App\Models\Expense; // Importamos el modelo
-use Illuminate\Http\Request;
+use App\Models\Setting; // Importamos el modelo
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class SaleController extends Controller
 {
@@ -17,9 +17,9 @@ class SaleController extends Controller
         $endDate = $request->input('end_date', Carbon::today()->format('Y-m-d'));
 
         // 1. Consulta base de ventas
-        $ordersQuery = Order::whereDate('created_at', '>=', $startDate)
-                            ->whereDate('created_at', '<=', $endDate)
-                            ->where('status', 'completed');
+        $ordersQuery = Order::whereDate('paid_at', '>=', $startDate)
+            ->whereDate('paid_at', '<=', $endDate)
+            ->where('status', 'completed');
 
         // 2. Totales generales de ventas
         $totalCash = (clone $ordersQuery)
@@ -49,7 +49,7 @@ class SaleController extends Controller
 
         // 4. Consulta base de gastos
         $expensesQuery = Expense::whereDate('created_at', '>=', $startDate)
-                                ->whereDate('created_at', '<=', $endDate);
+            ->whereDate('created_at', '<=', $endDate);
 
         // Total general de gastos
         $totalExpenses = (clone $expensesQuery)->sum('amount');
@@ -78,10 +78,12 @@ class SaleController extends Controller
             'balance'
         ));
     }
+
     public function ticket(Order $order)
     {
         $settings = Setting::pluck('value', 'key')->toArray();
         $settings['currency_symbol'] = $settings['currency_symbol'] ?? 'S/';
+
         return view('sales.ticket', compact('order', 'settings'));
     }
 
@@ -89,12 +91,12 @@ class SaleController extends Controller
     {
         $startDate = $request->input('start_date', Carbon::today()->format('Y-m-d'));
         $endDate = $request->input('end_date', Carbon::today()->format('Y-m-d'));
-        
-        $orders = Order::whereDate('created_at', '>=', $startDate)
-                       ->whereDate('created_at', '<=', $endDate)
-                       ->where('status', 'completed')
-                       ->get();
-        
+
+        $orders = Order::whereDate('paid_at', '>=', $startDate)
+            ->whereDate('paid_at', '<=', $endDate)
+            ->where('status', 'completed')
+            ->get();
+
         $stats = [
             'start_date' => Carbon::parse($startDate),
             'end_date' => Carbon::parse($endDate),
@@ -103,13 +105,13 @@ class SaleController extends Controller
             'yape' => $orders->where('payment_method', 'yape')->sum('total'),
             'plin' => $orders->where('payment_method', 'plin')->sum('total'),
             'orders_count' => $orders->count(),
-            'expenses' => 0
+            'expenses' => 0,
         ];
 
-        if(class_exists('\App\Models\Expense')) {
+        if (class_exists('\App\Models\Expense')) {
             $stats['expenses'] = Expense::whereDate('created_at', '>=', $startDate)
-                                        ->whereDate('created_at', '<=', $endDate)
-                                        ->sum('amount');
+                ->whereDate('created_at', '<=', $endDate)
+                ->sum('amount');
         }
 
         $stats['total'] = $stats['cash'] + $stats['card'] + $stats['yape'] + $stats['plin'];

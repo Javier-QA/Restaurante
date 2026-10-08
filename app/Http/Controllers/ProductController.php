@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Models\Category;
 use App\Models\InventoryLog;
+use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -15,31 +15,35 @@ class ProductController extends Controller
     {
         // Listamos productos con su categoría, ordenados por los más nuevos
         $products = Product::with('category')->orderBy('created_at', 'desc')->paginate(10);
+
         return view('products.index', compact('products'));
     }
 
     public function create()
     {
         $categories = Category::where('is_active', true)->get();
+
         return view('products.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
         // 1. Validación (Incluye el barcode único)
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:5000',
+            'preparation_area' => 'required|in:kitchen,barra',
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
             'cost' => 'nullable|numeric|min:0',
             'promotional_price' => 'nullable|numeric|min:0',
             'barcode' => 'nullable|string|max:50|unique:products,barcode', // <--- NUEVO
             'image' => 'nullable|image|max:2048',
-            'stock' => 'nullable|integer'
+            'stock' => 'nullable|numeric|min:0|max:99999999999',
         ]);
 
-        $data = $request->all();
-        
+        $data = array_diff_key($validated, array_flip(['ingredients']));
+
         // 2. Manejo de Imagen
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('products', 'public');
@@ -53,21 +57,16 @@ class ProductController extends Controller
         $data['is_active'] = true;
         $data['cost'] = $request->cost ?? 0;
 
-        // 3. Crear Producto
-        $product = Product::create($data);
-
-        // 4. Registro inicial en Kardex si hay stock
-        if($request->stock > 0) {
-            InventoryLog::create([
-                'product_id' => $product->id,
-                'user_id' => Auth::id(),
-                'type' => 'entry',
-                'quantity' => $request->stock,
-                'old_stock' => 0,
-                'new_stock' => $request->stock,
-                'note' => 'Inventario Inicial'
-            ]);
-        }
+        \Illuminate\Support\Facades\DB::transaction(function () use ($request, $data) {
+            $product = Product::create($data);
+            if ($request->stock > 0) {
+                InventoryLog::create([
+                    'product_id' => $product->id, 'user_id' => Auth::id(), 'type' => 'entry',
+                    'quantity' => $request->stock, 'old_stock' => 0, 'new_stock' => $request->stock,
+                    'note' => 'Inventario Inicial',
+                ]);
+            }
+        });
 
         return redirect()->route('products.index')->with('success', 'Producto creado correctamente.');
     }
@@ -82,31 +81,39 @@ class ProductController extends Controller
             ->where('is_saleable', false)
             ->orderBy('name')
             ->get();
-        
+
         return view('products.edit', compact('product', 'categories', 'ingredients'));
     }
 
     public function update(Request $request, Product $product)
     {
         // 1. Validación (Barcode único excepto para este producto)
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:5000',
+            'preparation_area' => 'required|in:kitchen,barra',
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
             'cost' => 'nullable|numeric|min:0',
             'promotional_price' => 'nullable|numeric|min:0',
-            'barcode' => 'nullable|string|max:50|unique:products,barcode,' . $product->id, // <--- NUEVO
+            'barcode' => 'nullable|string|max:50|unique:products,barcode,'.$product->id, // <--- NUEVO
             'image' => 'nullable|image|max:2048',
+            'ingredients' => 'nullable|array',
+            'ingredients.*' => 'nullable|numeric|min:0|max:999999',
         ]);
 
-        $data = $request->all();
-
-        // 2. Manejo de Imagen
-        if ($request->hasFile('image')) {
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
+        foreach ($request->input('ingredients', []) as $id => $qty) {
+            if ((float) $qty > 0 && ((int) $id === $product->id || ! Product::whereKey($id)->where('is_active', true)->where('is_saleable', false)->exists())) {
+                throw \Illuminate\Validation\ValidationException::withMessages(['ingredients' => 'La receta solo puede incluir insumos activos.']);
             }
-            $data['image'] = $request->file('image')->store('products', 'public');
+        }
+        $data = array_diff_key($validated, array_flip(['ingredients']));
+
+        $oldImage = $product->image;
+        $newImage = null;
+        if ($request->hasFile('image')) {
+            $newImage = $request->file('image')->store('products', 'public');
+            $data['image'] = $newImage;
         }
 
         $data['is_saleable'] = $request->has('is_saleable');
@@ -115,18 +122,34 @@ class ProductController extends Controller
         $data['is_new'] = $request->has('is_new');
         $data['cost'] = $request->cost ?? 0;
 
-        // 3. Actualizar
-        $product->update($data);
+        // Save product and recipe together after validating allowed ingredients.
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($product, $request, $data) {
+                $product->update($data);
 
-        // Actualizar receta/insumos
-        // Si no se envían ingredientes, se elimina la receta actual.
-        $syncData = [];
-        foreach ($request->input('ingredients', []) as $id => $qty) {
-            if ((float) $qty > 0) {
-                $syncData[$id] = ['quantity' => $qty];
+                // Actualizar receta/insumos
+                // Si no se envían ingredientes, se elimina la receta actual.
+                $syncData = [];
+                foreach ($request->input('ingredients', []) as $id => $qty) {
+                    if ((float) $qty > 0) {
+                        if ((int) $id === $product->id || ! Product::whereKey($id)->where('is_active', true)->where('is_saleable', false)->exists()) {
+                            throw \Illuminate\Validation\ValidationException::withMessages(['ingredients' => 'La receta solo puede incluir insumos activos.']);
+                        }
+                        $syncData[$id] = ['quantity' => $qty];
+                    }
+                }
+                $product->ingredients()->sync($syncData);
+            });
+
+        } catch (\Throwable $e) {
+            if ($newImage) {
+                Storage::disk('public')->delete($newImage);
             }
+            throw $e;
         }
-        $product->ingredients()->sync($syncData);
+        if ($newImage && $oldImage) {
+            Storage::disk('public')->delete($oldImage);
+        }
 
         return redirect()->route('products.index', ['page' => $request->input('page', 1)])->with('success', 'Producto actualizado.');
     }
@@ -135,49 +158,39 @@ class ProductController extends Controller
     {
         // Eliminado lógico (desactivar) en lugar de borrar para mantener historial
         $product->update(['is_active' => false]);
+
         return redirect()->route('products.index')->with('success', 'Producto eliminado (desactivado).');
     }
 
     // Funciones extra para ajustes rápidos
     public function toggleStatus(Product $product)
     {
-        $product->update(['is_active' => !$product->is_active]);
+        $product->update(['is_active' => ! $product->is_active]);
+
         return back();
     }
 
     public function adjustStock(Request $request, Product $product)
     {
-        $request->validate(['quantity' => 'required|integer|min:1', 'type' => 'required|in:add,sub']);
-        
-        $oldStock = $product->stock;
-        $qty = $request->quantity;
-        
-        if ($request->type === 'sub') {
-            if ($qty > $oldStock) {
-                return back()->with(
-                    'error',
-                    'No se puede retirar una cantidad mayor al stock disponible (' . $oldStock . ').'
-                );
+        $request->validate(['quantity' => 'required|numeric|min:0.001|max:99999999999', 'type' => 'required|in:add,sub']);
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($request, $product) {
+            $product = Product::whereKey($product->id)->lockForUpdate()->firstOrFail();
+            $oldStock = (float) $product->stock;
+            $qty = round((float) $request->quantity, 3);
+            if ($request->type === 'sub' && $qty > $oldStock) {
+                throw \Illuminate\Validation\ValidationException::withMessages(['quantity' => 'No puede retirar más stock del disponible.']);
             }
-
-            $product->decrement('stock', $qty);
-            $newStock = $oldStock - $qty;
-            $type = 'adjustment_out';
-        } else {
-            $product->increment('stock', $qty);
-            $newStock = $oldStock + $qty;
-            $type = 'adjustment_in';
-        }
-
-        InventoryLog::create([
-            'product_id' => $product->id,
-            'user_id' => Auth::id(),
-            'type' => $type,
-            'quantity' => ($request->type === 'sub' ? -$qty : $qty),
-            'old_stock' => $oldStock,
-            'new_stock' => $newStock,
-            'note' => 'Ajuste manual desde panel'
-        ]);
+            $delta = $request->type === 'sub' ? -$qty : $qty;
+            $newStock = round($oldStock + $delta, 3);
+            $product->update(['stock' => $newStock]);
+            InventoryLog::create([
+                'product_id' => $product->id, 'user_id' => Auth::id(),
+                'type' => $delta < 0 ? 'adjustment_out' : 'adjustment_in',
+                'quantity' => $delta, 'old_stock' => $oldStock, 'new_stock' => $newStock,
+                'note' => 'Ajuste manual desde panel',
+            ]);
+        });
 
         return back()->with('success', 'Stock ajustado.');
     }

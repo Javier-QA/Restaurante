@@ -54,6 +54,14 @@
         <div class="card border-0 shadow-sm">
             <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data" class="card-body p-4">
                 @csrf
+        <div class="col-12 mb-3">
+            <label for="preparationArea" class="form-label fw-bold">Área de preparación</label>
+            <select id="preparationArea" name="preparation_area" class="form-select" required>
+                <option value="kitchen" @selected(old('preparation_area', $product->preparation_area ?? 'kitchen') === 'kitchen')>Cocina</option>
+                <option value="barra" @selected(old('preparation_area', $product->preparation_area ?? 'kitchen') === 'barra')>Barra</option>
+            </select>
+        </div>
+
                 
                 <h6 class="fw-bold text-primary mb-3 border-bottom pb-2">Información General</h6>
 
@@ -91,7 +99,7 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label fw-bold small text-muted">Stock Inicial</label>
-                        <input type="number" name="stock" class="form-control" placeholder="0">
+                        <input type="number" name="stock" step="0.001" min="0" class="form-control" placeholder="0">
                         <small class="text-muted" style="font-size: 0.75rem;">Se creará un registro de entrada en el Kardex.</small>
                     </div>
                 </div>

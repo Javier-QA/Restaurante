@@ -11,6 +11,7 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'preparation_area',
         'barcode', // <--- NUEVO CAMPO AGREGADO
         'description',
         'price',
@@ -23,8 +24,10 @@ class Product extends Model
         'is_saleable',
         'promotional_price',
         'is_chef_recommendation',
-        'is_new'
+        'is_new',
     ];
+
+    protected $casts = ['stock' => 'decimal:3', 'controls_stock' => 'boolean', 'is_saleable' => 'boolean', 'is_active' => 'boolean'];
 
     // Relación con Categoría
     public function category()
@@ -36,7 +39,7 @@ class Product extends Model
     public function ingredients()
     {
         return $this->belongsToMany(Product::class, 'product_ingredients', 'product_id', 'ingredient_id')
-                    ->withPivot('quantity');
+            ->withPivot('quantity');
     }
 
     // Relación con Detalles de Orden
@@ -52,8 +55,8 @@ class Product extends Model
         if ($this->ingredients->isEmpty()) {
             return $this->cost; // Si no tiene receta, su costo es el costo asignado manualmente
         }
-        
-        return $this->ingredients->sum(function($ingredient) {
+
+        return $this->ingredients->sum(function ($ingredient) {
             return $ingredient->cost * $ingredient->pivot->quantity;
         });
     }

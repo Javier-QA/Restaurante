@@ -486,6 +486,14 @@
           class="row g-4">
 
         @csrf
+        <div class="col-12 mb-3">
+            <label for="preparationArea" class="form-label fw-bold">Área de preparación</label>
+            <select id="preparationArea" name="preparation_area" class="form-select" required>
+                <option value="kitchen" @selected(old('preparation_area', $product->preparation_area ?? 'kitchen') === 'kitchen')>Cocina</option>
+                <option value="barra" @selected(old('preparation_area', $product->preparation_area ?? 'kitchen') === 'barra')>Barra</option>
+            </select>
+        </div>
+
         @method('PUT')
 
         <input type="hidden"

@@ -183,7 +183,7 @@
 
         <input type="text"
                name="client_document"
-               id="splitClientDocument" oninput="lookupSplitClientByDocument()" oninput="lookupSplitClientByDocument()"
+               id="splitClientDocument" oninput="lookupSplitClientByDocument()"
                class="form-control"
                maxlength="11"
                inputmode="numeric"
@@ -632,6 +632,11 @@ function calculateSplitTotal() {
             }
         });
 
+        const gross = @json((float) $order->details->sum(fn ($line) => $line->price * $line->quantity));
+        const ratio = gross > 0 ? total / gross : 1;
+        const discount = Math.round(@json((float) $order->discount) * ratio * 100) / 100;
+        const tip = Math.round(@json((float) $order->tip) * ratio * 100) / 100;
+        total = Math.round(Math.max(0, total - discount + tip) * 100) / 100;
         document.getElementById('splitTotalDisplay').innerText = total.toFixed(2);
 
         const receivedInput =

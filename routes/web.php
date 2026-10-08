@@ -1,24 +1,24 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\TableController;
-use App\Http\Controllers\PosController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\SaleController;
-use App\Http\Controllers\KitchenController;
 use App\Http\Controllers\BarraController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\SettingController;
-use App\Http\Controllers\ExpenseController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\ClientController;
-use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\SystemController;
-use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\KitchenController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PosController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\SaleController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SystemController;
+use App\Http\Controllers\TableController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,51 +29,48 @@ use App\Http\Controllers\BillingController;
 // --- 1. AUTENTICACIÓN Y PÚBLICO ---
 
 Route::get('/login', [LoginController::class, 'show'])->name('login');
-Route::post('/login', [LoginController::class, 'login'])->name('login.perform');
+Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:10,1')->name('login.perform');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
 
 // Menú Digital Público (Escaneo QR)
 Route::get('/menu', [App\Http\Controllers\MenuController::class, 'index'])
     ->name('menu.index');
 
-
 // --- 2. SISTEMA INTERNO ---
 
 Route::middleware(['auth'])->group(function () {
+
+    Route::put('/profile', [UserController::class, 'profile'])->name('profile.update');
 
     // =========================================================
     // ZONA OPERATIVA (Accesible para Mozo, Cajero, Admin)
     // =========================================================
 
-    Route::middleware(['role:admin,cashier,waiter'])->group(function () {
-
-    });
+    Route::middleware(['role:admin,cashier,waiter'])->group(function () {});
 
     // =========================================================
     // CAJA - ADMINISTRADOR Y CAJERO
     // =========================================================
     Route::middleware(['role:admin,cashier'])->group(function () {
-    Route::get(
-        '/cash-registers/open',
-        [App\Http\Controllers\CashRegisterController::class, 'create']
-    )->name('cash_registers.create');
+        Route::get(
+            '/cash-registers/open',
+            [App\Http\Controllers\CashRegisterController::class, 'create']
+        )->name('cash_registers.create');
 
-    Route::post(
-        '/cash-registers/open',
-        [App\Http\Controllers\CashRegisterController::class, 'store']
-    )->name('cash_registers.store');
+        Route::post(
+            '/cash-registers/open',
+            [App\Http\Controllers\CashRegisterController::class, 'store']
+        )->name('cash_registers.store');
 
-    Route::get(
-        '/cash-registers/close',
-        [App\Http\Controllers\CashRegisterController::class, 'close']
-    )->name('cash_registers.close');
+        Route::get(
+            '/cash-registers/close',
+            [App\Http\Controllers\CashRegisterController::class, 'close']
+        )->name('cash_registers.close');
 
-    Route::post(
-        '/cash-registers/close',
-        [App\Http\Controllers\CashRegisterController::class, 'processClose']
-    )->name('cash_registers.processClose');
-
+        Route::post(
+            '/cash-registers/close',
+            [App\Http\Controllers\CashRegisterController::class, 'processClose']
+        )->name('cash_registers.processClose');
 
     });
 
@@ -82,86 +79,80 @@ Route::middleware(['auth'])->group(function () {
     // =========================================================
     Route::middleware(['role:admin,cashier,waiter'])->group(function () {
 
-    // POS (Punto de Venta)
-    Route::middleware(['cash_register'])->group(function () {
+        // POS (Punto de Venta)
+        Route::middleware(['cash_register'])->group(function () {
 
-        Route::get('/pos/ready-items', [PosController::class, 'readyItems'])
-    ->name('pos.ready-items');
-Route::get('/pos', [PosController::class, 'index'])
-            ->name('pos.index');
+            Route::get('/pos/ready-items', [PosController::class, 'readyItems'])
+                ->name('pos.ready-items');
+            Route::get('/pos', [PosController::class, 'index'])
+                ->name('pos.index');
 
-        Route::get('/pos/table/{table}', [PosController::class, 'order'])
-            ->name('pos.order');
-    });
+            Route::get('/pos/table/{table}', [PosController::class, 'order'])
+                ->name('pos.order');
+        });
 
+        Route::post(
+            '/pos/order/{table}/add',
+            [PosController::class, 'addToOrder']
+        )->middleware('cash_register')->name('pos.add');
 
-    Route::post(
-        '/pos/order/{table}/add',
-        [PosController::class, 'addToOrder']
-    )->name('pos.add');
+        // Código de barras
+        Route::post(
+            '/pos/order/{table}/barcode',
+            [PosController::class, 'addByBarcode']
+        )->middleware('cash_register')->name('pos.barcode');
 
+        // Herramientas de Orden
+        Route::get(
+            '/pos/order/{order}/precheck',
+            [PosController::class, 'precheck']
+        )->middleware('cash_register')->name('pos.precheck');
 
-    // Código de barras
-    Route::post(
-        '/pos/order/{table}/barcode',
-        [PosController::class, 'addByBarcode']
-    )->name('pos.barcode');
+        Route::get(
+            '/pos/order/{order}/kitchen-ticket',
+            [PosController::class, 'kitchenTicket']
+        )->middleware('cash_register')->name('pos.kitchen');
 
+        Route::post(
+            '/pos/order/{order}/send-kitchen',
+            [PosController::class, 'sendToKitchen']
+        )->middleware('cash_register')->name('pos.send-kitchen');
+        Route::post(
+            '/pos/order/{order}/discount',
+            [PosController::class, 'applyDiscount']
+        )->middleware('cash_register')->name('pos.discount');
 
-    // Herramientas de Orden
-    Route::get(
-        '/pos/order/{order}/precheck',
-        [PosController::class, 'precheck']
-    )->name('pos.precheck');
+        Route::post(
+            '/pos/order/{order}/move',
+            [PosController::class, 'moveTable']
+        )->middleware('cash_register')->name('pos.move');
 
-    Route::get(
-        '/pos/order/{order}/kitchen-ticket',
-        [PosController::class, 'kitchenTicket']
-    )->name('pos.kitchen');
+        // División de Cuenta
+        Route::get(
+            '/pos/order/{order}/split-content',
+            [PosController::class, 'getSplitContent']
+        )->middleware('cash_register')->name('pos.split.content');
 
-    Route::post(
-        '/pos/order/{order}/send-kitchen',
-        [PosController::class, 'sendToKitchen']
-    )->name('pos.send-kitchen');
-    Route::post(
-        '/pos/order/{order}/discount',
-        [PosController::class, 'applyDiscount']
-    )->name('pos.discount');
+        Route::post(
+            '/pos/order/{order}/split',
+            [PosController::class, 'processSplit']
+        )->middleware('cash_register')->name('pos.split');
 
-    Route::post(
-        '/pos/order/{order}/move',
-        [PosController::class, 'moveTable']
-    )->name('pos.move');
+        // Gestión de Items
+        Route::post(
+            '/pos/detail/{detail}/update',
+            [PosController::class, 'updateQuantity']
+        )->middleware('cash_register')->name('pos.update');
 
+        Route::post(
+            '/pos/detail/{detail}/note',
+            [PosController::class, 'updateNote']
+        )->middleware('cash_register')->name('pos.note');
 
-    // División de Cuenta
-    Route::get(
-        '/pos/order/{order}/split-content',
-        [PosController::class, 'getSplitContent']
-    )->name('pos.split.content');
-
-    Route::post(
-        '/pos/order/{order}/split',
-        [PosController::class, 'processSplit']
-    )->name('pos.split');
-
-
-    // Gestión de Items
-    Route::post(
-        '/pos/detail/{detail}/update',
-        [PosController::class, 'updateQuantity']
-    )->name('pos.update');
-
-    Route::post(
-        '/pos/detail/{detail}/note',
-        [PosController::class, 'updateNote']
-    )->name('pos.note');
-
-    Route::delete(
-        '/pos/detail/{detail}',
-        [PosController::class, 'removeItem']
-    )->name('pos.remove');
-
+        Route::delete(
+            '/pos/detail/{detail}',
+            [PosController::class, 'removeItem']
+        )->middleware('cash_register')->name('pos.remove');
 
     });
 
@@ -180,7 +171,6 @@ Route::get('/pos', [PosController::class, 'index'])
             [KitchenController::class, 'updateStatus']
         )->name('kitchen.update');
     });
-
 
     // =========================================================
 
@@ -204,31 +194,30 @@ Route::get('/pos', [PosController::class, 'index'])
 
     Route::middleware(['role:admin,cashier,waiter'])->group(function () {
 
-    Route::get(
-        '/reservations',
-        [ReservationController::class, 'index']
-    )->name('reservations.index');
+        Route::get(
+            '/reservations',
+            [ReservationController::class, 'index']
+        )->name('reservations.index');
 
-    Route::post(
-        '/reservations',
-        [ReservationController::class, 'store']
-    )->name('reservations.store');
+        Route::post(
+            '/reservations',
+            [ReservationController::class, 'store']
+        )->name('reservations.store');
 
-    Route::put(
-        '/reservations/{reservation}',
-        [ReservationController::class, 'update']
-    )->name('reservations.update');
+        Route::put(
+            '/reservations/{reservation}',
+            [ReservationController::class, 'update']
+        )->name('reservations.update');
 
-    Route::put(
-        '/reservations/{reservation}/status',
-        [ReservationController::class, 'updateStatus']
-    )->name('reservations.status');
+        Route::put(
+            '/reservations/{reservation}/status',
+            [ReservationController::class, 'updateStatus']
+        )->name('reservations.status');
 
-    Route::delete(
-        '/reservations/{reservation}',
-        [ReservationController::class, 'destroy']
-    )->name('reservations.destroy');
-
+        Route::delete(
+            '/reservations/{reservation}',
+            [ReservationController::class, 'destroy']
+        )->name('reservations.destroy');
 
     });
 
@@ -241,7 +230,7 @@ Route::get('/pos', [PosController::class, 'index'])
         Route::post(
             '/pos/order/{order}/checkout',
             [PosController::class, 'checkout']
-        )->name('pos.checkout');
+        )->middleware('cash_register')->name('pos.checkout');
     });
 
     Route::middleware(['role:admin,cashier,waiter'])->group(function () {
@@ -260,18 +249,16 @@ Route::get('/pos', [PosController::class, 'index'])
             [SaleController::class, 'ticket']
         )->name('sales.ticket');
 
-
         // Gastos
-        
+
         Route::get(
             '/clients/document/{document}',
             [ClientController::class, 'findByDocument']
         )->name('clients.find-document');
-Route::resource(
+        Route::resource(
             'expenses',
             ExpenseController::class
-        )->only(['store', 'destroy']);
-
+        )->only(['store', 'destroy'])->middleware('cash_register');
 
         // =====================================================
         // DELIVERY
@@ -290,7 +277,7 @@ Route::resource(
         Route::post(
             '/delivery',
             [DeliveryController::class, 'store']
-        )->name('delivery.store');
+        )->middleware('cash_register')->name('delivery.store');
 
         Route::get(
             '/delivery/orders',
@@ -315,13 +302,12 @@ Route::resource(
         Route::post(
             '/delivery/{delivery}/checkout',
             [DeliveryController::class, 'checkout']
-        )->name('delivery.checkout');
+        )->middleware('cash_register')->name('delivery.checkout');
 
         Route::post(
             '/delivery/{delivery}/cancel',
             [DeliveryController::class, 'cancel']
         )->name('delivery.cancel');
-
 
         // Repartidores
         Route::get(
@@ -344,7 +330,6 @@ Route::resource(
             [DeliveryController::class, 'driversDestroy']
         )->name('delivery.drivers.destroy');
     });
-
 
     // =========================================================
     // ZONA ADMINISTRATIVA (Solo Admin)
@@ -409,7 +394,6 @@ Route::resource(
             [App\Http\Controllers\BillingPdfController::class, 'ticket']
         )->name('billing.pdf.ticket');
 
-
         // =====================================================
         // NOTAS DE CRÉDITO
         // =====================================================
@@ -449,7 +433,6 @@ Route::resource(
             [App\Http\Controllers\CreditNoteController::class, 'downloadCdr']
         )->name('credit_notes.cdr');
 
-
         // =====================================================
         // RESUMEN DIARIO DE BOLETAS
         // =====================================================
@@ -479,8 +462,6 @@ Route::resource(
             [App\Http\Controllers\DailySummaryController::class, 'downloadCdr']
         )->name('daily_summaries.cdr');
 
-
-
     });
 
     // =========================================================
@@ -498,7 +479,6 @@ Route::resource(
         Route::get(
             '/reports/export/pdf', [ReportController::class, 'exportPdf']
         )->name('reports.export.pdf');
-
 
         // =====================================================
         // CAJA
@@ -540,17 +520,14 @@ Route::resource(
             [App\Http\Controllers\CashRegisterController::class, 'destroy']
         )->name('cash_registers.destroy');
 
-
         // =====================================================
         // GESTIÓN
         // =====================================================
-
 
         Route::resource(
             'categories',
             CategoryController::class
         );
-
 
         // =====================================================
         // PRODUCTOS E INVENTARIO
@@ -587,7 +564,6 @@ Route::resource(
 
         })->name('inventory.logs');
 
-
         // =====================================================
         // CONFIGURACIÓN Y USUARIOS
         // =====================================================
@@ -606,7 +582,6 @@ Route::resource(
             '/settings',
             [SettingController::class, 'update']
         )->name('settings.update');
-
 
         // =====================================================
         // MANTENIMIENTO DEL SISTEMA
@@ -631,7 +606,6 @@ Route::resource(
             '/system/restore',
             [SystemController::class, 'restore']
         )->name('system.restore');
-
 
         // =====================================================
         // MAPA DE MESAS

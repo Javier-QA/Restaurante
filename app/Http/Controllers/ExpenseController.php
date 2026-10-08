@@ -15,12 +15,16 @@ class ExpenseController extends Controller
             'amount' => 'required|numeric|min:0.1',
         ]);
 
-        Expense::create([
-            'description' => $request->description,
-            'amount' => $request->amount,
-            'user_id' => Auth::id(),
-            'cash_register_id' => Auth::user()->activeCashRegister->id ?? null
-        ]);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($request) {
+            $register = \App\Models\CashRegister::where('status', 'open')->lockForUpdate()->first();
+            if (! $register) {
+                throw \Illuminate\Validation\ValidationException::withMessages(['cash_register' => 'Debe abrir una caja antes de registrar gastos.']);
+            }
+            Expense::create([
+                'description' => $request->description, 'amount' => $request->amount,
+                'user_id' => Auth::id(), 'cash_register_id' => $register->id,
+            ]);
+        });
 
         return redirect()->back()->with('success', 'Gasto registrado correctamente.');
     }
@@ -28,6 +32,7 @@ class ExpenseController extends Controller
     public function destroy(Expense $expense)
     {
         $expense->delete();
+
         return redirect()->back()->with('success', 'Gasto eliminado.');
     }
 }

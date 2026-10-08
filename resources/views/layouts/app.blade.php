@@ -7774,7 +7774,7 @@ html[data-color-mode="dark"]
 
 
                 <form
-                    action="{{ route('users.update', Auth::user()->id) }}"
+                    action="{{ route('profile.update') }}"
                     method="POST"
                 >
 
@@ -7839,6 +7839,7 @@ html[data-color-mode="dark"]
 
                                     <input
                                         type="email"
+                                        name="email"
                                         class="form-control profile-input"
                                         value="{{ Auth::user()->email }}"
                                         readonly
