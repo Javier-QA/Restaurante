@@ -258,7 +258,7 @@ class PosController extends Controller
         $paid = app(\App\Services\OrderPaymentService::class)->pay($request, $order, true);
         $this->sendInvoice($paid);
 
-        return redirect()->route('pos.order', $tableId)->with('success', 'Parte de la cuenta cobrada correctamente.')
+        return redirect()->route('pos.order', ['table' => $tableId, 'print_order' => $paid->id])->with('success', 'Parte de la cuenta cobrada correctamente.')
             ->with('print_order_id', $paid->id);
     }
 
@@ -279,7 +279,7 @@ class PosController extends Controller
         $paid = app(\App\Services\OrderPaymentService::class)->pay($request, $order);
         $this->sendInvoice($paid);
 
-        return redirect()->route('pos.index')->with('success', 'Venta registrada correctamente.')
+        return redirect()->route('pos.index', ['print_order' => $paid->id])->with('success', 'Venta registrada correctamente.')
             ->with('print_order_id', $paid->id);
     }
 
