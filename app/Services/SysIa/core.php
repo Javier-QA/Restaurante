@@ -474,9 +474,55 @@ function ia_preguntar(string $pregunta, ?array $previo = null): array
     throw new RuntimeException('No pude armar una consulta válida para esa pregunta ('.$ultimo.'). Intenta reformularla con más detalle.');
 }
 
+/** Build simple rankings from real data without another provider call. */
+function ia_resumen_ranking(array $cols, array $filas, string $pregunta): ?string
+{
+    if (count($cols) !== 2 || ! $filas || count($filas) > 10) {
+        return null;
+    }
+    $quantity = $name = null;
+    foreach ($cols as $col) {
+        if (preg_match('/^(cantidad|cantidad_vendida|cantidad_total|total_unidades|unidades|vendidos|veces)$/i', $col)) {
+            $quantity = $col;
+        } else {
+            $name = $col;
+        }
+    }
+    if (! $quantity || ! $name || ! preg_match('/vendid[oa]s?|venta[s]?/iu', $pregunta)) {
+        return null;
+    }
+    $items = [];
+    foreach ($filas as $fila) {
+        $fila = (array) $fila;
+        if (! isset($fila[$name], $fila[$quantity]) || ! is_string($fila[$name]) || ! is_numeric($fila[$quantity])) {
+            return null;
+        }
+        $value = (float) $fila[$quantity];
+        $number = rtrim(rtrim(number_format($value, 3, '.', ''), '0'), '.');
+        $items[] = $fila[$name].' con '.$number.' '.($value == 1 ? 'unidad' : 'unidades');
+    }
+    $last = array_pop($items);
+    $list = $items ? implode(', ', $items).' y '.$last : $last;
+    $period = '';
+    $date = now('America/Lima')->locale('es');
+    if (preg_match('/\bayer\b/iu', $pregunta)) {
+        $period = ' de ayer, '.$date->subDay()->translatedFormat('j \d\e F \d\e Y');
+    } elseif (preg_match('/\bhoy\b/iu', $pregunta)) {
+        $period = ' de hoy, '.$date->translatedFormat('j \d\e F \d\e Y');
+    } elseif (preg_match('/\beste mes\b/iu', $pregunta)) {
+        $period = ' de '.$date->translatedFormat('F \d\e Y');
+    }
+
+    return 'Los resultados'.$period.' muestran '. $list.'.';
+}
+
 /** Resumen en lenguaje natural (2.ª llamada, hasta 25 filas). */
 function ia_resumir(string $pregunta, array $cols, array $filas): string
 {
+    $ranking = ia_resumen_ranking($cols, $filas, $pregunta);
+    if ($ranking !== null) {
+        return $ranking;
+    }
     $datos = json_encode(['columnas' => $cols, 'filas' => array_slice($filas, 0, 25), 'total_filas' => count($filas)], JSON_UNESCAPED_UNICODE);
 
     try {
@@ -642,9 +688,10 @@ function ia_chat(string $msg, array $hist = []): array
     if (! $res) {
         return ['texto' => 'No pude consultar eso con los datos disponibles ('.$err.'). ¿Puedes reformular la pregunta?'];
     }
+    $ranking = ia_resumen_ranking($res['columnas'], $res['filas'], $msg);
     $datos = json_encode(['columnas' => $res['columnas'], 'filas' => array_slice($res['filas'], 0, 30), 'total_filas' => count($res['filas'])], JSON_UNESCAPED_UNICODE);
     try {
-        $texto = trim(ia_llamar([
+        $texto = $ranking ?? trim(ia_llamar([
             ['role' => 'system', 'content' => 'Eres el asistente de un restaurante. Responde SIEMPRE en español conversacional, como si hablaras con el administrador, para cualquier tema: ventas, platos, inventario, clientes, pedidos y gastos. Empieza con mayúscula. No uses etiquetas de columnas ni expresiones como «Periodo solicitado», «total ventas:» o «numero pedidos:». Integra cifras y fechas en oraciones naturales. Redacta una respuesta breve y clara (máx. 4 frases) usando SOLO los datos dados, con cifras exactas. Si la pregunta dice hoy, ayer o este mes, indica también la fecha o el intervalo correspondiente usando la fecha actual proporcionada. Los conteos de productos no son unidades de stock: distingue COUNT de productos de SUM(stock). Expresa horarios en formato de 12 horas con am/pm, por ejemplo 20 como 8:00pm, nunca 20 horas. Usa moneda solo para importes (moneda '.MONEDA.'). Si hay una lista, menciona los primeros elementos; el resto se ve en «Ver datos». Si no hay filas, dilo. Puedes usar **negrita** para cifras clave. Sin tablas ni listas largas.'],
             ['role' => 'user', 'content' => "Fecha actual: ".ia_fecha_texto()."\nPregunta: $msg\nDatos: $datos"],
         ], 350));
