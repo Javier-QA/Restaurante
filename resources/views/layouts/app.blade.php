@@ -11285,6 +11285,30 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 </script>
+@if(session('print_order_id'))
+<div class="alert alert-success mx-3 no-print" id="automaticPrintNotice">
+    Pago registrado.
+    <a href="{{ route('sales.ticket', session('print_order_id')) }}" target="_blank" rel="noopener">Abrir comprobante para imprimir</a>
+</div>
+<script>
+(function () {
+    const frame = document.createElement('iframe');
+    frame.title = 'Comprobante de la venta';
+    frame.style.cssText = 'position:fixed;left:-10000px;top:0;width:320px;height:600px;border:0;';
+    frame.onload = async function () {
+        try {
+            if (frame.contentDocument.fonts) await frame.contentDocument.fonts.ready;
+            frame.contentWindow.focus();
+            frame.contentWindow.print();
+        } catch (error) {
+            console.error('No se pudo abrir la impresión automática', error);
+        }
+    };
+    frame.src = @json(route('sales.ticket', session('print_order_id')));
+    document.body.appendChild(frame);
+})();
+</script>
+@endif
 </body>
 </html>
 
