@@ -434,16 +434,29 @@
 
 <div class="container-fluid inventory-page">
 
-    {{-- ENCABEZADO --}}
-    <div class="inventory-header">
-
-        <div>
-
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
             <a href="{{ route('products.index') }}"
                class="inventory-back">
                 <i class="bi bi-arrow-left"></i>
                 Volver a Productos
             </a>
+            <form method="POST" action="{{ route('inventory.logs.reset') }}">
+                @csrf
+                @method('DELETE')
+                <button type="button" class="btn btn-outline-danger rounded-pill d-inline-flex align-items-center justify-content-center px-3" style="border: 1.5px solid currentColor !important; min-height: 40px; font-weight: 600;"
+                        onclick="confirmResetKardex(this)">
+                    <i class="bi bi-trash3 me-1"></i> Vaciar Kardex y poner stock en cero
+                </button>
+            </form>
+
+    </div>
+
+    {{-- ENCABEZADO --}}
+    <div class="inventory-header">
+
+        <div>
+
+
 
             <h2 class="inventory-title">
                 <i class="bi bi-clock-history me-2"></i>Kardex de Movimientos
@@ -496,17 +509,6 @@
 
         </div>
 
-
-        <div class="d-flex justify-content-end flex-wrap px-3 pb-3">
-            <form method="POST" action="{{ route('inventory.logs.reset') }}">
-                @csrf
-                @method('DELETE')
-                <button type="button" class="btn btn-outline-danger rounded-pill d-inline-flex align-items-center justify-content-center px-3" style="border: 1.5px solid currentColor !important; min-height: 40px; font-weight: 600;"
-                        onclick="confirmResetKardex(this)">
-                    <i class="bi bi-trash3 me-1"></i> Vaciar Kardex y poner stock en cero
-                </button>
-            </form>
-        </div>
 
         <div class="table-responsive">
 
