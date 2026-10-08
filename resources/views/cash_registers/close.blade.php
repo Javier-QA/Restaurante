@@ -526,6 +526,17 @@
                         <form id="cashCloseForm" action="{{ route('cash_registers.processClose') }}" method="POST">
                             @csrf
 
+                            @if($errors->any())
+                                <div class="alert alert-danger" role="alert">
+                                    <strong>No se pudo cerrar la caja.</strong>
+                                    <ul class="mb-0 mt-2">
+                                        @foreach($errors->all() as $message)
+                                            <li>{{ $message }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+
                             <div class="mb-4">
                                 <label class="form-label">
                                     Dinero físico contado

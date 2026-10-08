@@ -9196,6 +9196,13 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     @endif
 
+    @if($errors->any())
+        SystemNotify.error(
+            @json($errors->first()),
+            'No se pudo completar la operación'
+        );
+    @endif
+
     @if(session('warning'))
         SystemNotify.warning(
             @json(session('warning')),

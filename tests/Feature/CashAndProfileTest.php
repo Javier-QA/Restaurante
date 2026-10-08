@@ -44,6 +44,34 @@ class CashAndProfileTest extends RestaurantTestCase
         $this->assertSame('open', $register->fresh()->status);
     }
 
+    public function test_cash_closes_without_sales(): void
+    {
+        $register = $this->openRegister();
+        $this->post('/cash-registers/close', ['closing_amount' => 50])
+            ->assertRedirect(route('dashboard'))
+            ->assertSessionHas('success');
+        $register->refresh();
+        $this->assertSame('closed', $register->status);
+        $this->assertEquals(50, $register->expected_amount);
+        $this->assertEquals(0, $register->difference);
+        $this->assertNotNull($register->closing_time);
+    }
+
+    public function test_blocked_cash_close_displays_reason_on_the_page(): void
+    {
+        $register = $this->openRegister();
+        $this->order($this->product());
+        $this->from(route('cash_registers.close'))
+            ->post('/cash-registers/close', ['closing_amount' => 50])
+            ->assertRedirect(route('cash_registers.close'))
+            ->assertSessionHasErrors('cash_register');
+        $this->get(route('cash_registers.close'))
+            ->assertOk()
+            ->assertSee('No se pudo cerrar la caja.')
+            ->assertSee('Finaliza los pedidos pendientes antes de cerrar la caja.');
+        $this->assertSame('open', $register->fresh()->status);
+    }
+
     public function test_delivery_shipping_is_included_in_cash_arqueo(): void
     {
         $register = $this->openRegister();
