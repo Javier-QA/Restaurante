@@ -52,6 +52,8 @@ class ProductController extends Controller
             'stock' => 'nullable|numeric|min:0|max:99999999999',
         ]);
 
+        $this->validateWholeInventory($request, $request->input('unit') ?: 'und', ['stock', 'minimum_stock']);
+
         $data = array_diff_key($validated, array_flip(['ingredients']));
 
         // 2. Manejo de Imagen
@@ -115,6 +117,8 @@ class ProductController extends Controller
             'ingredients' => 'nullable|array',
             'ingredients.*' => 'nullable|numeric|min:0|max:999999',
         ]);
+
+        $this->validateWholeInventory($request, $request->input('unit') ?: ($product->unit ?: 'und'), ['minimum_stock']);
 
         foreach ($request->input('ingredients', []) as $id => $qty) {
             if ((float) $qty > 0 && ((int) $id === $product->id || ! Product::whereKey($id)->where('is_active', true)->where('is_saleable', false)->exists())) {
@@ -194,6 +198,8 @@ class ProductController extends Controller
     {
         $request->validate(['quantity' => 'required|numeric|min:0.001|max:99999999999', 'type' => 'required|in:add,sub']);
 
+        $this->validateWholeInventory($request, $product->unit ?: 'und', ['quantity']);
+
         \Illuminate\Support\Facades\DB::transaction(function () use ($request, $product) {
             $product = Product::whereKey($product->id)->lockForUpdate()->firstOrFail();
             $oldStock = (float) $product->stock;
@@ -213,5 +219,21 @@ class ProductController extends Controller
         });
 
         return back()->with('success', 'Stock ajustado.');
+    }
+    private function validateWholeInventory(Request $request, string $unit, array $fields): void
+    {
+        if (!in_array($unit, ['und', 'paq', 'caja'], true)) {
+            return;
+        }
+        foreach ($fields as $field) {
+            if ($request->filled($field)) {
+                $value = (float) $request->input($field);
+                if (floor($value) !== $value) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        $field => 'Unidades, paquetes y cajas requieren cantidades enteras.',
+                    ]);
+                }
+            }
+        }
     }
 }
