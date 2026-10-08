@@ -844,7 +844,7 @@ window.lookupSplitClientByDocument = async function() {
     font-size: 1.55rem;
     font-weight: 800;
     letter-spacing: -.025em;
-    color: #17212b;
+    color: var(--text-main, #17212b);
     margin: 0;
 }
 
@@ -900,7 +900,7 @@ window.lookupSplitClientByDocument = async function() {
 .split-page .table tbody td {
     padding-top: .95rem;
     padding-bottom: .95rem;
-    border-color: #edf1f5;
+    border-color: var(--surface-neutral, #edf1f5);
     vertical-align: middle;
 }
 
@@ -909,7 +909,7 @@ window.lookupSplitClientByDocument = async function() {
 }
 
 .split-page .table tbody tr:hover {
-    background: #fbfcfd;
+    background: var(--surface-neutral, #fbfcfd);
 }
 
 .split-page .form-check-input {
@@ -926,13 +926,13 @@ window.lookupSplitClientByDocument = async function() {
 /* CONTROL DE CANTIDAD */
 .split-page .split-qty {
     min-width: 42px;
-    border-color: #d9e1e8;
+    border-color: var(--surface-blue, #d9e1e8);
     background: var(--card-bg, #fff);
 }
 
 .split-page .input-group .btn {
     min-width: 34px;
-    border-color: #d9e1e8;
+    border-color: var(--surface-blue, #d9e1e8);
     font-weight: 800;
 }
 
@@ -967,7 +967,7 @@ window.lookupSplitClientByDocument = async function() {
     align-items: center;
     justify-content: center;
     background: var(--card-bg, #fff) !important;
-    border: 1px solid #d9e2ea !important;
+    border: 1px solid var(--surface-blue, #d9e2ea) !important;
     border-radius: 10px !important;
     color: var(--ink-neutral, #475569) !important;
     font-size: .84rem;
@@ -998,9 +998,9 @@ window.lookupSplitClientByDocument = async function() {
 
 .split-page .form-control {
     min-height: 42px;
-    border: 1px solid #d9e2ea;
+    border: 1px solid var(--surface-blue, #d9e2ea);
     border-radius: 10px;
-    color: #17212b;
+    color: var(--text-main, #17212b);
 }
 
 .split-page .form-control:focus {
@@ -1022,27 +1022,27 @@ window.lookupSplitClientByDocument = async function() {
 }
 
 .split-payment-cash {
-    background: #f1faf5 !important;
+    background: var(--surface-neutral, #f1faf5) !important;
     border-color: #a9d9c1 !important;
-    color: #168a5b !important;
+    color: var(--ink-green, #168a5b) !important;
 }
 
 .split-payment-card {
-    background: #f2f7ff !important;
+    background: var(--surface-blue, #f2f7ff) !important;
     border-color: #b9d2fa !important;
-    color: #2563a9 !important;
+    color: var(--ink-blue, #2563a9) !important;
 }
 
 .split-payment-yape {
     background: var(--surface-purple, #faf5ff) !important;
     border-color: #d9c0ec !important;
-    color: #742284 !important;
+    color: var(--ink-purple, #742284) !important;
 }
 
 .split-payment-plin {
-    background: #f0fbf9 !important;
-    border-color: #afe0d7 !important;
-    color: #087f70 !important;
+    background: var(--surface-neutral, #f0fbf9) !important;
+    border-color: var(--surface-teal, #afe0d7) !important;
+    color: var(--ink-teal, #087f70) !important;
 }
 
 #splitCash:checked + .split-payment-cash {
@@ -1072,7 +1072,7 @@ window.lookupSplitClientByDocument = async function() {
 /* EFECTIVO */
 .split-cash-group {
     background: var(--card-bg, #fff);
-    border: 1px solid #cfe7da;
+    border: 1px solid var(--surface-green, #cfe7da);
     border-radius: 12px;
     padding: 1rem;
 }
@@ -1081,7 +1081,7 @@ window.lookupSplitClientByDocument = async function() {
     background: var(--card-bg, #fff) !important;
     border-color: #a9d9c1 !important;
     font-size: 1.05rem !important;
-    color: #17212b !important;
+    color: var(--text-main, #17212b) !important;
 }
 
 #splitReceivedAmount:focus {
@@ -1097,14 +1097,14 @@ window.lookupSplitClientByDocument = async function() {
 .split-card-amount {
     padding: .9rem 1rem;
     background: var(--card-bg, #fff);
-    border: 1px solid #c9daf2;
+    border: 1px solid var(--surface-blue, #c9daf2);
     border-radius: 12px;
     align-items: center;
     justify-content: space-between;
 }
 
 #splitCardAmountValue {
-    color: #2563a9;
+    color: var(--ink-blue, #2563a9);
     font-size: 1.15rem;
     font-weight: 800;
 }
@@ -1122,7 +1122,7 @@ window.lookupSplitClientByDocument = async function() {
 }
 
 .split-plin-box {
-    border: 1px solid #afe0d7;
+    border: 1px solid var(--surface-teal, #afe0d7);
 }
 
 .split-qr-title {
@@ -1131,11 +1131,11 @@ window.lookupSplitClientByDocument = async function() {
 }
 
 .split-yape-box .split-qr-title {
-    color: #742284;
+    color: var(--ink-purple, #742284);
 }
 
 .split-plin-box .split-qr-title {
-    color: #087f70;
+    color: var(--ink-teal, #087f70);
 }
 
 .split-qr-image {
@@ -1171,11 +1171,11 @@ window.lookupSplitClientByDocument = async function() {
 }
 
 #splitYapeAmount {
-    color: #742284;
+    color: var(--ink-purple, #742284);
 }
 
 #splitPlinAmount {
-    color: #087f70;
+    color: var(--ink-teal, #087f70);
 }
 
 /* BOTÓN PRINCIPAL */
@@ -1195,8 +1195,8 @@ window.lookupSplitClientByDocument = async function() {
 }
 
 #btnSplit:disabled {
-    background: #cbd5e1 !important;
-    border-color: #cbd5e1 !important;
+    background: var(--surface-blue, #cbd5e1) !important;
+    border-color: var(--surface-blue, #cbd5e1) !important;
     color: #fff !important;
     box-shadow: none;
 }
@@ -1208,7 +1208,7 @@ window.lookupSplitClientByDocument = async function() {
     align-items: center;
     gap: .35rem;
     border-radius: 10px;
-    border-color: #d7e0e8;
+    border-color: var(--surface-blue, #d7e0e8);
     color: var(--ink-neutral, #475569);
     font-weight: 700;
 }
@@ -1240,7 +1240,7 @@ window.lookupSplitClientByDocument = async function() {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #edf8f2;
+    background: var(--surface-neutral, #edf8f2);
     color: var(--split-green);
     font-size: 1.65rem;
 }
@@ -1390,7 +1390,7 @@ html[data-color-mode="dark"] .split-back-btn:hover {
 
 /* Subtítulo - modo claro */
 .split-page-subtitle {
-    color: #4b5563 !important;
+    color: var(--text-main, #4b5563) !important;
 }
 
 /* Elementos principales respetan la paleta configurada */
@@ -1456,7 +1456,7 @@ html[data-color-mode="dark"] .split-page-subtitle {
 
 .split-doc-btn {
     background: var(--card-bg, #ffffff) !important;
-    border: 1.5px solid #d6dee8 !important;
+    border: 1.5px solid var(--surface-blue, #d6dee8) !important;
     color: var(--text-main, #334155) !important;
     box-shadow: none !important;
     font-weight: 700;
@@ -1465,14 +1465,14 @@ html[data-color-mode="dark"] .split-page-subtitle {
 .split-doc-btn:hover {
     border-color: var(--primary) !important;
     color: var(--primary) !important;
-    background: color-mix(in srgb, var(--primary) 4%, #ffffff) !important;
+    background: color-mix(in srgb, var(--primary) 4%, var(--card-bg, #ffffff)) !important;
 }
 
 /* Comprobante seleccionado = paleta configurada */
 #splitTicket:checked + .split-doc-ticket,
 #splitBoleta:checked + .split-doc-boleta,
 #splitFactura:checked + .split-doc-factura {
-    background: color-mix(in srgb, var(--primary) 12%, #ffffff) !important;
+    background: color-mix(in srgb, var(--primary) 12%, var(--card-bg, #ffffff)) !important;
     border: 1.5px solid var(--primary) !important;
     color: var(--primary) !important;
     box-shadow: 0 3px 10px color-mix(in srgb, var(--primary) 10%, transparent) !important;
@@ -1484,56 +1484,56 @@ html[data-color-mode="dark"] .split-page-subtitle {
 /* Estado normal */
 .split-payment-cash {
     background: var(--card-bg, #ffffff) !important;
-    border-color: #b9ddcb !important;
-    color: #168a5b !important;
+    border-color: var(--surface-green, #b9ddcb) !important;
+    color: var(--ink-green, #168a5b) !important;
 }
 
 .split-payment-card {
     background: var(--card-bg, #ffffff) !important;
     border-color: #bfd4f4 !important;
-    color: #2563a9 !important;
+    color: var(--ink-blue, #2563a9) !important;
 }
 
 .split-payment-yape {
     background: var(--card-bg, #ffffff) !important;
     border-color: #dcc8e8 !important;
-    color: #742284 !important;
+    color: var(--ink-purple, #742284) !important;
 }
 
 .split-payment-plin {
     background: var(--card-bg, #ffffff) !important;
-    border-color: #b8dfd9 !important;
-    color: #087f70 !important;
+    border-color: var(--surface-teal, #b8dfd9) !important;
+    color: var(--ink-teal, #087f70) !important;
 }
 
 
 /* Seleccionados: color suave, NO fondo sólido */
 
 #splitCash:checked + .split-payment-cash {
-    background: #edf8f2 !important;
+    background: var(--surface-neutral, #edf8f2) !important;
     border: 1.5px solid #55ad80 !important;
-    color: #13734c !important;
+    color: var(--ink-green, #13734c) !important;
     box-shadow: 0 3px 9px rgba(22, 138, 91, .08) !important;
 }
 
 #splitCard:checked + .split-payment-card {
-    background: #f0f5fc !important;
+    background: var(--surface-blue, #f0f5fc) !important;
     border: 1.5px solid #78a5dc !important;
-    color: #245f9f !important;
+    color: var(--ink-blue, #245f9f) !important;
     box-shadow: 0 3px 9px rgba(37, 99, 169, .07) !important;
 }
 
 #splitYape:checked + .split-payment-yape {
-    background: #f8f1fa !important;
+    background: var(--surface-neutral, #f8f1fa) !important;
     border: 1.5px solid #b486c0 !important;
-    color: #6d2679 !important;
+    color: var(--ink-purple, #6d2679) !important;
     box-shadow: 0 3px 9px rgba(116, 34, 132, .07) !important;
 }
 
 #splitPlin:checked + .split-payment-plin {
-    background: #edf8f6 !important;
+    background: var(--surface-neutral, #edf8f6) !important;
     border: 1.5px solid #69b7aa !important;
-    color: #087568 !important;
+    color: var(--ink-teal, #087568) !important;
     box-shadow: 0 3px 9px rgba(8, 127, 112, .07) !important;
 }
 
@@ -1542,13 +1542,13 @@ html[data-color-mode="dark"] .split-page-subtitle {
 
 .split-back-btn {
     background: var(--card-bg, #ffffff) !important;
-    border: 1.5px solid #cbd5e1 !important;
+    border: 1.5px solid var(--surface-blue, #cbd5e1) !important;
     color: var(--text-main, #334155) !important;
     box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
 }
 
 .split-back-btn:hover {
-    background: color-mix(in srgb, var(--primary) 5%, #ffffff) !important;
+    background: color-mix(in srgb, var(--primary) 5%, var(--card-bg, #ffffff)) !important;
     border-color: var(--primary) !important;
     color: var(--primary) !important;
 }
@@ -1656,7 +1656,7 @@ html[data-color-mode="dark"] .split-back-btn:hover {
 #splitTicket:checked + .split-doc-ticket,
 #splitBoleta:checked + .split-doc-boleta,
 #splitFactura:checked + .split-doc-factura {
-    background: color-mix(in srgb, var(--primary) 8%, #ffffff) !important;
+    background: color-mix(in srgb, var(--primary) 8%, var(--card-bg, #ffffff)) !important;
     border: 1.5px solid var(--primary) !important;
     color: var(--primary) !important;
     box-shadow: none !important;
@@ -1664,30 +1664,30 @@ html[data-color-mode="dark"] .split-back-btn:hover {
 
 /* Métodos seleccionados - selección más sutil */
 #splitCash:checked + .split-payment-cash {
-    background: #f5faf7 !important;
+    background: var(--surface-neutral, #f5faf7) !important;
     border-color: #8fc5a9 !important;
-    color: #16734d !important;
+    color: var(--ink-green, #16734d) !important;
     box-shadow: none !important;
 }
 
 #splitCard:checked + .split-payment-card {
-    background: #f6f9fd !important;
+    background: var(--surface-neutral, #f6f9fd) !important;
     border-color: #9dbce0 !important;
-    color: #285f9b !important;
+    color: var(--ink-blue, #285f9b) !important;
     box-shadow: none !important;
 }
 
 #splitYape:checked + .split-payment-yape {
-    background: #fbf7fc !important;
+    background: var(--surface-neutral, #fbf7fc) !important;
     border-color: #c7a7ce !important;
-    color: #762985 !important;
+    color: var(--ink-purple, #762985) !important;
     box-shadow: none !important;
 }
 
 #splitPlin:checked + .split-payment-plin {
-    background: #f5fbfa !important;
+    background: var(--surface-neutral, #f5fbfa) !important;
     border-color: #8fcac1 !important;
-    color: #08786b !important;
+    color: var(--ink-teal, #08786b) !important;
     box-shadow: none !important;
 }
 
@@ -1973,55 +1973,55 @@ html[data-color-mode="dark"]
 .split-payment-cash {
     background: var(--card-bg, #ffffff) !important;
     border: 1.5px solid #65b88d !important;
-    color: #14764d !important;
+    color: var(--ink-green, #14764d) !important;
 }
 
 .split-payment-card {
     background: var(--card-bg, #ffffff) !important;
     border: 1.5px solid #7da9da !important;
-    color: #245f9f !important;
+    color: var(--ink-blue, #245f9f) !important;
 }
 
 .split-payment-yape {
     background: var(--card-bg, #ffffff) !important;
     border: 1.5px solid #b77bc2 !important;
-    color: #762985 !important;
+    color: var(--ink-purple, #762985) !important;
 }
 
 .split-payment-plin {
     background: var(--card-bg, #ffffff) !important;
     border: 1.5px solid #64b8ac !important;
-    color: #08786b !important;
+    color: var(--ink-teal, #08786b) !important;
 }
 
 
 /* ---------- MODO CLARO: SELECCIONADOS ---------- */
 
 #splitCash:checked + .split-payment-cash {
-    background: #dff3e8 !important;
+    background: var(--surface-green, #dff3e8) !important;
     border: 2px solid #168a5b !important;
-    color: #0f6843 !important;
+    color: var(--ink-green, #0f6843) !important;
     box-shadow: 0 0 0 2px rgba(22,138,91,.08) !important;
 }
 
 #splitCard:checked + .split-payment-card {
-    background: #e1edfa !important;
+    background: var(--surface-blue, #e1edfa) !important;
     border: 2px solid #3979bb !important;
-    color: #205b98 !important;
+    color: var(--ink-blue, #205b98) !important;
     box-shadow: 0 0 0 2px rgba(57,121,187,.08) !important;
 }
 
 #splitYape:checked + .split-payment-yape {
-    background: #f0dff4 !important;
+    background: var(--surface-purple, #f0dff4) !important;
     border: 2px solid #8c3b9b !important;
-    color: #6d247a !important;
+    color: var(--ink-purple, #6d247a) !important;
     box-shadow: 0 0 0 2px rgba(140,59,155,.08) !important;
 }
 
 #splitPlin:checked + .split-payment-plin {
-    background: #dcf2ef !important;
+    background: var(--surface-teal, #dcf2ef) !important;
     border: 2px solid #168f80 !important;
-    color: #087367 !important;
+    color: var(--ink-teal, #087367) !important;
     box-shadow: 0 0 0 2px rgba(22,143,128,.08) !important;
 }
 
@@ -2113,7 +2113,7 @@ html[data-color-mode="dark"] .split-plin-box .split-qr-title {
 /* QR: mantener fondo blanco para lectura */
 html[data-color-mode="dark"] .split-qr-image {
     background: var(--card-bg, #ffffff) !important;
-    border: 5px solid #ffffff !important;
+    border: 5px solid var(--surface-neutral, #ffffff) !important;
     border-radius: 10px !important;
 }
 
@@ -2251,60 +2251,60 @@ html[data-color-mode="dark"] .split-page .split-table-header i {
 
 /* EFECTIVO */
 .split-payment-cash {
-    background: #eef9f3 !important;
+    background: var(--surface-neutral, #eef9f3) !important;
     border: 1.5px solid #72c49a !important;
-    color: #087a4b !important;
+    color: var(--ink-green, #087a4b) !important;
 }
 
 #splitCash:checked + .split-payment-cash {
-    background: #ccebdc !important;
+    background: var(--surface-green, #ccebdc) !important;
     border: 2px solid #07965c !important;
-    color: #05683f !important;
+    color: var(--ink-green, #05683f) !important;
     box-shadow: 0 3px 9px rgba(7,150,92,.14) !important;
 }
 
 
 /* TARJETA */
 .split-payment-card {
-    background: #f0f6fd !important;
+    background: var(--surface-blue, #f0f6fd) !important;
     border: 1.5px solid #7eafe2 !important;
-    color: #1763ad !important;
+    color: var(--ink-blue, #1763ad) !important;
 }
 
 #splitCard:checked + .split-payment-card {
-    background: #d5e7f9 !important;
+    background: var(--surface-blue, #d5e7f9) !important;
     border: 2px solid #347fc6 !important;
-    color: #165b9b !important;
+    color: var(--ink-blue, #165b9b) !important;
     box-shadow: 0 3px 9px rgba(52,127,198,.14) !important;
 }
 
 
 /* YAPE */
 .split-payment-yape {
-    background: #faf2fc !important;
+    background: var(--surface-neutral, #faf2fc) !important;
     border: 1.5px solid #c989d3 !important;
-    color: #812b91 !important;
+    color: var(--ink-purple, #812b91) !important;
 }
 
 #splitYape:checked + .split-payment-yape {
-    background: #edd5f2 !important;
+    background: var(--surface-purple, #edd5f2) !important;
     border: 2px solid #9b47aa !important;
-    color: #70247d !important;
+    color: var(--ink-purple, #70247d) !important;
     box-shadow: 0 3px 9px rgba(155,71,170,.14) !important;
 }
 
 
 /* PLIN */
 .split-payment-plin {
-    background: #eefaf8 !important;
+    background: var(--surface-teal, #eefaf8) !important;
     border: 1.5px solid #68c0b4 !important;
-    color: #087c6d !important;
+    color: var(--ink-teal, #087c6d) !important;
 }
 
 #splitPlin:checked + .split-payment-plin {
-    background: #d0eee9 !important;
+    background: var(--surface-teal, #d0eee9) !important;
     border: 2px solid #159687 !important;
-    color: #076d62 !important;
+    color: var(--ink-teal, #076d62) !important;
     box-shadow: 0 3px 9px rgba(21,150,135,.14) !important;
 }
 
@@ -2462,7 +2462,7 @@ html:not([data-color-mode="dark"]) #splitCashGroup {
 }
 
 html:not([data-color-mode="dark"]) #splitReceivedAmount {
-    background: #eef9f3 !important;
+    background: var(--surface-neutral, #eef9f3) !important;
     border: 1.5px solid #198754 !important;
 }
 
@@ -2479,7 +2479,7 @@ html:not([data-color-mode="dark"]) #splitYapeQr {
 }
 
 html:not([data-color-mode="dark"]) #splitYapeQr .split-qr-amount {
-    background: #faf2fc !important;
+    background: var(--surface-neutral, #faf2fc) !important;
     border: 1.5px solid #9b47aa !important;
 }
 
@@ -2490,7 +2490,7 @@ html:not([data-color-mode="dark"]) #splitPlinQr {
 }
 
 html:not([data-color-mode="dark"]) #splitPlinQr .split-qr-amount {
-    background: #eefaf8 !important;
+    background: var(--surface-teal, #eefaf8) !important;
     border: 1.5px solid #159687 !important;
 }
 
@@ -2542,33 +2542,33 @@ html[data-color-mode="dark"] #splitPlinQr .split-qr-amount {
 html:not([data-color-mode="dark"]) #splitCashGroup .form-label,
 html:not([data-color-mode="dark"]) #splitReceivedAmount,
 html:not([data-color-mode="dark"]) #splitChangeAmount {
-    color: #087a4b !important;
+    color: var(--ink-green, #087a4b) !important;
 }
 
 /* TARJETA */
 html:not([data-color-mode="dark"]) #splitCardAmount span,
 html:not([data-color-mode="dark"]) #splitCardAmount strong,
 html:not([data-color-mode="dark"]) #splitCardAmountValue {
-    color: #1763ad !important;
+    color: var(--ink-blue, #1763ad) !important;
 }
 
 /* YAPE */
 html:not([data-color-mode="dark"]) #splitYapeQr .split-qr-amount span,
 html:not([data-color-mode="dark"]) #splitYapeQr .split-qr-amount strong,
 html:not([data-color-mode="dark"]) #splitYapeAmount {
-    color: #812b91 !important;
+    color: var(--ink-purple, #812b91) !important;
 }
 
 /* PLIN */
 html:not([data-color-mode="dark"]) #splitPlinQr .split-qr-amount span,
 html:not([data-color-mode="dark"]) #splitPlinQr .split-qr-amount strong,
 html:not([data-color-mode="dark"]) #splitPlinAmount {
-    color: #087c6d !important;
+    color: var(--ink-teal, #087c6d) !important;
 }
 
 /* DIVIDIR CUENTA - CAMBIO EFECTIVO MODO CLARO */
 html:not([data-color-mode="dark"]) #splitCashGroup .small {
-    color: #087a4b !important;
+    color: var(--ink-green, #087a4b) !important;
 }
 
 /* DIVIDIR CUENTA - METODO DE PAGO MODO CLARO */
@@ -2577,25 +2577,25 @@ html:not([data-color-mode="dark"]) #splitCashGroup .small {
 html:not([data-color-mode="dark"]) .split-payment-cash {
     background: transparent !important;
     border: 1.5px solid #72c49a !important;
-    color: #087a4b !important;
+    color: var(--ink-green, #087a4b) !important;
 }
 
 html:not([data-color-mode="dark"]) .split-payment-card {
     background: transparent !important;
     border: 1.5px solid #7eafe2 !important;
-    color: #1763ad !important;
+    color: var(--ink-blue, #1763ad) !important;
 }
 
 html:not([data-color-mode="dark"]) .split-payment-yape {
     background: transparent !important;
     border: 1.5px solid #c989d3 !important;
-    color: #812b91 !important;
+    color: var(--ink-purple, #812b91) !important;
 }
 
 html:not([data-color-mode="dark"]) .split-payment-plin {
     background: transparent !important;
     border: 1.5px solid #68c0b4 !important;
-    color: #087c6d !important;
+    color: var(--ink-teal, #087c6d) !important;
 }
 </style>
 

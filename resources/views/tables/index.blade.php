@@ -158,7 +158,7 @@
             color-mix(
                 in srgb,
                 var(--tables-primary) 12%,
-                #ffffff
+                var(--card-bg, #ffffff)
             ) !important;
 
         background-image:

@@ -189,7 +189,7 @@
     .user-avatar.waiter {
         background: var(--surface-green, #f0fdf4);
         color: var(--ink-green, #16a34a);
-        border: 1px solid #bbf7d0;
+        border: 1px solid var(--surface-green, #bbf7d0);
     }
 
     .user-name {
@@ -238,7 +238,7 @@
     }
 
     .user-role.waiter {
-        border: 1px solid #bbf7d0;
+        border: 1px solid var(--surface-green, #bbf7d0);
         background: var(--surface-green, #f0fdf4);
         color: var(--ink-green, #15803d);
     }
@@ -1336,7 +1336,7 @@
 /* Mozo */
 .user-avatar.waiter {
     background: var(--surface-green, #f0fdf4) !important;
-    border: 1px solid #bbf7d0 !important;
+    border: 1px solid var(--surface-green, #bbf7d0) !important;
     color: var(--ink-green, #15803d) !important;
 }
 
@@ -1621,7 +1621,7 @@ html[data-color-mode="dark"] .user-role.bar {
 .user-avatar.kitchen {
     color: #ea580c !important;
     background: var(--surface-amber, #fff7ed) !important;
-    border: 1px solid #fed7aa !important;
+    border: 1px solid var(--surface-amber, #fed7aa) !important;
 }
 
 /* Avatar Barra */

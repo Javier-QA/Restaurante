@@ -251,7 +251,7 @@
 }
 
 .delivery-driver-delete {
-    color: #dc3545 !important;
+    color: var(--ink-red, #dc3545) !important;
     border: 1px solid rgba(220, 53, 69, .30) !important;
 }
 
@@ -411,7 +411,7 @@ html[data-color-mode="dark"] .delivery-driver-modal-header {
 
 html[data-color-mode="dark"] .delivery-driver-modal .form-control {
     color: #fff;
-    background: color-mix(in srgb, var(--card-bg) 94%, white 6%);
+    background: color-mix(in srgb, var(--card-bg) 94%, var(--card-bg, white) 6%);
 }
 
 html[data-color-mode="dark"] .delivery-modal-cancel {

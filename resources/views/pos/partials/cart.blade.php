@@ -252,7 +252,7 @@
             color-mix(
                 in srgb,
                 var(--pos-primary, #ff8c00) 12%,
-                #ffffff
+                var(--card-bg, #ffffff)
             ) !important;
     }
 
@@ -284,7 +284,7 @@
             color-mix(
                 in srgb,
                 var(--pos-primary, #ff8c00) 4%,
-                #ffffff
+                var(--card-bg, #ffffff)
             ) !important;
 
         border-color: var(--pos-border, #dce7f1) !important;
@@ -351,7 +351,7 @@ html:not([data-color-mode="dark"]) .pos-cart-body tbody tr:hover > td {
     background: color-mix(
         in srgb,
         var(--pos-primary, var(--primary)) 12%,
-        #ffffff
+        var(--card-bg, #ffffff)
     ) !important;
 }
 

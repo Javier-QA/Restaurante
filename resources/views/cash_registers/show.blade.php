@@ -150,7 +150,7 @@
 
     .difference-exact {
         background: var(--surface-green, #f0fdf4);
-        border: 1px solid #86efac;
+        border: 1px solid var(--surface-green, #86efac);
         color: var(--ink-green, #15803d);
     }
 

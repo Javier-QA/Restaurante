@@ -8,8 +8,8 @@
     ========================================================= */
 
     .theme-section {
-        background: linear-gradient(135deg, #f8fbff 0%, var(--card-bg, #ffffff) 100%);
-        border: 1px solid #e4edf5;
+        background: linear-gradient(135deg, var(--surface-neutral, #f8fbff) 0%, var(--card-bg, #ffffff) 100%);
+        border: 1px solid var(--surface-blue, #e4edf5);
         border-radius: 20px;
         padding: 22px;
     }
@@ -31,8 +31,8 @@
         height: 100%;
         min-height: 168px;
         padding: 17px;
-        background: white;
-        border: 2px solid #e7edf3;
+        background: var(--card-bg, white);
+        border: 2px solid var(--surface-blue, #e7edf3);
         border-radius: 17px;
         position: relative;
         overflow: hidden;
@@ -65,7 +65,7 @@
     .theme-name {
         font-size: .92rem;
         font-weight: 800;
-        color: #1e293b;
+        color: var(--text-main, #1e293b);
         margin-bottom: 3px;
     }
 
@@ -80,7 +80,7 @@
         height: 27px;
         flex-shrink: 0;
         border-radius: 50%;
-        background: #e9eef3;
+        background: var(--surface-neutral, #e9eef3);
         color: white;
         display: flex;
         align-items: center;
@@ -150,7 +150,7 @@
     .theme-preview-mini {
         flex: 1;
         height: 32px;
-        background: white;
+        background: var(--card-bg, white);
         border-radius: 6px;
         box-shadow: 0 2px 5px rgba(0,0,0,.05);
         border-top: 4px solid transparent;
@@ -197,7 +197,7 @@
 
     .theme-live-preview-header {
         padding: 12px 16px;
-        background: white;
+        background: var(--card-bg, white);
         border-bottom: 1px solid var(--surface-neutral, #e2e8f0);
         display: flex;
         align-items: center;
@@ -244,7 +244,7 @@
 
     .theme-live-navbar {
         height: 25px;
-        background: white;
+        background: var(--card-bg, white);
         border-radius: 8px;
         margin-bottom: 12px;
         box-shadow: 0 2px 7px rgba(0,0,0,.05);
@@ -258,7 +258,7 @@
 
     .theme-live-stat {
         height: 54px;
-        background: white;
+        background: var(--card-bg, white);
         border-radius: 10px;
         border-top: 5px solid;
         box-shadow: 0 2px 7px rgba(0,0,0,.05);
@@ -712,7 +712,7 @@ button[type="submit"].btn-primary:hover {
                         ================================================== --}}
 
 <style>
-#settingsTicketPreview.settings-precuenta{width:100%;max-width:78mm;margin:auto;padding:18px 14px;background:var(--card-bg, #fff)!important;color:#000!important;font:12px/1.35 'Courier New',Courier,monospace;border:1px solid #dce3ea;border-radius:10px;box-sizing:border-box}
+#settingsTicketPreview.settings-precuenta{width:100%;max-width:78mm;margin:auto;padding:18px 14px;background:var(--card-bg, #fff)!important;color:#000!important;font:12px/1.35 'Courier New',Courier,monospace;border:1px solid var(--surface-blue, #dce3ea);border-radius:10px;box-sizing:border-box}
 #settingsTicketPreview .sp-header{text-align:center;border-bottom:1px dashed #000;padding-bottom:10px;margin-bottom:10px}
 #settingsTicketPreview img{max-width:60px;max-height:70px;object-fit:contain;filter:grayscale(100%);margin-bottom:5px}
 #settingsTicketPreview .sp-name{font-size:14px;font-weight:bold;text-transform:uppercase}

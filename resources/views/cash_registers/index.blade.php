@@ -35,7 +35,7 @@
             180deg,
             var(--primary) 0%,
             color-mix(in srgb, var(--primary) 45%, var(--card-bg, white)) 55%,
-            #ffffff 100%
+            var(--card-bg, #ffffff) 100%
         );
         border-radius: 16px 0 0 16px;
     }

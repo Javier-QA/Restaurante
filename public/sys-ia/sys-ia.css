@@ -18,7 +18,7 @@
 :is(.sys-ia,.chat-root,#toastWrap) .ia-chip{border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:#fff;border-radius:999px;padding:5px 12px;font-size:.78rem;cursor:pointer;transition:.15s}
 :is(.sys-ia,.chat-root,#toastWrap) .ia-chip:hover{background:rgba(255,255,255,.25)}
 :is(.sys-ia,.chat-root,#toastWrap) .ia-res h5{font-weight:800;margin:0;font-size:1.05rem}:is(.sys-ia,.chat-root,#toastWrap) .ia-meta{color:var(--muted);font-size:.78rem}
-:is(.sys-ia,.chat-root,#toastWrap) .ia-sum{background:linear-gradient(135deg,#fff7ed,#ffedd5);border:1px solid #fed7aa;border-radius:12px;padding:10px 14px;font-size:.88rem;color:#7c2d12;display:flex;gap:10px;align-items:flex-start;margin:12px 0}
+:is(.sys-ia,.chat-root,#toastWrap) .ia-sum{background:linear-gradient(135deg,var(--surface-amber, #fff7ed),var(--surface-amber, #ffedd5));border:1px solid var(--surface-amber, #fed7aa);border-radius:12px;padding:10px 14px;font-size:.88rem;color:var(--ink-amber, #7c2d12);display:flex;gap:10px;align-items:flex-start;margin:12px 0}
 :is(.sys-ia,.chat-root,#toastWrap) .ia-chart{position:relative;height:300px;margin:8px 0 14px}
 :is(.sys-ia,.chat-root,#toastWrap) .ia-sql{background:#0f172a;color:#e2e8f0;border-radius:12px;padding:12px 14px;font-size:.78rem;white-space:pre-wrap;word-break:break-word;margin:10px 0 0}
 :is(.sys-ia,.chat-root,#toastWrap) .ia-tbl{max-height:420px;overflow:auto;border:1px solid var(--line);border-radius:12px}
@@ -80,7 +80,7 @@
 :is(.sys-ia,.chat-root,#toastWrap) .tbl tr:last-child td{border-bottom:0}
 :is(.sys-ia,.chat-root,#toastWrap) .mini-btn{border:0;background:var(--bg);border-radius:9px;width:30px;height:30px;color:var(--muted)}
 :is(.sys-ia,.chat-root,#toastWrap) .mini-btn:hover{color:var(--accent-dark);background:var(--accent-soft)}
-:is(.sys-ia,.chat-root,#toastWrap) .mini-btn.del:hover{color:#dc2626;background:#fee2e2}
+:is(.sys-ia,.chat-root,#toastWrap) .mini-btn.del:hover{color:var(--ink-red, #dc2626);background:var(--surface-red, #fee2e2)}
 .toast-wrap{position:fixed;right:1.2rem;bottom:1.2rem;z-index:2000;display:grid;gap:.5rem}
 :is(.sys-ia,.chat-root,#toastWrap) .toast-x{background:var(--ink);color:#fff;border-radius:12px;padding:.75rem 1.1rem;box-shadow:0 12px 30px -10px rgba(0,0,0,.5);display:flex;gap:.6rem;align-items:center;animation:tin .25s ease}
 :is(.sys-ia,.chat-root,#toastWrap) .toast-x.ok i{color:#34d399}:is(.sys-ia,.chat-root,#toastWrap) .toast-x.err{background:#7f1d1d}:is(.sys-ia,.chat-root,#toastWrap) .toast-x.err i{color:#fecaca}

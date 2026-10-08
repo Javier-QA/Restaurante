@@ -95,7 +95,7 @@
     }
 
     .cash-kpi.cash::before {
-        background: linear-gradient(180deg, #16a34a, #86efac, var(--card-bg, #fff));
+        background: linear-gradient(180deg, #16a34a, var(--surface-green, #86efac), var(--card-bg, #fff));
     }
 
     .cash-kpi.digital::before {

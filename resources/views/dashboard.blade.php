@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function () {
         background: linear-gradient(
             180deg,
             var(--dash-primary),
-            white
+            var(--card-bg, white)
         );
     }
 
@@ -940,7 +940,7 @@ document.addEventListener('DOMContentLoaded', function () {
         180deg,
         var(--dash-primary) 0%,
         color-mix(in srgb, var(--dash-primary) 25%, var(--card-bg, white)) 65%,
-        white 100%
+        var(--card-bg, white) 100%
     );
 }
 
@@ -949,7 +949,7 @@ document.addEventListener('DOMContentLoaded', function () {
         180deg,
         var(--dash-accent-1) 0%,
         color-mix(in srgb, var(--dash-accent-1) 25%, var(--card-bg, white)) 65%,
-        white 100%
+        var(--card-bg, white) 100%
     );
 }
 
@@ -958,7 +958,7 @@ document.addEventListener('DOMContentLoaded', function () {
         180deg,
         var(--dash-accent-2) 0%,
         color-mix(in srgb, var(--dash-accent-2) 25%, var(--card-bg, white)) 65%,
-        white 100%
+        var(--card-bg, white) 100%
     );
 }
 
@@ -968,7 +968,7 @@ document.addEventListener('DOMContentLoaded', function () {
         180deg,
         #ef4444 0%,
         #fca5a5 60%,
-        white 100%
+        var(--card-bg, white) 100%
     );
 }
 
@@ -977,7 +977,7 @@ document.addEventListener('DOMContentLoaded', function () {
         180deg,
         var(--dash-accent-4) 0%,
         color-mix(in srgb, var(--dash-accent-4) 25%, var(--card-bg, white)) 65%,
-        white 100%
+        var(--card-bg, white) 100%
     );
 }
 
@@ -1208,7 +1208,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .goal-fill-start {
     background: linear-gradient(
         90deg,
-        #ffffff 0%,
+        var(--card-bg, #ffffff) 0%,
         color-mix(in srgb, var(--dash-accent-4) 18%, var(--card-bg, white)) 22%,
         var(--dash-accent-4) 100%
     );
@@ -1217,7 +1217,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .goal-fill-low {
     background: linear-gradient(
         90deg,
-        #ffffff 0%,
+        var(--card-bg, #ffffff) 0%,
         color-mix(in srgb, var(--dash-accent-1) 18%, var(--card-bg, white)) 22%,
         var(--dash-accent-1) 100%
     );
@@ -1226,7 +1226,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .goal-fill-medium {
     background: linear-gradient(
         90deg,
-        #ffffff 0%,
+        var(--card-bg, #ffffff) 0%,
         color-mix(in srgb, var(--dash-accent-2) 18%, var(--card-bg, white)) 22%,
         var(--dash-accent-2) 100%
     );
@@ -1235,7 +1235,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .goal-fill-high {
     background: linear-gradient(
         90deg,
-        #ffffff 0%,
+        var(--card-bg, #ffffff) 0%,
         color-mix(in srgb, var(--dash-primary) 18%, var(--card-bg, white)) 22%,
         var(--dash-primary) 100%
     );
@@ -1244,7 +1244,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .goal-fill-complete {
     background: linear-gradient(
         90deg,
-        #ffffff 0%,
+        var(--card-bg, #ffffff) 0%,
         color-mix(in srgb, var(--dash-primary) 22%, var(--card-bg, white)) 20%,
         var(--dash-primary) 100%
     );
@@ -1611,7 +1611,7 @@ document.addEventListener('DOMContentLoaded', function () {
         background: linear-gradient(
             180deg,
             var(--dash-primary),
-            white
+            var(--card-bg, white)
         );
     }
 
@@ -3048,10 +3048,10 @@ html[data-color-mode="dark"] .kpi-sub strong {
 html[data-color-mode="dark"] .kpi-badge {
 
     background:
-        #eaf4fc !important;
+        var(--surface-blue, #eaf4fc) !important;
 
     color:
-        #183b5c !important;
+        var(--ink-blue, #183b5c) !important;
 
     border-color:
         rgba(255,255,255,.10) !important;
@@ -3130,7 +3130,7 @@ html[data-color-mode="dark"] .goal-bar-scale {
 html[data-color-mode="dark"] .goal-bar-track {
 
     background:
-        #d9e7f2 !important;
+        var(--surface-blue, #d9e7f2) !important;
 
     box-shadow:
         inset 0 1px 2px
@@ -3800,7 +3800,7 @@ html[data-color-mode="dark"] .goal-icon-wrap i {
 
 
 .rooms-legend-item.is-busy {
-    color: #e11d48;
+    color: var(--ink-red, #e11d48);
 }
 
 
@@ -4077,13 +4077,13 @@ html[data-color-mode="dark"] .goal-icon-wrap i {
 .is-available
 .dashboard-table-icon {
     color: var(--ink-green, #16a34a);
-    background: #ecfdf3;
+    background: var(--surface-green, #ecfdf3);
 }
 
 
 .is-busy
 .dashboard-table-icon {
-    color: #e11d48;
+    color: var(--ink-red, #e11d48);
     background: var(--surface-red, #fff1f2);
 }
 
@@ -4102,7 +4102,7 @@ html[data-color-mode="dark"] .goal-icon-wrap i {
 
 .is-busy
 .dashboard-table-status {
-    color: #e11d48;
+    color: var(--ink-red, #e11d48);
 }
 
 
@@ -4157,7 +4157,7 @@ html[data-color-mode="dark"] .goal-icon-wrap i {
 
 .is-busy
 .dashboard-table-detail strong {
-    color: #e11d48;
+    color: var(--ink-red, #e11d48);
 }
 
 
@@ -4795,7 +4795,7 @@ html[data-color-mode="dark"] .goal-bar-fill {
    ========================= */
 
 .kpi-panel.kpi-sales .kpi-badge {
-    background: #fff1df !important;
+    background: var(--surface-amber, #fff1df) !important;
     color: #ff8c00 !important;
     border-color: #ffb45c !important;
 }
@@ -4805,7 +4805,7 @@ html[data-color-mode="dark"] .goal-bar-fill {
    ========================= */
 
 .kpi-panel.kpi-tables .kpi-badge {
-    background: #e8f3ff !important;
+    background: var(--surface-blue, #e8f3ff) !important;
     color: #1683c7 !important;
     border-color: #75bde8 !important;
 }
@@ -4815,7 +4815,7 @@ html[data-color-mode="dark"] .goal-bar-fill {
    ========================= */
 
 .kpi-panel.kpi-month .kpi-badge {
-    background: #e8f8ee !important;
+    background: var(--surface-green, #e8f8ee) !important;
     color: #16a05d !important;
     border-color: #70cf94 !important;
 }
@@ -4825,7 +4825,7 @@ html[data-color-mode="dark"] .goal-bar-fill {
    ========================= */
 
 .kpi-panel.kpi-stock .kpi-badge {
-    background: #fff1df !important;
+    background: var(--surface-amber, #fff1df) !important;
     color: #ff8c00 !important;
     border-color: #ffb45c !important;
 }
@@ -4865,25 +4865,25 @@ html[data-color-mode="dark"] .kpi-panel.kpi-stock .kpi-badge {
    ========================================================= */
 
 .kpi-panel.kpi-sales .kpi-badge:hover {
-    background: #fff1df !important;
+    background: var(--surface-amber, #fff1df) !important;
     color: #ff8c00 !important;
     border-color: #ffb45c !important;
 }
 
 .kpi-panel.kpi-tables .kpi-badge:hover {
-    background: #e8f3ff !important;
+    background: var(--surface-blue, #e8f3ff) !important;
     color: #1683c7 !important;
     border-color: #75bde8 !important;
 }
 
 .kpi-panel.kpi-month .kpi-badge:hover {
-    background: #e8f8ee !important;
+    background: var(--surface-green, #e8f8ee) !important;
     color: #16a05d !important;
     border-color: #70cf94 !important;
 }
 
 .kpi-panel.kpi-stock .kpi-badge:hover {
-    background: #fff1df !important;
+    background: var(--surface-amber, #fff1df) !important;
     color: #ff8c00 !important;
     border-color: #ffb45c !important;
 }

@@ -29,7 +29,7 @@
         left: 0;
         width: 5px;
         height: 100%;
-        background: linear-gradient(180deg, var(--kpi-color) 0%, color-mix(in srgb, var(--kpi-color) 25%, var(--card-bg, white)) 65%, white 100%);
+        background: linear-gradient(180deg, var(--kpi-color) 0%, color-mix(in srgb, var(--kpi-color) 25%, var(--card-bg, white)) 65%, var(--card-bg, white) 100%);
         border-radius: 16px 0 0 16px;
     }
 
@@ -118,12 +118,12 @@
 
     .sales-history-tabs .nav-link.active {
         background: var(--card-bg, #ffffff) !important;
-        color: #198754 !important;
+        color: var(--ink-green, #198754) !important;
         box-shadow: 0 2px 8px rgba(15, 23, 42, .10);
     }
 
     .sales-history-tabs .expenses-history-tab.active {
-        color: #dc3545 !important;
+        color: var(--ink-red, #dc3545) !important;
     }
 
     .sales-history-tabs .nav-link i {
@@ -159,11 +159,11 @@
     .sales-action-report {
         color: var(--text-main, #334155);
         background: var(--surface-neutral, #f1f5f9);
-        border-color: #cbd5e1;
+        border-color: var(--surface-blue, #cbd5e1);
     }
 
     .sales-action-report i {
-        color: #1e293b;
+        color: var(--text-main, #1e293b);
         background: var(--surface-neutral, #e2e8f0);
     }
 
@@ -409,15 +409,15 @@
                                     <td>
                                         @php
                                             $paymentStyles = [
-                                                'cash' => ['label' => 'Efectivo', 'color' => '#198754', 'bg' => '#e8f5ee'],
-                                                'card' => ['label' => 'Tarjeta', 'color' => '#0d6efd', 'bg' => '#eaf2ff'],
-                                                'yape' => ['label' => 'Yape', 'color' => '#742284', 'bg' => '#f5e9f8'],
-                                                'plin' => ['label' => 'Plin', 'color' => '#00a884', 'bg' => '#e8f8f3'],
+                                                'cash' => ['label' => 'Efectivo', 'color' => 'var(--ink-green, #198754)', 'bg' => 'var(--surface-green, #e8f5ee)'],
+                                                'card' => ['label' => 'Tarjeta', 'color' => 'var(--ink-blue, #0d6efd)', 'bg' => 'var(--surface-blue, #eaf2ff)'],
+                                                'yape' => ['label' => 'Yape', 'color' => 'var(--ink-purple, #742284)', 'bg' => 'var(--surface-purple, #f5e9f8)'],
+                                                'plin' => ['label' => 'Plin', 'color' => 'var(--ink-teal, #00a884)', 'bg' => 'var(--surface-teal, #e8f8f3)'],
                                             ];
                                             $payment = $paymentStyles[$order->payment_method] ?? [
                                                 'label' => ucfirst($order->payment_method ?? 'Sin definir'),
-                                                'color' => '#6c757d',
-                                                'bg' => '#f1f3f5'
+                                                'color' => 'var(--ink-neutral, #6c757d)',
+                                                'bg' => 'var(--surface-neutral, #f1f3f5)'
                                             ];
                                         @endphp
                                         <span class="badge rounded-pill px-3 py-2"

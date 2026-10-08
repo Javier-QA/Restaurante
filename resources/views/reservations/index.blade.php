@@ -1089,14 +1089,14 @@
     min-height: 44px;
     border-radius: 12px;
     background: var(--surface-green, #f0fdf4);
-    border: 1px solid #bbf7d0;
-    color: #16803d;
+    border: 1px solid var(--surface-green, #bbf7d0);
+    color: var(--ink-green, #16803d);
     font-weight: 700;
 }
 
 .reservation-confirm-btn:hover {
     background: var(--surface-green, #dcfce7);
-    border-color: #86efac;
+    border-color: var(--surface-green, #86efac);
     color: var(--ink-green, #166534);
 }
 
@@ -1427,7 +1427,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 .reservation-confirm-icon.confirm {
     background: var(--surface-green, #f0fdf4);
-    color: #16803d;
+    color: var(--ink-green, #16803d);
 }
 
 .reservation-confirm-icon.cancel {
@@ -1617,7 +1617,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 .reservations-page .row.g-3.mb-4 > div:nth-child(4) .reservation-stat-icon {
     background: var(--surface-purple, #faf5ff);
-    color: #9333ea !important;
+    color: var(--ink-purple, #9333ea) !important;
 }
 </style>
 <style>
@@ -1654,7 +1654,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /* Reservas de hoy - azul */
 .reservation-kpi-today::before {
-    background: linear-gradient(180deg, #2563eb 0%, #93c5fd 65%, white 100%);
+    background: linear-gradient(180deg, #2563eb 0%, #93c5fd 65%, var(--card-bg, white) 100%);
 }
 
 .reservation-kpi-today .reservation-kpi-icon {
@@ -1664,7 +1664,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /* Pendientes - naranja */
 .reservation-kpi-pending::before {
-    background: linear-gradient(180deg, #f59e0b 0%, #fcd34d 65%, white 100%);
+    background: linear-gradient(180deg, #f59e0b 0%, var(--surface-amber, #fcd34d) 65%, var(--card-bg, white) 100%);
 }
 
 .reservation-kpi-pending .reservation-kpi-icon {
@@ -1674,7 +1674,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /* Confirmadas - verde */
 .reservation-kpi-confirmed::before {
-    background: linear-gradient(180deg, #16a34a 0%, #86efac 65%, white 100%);
+    background: linear-gradient(180deg, #16a34a 0%, var(--surface-green, #86efac) 65%, var(--card-bg, white) 100%);
 }
 
 .reservation-kpi-confirmed .reservation-kpi-icon {
@@ -1684,12 +1684,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /* Personas - morado */
 .reservation-kpi-people::before {
-    background: linear-gradient(180deg, #9333ea 0%, #d8b4fe 65%, white 100%);
+    background: linear-gradient(180deg, #9333ea 0%, #d8b4fe 65%, var(--card-bg, white) 100%);
 }
 
 .reservation-kpi-people .reservation-kpi-icon {
     background: var(--surface-purple, #faf5ff);
-    color: #9333ea;
+    color: var(--ink-purple, #9333ea);
 }
 
 .reservation-kpi-icon {
@@ -1988,8 +1988,8 @@ html[data-color-mode="dark"] .reservation-card .reservation-note {
 
 .reservation-card .reservation-confirm-btn {
     background: var(--surface-green, #effff4) !important;
-    border: 1px solid #b7e8c7 !important;
-    color: #16803d !important;
+    border: 1px solid var(--surface-green, #b7e8c7) !important;
+    color: var(--ink-green, #16803d) !important;
     border-radius: 12px !important;
 }
 
@@ -2099,8 +2099,8 @@ html[data-color-mode="dark"] .reservation-card .reservation-note {
 /* Confirmar */
 .reservation-card .reservation-confirm-btn {
     background: var(--surface-green, #effff4) !important;
-    border: 1px solid #b7e8c7 !important;
-    color: #16803d !important;
+    border: 1px solid var(--surface-green, #b7e8c7) !important;
+    color: var(--ink-green, #16803d) !important;
     border-radius: 12px !important;
 }
 

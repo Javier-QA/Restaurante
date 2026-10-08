@@ -275,7 +275,7 @@
 }
 
 .inventory-movement.entry {
-    border-color: #bbf7d0;
+    border-color: var(--surface-green, #bbf7d0);
     background: var(--surface-green, #f0fdf4);
     color: var(--ink-green, #15803d);
 }

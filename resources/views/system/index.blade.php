@@ -232,7 +232,7 @@
         border: 1px solid var(--surface-red, #fecaca);
         border-radius: 9px;
 
-        background: #fffafa;
+        background: var(--surface-neutral, #fffafa);
     }
 
     .reset-summary-title {
@@ -263,7 +263,7 @@
         align-items: center;
         gap: 7px;
 
-        color: #7f1d1d;
+        color: var(--ink-red, #7f1d1d);
 
         font-size: .66rem;
         font-weight: 650;

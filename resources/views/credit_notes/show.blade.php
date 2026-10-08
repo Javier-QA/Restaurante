@@ -72,7 +72,7 @@
     .cn-status.accepted {
         color: var(--ink-green, #166534);
         background: var(--surface-green, #f0fdf4);
-        border-color: #bbf7d0;
+        border-color: var(--surface-green, #bbf7d0);
     }
 
     .cn-status.observed {
@@ -84,7 +84,7 @@
     .cn-status.pending {
         color: var(--ink-neutral, #475569);
         background: var(--card-bg, #ffffff);
-        border-color: #cbd5e1;
+        border-color: var(--surface-blue, #cbd5e1);
     }
 
     .cn-status.rejected,
@@ -165,7 +165,7 @@
         align-items: center;
         justify-content: center;
         border-radius: 9px;
-        border: 1px solid #dbe1e8;
+        border: 1px solid var(--surface-blue, #dbe1e8);
         background: var(--card-bg, #ffffff);
         color: var(--ink-neutral, #475569);
         font-size: 1rem;
@@ -213,7 +213,7 @@
         display: inline-flex;
         padding: 3px 7px;
         margin-right: 5px;
-        border: 1px solid #dbe1e8;
+        border: 1px solid var(--surface-blue, #dbe1e8);
         border-radius: 5px;
         background: var(--card-bg, #ffffff);
         color: var(--text-main, #334155);
@@ -249,7 +249,7 @@
     .cn-total-final {
         margin-top: 4px;
         padding-top: 12px !important;
-        border-top: 1px solid #cbd5e1;
+        border-top: 1px solid var(--surface-blue, #cbd5e1);
         border-bottom: 0 !important;
     }
 
@@ -270,7 +270,7 @@
     }
 
     .cn-trace-table tr {
-        border-bottom: 1px solid #eef2f7;
+        border-bottom: 1px solid var(--surface-neutral, #eef2f7);
     }
 
     .cn-trace-table tr:last-child {

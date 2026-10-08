@@ -538,7 +538,7 @@ function submitDeleteProduct() {
     gap: 8px;
     align-items: flex-start;
     padding: 11px 12px;
-    border: 1px solid #fed7aa;
+    border: 1px solid var(--surface-amber, #fed7aa);
     border-radius: 9px;
     background: var(--surface-amber, #fff7ed);
     color: var(--ink-amber, #9a3412);
@@ -1099,7 +1099,7 @@ html[data-color-mode="dark"] .product-delete-modal .product-delete-btn i {
 
 /* ACTIVO */
 .product-status-active {
-    background: #ecfdf3 !important;
+    background: var(--surface-green, #ecfdf3) !important;
     border-color: #22c55e !important;
     color: var(--ink-green, #15803d) !important;
 }

@@ -1321,13 +1321,13 @@ html[data-color-mode="dark"] .delivery-checkout-cancel-btn:focus {
 #checkoutModal .delivery-checkout-amount,
 #checkoutModal #cash_received,
 #checkoutModal .input-group-text {
-    color: #000000 !important;
+    color: var(--text-main, #000000) !important;
 }
 
 /* MONTOS YAPE Y PLIN */
 #checkoutModal #yapePaymentFields .delivery-qr-amount,
 #checkoutModal #plinPaymentFields .delivery-qr-amount {
-    color: #000000 !important;
+    color: var(--text-main, #000000) !important;
 }
 
 /* MONTOS DEL CHECKOUT EN MODO OSCURO */

@@ -76,15 +76,15 @@
     }
 
     .billing-kpi.accepted::before {
-        background: linear-gradient(180deg, #16a34a, #86efac, var(--card-bg, #fff));
+        background: linear-gradient(180deg, #16a34a, var(--surface-green, #86efac), var(--card-bg, #fff));
     }
 
     .billing-kpi.observed::before {
-        background: linear-gradient(180deg, #f59e0b, #fcd34d, var(--card-bg, #fff));
+        background: linear-gradient(180deg, #f59e0b, var(--surface-amber, #fcd34d), var(--card-bg, #fff));
     }
 
     .billing-kpi.pending::before {
-        background: linear-gradient(180deg, #64748b, #cbd5e1, var(--card-bg, #fff));
+        background: linear-gradient(180deg, #64748b, var(--surface-blue, #cbd5e1), var(--card-bg, #fff));
     }
 
     .billing-kpi.error::before {
@@ -288,7 +288,7 @@
     }
 
     .billing-document-type.boleta {
-        background: #e0f2fe;
+        background: var(--surface-blue, #e0f2fe);
         color: #0284c7;
     }
 

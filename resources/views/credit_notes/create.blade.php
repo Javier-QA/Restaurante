@@ -103,7 +103,7 @@
         gap: 10px;
         padding: 12px 14px;
         margin-bottom: 22px;
-        border: 1px solid #dbe1e8;
+        border: 1px solid var(--surface-blue, #dbe1e8);
         border-radius: 9px;
         background: var(--card-bg, #ffffff);
         color: var(--ink-neutral, #475569);
@@ -217,7 +217,7 @@
         display: inline-flex;
         align-items: center;
         padding: 5px 9px;
-        border: 1px solid #dbe1e8;
+        border: 1px solid var(--surface-blue, #dbe1e8);
         border-radius: 7px;
         background: var(--card-bg, #ffffff);
         font-weight: 800;

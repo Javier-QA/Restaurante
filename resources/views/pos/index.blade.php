@@ -337,7 +337,7 @@
     /* MAPA DEL SALÓN */
 
     .pos-floor {
-        background-color: color-mix(in srgb, var(--pos-primary) 12%, #ffffff) !important;
+        background-color: color-mix(in srgb, var(--pos-primary) 12%, var(--card-bg, #ffffff)) !important;
         border-color: var(--pos-border) !important;
         background-image:
             radial-gradient(

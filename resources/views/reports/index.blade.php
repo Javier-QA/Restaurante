@@ -560,7 +560,7 @@
         background: linear-gradient(
             180deg,
             var(--report-primary),
-            white
+            var(--card-bg, white)
         );
     }
 
@@ -568,7 +568,7 @@
         background: linear-gradient(
             180deg,
             var(--report-accent-1),
-            white
+            var(--card-bg, white)
         );
     }
 
@@ -576,7 +576,7 @@
         background: linear-gradient(
             180deg,
             var(--report-accent-2),
-            white
+            var(--card-bg, white)
         );
     }
 
@@ -584,7 +584,7 @@
         background: linear-gradient(
             180deg,
             var(--report-accent-4),
-            white
+            var(--card-bg, white)
         );
     }
 
@@ -813,7 +813,7 @@
         background: linear-gradient(
             180deg,
             var(--report-primary),
-            white
+            var(--card-bg, white)
         );
     }
 
@@ -832,7 +832,7 @@
         background: linear-gradient(
             180deg,
             var(--report-accent-1),
-            white
+            var(--card-bg, white)
         );
     }
 
@@ -1638,7 +1638,7 @@ html[data-color-mode="dark"] .report-header-icon i {
 .report-table tbody tr:nth-child(2) .rank-badge {
     background: var(--surface-blue, #eff6ff) !important;
     color: #0284c7 !important;
-    border: 1px solid #bae6fd;
+    border: 1px solid var(--surface-blue, #bae6fd);
 }
 
 
@@ -1647,7 +1647,7 @@ html[data-color-mode="dark"] .report-header-icon i {
 .report-table tbody tr:nth-child(3) .rank-badge {
     background: var(--surface-green, #ecfdf5) !important;
     color: #059669 !important;
-    border: 1px solid #a7f3d0;
+    border: 1px solid var(--surface-green, #a7f3d0);
 }
 
 
@@ -1656,7 +1656,7 @@ html[data-color-mode="dark"] .report-header-icon i {
 .report-table tbody tr:nth-child(4) .rank-badge {
     background: var(--surface-amber, #fff7ed) !important;
     color: #ea580c !important;
-    border: 1px solid #fed7aa;
+    border: 1px solid var(--surface-amber, #fed7aa);
 }
 
 
@@ -1665,7 +1665,7 @@ html[data-color-mode="dark"] .report-header-icon i {
 .report-table tbody tr:nth-child(5) .rank-badge {
     background: var(--surface-neutral, #f1f5f9) !important;
     color: var(--ink-neutral, #475569) !important;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--surface-blue, #cbd5e1);
 }
 
 
@@ -1686,7 +1686,7 @@ html[data-color-mode="dark"] .report-header-icon i {
 
     background: var(--surface-green, #f0fdf4);
 
-    border: 1px solid #bbf7d0;
+    border: 1px solid var(--surface-green, #bbf7d0);
 
     font-size: .72rem;
     font-weight: 800;
@@ -1738,17 +1738,17 @@ html[data-color-mode="dark"] .report-header-icon i {
 .report-ranking-header + .card-body
 .status-low {
     color: #65a30d !important;
-    background: #f7fee7 !important;
-    border-color: #d9f99d !important;
+    background: var(--surface-green, #f7fee7) !important;
+    border-color: var(--surface-green, #d9f99d) !important;
 }
 
 
 /* Regular */
 .report-ranking-header + .card-body
 .status-regular {
-    color: #0369a1 !important;
-    background: #f0f9ff !important;
-    border-color: #bae6fd !important;
+    color: var(--ink-blue, #0369a1) !important;
+    background: var(--surface-blue, #f0f9ff) !important;
+    border-color: var(--surface-blue, #bae6fd) !important;
 }
 
 

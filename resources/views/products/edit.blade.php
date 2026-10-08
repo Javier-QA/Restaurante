@@ -156,7 +156,7 @@
     .product-profitability {
         margin-bottom: 19px;
         padding: 14px 16px;
-        border: 1px solid #bbf7d0;
+        border: 1px solid var(--surface-green, #bbf7d0);
         border-radius: 11px;
         background: var(--surface-green, #f0fdf4);
     }

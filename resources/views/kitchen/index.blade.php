@@ -376,7 +376,7 @@ html[data-color-mode="dark"] .kitchen-status-preparing i {
 
 /* MODO CLARO - conserva apariencia clara */
 html:not([data-color-mode="dark"]) .kitchen-status-pending i {
-    color: #dc3545 !important;
+    color: var(--ink-red, #dc3545) !important;
 }
 
 html:not([data-color-mode="dark"]) .kitchen-status-preparing i {
@@ -421,7 +421,7 @@ html:not([data-color-mode="dark"]) .kitchen-status-preparing i {
 .card .btn-outline-danger {
     background: transparent !important;
     border-color: transparent !important;
-    color: #e33446 !important;
+    color: var(--ink-red, #e33446) !important;
     font-weight: 700 !important;
     box-shadow: none !important;
 }
@@ -429,7 +429,7 @@ html:not([data-color-mode="dark"]) .kitchen-status-preparing i {
 .card .btn-outline-danger:hover {
     background: rgba(227, 52, 70, .10) !important;
     border-color: transparent !important;
-    color: #e33446 !important;
+    color: var(--ink-red, #e33446) !important;
 }
 
 

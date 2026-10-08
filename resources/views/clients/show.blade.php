@@ -245,7 +245,7 @@
     }
 
     .client-stat-card.visits::before {
-        background: linear-gradient(180deg, #22c55e 0%, #86efac 55%, var(--surface-green, #dcfce7) 100%);
+        background: linear-gradient(180deg, #22c55e 0%, var(--surface-green, #86efac) 55%, var(--surface-green, #dcfce7) 100%);
     }
 
     .client-stat-card.favorite {

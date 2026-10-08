@@ -376,7 +376,7 @@ html[data-color-mode="dark"] .bar-status-preparing i {
 
 /* MODO CLARO */
 html:not([data-color-mode="dark"]) .bar-status-pending i {
-    color: #dc3545 !important;
+    color: var(--ink-red, #dc3545) !important;
 }
 
 html:not([data-color-mode="dark"]) .bar-status-preparing i {
@@ -445,7 +445,7 @@ html:not([data-color-mode="dark"]) .bar-status-preparing i {
 #barra-orders .btn-outline-danger {
     background: transparent !important;
     border-color: transparent !important;
-    color: #e33446 !important;
+    color: var(--ink-red, #e33446) !important;
     font-weight: 700 !important;
     box-shadow: none !important;
 }
@@ -453,7 +453,7 @@ html:not([data-color-mode="dark"]) .bar-status-preparing i {
 #bar-orders .btn-outline-danger:hover,
 #barra-orders .btn-outline-danger:hover {
     background: rgba(227, 52, 70, .10) !important;
-    color: #e33446 !important;
+    color: var(--ink-red, #e33446) !important;
 }
 
 

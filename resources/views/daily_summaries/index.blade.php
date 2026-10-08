@@ -108,7 +108,7 @@
 
     .ds-date {
         height: 40px;
-        border: 1px solid #cbd5e1;
+        border: 1px solid var(--surface-blue, #cbd5e1);
         border-radius: 8px;
         font-size: .82rem;
     }
@@ -194,7 +194,7 @@
 
     .ds-table tbody td {
         padding: 13px 14px;
-        border-color: #edf2f7;
+        border-color: var(--surface-neutral, #edf2f7);
         color: var(--text-main, #334155);
         font-size: .78rem;
         vertical-align: middle;
@@ -234,7 +234,7 @@
     .ds-status.accepted {
         color: var(--ink-green, #166534);
         background: var(--surface-green, #f0fdf4);
-        border-color: #bbf7d0;
+        border-color: var(--surface-green, #bbf7d0);
     }
 
     .ds-status.observed {
@@ -244,15 +244,15 @@
     }
 
     .ds-status.ticket {
-        color: #075985;
+        color: var(--ink-blue, #075985);
         background: var(--surface-blue, #eff6ff);
-        border-color: #bae6fd;
+        border-color: var(--surface-blue, #bae6fd);
     }
 
     .ds-status.pending {
         color: var(--ink-neutral, #475569);
         background: var(--card-bg, #ffffff);
-        border-color: #cbd5e1;
+        border-color: var(--surface-blue, #cbd5e1);
     }
 
     .ds-status.error {
@@ -308,7 +308,7 @@
         align-items: center;
         gap: 5px;
         padding: 5px 8px;
-        border: 1px solid #dbe1e8;
+        border: 1px solid var(--surface-blue, #dbe1e8);
         border-radius: 6px;
         background: var(--card-bg, #ffffff);
         color: var(--ink-neutral, #475569);

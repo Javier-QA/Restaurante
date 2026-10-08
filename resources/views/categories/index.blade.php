@@ -206,7 +206,7 @@
 }
 
 .category-state-switch.is-inactive .category-state-track {
-    background: #cbd5e1;
+    background: var(--surface-blue, #cbd5e1);
 }
 
 .category-state-switch.is-inactive .category-state-dot {

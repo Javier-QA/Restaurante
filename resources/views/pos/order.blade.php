@@ -1698,7 +1698,7 @@ window.lookupClientByDocument = async function() {
     .pos-product-name {
         font-size: .82rem;
         font-weight: 700;
-        color: #1e1b3a;
+        color: var(--text-main, #1e1b3a);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -1753,7 +1753,7 @@ window.lookupClientByDocument = async function() {
 
     #pos-wrap.pos-order-page {
         background:
-            color-mix(in srgb, var(--pos-primary) 5%, #ffffff) !important;
+            color-mix(in srgb, var(--pos-primary) 5%, var(--card-bg, #ffffff)) !important;
     }
 
     /* CATEGORIAS */
@@ -1768,7 +1768,7 @@ window.lookupClientByDocument = async function() {
     .pos-order-page .category-btn:hover {
         color: var(--pos-primary);
         background:
-            color-mix(in srgb, var(--pos-primary) 8%, #ffffff);
+            color-mix(in srgb, var(--pos-primary) 8%, var(--card-bg, #ffffff));
     }
 
     .pos-order-page .category-btn.active {
@@ -1841,7 +1841,7 @@ window.lookupClientByDocument = async function() {
 
     .pos-order-page .pos-product-footer {
         background:
-            color-mix(in srgb, var(--pos-primary) 7%, #ffffff);
+            color-mix(in srgb, var(--pos-primary) 7%, var(--card-bg, #ffffff));
         border-top-color:
             color-mix(in srgb, var(--pos-primary) 25%, var(--pos-border));
     }
@@ -2062,7 +2062,7 @@ window.lookupClientByDocument = async function() {
 
     /* YAPE */
     .pos-payment-yape {
-        color: #742284 !important;
+        color: var(--ink-purple, #742284) !important;
         border-color: #742284 !important;
         background: var(--card-bg, #ffffff) !important;
     }
@@ -2111,7 +2111,7 @@ window.lookupClientByDocument = async function() {
 
     /* EFECTIVO */
     .pos-payment-cash {
-        color: #198754 !important;
+        color: var(--ink-green, #198754) !important;
         border-color: #198754 !important;
         background: var(--card-bg, #ffffff) !important;
     }
@@ -2134,7 +2134,7 @@ window.lookupClientByDocument = async function() {
 
     /* TARJETA */
     .pos-payment-card {
-        color: #0d6efd !important;
+        color: var(--ink-blue, #0d6efd) !important;
         border-color: #0d6efd !important;
         background: var(--card-bg, #ffffff) !important;
     }
@@ -2454,7 +2454,7 @@ window.lookupClientByDocument = async function() {
         background: color-mix(
             in srgb,
             var(--primary) 14%,
-            #ffffff
+            var(--card-bg, #ffffff)
         ) !important;
         color: var(--primary) !important;
     }
@@ -2776,7 +2776,7 @@ window.lookupClientByDocument = async function() {
 }
 
 #yapeQrBox .pos-qr-amount strong {
-    color: #742284;
+    color: var(--ink-purple, #742284);
 }
 
 #plinQrBox .pos-qr-amount strong {
@@ -2839,23 +2839,23 @@ window.lookupClientByDocument = async function() {
 }
 
 .pos-method-card strong {
-    color: #0d6efd;
+    color: var(--ink-blue, #0d6efd);
 }
 
 /* YAPE */
 #yapeQrBox .pos-qr-amount {
     border: 1px solid #742284;
-    background: #f8effa;
+    background: var(--surface-neutral, #f8effa);
 }
 
 #yapeQrBox .pos-qr-amount strong {
-    color: #742284;
+    color: var(--ink-purple, #742284);
 }
 
 /* PLIN */
 #plinQrBox .pos-qr-amount {
     border: 1px solid #00a884;
-    background: #effaf7;
+    background: var(--surface-neutral, #effaf7);
 }
 
 #plinQrBox .pos-qr-amount strong {
@@ -2865,30 +2865,30 @@ window.lookupClientByDocument = async function() {
 /* EFECTIVO */
 .pos-method-cash {
     border: 1px solid #198754;
-    background: #edf8f2;
+    background: var(--surface-neutral, #edf8f2);
 }
 
 .pos-method-cash strong {
-    color: #198754;
+    color: var(--ink-green, #198754);
 }
 
 /* EFECTIVO - RECIBIDO */
 #cashInputGroup {
     padding: 12px;
-    background: #edf8f2;
+    background: var(--surface-neutral, #edf8f2);
     border: 1px solid #198754;
     border-radius: 12px;
 }
 
 #cashInputGroup .form-label {
-    color: #198754;
+    color: var(--ink-green, #198754);
     font-weight: 700;
 }
 
 #receivedAmount {
     border: 2px solid #198754 !important;
     background: var(--card-bg, #ffffff) !important;
-    color: #198754 !important;
+    color: var(--ink-green, #198754) !important;
     border-radius: 10px;
     font-weight: 800 !important;
 }
@@ -2899,7 +2899,7 @@ window.lookupClientByDocument = async function() {
 }
 
 #changeAmount {
-    color: #198754 !important;
+    color: var(--ink-green, #198754) !important;
     font-weight: 800 !important;
 }
 
@@ -3129,7 +3129,7 @@ html:not([data-color-mode="dark"]) #cart-container .text-muted {
     align-items: center !important;
     gap: 6px !important;
 
-    border: 1px solid #cbd5e1 !important;
+    border: 1px solid var(--surface-blue, #cbd5e1) !important;
     border-radius: 8px !important;
 
     background: var(--card-bg, #ffffff) !important;
@@ -3420,7 +3420,7 @@ html[data-color-mode="dark"] #optionsModal .form-control::placeholder {
 #moveTableModal .pos-move-table-select {
     min-height: 46px;
     padding: 10px 42px 10px 13px;
-    border: 1px solid #d8e1eb !important;
+    border: 1px solid var(--surface-blue, #d8e1eb) !important;
     border-radius: 10px !important;
     background: var(--card-bg, #ffffff) !important;
     color: var(--text-main, #172033) !important;
@@ -3650,54 +3650,54 @@ html[data-color-mode="dark"] #optionsModal .modal-footer .btn-primary:active {
 
 /* METODOS DE PAGO - MISMO DISEÑO QUE DIVIDIR CUENTA */
 #checkoutModal .pos-payment-cash {
-    background: #eef9f3 !important;
+    background: var(--surface-neutral, #eef9f3) !important;
     border: 1.5px solid #72c49a !important;
-    color: #087a4b !important;
+    color: var(--ink-green, #087a4b) !important;
 }
 
 #checkoutModal #payCash:checked + .pos-payment-cash {
-    background: #ccebdc !important;
+    background: var(--surface-green, #ccebdc) !important;
     border: 2px solid #07965c !important;
-    color: #05683f !important;
+    color: var(--ink-green, #05683f) !important;
     box-shadow: 0 3px 9px rgba(7,150,92,.14) !important;
 }
 
 #checkoutModal .pos-payment-card {
-    background: #f0f6fd !important;
+    background: var(--surface-blue, #f0f6fd) !important;
     border: 1.5px solid #7eafe2 !important;
-    color: #1763ad !important;
+    color: var(--ink-blue, #1763ad) !important;
 }
 
 #checkoutModal #payCard:checked + .pos-payment-card {
-    background: #d5e7f9 !important;
+    background: var(--surface-blue, #d5e7f9) !important;
     border: 2px solid #347fc6 !important;
-    color: #165b9b !important;
+    color: var(--ink-blue, #165b9b) !important;
     box-shadow: 0 3px 9px rgba(52,127,198,.14) !important;
 }
 
 #checkoutModal .pos-payment-yape {
-    background: #faf2fc !important;
+    background: var(--surface-neutral, #faf2fc) !important;
     border: 1.5px solid #c989d3 !important;
-    color: #812b91 !important;
+    color: var(--ink-purple, #812b91) !important;
 }
 
 #checkoutModal #payYape:checked + .pos-payment-yape {
-    background: #edd5f2 !important;
+    background: var(--surface-purple, #edd5f2) !important;
     border: 2px solid #9b47aa !important;
-    color: #70247d !important;
+    color: var(--ink-purple, #70247d) !important;
     box-shadow: 0 3px 9px rgba(155,71,170,.14) !important;
 }
 
 #checkoutModal .pos-payment-plin {
-    background: #eefaf8 !important;
+    background: var(--surface-teal, #eefaf8) !important;
     border: 1.5px solid #68c0b4 !important;
-    color: #087c6d !important;
+    color: var(--ink-teal, #087c6d) !important;
 }
 
 #checkoutModal #payPlin:checked + .pos-payment-plin {
-    background: #d0eee9 !important;
+    background: var(--surface-teal, #d0eee9) !important;
     border: 2px solid #159687 !important;
-    color: #076d62 !important;
+    color: var(--ink-teal, #076d62) !important;
     box-shadow: 0 3px 9px rgba(21,150,135,.14) !important;
 }
 
@@ -3903,7 +3903,7 @@ html[data-color-mode="dark"] #checkoutModal #yapeQrBox .pos-qr-amount span {
 }
 
 html[data-color-mode="dark"] #checkoutModal #yapeQrBox .pos-qr-amount strong {
-    color: #b13bc3 !important;
+    color: var(--ink-purple, #b13bc3) !important;
 }
 
 html[data-color-mode="dark"] #checkoutModal #plinQrBox .pos-qr-amount {
@@ -4031,20 +4031,20 @@ html[data-color-mode="dark"] #checkoutModal .pos-document-option-icon {
 #checkoutModal #cashInputGroup .form-label,
 #checkoutModal #receivedAmount,
 #checkoutModal #changeAmount {
-    color: #198754 !important;
+    color: var(--ink-green, #198754) !important;
 }
 
 /* TARJETA */
 #checkoutModal .pos-method-card span,
 #checkoutModal .pos-method-card strong {
-    color: #0d6efd !important;
+    color: var(--ink-blue, #0d6efd) !important;
 }
 
 /* YAPE */
 #checkoutModal #yapeQrBox .pos-qr-title,
 #checkoutModal #yapeQrBox .pos-qr-amount span,
 #checkoutModal #yapeQrBox .pos-qr-amount strong {
-    color: #9b27a8 !important;
+    color: var(--ink-purple, #9b27a8) !important;
 }
 
 /* PLIN */
@@ -4190,13 +4190,13 @@ html[data-color-mode="dark"] #checkoutModal #plinQrBox .pos-qr-amount {
 
 /* YAPE - CLARO */
 html:not([data-color-mode="dark"]) #checkoutModal #yapeQrBox .pos-qr-amount {
-    background: #faf2fc !important;
+    background: var(--surface-neutral, #faf2fc) !important;
     border: 1.5px solid #9b47aa !important;
 }
 
 /* PLIN - CLARO */
 html:not([data-color-mode="dark"]) #checkoutModal #plinQrBox .pos-qr-amount {
-    background: #eefaf8 !important;
+    background: var(--surface-teal, #eefaf8) !important;
     border: 1.5px solid #159687 !important;
 }
 
@@ -4243,9 +4243,9 @@ html:not([data-color-mode="dark"]) #checkoutModal #cashInputGroup {
 
 /* Campo Recibido: fondo verde suave */
 html:not([data-color-mode="dark"]) #checkoutModal #receivedAmount {
-    background: #eef9f3 !important;
+    background: var(--surface-neutral, #eef9f3) !important;
     border: 1.5px solid #198754 !important;
-    color: #087a4b !important;
+    color: var(--ink-green, #087a4b) !important;
 }
 
 /* Textos */
@@ -4254,7 +4254,7 @@ html:not([data-color-mode="dark"]) #checkoutModal #cashInputGroup .form-label {
 }
 
 html:not([data-color-mode="dark"]) #checkoutModal #changeAmount {
-    color: #087a4b !important;
+    color: var(--ink-green, #087a4b) !important;
 }
 
 /* COBRAR VENTA - METODO DE PAGO MODO CLARO */
@@ -4263,25 +4263,25 @@ html:not([data-color-mode="dark"]) #checkoutModal #changeAmount {
 html:not([data-color-mode="dark"]) #checkoutModal #payCash:not(:checked) + .pos-payment-cash {
     background: transparent !important;
     border: 1.5px solid #72c49a !important;
-    color: #087a4b !important;
+    color: var(--ink-green, #087a4b) !important;
 }
 
 html:not([data-color-mode="dark"]) #checkoutModal #payCard:not(:checked) + .pos-payment-card {
     background: transparent !important;
     border: 1.5px solid #7eafe2 !important;
-    color: #1763ad !important;
+    color: var(--ink-blue, #1763ad) !important;
 }
 
 html:not([data-color-mode="dark"]) #checkoutModal #payYape:not(:checked) + .pos-payment-yape {
     background: transparent !important;
     border: 1.5px solid #c989d3 !important;
-    color: #812b91 !important;
+    color: var(--ink-purple, #812b91) !important;
 }
 
 html:not([data-color-mode="dark"]) #checkoutModal #payPlin:not(:checked) + .pos-payment-plin {
     background: transparent !important;
     border: 1.5px solid #68c0b4 !important;
-    color: #087c6d !important;
+    color: var(--ink-teal, #087c6d) !important;
 }
 </style>
 

@@ -164,7 +164,7 @@
 
     .credit-table tbody td {
         padding: 14px;
-        border-bottom: 1px solid #eef2f7;
+        border-bottom: 1px solid var(--surface-neutral, #eef2f7);
         vertical-align: middle;
     }
 
@@ -232,7 +232,7 @@
         display: inline-block;
         margin-right: 5px;
         padding: 2px 5px;
-        border: 1px solid #dbe1e8;
+        border: 1px solid var(--surface-blue, #dbe1e8);
         border-radius: 4px;
         background: var(--card-bg, #ffffff);
         color: var(--text-main, #334155);
@@ -262,7 +262,7 @@
     .credit-status.accepted {
         color: var(--ink-green, #166534);
         background: var(--surface-green, #f0fdf4);
-        border-color: #bbf7d0;
+        border-color: var(--surface-green, #bbf7d0);
     }
 
     .credit-status.observed {
@@ -274,7 +274,7 @@
     .credit-status.pending {
         color: var(--ink-neutral, #475569);
         background: var(--card-bg, #ffffff);
-        border-color: #cbd5e1;
+        border-color: var(--surface-blue, #cbd5e1);
     }
 
     .credit-status.rejected,
@@ -581,12 +581,12 @@
 
     .credit-actions .btn-outline-success {
         color: var(--ink-green, #15803d);
-        border-color: #bbf7d0;
+        border-color: var(--surface-green, #bbf7d0);
     }
 
     .credit-actions .btn-outline-success:hover {
         color: var(--ink-green, #166534);
-        border-color: #86efac;
+        border-color: var(--surface-green, #86efac);
         background: var(--surface-green, #f0fdf4);
     }
 
@@ -597,7 +597,7 @@
 
     .credit-actions .btn-outline-warning:hover {
         color: var(--ink-amber, #92400e);
-        border-color: #fcd34d;
+        border-color: var(--surface-amber, #fcd34d);
         background: var(--surface-amber, #fffbeb);
     }
 
