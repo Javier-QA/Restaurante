@@ -87,6 +87,22 @@
     </div>
 </div>
 
+<form action="{{ route('products.index') }}" method="GET" class="card border-0 shadow-sm mb-3">
+    <div class="card-body">
+        <label for="inventorySearch" class="form-label fw-bold">Buscar producto</label>
+        <div class="d-flex flex-wrap gap-2">
+            <input id="inventorySearch" name="search" type="search" maxlength="100"
+                   value="{{ $search }}" class="form-control flex-grow-1" style="flex-basis: 240px"
+                   placeholder="Nombre o código de barras">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-search me-1"></i>Buscar</button>
+            @if($search !== '')
+                <a href="{{ route('products.index') }}" class="btn btn-outline-secondary">Limpiar</a>
+            @endif
+        </div>
+        <div class="small text-muted mt-2">{{ $products->total() }} productos encontrados</div>
+    </div>
+</form>
+
 <div class="card border-0 shadow-sm">
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -146,9 +162,9 @@
                                 @if(is_null($product->stock))
                                     <span class="text-muted small">--</span>
                                 @elseif($product->stock <= 5)
-                                    <span class="badge bg-warning text-dark border border-warning">Bajo: {{ $product->stock }}</span>
+                                    <span class="badge bg-warning text-dark border border-warning">Bajo: {{ $product->stock_display }}</span>
                                 @else
-                                    <span class="badge bg-light text-success border border-success fw-bold">{{ $product->stock }}</span>
+                                    <span class="badge bg-light text-success border border-success fw-bold">{{ $product->stock_display }}</span>
                                 @endif
                             </td>
                             <td class="text-center">
@@ -257,7 +273,7 @@
                         </span>
 
                         <strong>
-                            {{ $product->stock ?? 0 }}
+                            {{ $product->stock_display }}
                         </strong>
 
                     </div>

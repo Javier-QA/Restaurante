@@ -11,12 +11,21 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Listamos productos con su categoría, ordenados por los más nuevos
-        $products = Product::with('category')->orderBy('created_at', 'desc')->paginate(10);
+        $request->validate(['search' => 'nullable|string|max:100']);
+        $search = trim((string) $request->input('search', ''));
+        $products = Product::with('category')
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('name', 'like', '%'.$search.'%')
+                        ->orWhere('barcode', 'like', '%'.$search.'%');
+                });
+            })
+            ->orderBy('created_at', 'desc')->orderBy('id', 'desc')
+            ->paginate(10)->withQueryString();
 
-        return view('products.index', compact('products'));
+        return view('products.index', compact('products', 'search'));
     }
 
     public function create()

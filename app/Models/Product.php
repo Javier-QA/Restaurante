@@ -29,6 +29,11 @@ class Product extends Model
 
     protected $casts = ['stock' => 'decimal:3', 'controls_stock' => 'boolean', 'is_saleable' => 'boolean', 'is_active' => 'boolean'];
 
+    public function getStockDisplayAttribute(): string
+    {
+        return rtrim(rtrim(number_format((float) ($this->stock ?? 0), 3, '.', ''), '0'), '.');
+    }
+
     // Relación con Categoría
     public function category()
     {
