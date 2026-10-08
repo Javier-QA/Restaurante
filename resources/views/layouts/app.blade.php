@@ -6813,7 +6813,7 @@ html[data-color-mode="dark"]
 
                 <i class="bi bi-bicycle"></i>
 
-                Delivery
+                Delivery y Para Llevar
 
             </a>
 
@@ -7241,7 +7241,7 @@ html[data-color-mode="dark"]
 
                     @elseif(request()->routeIs('delivery.*'))
 
-                        Delivery
+                        Delivery y Para Llevar
 
 
                     @elseif(request()->routeIs('products.*'))
