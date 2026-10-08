@@ -4,8 +4,8 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold mb-0" style="color:var(--text-main) !important;"><i class="bi bi-bicycle me-2" style="color:var(--text-main) !important;"></i>Delivery (Pedidos a Domicilio)</h2>
-            <p class="text-muted small mb-0 mt-1">Gestión de pedidos para enviar hoy.</p>
+            <h2 class="fw-bold mb-0" style="color:var(--text-main) !important;"><i class="bi bi-bicycle me-2" style="color:var(--text-main) !important;"></i>Delivery y Para Llevar</h2>
+            <p class="text-muted small mb-0 mt-1">Gestión de pedidos a domicilio y para llevar.</p>
         </div>
         <div>
             <a href="{{ route('delivery.drivers') }}" class="btn btn-outline-secondary me-2" style="border: 1.5px solid #6c757d !important;">
