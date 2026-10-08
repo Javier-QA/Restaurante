@@ -72,14 +72,12 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         // Opcional: Validar si tiene productos antes de borrar para evitar errores
-        if($category->products()->count() > 0){
+        if ($category->products()->whereNull('deleted_at')->exists()) {
              return redirect()->route('categories.index')->with('error', 'No puedes eliminar una categoría con productos asociados.');
         }
 
-        if ($category->image) {
-            Storage::disk('public')->delete($category->image);
-        }
-        
+        $category->is_active = false;
+        $category->save();
         $category->delete();
 
         return redirect()->route('categories.index')->with('success', 'Categoría eliminada.');
