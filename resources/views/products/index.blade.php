@@ -153,7 +153,9 @@
                             </td>
                             <td class="fw-bold text-primary">S/ {{ number_format($product->price, 2) }}</td>
                             <td>
-                                @if(is_null($product->stock))
+                                @if(!$product->controls_stock)
+                                    <span class="text-muted small">Sin control de stock</span>
+                                @elseif(is_null($product->stock))
                                     <span class="text-muted small">--</span>
                                 @elseif($product->stock <= ($product->minimum_stock ?? 5))
                                     <span class="badge bg-warning text-dark border border-warning">Bajo: {{ $product->stock_display }} {{ $product->unit_display }}</span>
@@ -172,6 +174,7 @@
                             <td class="text-end pe-4">
                                 <div class="product-actions">
 
+    @if($product->controls_stock)
     <button type="button"
             class="product-action product-action-stock"
             data-bs-toggle="modal"
@@ -179,6 +182,7 @@
             title="Ajustar stock">
         <i class="bi bi-arrow-left-right"></i>
     </button>
+    @endif
 
     <a href="{{ route('products.edit', ['product' => $product->id, 'page' => $products->currentPage()]) }}"
        class="product-action product-action-edit"
