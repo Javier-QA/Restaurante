@@ -548,6 +548,21 @@ Route::middleware(['auth'])->group(function () {
             ProductController::class
         );
 
+        Route::delete('/inventory/logs/reset/all', function () {
+            Illuminate\Support\Facades\DB::transaction(function () {
+                $products = App\Models\Product::where('controls_stock', true)
+                    ->orderBy('id')->lockForUpdate()->get();
+                foreach ($products as $product) {
+                    $product->stock = 0;
+                    $product->save();
+                }
+                App\Models\InventoryLog::query()->delete();
+            });
+
+            return redirect()->route('inventory.logs')
+                ->with('success', 'Kardex vaciado y stock de productos controlados reiniciado a cero.');
+        })->name('inventory.logs.reset');
+
         Route::delete('/inventory/logs/{inventoryLog}', function (App\Models\InventoryLog $inventoryLog) {
             $inventoryLog->delete();
 
