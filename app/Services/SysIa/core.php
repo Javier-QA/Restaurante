@@ -644,12 +644,14 @@ function ia_chat(string $msg, array $hist = []): array
     }
     $datos = json_encode(['columnas' => $res['columnas'], 'filas' => array_slice($res['filas'], 0, 30), 'total_filas' => count($res['filas'])], JSON_UNESCAPED_UNICODE);
     try {
-        $texto = ia_cfg()['resumen'] && count($res['filas']) > 10 ? trim(ia_llamar([
-            ['role' => 'system', 'content' => 'Eres el asistente de un restaurante. Redacta en español una respuesta breve y clara (máx. 4 frases) a la pregunta usando SOLO los datos dados, con cifras exactas. Los conteos de productos no son unidades de stock: distingue COUNT de productos de SUM(stock). Expresa horarios en formato de 12 horas con am/pm, por ejemplo 20 como 8:00pm, nunca 20 horas. Usa moneda solo para importes (moneda '.MONEDA.'). Si hay una lista, menciona los primeros elementos; el resto se ve en «Ver datos». Si no hay filas, dilo. Puedes usar **negrita** para cifras clave. Sin tablas ni listas largas.'],
-            ['role' => 'user', 'content' => "Pregunta: $msg\nDatos: $datos"],
-        ], 400)) : ia_resumen_chat_local($res['columnas'], $res['filas'], $msg);
+        $texto = trim(ia_llamar([
+            ['role' => 'system', 'content' => 'Eres el asistente de un restaurante. Responde SIEMPRE en español conversacional, como si hablaras con el administrador, para cualquier tema: ventas, platos, inventario, clientes, pedidos y gastos. Empieza con mayúscula. No uses etiquetas de columnas ni expresiones como «Periodo solicitado», «total ventas:» o «numero pedidos:». Integra cifras y fechas en oraciones naturales. Redacta una respuesta breve y clara (máx. 4 frases) usando SOLO los datos dados, con cifras exactas. Si la pregunta dice hoy, ayer o este mes, indica también la fecha o el intervalo correspondiente usando la fecha actual proporcionada. Los conteos de productos no son unidades de stock: distingue COUNT de productos de SUM(stock). Expresa horarios en formato de 12 horas con am/pm, por ejemplo 20 como 8:00pm, nunca 20 horas. Usa moneda solo para importes (moneda '.MONEDA.'). Si hay una lista, menciona los primeros elementos; el resto se ve en «Ver datos». Si no hay filas, dilo. Puedes usar **negrita** para cifras clave. Sin tablas ni listas largas.'],
+            ['role' => 'user', 'content' => "Fecha actual: ".ia_fecha_texto()."\nPregunta: $msg\nDatos: $datos"],
+        ], 350));
     } catch (RuntimeException $e) {
-        $texto = ia_resumen_local($res['columnas'], $res['filas']);
+        $texto = count($res['filas']) === 0
+            ? 'No encontré resultados para esa consulta.'
+            : 'Ya consulté los datos, pero no pude redactar el resumen en este momento. Puedes revisar los resultados en «Ver datos».';
     }
 
     return ['texto' => $texto, 'sql' => ia_validar_sql($sql),
