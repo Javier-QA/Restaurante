@@ -483,7 +483,7 @@
 
             padding: 10px 17px;
 
-            background: white;
+            background: var(--card-bg, white);
 
             border-radius: var(--radius-md);
 
@@ -515,9 +515,9 @@
         }
 
         .user-profile-btn:hover {
-            background: #f4f8fc;
+            background: var(--surface-neutral, #f4f8fc);
 
-            border-color: #dce7f1;
+            border-color: var(--surface-blue, #dce7f1);
         }
 
         .user-avatar {
@@ -568,7 +568,7 @@
             background: transparent;
 
             border-bottom:
-                1px solid #e1eaf3;
+                1px solid var(--surface-blue, #e1eaf3);
         }
 
         .card-body {
@@ -605,10 +605,10 @@
         .form-select {
             padding: .72rem .95rem;
 
-            background: #f7faff;
+            background: var(--surface-neutral, #f7faff);
 
             border:
-                1px solid #dce7f1;
+                1px solid var(--surface-blue, #dce7f1);
 
             border-radius:
                 var(--radius-sm);
@@ -619,7 +619,7 @@
             border-color:
                 var(--primary);
 
-            background: white;
+            background: var(--card-bg, white);
 
             box-shadow:
                 0 0 0 3px rgba(255,140,0,.13);
@@ -880,23 +880,23 @@
     /* CERRAR SESION */
 
     .account-dropdown-icon.logout {
-        border-color: #fecaca;
-        background: #fef2f2;
-        color: #dc2626;
+        border-color: var(--surface-red, #fecaca);
+        background: var(--surface-red, #fef2f2);
+        color: var(--ink-red, #dc2626);
     }
 
     .account-dropdown-logout .account-dropdown-label {
-        color: #dc2626;
+        color: var(--ink-red, #dc2626);
     }
 
     .account-dropdown-logout:hover,
     .account-dropdown-logout:focus {
-        background: #fef2f2;
+        background: var(--surface-red, #fef2f2);
     }
 
     .account-dropdown-logout:hover .account-dropdown-icon {
         border-color: #fca5a5;
-        background: #fee2e2;
+        background: var(--surface-red, #fee2e2);
     }
 
 
@@ -1921,7 +1921,7 @@ html[data-color-mode="dark"] .input-group-text {
 html[data-color-mode="dark"] .form-control::placeholder {
 
     color:
-        #667d95 !important;
+        var(--ink-blue, #667d95) !important;
 }
 
 
@@ -3185,7 +3185,7 @@ html[data-color-mode="dark"]
 .breadcrumb-item + .breadcrumb-item::before {
 
     color:
-        #657d95;
+        var(--ink-blue, #657d95);
 }
 
 
@@ -5549,7 +5549,7 @@ html[data-color-mode="dark"] .kpi-sales::before {
     background: linear-gradient(
         180deg,
         var(--dash-primary) 0%,
-        color-mix(in srgb, var(--dash-primary) 25%, white) 65%,
+        color-mix(in srgb, var(--dash-primary) 25%, var(--card-bg, white)) 65%,
         color-mix(in srgb, var(--dash-primary) 12%, #132338) 100%
     ) !important;
 }
@@ -5558,7 +5558,7 @@ html[data-color-mode="dark"] .kpi-tables::before {
     background: linear-gradient(
         180deg,
         var(--dash-accent-1) 0%,
-        color-mix(in srgb, var(--dash-accent-1) 25%, white) 65%,
+        color-mix(in srgb, var(--dash-accent-1) 25%, var(--card-bg, white)) 65%,
         color-mix(in srgb, var(--dash-accent-1) 12%, #132338) 100%
     ) !important;
 }
@@ -5567,7 +5567,7 @@ html[data-color-mode="dark"] .kpi-month::before {
     background: linear-gradient(
         180deg,
         var(--dash-accent-2) 0%,
-        color-mix(in srgb, var(--dash-accent-2) 25%, white) 65%,
+        color-mix(in srgb, var(--dash-accent-2) 25%, var(--card-bg, white)) 65%,
         color-mix(in srgb, var(--dash-accent-2) 12%, #132338) 100%
     ) !important;
 }
@@ -5585,7 +5585,7 @@ html[data-color-mode="dark"] .kpi-stock.kpi-ok::before {
     background: linear-gradient(
         180deg,
         var(--dash-accent-4) 0%,
-        color-mix(in srgb, var(--dash-accent-4) 25%, white) 65%,
+        color-mix(in srgb, var(--dash-accent-4) 25%, var(--card-bg, white)) 65%,
         color-mix(in srgb, var(--dash-accent-4) 12%, #132338) 100%
     ) !important;
 }
@@ -5609,7 +5609,7 @@ html[data-color-mode="dark"] .client-stat-card.visits::before {
     background: linear-gradient(
         180deg,
         #22c55e 0%,
-        #86efac 55%,
+        var(--surface-green, #86efac) 55%,
         #132338 100%
     ) !important;
 }
@@ -5671,7 +5671,7 @@ html[data-color-mode="dark"] .history-kpi::before {
     background: linear-gradient(
         180deg,
         var(--primary) 0%,
-        color-mix(in srgb, var(--primary) 45%, white) 55%,
+        color-mix(in srgb, var(--primary) 45%, var(--card-bg, white)) 55%,
         color-mix(in srgb, var(--primary) 12%, #132338) 100%
     ) !important;
 }
@@ -5872,7 +5872,7 @@ html[data-color-mode="dark"] .kpi-stock .kpi-badge-link:hover {
 }
 
 .system-sound-toggle.is-active {
-    color: #198754;
+    color: var(--ink-green, #198754);
 
     background:
         color-mix(
@@ -8144,7 +8144,7 @@ html[data-color-mode="dark"]
             color-mix(
                 in srgb,
                 var(--sys-color) 70%,
-                white
+                var(--card-bg, white)
             ) 100%
         ) !important;
 }
@@ -8342,7 +8342,7 @@ html[data-color-mode="dark"]
     background: linear-gradient(
         90deg,
         var(--sys-color),
-        color-mix(in srgb, var(--sys-color) 50%, white)
+        color-mix(in srgb, var(--sys-color) 50%, var(--card-bg, white))
     );
 }
 
@@ -8974,7 +8974,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var(--card-bg)
         );
 
-    color: #dc2626;
+    color: var(--ink-red, #dc2626);
 
     display: none;
     align-items: center;
@@ -10703,8 +10703,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-</body>
-</html>
+
 
 
 
@@ -11044,25 +11043,25 @@ body {
 
 .kpi-sales .kpi-badge,
 .sales-kpi .sales-kpi-badge {
-    background: #fff1df !important;
+    background: var(--surface-amber, #fff1df) !important;
     color: #ff8c00 !important;
     border: 1px solid #ffb45c !important;
 }
 
 .kpi-tables .kpi-badge {
-    background: #e8f3ff !important;
+    background: var(--surface-blue, #e8f3ff) !important;
     color: #1683c7 !important;
     border: 1px solid #75bde8 !important;
 }
 
 .kpi-month .kpi-badge {
-    background: #e8f8ee !important;
+    background: var(--surface-green, #e8f8ee) !important;
     color: #16a05d !important;
     border: 1px solid #70cf94 !important;
 }
 
 .kpi-stock .kpi-badge {
-    background: #fff1df !important;
+    background: var(--surface-amber, #fff1df) !important;
     color: #ff8c00 !important;
     border: 1px solid #ffb45c !important;
 }
@@ -11073,26 +11072,26 @@ body {
    ========================================================= */
 
 .reservation-kpi-today .reservation-kpi-badge {
-    background: #e8f3ff !important;
+    background: var(--surface-blue, #e8f3ff) !important;
     color: #1683c7 !important;
     border: 1px solid #75bde8 !important;
 }
 
 .reservation-kpi-pending .reservation-kpi-badge {
-    background: #fff5df !important;
+    background: var(--surface-amber, #fff5df) !important;
     color: #d88900 !important;
     border: 1px solid #f2c36b !important;
 }
 
 .reservation-kpi-confirmed .reservation-kpi-badge {
-    background: #e8f8ee !important;
+    background: var(--surface-green, #e8f8ee) !important;
     color: #16a05d !important;
     border: 1px solid #70cf94 !important;
 }
 
 .reservation-kpi-people .reservation-kpi-badge {
-    background: #f3eaff !important;
-    color: #8b45c7 !important;
+    background: var(--surface-purple, #f3eaff) !important;
+    color: var(--ink-purple, #8b45c7) !important;
     border: 1px solid #c59ae8 !important;
 }
 
@@ -11102,26 +11101,26 @@ body {
    ========================================================= */
 
 .sales-kpi .sales-kpi-badge.text-success {
-    background: #e8f8ee !important;
+    background: var(--surface-green, #e8f8ee) !important;
     color: #16a05d !important;
     border: 1px solid #70cf94 !important;
 }
 
 .sales-kpi .sales-kpi-badge.text-danger {
-    background: #ffe9e9 !important;
-    color: #dc3545 !important;
+    background: var(--surface-red, #ffe9e9) !important;
+    color: var(--ink-red, #dc3545) !important;
     border: 1px solid #f09a9a !important;
 }
 
 .sales-kpi .sales-kpi-badge.text-warning {
-    background: #fff5df !important;
+    background: var(--surface-amber, #fff5df) !important;
     color: #d88900 !important;
     border: 1px solid #f2c36b !important;
 }
 
 .sales-kpi .sales-kpi-badge.text-primary,
 .sales-kpi .sales-kpi-badge.text-info {
-    background: #e8f3ff !important;
+    background: var(--surface-blue, #e8f3ff) !important;
     color: #1683c7 !important;
     border: 1px solid #75bde8 !important;
 }
@@ -11229,49 +11228,49 @@ html[data-color-mode="dark"] .sales-kpi .sales-kpi-badge.text-info {
 /* TOTAL */
 .sales-kpi[style*="#84cc16"] .sales-kpi-badge {
     color: #84cc16 !important;
-    background: #f1f8e5 !important;
+    background: var(--surface-green, #f1f8e5) !important;
     border-color: #b7dc72 !important;
 }
 
 /* CAJA / EFECTIVO */
 .sales-kpi[style*="#198754"] .sales-kpi-badge {
-    color: #198754 !important;
-    background: #e8f5ee !important;
+    color: var(--ink-green, #198754) !important;
+    background: var(--surface-green, #e8f5ee) !important;
     border-color: #8bc9a8 !important;
 }
 
 /* YAPE */
 .sales-kpi[style*="#742284"] .sales-kpi-badge {
-    color: #742284 !important;
-    background: #f5e9f8 !important;
+    color: var(--ink-purple, #742284) !important;
+    background: var(--surface-purple, #f5e9f8) !important;
     border-color: #c99bd3 !important;
 }
 
 /* PLIN */
 .sales-kpi[style*="#00a884"] .sales-kpi-badge {
     color: #00a884 !important;
-    background: #e8f8f3 !important;
+    background: var(--surface-green, #e8f8f3) !important;
     border-color: #80d4c1 !important;
 }
 
 /* TARJETA */
 .sales-kpi[style*="#0d6efd"] .sales-kpi-badge {
-    color: #0d6efd !important;
-    background: #eaf2ff !important;
+    color: var(--ink-blue, #0d6efd) !important;
+    background: var(--surface-blue, #eaf2ff) !important;
     border-color: #8bb8fa !important;
 }
 
 /* GASTOS / SALIDA */
 .sales-kpi[style*="#ef4444"] .sales-kpi-badge {
     color: #ef4444 !important;
-    background: #fff1f2 !important;
+    background: var(--surface-red, #fff1f2) !important;
     border-color: #f5a3aa !important;
 }
 
 /* BALANCE POSITIVO */
 .sales-kpi[style*="#0f766e"] .sales-kpi-badge {
-    color: #0f766e !important;
-    background: #e7f7f5 !important;
+    color: var(--ink-teal, #0f766e) !important;
+    background: var(--surface-teal, #e7f7f5) !important;
     border-color: #80c8c0 !important;
 }
 
@@ -11314,3 +11313,6 @@ html[data-color-mode="dark"]
 
 
 </style>
+<link rel="stylesheet" href="{{ asset('css/dark-mode.css') }}?v={{ filemtime(public_path('css/dark-mode.css')) }}">
+</body>
+</html>

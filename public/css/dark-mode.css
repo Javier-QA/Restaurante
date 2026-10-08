@@ -1,0 +1,63 @@
+/* Apply dark surfaces on the same element that owns the palette variables.
+   Root variables alone cannot override a palette defined on body. */
+html[data-color-mode="dark"] body {
+    --light-bg: #15263a !important;
+    --card-bg: #111f32 !important;
+    --text-main: #ffffff !important;
+    --text-muted: #a9bdd1 !important;
+    --border-soft: #304860 !important;
+    --bs-body-bg: #091321;
+    --bs-body-color: #ffffff;
+    --bs-secondary-color: #a9bdd1;
+    --bs-border-color: #304860;
+    --bs-tertiary-bg: #15263a;
+    --bs-secondary-bg: #203248;
+    --bs-light-rgb: 32, 50, 72;
+    --bs-dark-rgb: 232, 240, 247;
+    color-scheme: dark;
+}
+
+html[data-color-mode="dark"] body .main-content :is(.bg-white, .bg-light, .text-bg-light, .client-order-folio) {
+    background: var(--light-bg) !important;
+    color: var(--text-main) !important;
+    -webkit-text-fill-color: currentColor !important;
+    border-color: var(--border-soft) !important;
+}
+html[data-color-mode="dark"] body .main-content :is(.text-muted, .text-secondary, .form-text) {
+    color: var(--text-muted) !important;
+}
+html[data-color-mode="dark"] body :is(.form-control, .form-select, .input-group-text) {
+    background-color: var(--light-bg) !important;
+    color: var(--text-main) !important;
+    -webkit-text-fill-color: var(--text-main) !important;
+    border-color: var(--border-soft) !important;
+}
+html[data-color-mode="dark"] body :is(.form-control, .form-select)::placeholder {
+    color: var(--text-muted) !important;
+    -webkit-text-fill-color: var(--text-muted) !important;
+    opacity: 1;
+}
+html[data-color-mode="dark"] body :is(.form-control, .form-select):is(:disabled, [readonly]) {
+    background-color: #17283c !important;
+    opacity: 1;
+}
+html[data-color-mode="dark"] body .form-select option {
+    background: #15263a;
+    color: #ffffff;
+}
+html[data-color-mode="dark"] body .main-content .btn-outline-danger {
+    --bs-btn-color: var(--ink-red);
+    --bs-btn-border-color: #a85b67;
+}
+html[data-color-mode="dark"] body .main-content .btn-outline-success {
+    --bs-btn-color: var(--ink-green);
+    --bs-btn-border-color: #4b8d68;
+}
+html[data-color-mode="dark"] body .main-content .btn-outline-secondary {
+    --bs-btn-color: var(--ink-neutral);
+    --bs-btn-border-color: #66809a;
+}
+html[data-color-mode="dark"] body .main-content .btn-outline-info {
+    --bs-btn-color: var(--ink-teal);
+    --bs-btn-border-color: #40828a;
+}
