@@ -61,19 +61,43 @@
 
   function star() { const b = $('#iaStar'); if (b && last) b.innerHTML = `<i class="bi ${last.favorito ? 'bi-star-fill text-warning' : 'bi-star'}"></i>`; }
   function mostrar(r) {
-    last = r; if (chart) { chart.destroy(); chart = null; }
-    const n = r.filas.length, g = r.grafico || { tipo: 'none' };
+    last = r; chartResult = null; if (chart) { chart.destroy(); chart = null; }
+    const n = r.filas.length;
+    let g = r.grafico || { tipo: 'none' };
+    if (g.tipo === 'none' && n > 1 && r.columnas.length > 1) {
+      const yi = r.columnas.findIndex((c, i) => r.filas.some(f => typeof f[i] === 'number'));
+      const xi = r.columnas.findIndex((c, i) => i !== yi);
+      if (yi >= 0 && xi >= 0) g = { tipo: 'bar', x: r.columnas[xi], y: r.columnas[yi] };
+    }
+    const canChart = n > 1 && g.tipo !== 'none' && r.columnas.includes(g.x) && r.columnas.includes(g.y);
     $('#iaOut').innerHTML = `<div class="card-x h-auto ia-res"><div class="body">
       <div class="d-flex align-items-start gap-2 flex-wrap"><div class="flex-grow-1"><h5>${esc(r.titulo)}</h5><div class="ia-meta">${nf(n)} fila${n === 1 ? '' : 's'}${r.truncado ? ' (límite alcanzado)' : ''} · ${r.ms} ms · «${esc(r.pregunta)}»</div></div>
         <div class="d-flex gap-1"><button class="mini-btn" id="iaStar" title="Favorita"></button><a class="mini-btn" href="${API}?action=csv&id=${r.id}" title="Exportar CSV"><i class="bi bi-filetype-csv"></i></a><button class="mini-btn" id="iaSqlB" title="Ver SQL"><i class="bi bi-code-slash"></i></button></div></div>
       <div id="iaSum"></div>
-      ${g.tipo !== 'none' && n > 1 ? '<div class="ia-chart"><canvas id="iaCv"></canvas></div>' : ''}
+      ${canChart ? `<div class="d-flex justify-content-end gap-1 flex-wrap my-2" role="group" aria-label="Tipo de gráfico">
+        ${[['bar','Barras'],['line','Líneas'],['pie','Torta']].map(([tipo, label]) => `<button type="button" class="btn btn-soft sm" data-chart-type="${tipo}" aria-pressed="false">${label}</button>`).join('')}
+      </div><div class="ia-chart"><canvas id="iaCv"></canvas></div>` : ''}
       ${n ? `<div class="ia-tbl mt-2"><table class="tbl"><thead><tr>${r.columnas.map((c, i) => `<th class="${r.filas.some(f => typeof f[i] === 'number') ? 'text-end' : ''}">${esc(c.replace(/_/g, ' '))}</th>`).join('')}</tr></thead><tbody>${r.filas.map(f => `<tr>${f.map((v, i) => `<td class="${typeof v === 'number' ? 'text-end' : ''}">${cel(v, r.columnas[i])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : '<div class="text-center text-muted py-4">La consulta no devolvió resultados para ese período.</div>'}
       <div class="form-check mt-3 small"><input class="form-check-input" type="checkbox" id="iaSeg"><label class="form-check-label" for="iaSeg">Mi próxima pregunta es de seguimiento de este resultado (p. ej. «ahora solo delivery»)</label></div>
       <pre class="ia-sql" id="iaSql" hidden>${esc(r.sql)}</pre></div></div>`;
     star(); $('#iaStar').onclick = async () => { const v = last.favorito ? 0 : 1; try { await call(API, 'favorito', { method: 'POST', body: { id: last.id, valor: v } }); last.favorito = v; star(); estado(); } catch (x) { toast(x.message, 'err'); } };
     $('#iaSqlB').onclick = () => { const s = $('#iaSql'); s.hidden = !s.hidden; };
-    if (g.tipo !== 'none' && n > 1) dibujar(r, g);
+    if (canChart) {
+      const selectChart = tipo => {
+        g = { ...g, tipo };
+        $('#iaOut').querySelectorAll('[data-chart-type]').forEach(button => {
+          const selected = button.dataset.chartType === tipo;
+          button.classList.toggle('btn-accent', selected);
+          button.classList.toggle('btn-soft', !selected);
+          button.setAttribute('aria-pressed', String(selected));
+        });
+        dibujar(r, g);
+      };
+      $('#iaOut').querySelectorAll('[data-chart-type]').forEach(button => {
+        button.onclick = () => selectChart(button.dataset.chartType);
+      });
+      selectChart(g.tipo);
+    }
     $('#iaOut').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
   function dibujar(r, g) {
@@ -81,7 +105,7 @@
     if (chart) { chart.destroy(); chart = null; }
     const theme = chartTheme(), COL = [theme.primary, getComputedStyle(document.body).getPropertyValue('--dark-bg-2').trim(), '#10b981', '#8b5cf6', '#f59e0b', '#ef4444'];
     const xi = r.columnas.indexOf(g.x), yi = r.columnas.indexOf(g.y); if (xi < 0 || yi < 0 || !window.Chart) return;
-    const lab = r.filas.map(f => String(f[xi] ?? '—').slice(0, 40)), val = r.filas.map(f => f[yi]);
+    const lab = r.filas.map(f => String(hour(f[xi], g.x) ?? f[xi] ?? '—').slice(0, 40)), val = r.filas.map(f => f[yi]);
     const paymentColors = { yape: '#742284', plin: '#00a884', efectivo: '#198754', cash: '#198754', tarjeta: '#0d6efd', card: '#0d6efd' };
     const paymentKey = label => String(label).normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
     const isPayment = /metodo.*pago|medio.*pago|payment|forma.*pago/i.test(g.x) || lab.every(label => paymentColors[paymentKey(label)]);
