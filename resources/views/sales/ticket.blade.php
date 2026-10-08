@@ -263,11 +263,10 @@ body {
 <body>
 
     <div class="preview-toolbar no-print">
-        <button type="button"
-                class="preview-btn preview-btn-back"
-                onclick="window.close()">
+        <a href="{{ $order->table_id ? route('pos.order', $order->table_id) : route('pos.index') }}"
+           class="preview-btn preview-btn-back">
             ← Volver
-        </button>
+        </a>
 
         <button type="button"
                 class="preview-btn preview-btn-print"
@@ -360,14 +359,5 @@ body {
 
     </div>
 
-<script>
-function cerrarPrecuenta() {
-    if (window.opener && !window.opener.closed) {
-        window.close();
-    } else {
-        history.back();
-    }
-}
-</script>
 </body>
 </html>
