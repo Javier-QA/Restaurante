@@ -46,7 +46,7 @@ class Product extends Model
     // Relación con Categoría
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class)->withTrashed();
     }
 
     // Relación con Ingredientes (Para el descuento de inventario)
