@@ -503,7 +503,21 @@ function ia_resumen_local(array $cols, array $filas): string
                 $hour = (int) $value;
                 $value = ($hour % 12 ?: 12).':00'.($hour < 12 ? 'am' : 'pm');
             }
-            $parts[] = str_replace('_', ' ', $col).': '.$value;
+            if (is_string($value) && preg_match('/^\d{4}-\d{2}-\d{2}(?:[ T]\d{2}:\d{2}:\d{2})?$/', $value)) {
+                try {
+                    $value = \Carbon\Carbon::parse($value)->format(strlen($value) > 10 ? 'd/m/Y g:ia' : 'd/m/Y');
+                } catch (\Throwable $e) {
+                    // Keep the original value if it is not a valid date.
+                }
+            } elseif (is_numeric($value) && preg_match('/^(total_ventas|total_vendido|ventas_totales|monto|importe|ingresos|total_cobrado|precio|subtotal)$/i', $col)) {
+                $value = MONEDA.number_format((float) $value, 2);
+            }
+            $label = match (mb_strtolower($col)) {
+                'total_ventas', 'ventas_totales' => 'Total de ventas',
+                'numero_pedidos', 'cantidad_pedidos' => 'Número de pedidos',
+                default => mb_strtoupper(mb_substr(str_replace('_', ' ', $col), 0, 1)).mb_substr(str_replace('_', ' ', $col), 1),
+            };
+            $parts[] = $label.': '.$value;
         }
     }
 
@@ -511,10 +525,20 @@ function ia_resumen_local(array $cols, array $filas): string
 }
 
 /** Short database results can be presented without a second model request. */
-function ia_resumen_chat_local(array $cols, array $filas): string
+function ia_resumen_chat_local(array $cols, array $filas, string $pregunta = ''): string
 {
+    $question = mb_strtolower($pregunta);
+    $date = now('America/Lima');
+    $period = '';
+    if (preg_match('/\bayer\b/u', $question)) {
+        $period = 'Periodo solicitado: Ayer ('.$date->subDay()->format('d/m/Y').").\n";
+    } elseif (preg_match('/\bhoy\b/u', $question)) {
+        $period = 'Periodo solicitado: Hoy ('.$date->format('d/m/Y').").\n";
+    } elseif (preg_match('/\beste mes\b/u', $question)) {
+        $period = 'Periodo solicitado: Del '.$date->copy()->startOfMonth()->format('d/m/Y').' al '.$date->format('d/m/Y').".\n";
+    }
     if (count($filas) <= 1) {
-        return ia_resumen_local($cols, $filas);
+        return $period.ia_resumen_local($cols, $filas);
     }
     $lines = [];
     foreach (array_slice($filas, 0, 5) as $i => $fila) {
@@ -524,7 +548,7 @@ function ia_resumen_chat_local(array $cols, array $filas): string
         $lines[] = 'Puedes ver los demás resultados en «Ver datos».';
     }
 
-    return implode("\n", $lines);
+    return $period.implode("\n", $lines);
 }
 
 /* ------------------------------------------------------------------ */
@@ -605,7 +629,7 @@ function ia_chat(string $msg, array $hist = []): array
         $texto = ia_cfg()['resumen'] && count($res['filas']) > 10 ? trim(ia_llamar([
             ['role' => 'system', 'content' => 'Eres el asistente de un restaurante. Redacta en español una respuesta breve y clara (máx. 4 frases) a la pregunta usando SOLO los datos dados, con cifras exactas. Los conteos de productos no son unidades de stock: distingue COUNT de productos de SUM(stock). Expresa horarios en formato de 12 horas con am/pm, por ejemplo 20 como 8:00pm, nunca 20 horas. Usa moneda solo para importes (moneda '.MONEDA.'). Si hay una lista, menciona los primeros elementos; el resto se ve en «Ver datos». Si no hay filas, dilo. Puedes usar **negrita** para cifras clave. Sin tablas ni listas largas.'],
             ['role' => 'user', 'content' => "Pregunta: $msg\nDatos: $datos"],
-        ], 400)) : ia_resumen_chat_local($res['columnas'], $res['filas']);
+        ], 400)) : ia_resumen_chat_local($res['columnas'], $res['filas'], $msg);
     } catch (RuntimeException $e) {
         $texto = ia_resumen_local($res['columnas'], $res['filas']);
     }
