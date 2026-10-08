@@ -87,9 +87,9 @@ class BillingController extends Controller
         }
 
         if ($order->isReceipt()) {
-            return redirect()->route('daily_summaries.index')->with(
-                'info',
-                'Esta boleta se comunica mediante Resumen Diario. Si ya enviaste su resumen, consulta el estado del ticket.'
+            return back()->with(
+                'error',
+                'Las boletas se comunican a SUNAT mediante Resumen Diario. No corresponde realizar un reenvío individual.'
             );
         }
 

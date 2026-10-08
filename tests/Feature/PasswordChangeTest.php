@@ -44,12 +44,11 @@ class PasswordChangeTest extends RestaurantTestCase
         $this->assertTrue(Hash::check('nueva12345', $user->fresh()->password));
     }
 
-    public function test_receipt_retry_redirects_to_daily_summary_without_error_notification(): void
+    public function test_receipt_retry_returns_to_same_page_with_original_notification(): void
     {
         $order = Order::create(['document_type' => 'Boleta', 'serie' => 'B001', 'correlativo' => 1, 'sunat_status' => 'PENDING']);
-        $this->post(route('billing.retry', $order))
-            ->assertRedirect(route('daily_summaries.index'))
-            ->assertSessionHas('info')
-            ->assertSessionMissing('error');
+        $this->from(route('billing.index'))->post(route('billing.retry', $order))
+            ->assertRedirect(route('billing.index'))
+            ->assertSessionHas('error', 'Las boletas se comunican a SUNAT mediante Resumen Diario. No corresponde realizar un reenvío individual.');
     }
 }
