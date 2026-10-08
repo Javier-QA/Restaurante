@@ -128,9 +128,9 @@
                                     </div>
 
                                     {{-- Badge Stock --}}
-                                    @if(!is_null($product->stock))
-                                        <div class="pos-stock-badge {{ $product->stock <= 5 ? 'pos-stock-low' : 'pos-stock-ok' }}">
-                                            <i class="bi bi-box-seam me-1"></i>{{ $product->stock }}
+                                    @if($product->controls_stock && !is_null($product->stock))
+                                        <div class="pos-stock-badge {{ $product->stock <= $product->minimum_stock ? 'pos-stock-low' : 'pos-stock-ok' }}">
+                                            <i class="bi bi-box-seam me-1"></i>{{ $product->stock_display }} {{ $product->unit_display }}
                                         </div>
                                     @endif
                                 </div>
@@ -564,7 +564,7 @@
             name="received_amount"
             id="receivedAmount"
             class="form-control text-center fw-bold fs-4"
-            value="{{ number_format($order->total + ($order->tip ?? 0) - ($order->discount ?? 0), 2, '.', '') }}"
+            value="{{ number_format($order->total, 2, '.', '') }}"
             oninput="calculateChange()"
             onclick="this.select()"
         >
@@ -581,7 +581,7 @@
     </div>
 
 </div>
-<input type="hidden" id="hiddenTotal" value="{{ number_format($order->total + ($order->tip ?? 0) - ($order->discount ?? 0), 2, '.', '') }}">
+<input type="hidden" id="hiddenTotal" value="{{ number_format($order->total, 2, '.', '') }}">
             </div>
             <div class="modal-footer p-2 bg-light">
                 <button type="button" class="btn pos-checkout-confirm-btn w-100 btn-lg fw-bold" onclick="openPaymentConfirm()">CONFIRMAR PAGO</button>

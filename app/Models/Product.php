@@ -11,6 +11,7 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'preparation_area',
         'barcode', // <--- NUEVO CAMPO AGREGADO
         'description',
         'price',
@@ -18,25 +19,41 @@ class Product extends Model
         'image',
         'category_id',
         'stock',
+        'unit',
+        'minimum_stock',
         'controls_stock',
         'is_active',
         'is_saleable',
         'promotional_price',
         'is_chef_recommendation',
-        'is_new'
+        'is_new',
     ];
+
+    public const UNITS = ['kg' => 'Kilogramo (kg)', 'g' => 'Gramo (g)', 'lt' => 'Litro (lt)', 'ml' => 'Mililitro (ml)', 'und' => 'Unidad (und)', 'paq' => 'Paquete (paq)', 'caja' => 'Caja'];
+
+    public function getUnitDisplayAttribute(): string
+    {
+        return $this->unit ?: 'und';
+    }
+
+    protected $casts = ['stock' => 'decimal:3', 'controls_stock' => 'boolean', 'is_saleable' => 'boolean', 'is_active' => 'boolean'];
+
+    public function getStockDisplayAttribute(): string
+    {
+        return rtrim(rtrim(number_format((float) ($this->stock ?? 0), 3, '.', ''), '0'), '.');
+    }
 
     // Relación con Categoría
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class)->withTrashed();
     }
 
     // Relación con Ingredientes (Para el descuento de inventario)
     public function ingredients()
     {
         return $this->belongsToMany(Product::class, 'product_ingredients', 'product_id', 'ingredient_id')
-                    ->withPivot('quantity');
+            ->withPivot('quantity');
     }
 
     // Relación con Detalles de Orden
@@ -52,8 +69,8 @@ class Product extends Model
         if ($this->ingredients->isEmpty()) {
             return $this->cost; // Si no tiene receta, su costo es el costo asignado manualmente
         }
-        
-        return $this->ingredients->sum(function($ingredient) {
+
+        return $this->ingredients->sum(function ($ingredient) {
             return $ingredient->cost * $ingredient->pivot->quantity;
         });
     }

@@ -44,7 +44,7 @@
 <hr>
 
 <div>
-    <div><span class="bold">Fecha:</span> {{ $order->created_at->format('d/m/Y H:i') }}</div>
+    <div><span class="bold">Fecha:</span> {{ ($order->paid_at ?? $order->created_at)->format('d/m/Y H:i') }}</div>
     <div><span class="bold">Cliente:</span> {{ $order->client_name ?: 'Cliente Varios' }}</div>
     <div><span class="bold">{{ $order->document_type === 'Factura' ? 'RUC' : 'DNI' }}:</span> {{ $order->client_document ?: '—' }}</div>
 </div>
@@ -59,10 +59,10 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($order->details as $d)
+        @foreach($documentLines as $d)
             <tr>
-                <td>{{ $d->quantity }} x {{ $d->product->name ?? '—' }}</td>
-                <td class="right">{{ number_format($d->price * $d->quantity, 2) }}</td>
+                <td>{{ $d->getCantidad() }} x {{ $d->getDescripcion() }}</td>
+                <td class="right">{{ number_format(($d->getMtoValorVenta() + $d->getIgv()), 2) }}</td>
             </tr>
         @endforeach
     </tbody>
@@ -73,14 +73,14 @@
 <table>
     <tr><td>Op. Gravada</td><td class="right">S/ {{ number_format($order->total_gravada, 2) }}</td></tr>
     <tr><td>IGV ({{ $config->igvRate() }}%)</td><td class="right">S/ {{ number_format($order->igv, 2) }}</td></tr>
-    <tr class="total"><td>TOTAL</td><td class="right">S/ {{ number_format($order->total, 2) }}</td></tr>
+    <tr class="total"><td>TOTAL</td><td class="right">S/ {{ number_format($order->collected_total, 2) }}</td></tr>
 </table>
 
 <hr>
 
 <div class="legend">
     <em>SON:</em><br>
-    <strong>{{ strtoupper(\App\Services\Sunat\NumeroLetras::convert($order->total)) }} SOLES</strong>
+    <strong>{{ strtoupper(\App\Services\Sunat\NumeroLetras::convert($order->collected_total)) }} SOLES</strong>
 </div>
 
 <div class="qr">

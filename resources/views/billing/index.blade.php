@@ -723,7 +723,7 @@
 
                             <td class="text-end">
                                 <span class="billing-total">
-                                    S/ {{ number_format($o->total, 2) }}
+                                    S/ {{ number_format($o->collected_total, 2) }}
                                 </span>
                             </td>
 

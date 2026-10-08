@@ -70,6 +70,7 @@
     border-color: #fecaca;
     background: #fff1f2;
 }
+
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -87,6 +88,21 @@
     </div>
 </div>
 
+<form id="inventorySearchForm" action="{{ route('products.index') }}" method="GET" class="mb-3">
+    <label for="inventorySearch" class="visually-hidden">Buscar producto por nombre</label>
+    <div class="d-flex align-items-center gap-2">
+        <div class="position-relative flex-grow-1">
+            <i class="bi bi-search position-absolute top-50 translate-middle-y text-muted" style="left: 14px; pointer-events: none"></i>
+            <input id="inventorySearch" name="search" type="search" maxlength="100"
+                   value="{{ $search }}" class="form-control" style="padding-left: 40px; min-height: 42px"
+                   placeholder="Buscar producto por nombre…" autocomplete="off" aria-controls="inventoryResults">
+        </div>
+        <a id="inventoryClear" href="{{ route('products.index') }}" class="btn btn-outline-secondary border border-secondary d-inline-flex align-items-center justify-content-center px-4">Limpiar</a>
+    </div>
+    <div id="inventorySearchStatus" class="small text-muted mt-2" role="status" aria-live="polite">{{ $products->total() }} productos encontrados</div>
+</form>
+
+<div id="inventoryResults" data-total="{{ $products->total() }}">
 <div class="card border-0 shadow-sm">
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -117,12 +133,6 @@
                                     <div>
                                         <div class="fw-bold text-dark">{{ $product->name }}</div>
 
-                                        @if($product->barcode)
-                                            <small class="text-muted d-block" style="font-size: 0.75rem;">
-                                                <i class="bi bi-upc-scan me-1"></i>{{ $product->barcode }}
-                                            </small>
-                                        @endif
-
                                         @if(!$product->is_saleable)
                                             <span class="badge bg-secondary" style="font-size: 0.65rem;"><i class="bi bi-eye-slash me-1"></i>Solo Insumo</span>
                                         @endif
@@ -143,12 +153,14 @@
                             </td>
                             <td class="fw-bold text-primary">S/ {{ number_format($product->price, 2) }}</td>
                             <td>
-                                @if(is_null($product->stock))
+                                @if(!$product->controls_stock)
+                                    <span class="text-muted small">Sin control de stock</span>
+                                @elseif(is_null($product->stock))
                                     <span class="text-muted small">--</span>
-                                @elseif($product->stock <= 5)
-                                    <span class="badge bg-warning text-dark border border-warning">Bajo: {{ $product->stock }}</span>
+                                @elseif($product->stock <= ($product->minimum_stock ?? 5))
+                                    <span class="badge bg-warning text-dark border border-warning">Bajo: {{ $product->stock_display }} {{ $product->unit_display }}</span>
                                 @else
-                                    <span class="badge bg-light text-success border border-success fw-bold">{{ $product->stock }}</span>
+                                    <span class="badge bg-light text-success border border-success fw-bold">{{ $product->stock_display }} {{ $product->unit_display }}</span>
                                 @endif
                             </td>
                             <td class="text-center">
@@ -162,6 +174,7 @@
                             <td class="text-end pe-4">
                                 <div class="product-actions">
 
+    @if($product->controls_stock)
     <button type="button"
             class="product-action product-action-stock"
             data-bs-toggle="modal"
@@ -169,6 +182,7 @@
             title="Ajustar stock">
         <i class="bi bi-arrow-left-right"></i>
     </button>
+    @endif
 
     <a href="{{ route('products.edit', ['product' => $product->id, 'page' => $products->currentPage()]) }}"
        class="product-action product-action-edit"
@@ -257,7 +271,7 @@
                         </span>
 
                         <strong>
-                            {{ $product->stock ?? 0 }}
+                            {{ $product->stock_display }} {{ $product->unit_display }}
                         </strong>
 
                     </div>
@@ -300,7 +314,7 @@
                     <div class="col-md-6">
 
                         <label class="stock-field-label">
-                            Cantidad
+                            Cantidad ({{ $product->unit_display }})
                             <span class="text-danger">*</span>
                         </label>
 
@@ -309,10 +323,9 @@
                             <i class="bi bi-box-seam stock-field-icon"></i>
 
                             <input type="number"
-                                   name="quantity"
+                                   name="quantity" step="{{ in_array($product->unit_display, ['und', 'paq', 'caja']) ? '1' : '0.001' }}"
                                    class="form-control stock-form-control"
-                                   min="1"
-                                   step="1"
+                                   min="{{ in_array($product->unit_display, ['und', 'paq', 'caja']) ? '1' : '0.001' }}"
                                    placeholder="Ej. 10"
                                    required>
 
@@ -377,6 +390,64 @@
 </div>
 
 
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('inventorySearchForm');
+    const input = document.getElementById('inventorySearch');
+    const status = document.getElementById('inventorySearchStatus');
+    let timer;
+    let controller;
+    let requestId = 0;
+    async function searchInventory() {
+        clearTimeout(timer);
+        if (controller) controller.abort();
+        controller = new AbortController();
+        const currentId = ++requestId;
+        const url = new URL(form.action);
+        const term = input.value.trim();
+        if (term) url.searchParams.set('search', term);
+        status.textContent = 'Buscando…';
+        const results = document.getElementById('inventoryResults');
+        results.setAttribute('aria-busy', 'true');
+        try {
+            const response = await fetch(url, {signal: controller.signal});
+            if (!response.ok) throw new Error('Search failed');
+            const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
+            const updated = doc.getElementById('inventoryResults');
+            if (!updated) throw new Error('Missing results');
+            if (currentId !== requestId) return;
+            results.replaceWith(updated);
+            status.textContent = updated.dataset.total + ' productos encontrados';
+            history.replaceState(null, '', url);
+        } catch (error) {
+            if (error.name !== 'AbortError' && currentId === requestId) {
+                status.textContent = 'No se pudo actualizar. Pulsa Enter para reintentar.';
+            }
+        } finally {
+            if (currentId === requestId) document.getElementById('inventoryResults').removeAttribute('aria-busy');
+        }
+    }
+    input.addEventListener('input', () => {
+        if (controller) controller.abort();
+        ++requestId;
+        clearTimeout(timer);
+        timer = setTimeout(searchInventory, 250);
+    });
+    form.addEventListener('submit', event => {
+        event.preventDefault();
+        searchInventory();
+    });
+    document.getElementById('inventoryClear').addEventListener('click', event => {
+        event.preventDefault();
+        input.value = '';
+        input.focus();
+        searchInventory();
+    });
+});
+</script>
 
 <script>
 let deleteProductFormId = null;

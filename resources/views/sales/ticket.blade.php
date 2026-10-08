@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Precuenta #{{ $order->id }}</title>
+    <title>{{ $order->status === 'completed' ? 'Ticket' : 'Precuenta' }} #{{ $order->id }}</title>
     <style>
         /* CONFIGURACIÓN EXACTA PARA IMPRESORA TÉRMICA */
         @page {
@@ -83,6 +83,11 @@ body {
 }
 
 .preview-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    line-height: 1.2;
     min-width: 105px;
     padding: 9px 16px;
     border-radius: 8px;
@@ -263,16 +268,15 @@ body {
 <body>
 
     <div class="preview-toolbar no-print">
-        <button type="button"
-                class="preview-btn preview-btn-back"
-                onclick="window.close()">
+        <a href="{{ $order->table_id ? route('pos.order', $order->table_id) : route('pos.index') }}"
+           class="preview-btn preview-btn-back">
             ← Volver
-        </button>
+        </a>
 
         <button type="button"
                 class="preview-btn preview-btn-print"
                 onclick="window.print()">
-            Imprimir precuenta
+            Imprimir {{ $order->status === 'completed' ? 'ticket' : 'precuenta' }}
         </button>
     </div>
 
@@ -290,8 +294,8 @@ body {
         @endif
         <div>{{ $settings['company_address'] ?? 'Dirección del Local' }}</div>
         <div>Tel: {{ $settings['company_phone'] ?? '---' }}</div>
-        <div style="margin-top: 5px;">{{ now()->format('d/m/Y H:i') }}</div>
-        <div class="fw-bold" style="margin-top:5px;">PRECUENTA #{{ str_pad($order->id, 6, '0', STR_PAD_LEFT) }}</div>
+        <div style="margin-top: 5px;">{{ ($order->paid_at ?? $order->created_at ?? now())->format('d/m/Y H:i') }}</div>
+        <div class="fw-bold" style="margin-top:5px;">{{ $order->status === 'completed' ? 'TICKET' : 'PRECUENTA' }} #{{ str_pad($order->id, 6, '0', STR_PAD_LEFT) }}</div>
         
         @if($order->client_name && $order->client_name != 'Público')
             <div style="margin-top: 3px; font-weight: bold;">Cli: {{ Str::limit($order->client_name, 20) }}</div>
@@ -344,9 +348,13 @@ body {
         </div>
         @endif
 
+        @if(($order->delivery?->delivery_fee ?? 0) > 0)
+        <div class="row"><span>Delivery:</span><span>{{ number_format($order->delivery->delivery_fee, 2) }}</span></div>
+        @endif
+
         <div class="row fw-bold" style="font-size: 16px; margin-top: 5px; border-top: 1px dashed #000; padding-top: 5px;">
             <span>TOTAL A PAGAR:</span>
-            <span>{{ $settings['currency_symbol'] ?? 'S/' }} {{ number_format($order->total, 2) }}</span>
+            <span>{{ $settings['currency_symbol'] ?? 'S/' }} {{ number_format($order->collected_total, 2) }}</span>
         </div>
     </div>
 
@@ -360,14 +368,5 @@ body {
 
     </div>
 
-<script>
-function cerrarPrecuenta() {
-    if (window.opener && !window.opener.closed) {
-        window.close();
-    } else {
-        history.back();
-    }
-}
-</script>
 </body>
 </html>

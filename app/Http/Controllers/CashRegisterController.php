@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\CashRegister;
-use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class CashRegisterController extends Controller
 {
@@ -97,7 +96,7 @@ class CashRegisterController extends Controller
         )->setPaper('a4', 'portrait');
 
         return $pdf->stream(
-            'cierre-caja-turno-' . $cashRegister->id . '.pdf'
+            'cierre-caja-turno-'.$cashRegister->id.'.pdf'
         );
     }
 
@@ -111,21 +110,13 @@ class CashRegisterController extends Controller
         $completedOrders = $cashRegister->orders()
             ->where('status', 'completed');
 
-        $totalSalesCash = (float) (clone $completedOrders)
-            ->where('payment_method', 'cash')
-            ->sum('total');
+        $totalSalesCash = $cashRegister->collectedSales('cash');
 
-        $totalSalesCard = (float) (clone $completedOrders)
-            ->where('payment_method', 'card')
-            ->sum('total');
+        $totalSalesCard = $cashRegister->collectedSales('card');
 
-        $totalSalesYape = (float) (clone $completedOrders)
-            ->where('payment_method', 'yape')
-            ->sum('total');
+        $totalSalesYape = $cashRegister->collectedSales('yape');
 
-        $totalSalesPlin = (float) (clone $completedOrders)
-            ->where('payment_method', 'plin')
-            ->sum('total');
+        $totalSalesPlin = $cashRegister->collectedSales('plin');
 
         $totalSales = $totalSalesCash
             + $totalSalesCard
@@ -160,7 +151,7 @@ class CashRegisterController extends Controller
             $hours = intdiv($totalMinutes, 60);
             $minutes = $totalMinutes % 60;
 
-            $duration = $hours . ' h ' . $minutes . ' min';
+            $duration = $hours.' h '.$minutes.' min';
         }
 
         $currency = \App\Models\Setting::where(
@@ -183,6 +174,7 @@ class CashRegisterController extends Controller
             'duration' => $duration,
         ];
     }
+
     public function destroyAll()
     {
         if (CashRegister::where('status', 'open')->exists()) {
@@ -253,25 +245,27 @@ class CashRegisterController extends Controller
         if (CashRegister::where('status', 'open')->exists()) {
             return redirect()->route('pos.index')->with('info', 'Ya existe un turno de caja abierto.');
         }
+
         return view('cash_registers.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'opening_amount' => 'required|numeric|min:0'
+            'opening_amount' => 'required|numeric|min:0',
         ]);
 
-        if (CashRegister::where('status', 'open')->exists()) {
-            return redirect()->route('pos.index')->with('info', 'Ya existe una caja abierta.');
-        }
-
-        CashRegister::create([
-            'user_id' => auth()->id(),
-            'opening_time' => Carbon::now(),
-            'opening_amount' => $request->opening_amount,
-            'status' => 'open'
-        ]);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($request) {
+            // Serialize openings through a stable application-settings row.
+            \App\Models\Setting::where('key', 'company_name')->lockForUpdate()->firstOrFail();
+            if (CashRegister::where('status', 'open')->exists()) {
+                throw \Illuminate\Validation\ValidationException::withMessages(['opening_amount' => 'Ya existe una caja abierta.']);
+            }
+            CashRegister::create([
+                'user_id' => auth()->id(), 'opening_time' => now(),
+                'opening_amount' => $request->opening_amount, 'status' => 'open',
+            ]);
+        }, 3);
 
         return redirect()->route('pos.index')->with('success', 'Turno de caja abierto correctamente.');
     }
@@ -280,7 +274,7 @@ class CashRegisterController extends Controller
     {
         $cashRegister = CashRegister::where('status', 'open')->first();
 
-        if (!$cashRegister) {
+        if (! $cashRegister) {
             return redirect()->route('dashboard')->with('error', 'No existe ninguna caja abierta para cerrar.');
         }
 
@@ -288,21 +282,13 @@ class CashRegisterController extends Controller
         $completedOrders = $cashRegister->orders()
             ->where('status', 'completed');
 
-        $totalSalesCash = (clone $completedOrders)
-            ->where('payment_method', 'cash')
-            ->sum('total');
+        $totalSalesCash = $cashRegister->collectedSales('cash');
 
-        $totalSalesCard = (clone $completedOrders)
-            ->where('payment_method', 'card')
-            ->sum('total');
+        $totalSalesCard = $cashRegister->collectedSales('card');
 
-        $totalSalesYape = (clone $completedOrders)
-            ->where('payment_method', 'yape')
-            ->sum('total');
+        $totalSalesYape = $cashRegister->collectedSales('yape');
 
-        $totalSalesPlin = (clone $completedOrders)
-            ->where('payment_method', 'plin')
-            ->sum('total');
+        $totalSalesPlin = $cashRegister->collectedSales('plin');
 
         $totalSales = $totalSalesCash
             + $totalSalesCard
@@ -316,6 +302,8 @@ class CashRegisterController extends Controller
             + $totalSalesCash
             - $totalExpenses;
 
+        $pendingOrders = \App\Models\Order::pendingForClosing()->with('delivery')->orderBy('id')->get();
+
         return view('cash_registers.close', compact(
             'cashRegister',
             'expectedAmount',
@@ -324,38 +312,46 @@ class CashRegisterController extends Controller
             'totalSalesYape',
             'totalSalesPlin',
             'totalSales',
-            'totalExpenses'
+            'totalExpenses',
+            'pendingOrders'
         ));
     }
 
     public function processClose(Request $request)
     {
         $request->validate([
-            'closing_amount' => 'required|numeric|min:0'
+            'closing_amount' => 'required|numeric|min:0',
+            'notes' => 'nullable|string|max:1000',
         ]);
 
-        $cashRegister = CashRegister::where('status', 'open')->first();
+        $difference = \Illuminate\Support\Facades\DB::transaction(function () use ($request) {
+            $cashRegister = CashRegister::where('status', 'open')->orderBy('id')->lockForUpdate()->first();
+            if (! $cashRegister) {
+                throw \Illuminate\Validation\ValidationException::withMessages(['cash_register' => 'No existe ninguna caja abierta.']);
+            }
+            $pendingOrders = \App\Models\Order::pendingForClosing()
+                ->with('delivery')->orderBy('id')->get();
+            if ($pendingOrders->isNotEmpty()) {
+                $references = $pendingOrders->map(fn ($order) => '#'.$order->id.
+                    ($order->table_id ? ' (mesa ID '.$order->table_id.')' : ($order->delivery ? ' (Delivery #'.$order->delivery->id.')' : ' (sin mesa ni registro Delivery)')))
+                    ->implode(', ');
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'cash_register' => 'Finaliza los pedidos pendientes antes de cerrar la caja. Pedidos: '.$references,
+                ]);
+            }
+            $sales = $cashRegister->collectedSales('cash');
+            $expenses = $cashRegister->expenses()->sum('amount');
+            $expected = round((float) $cashRegister->opening_amount + (float) $sales - (float) $expenses, 2);
+            $difference = round((float) $request->closing_amount - $expected, 2);
+            $cashRegister->update([
+                'closing_time' => now(), 'closed_by' => auth()->id(),
+                'closing_amount' => $request->closing_amount, 'expected_amount' => $expected,
+                'difference' => $difference, 'status' => 'closed', 'notes' => $request->notes,
+            ]);
 
-        if (!$cashRegister) {
-            return redirect()->route('dashboard')->with('error', 'No existe ninguna caja abierta.');
-        }
+            return $difference;
+        }, 3);
 
-        $totalSalesCash = $cashRegister->orders()->where('payment_method', 'cash')->where('status', 'completed')->sum('total');
-        $totalExpenses = $cashRegister->expenses()->sum('amount');
-        
-        $expectedAmount = $cashRegister->opening_amount + $totalSalesCash - $totalExpenses;
-        $difference = $request->closing_amount - $expectedAmount;
-
-        $cashRegister->update([
-            'closing_time' => Carbon::now(),
-            'closed_by' => auth()->id(),
-            'closing_amount' => $request->closing_amount,
-            'expected_amount' => $expectedAmount,
-            'difference' => $difference,
-            'status' => 'closed',
-            'notes' => $request->notes
-        ]);
-
-        return redirect()->route('dashboard')->with('success', 'Turno de caja cerrado correctamente. Diferencia: S/ ' . number_format($difference, 2));
+        return redirect()->route('dashboard')->with('success', 'Turno de caja cerrado correctamente. Diferencia: S/ '.number_format($difference, 2));
     }
 }

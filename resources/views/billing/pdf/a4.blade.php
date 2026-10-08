@@ -379,7 +379,7 @@
         <tr>
             <td class="label">Fecha de Emisión</td>
             <td class="value">
-                : {{ $order->created_at->format('d/m/Y H:i') }}
+                : {{ ($order->paid_at ?? $order->created_at)->format('d/m/Y H:i') }}
             </td>
 
             <td class="label">
@@ -421,12 +421,12 @@
 
         <tbody>
 
-            @foreach($order->details as $d)
+            @foreach($documentLines as $d)
 
                 <tr>
 
                     <td class="center">
-                        {{ number_format($d->quantity, 2) }}
+                        {{ number_format($d->getCantidad(), 2) }}
                     </td>
 
                     <td class="center">
@@ -434,28 +434,28 @@
                     </td>
 
                     <td class="center">
-                        {{ $d->product->id ?? '—' }}
+                        {{ $d->getCodProducto() }}
                     </td>
 
                     <td>
-                        {{ $d->product->name ?? '—' }}
+                        {{ $d->getDescripcion() }}
                     </td>
 
                     <td class="num">
-                        S/ {{ number_format($d->price, 2) }}
+                        S/ {{ number_format($d->getMtoPrecioUnitario(), 2) }}
                     </td>
 
                     <td class="num">
-                        S/ {{ number_format($d->price * $d->quantity, 2) }}
+                        S/ {{ number_format(($d->getMtoValorVenta() + $d->getIgv()), 2) }}
                     </td>
 
                 </tr>
 
             @endforeach
 
-            @if($order->details->count() < 8)
+            @if(count($documentLines) < 8)
 
-                @for($i = 0; $i < 8 - $order->details->count(); $i++)
+                @for($i = 0; $i < 8 - count($documentLines); $i++)
 
                     <tr>
                         <td>&nbsp;</td>
@@ -484,7 +484,7 @@
             </div>
 
             <div class="amount-text">
-                {{ strtoupper(\App\Services\Sunat\NumeroLetras::convert($order->total)) }}
+                {{ strtoupper(\App\Services\Sunat\NumeroLetras::convert($order->collected_total)) }}
                 SOLES
             </div>
 
@@ -527,7 +527,7 @@
                     <td>Importe Total :</td>
 
                     <td>
-                        S/ {{ number_format($order->total, 2) }}
+                        S/ {{ number_format($order->collected_total, 2) }}
                     </td>
 
                 </tr>

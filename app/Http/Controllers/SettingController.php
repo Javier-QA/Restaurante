@@ -4,15 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Setting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
     public function index()
     {
         $settings = Setting::pluck('value', 'key')->toArray();
-        
+
         // Lista de zonas horarias comunes en Latinoamérica para el select
         $timezones = [
             'America/Lima' => '(UTC-05:00) Lima, Bogotá, Quito',
@@ -25,7 +25,7 @@ class SettingController extends Controller
             'America/Tijuana' => '(UTC-08:00) Tijuana',
             'America/New_York' => '(UTC-05:00) Hora del Este (EE.UU.)',
             'Europe/Madrid' => '(UTC+01:00) Madrid',
-            'UTC' => '(UTC+00:00) Tiempo Universal Coordinado'
+            'UTC' => '(UTC+00:00) Tiempo Universal Coordinado',
         ];
 
         return view('settings.index', compact('settings', 'timezones'));
@@ -33,11 +33,31 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
-        $data = $request->except(['_token', 'company_logo', 'sunat_cert_file', 'yape_qr', 'plin_qr']);
+        $rules = [
+            'company_name' => 'required|string|max:255', 'company_email' => 'nullable|email|max:255',
+            'company_website' => 'nullable|url|max:500', 'timezone' => 'required|timezone',
+            'currency_symbol' => 'required|string|max:10', 'monthly_goal' => 'nullable|numeric|min:0',
+            'sunat_environment' => 'nullable|in:beta,produccion', 'sunat_igv_rate' => 'nullable|numeric|min:0|max:100',
+            'sunat_ruc' => ['nullable', 'regex:/^\d{11}$/'], 'sunat_ubigeo' => ['nullable', 'regex:/^\d{6}$/'],
+            'dashboard_theme' => 'nullable|in:ocean-orange,ocean-coral,lime-blue,purple-orange,sand-navy,teal-amber,wine-blue',
+            'goal_confetti_enabled' => 'nullable|boolean', 'goal_notification_enabled' => 'nullable|boolean',
+            'company_logo' => 'nullable|image|max:2048', 'yape_qr' => 'nullable|image|max:2048',
+            'plin_qr' => 'nullable|image|max:2048', 'sunat_cert_file' => 'nullable|file|max:512|extensions:pfx,p12',
+        ];
+        foreach (['company_address', 'company_business', 'company_city', 'company_phone', 'ticket_footer',
+            'sunat_cert_password', 'sunat_departamento', 'sunat_direccion_fiscal', 'sunat_distrito',
+            'sunat_nombre_comercial', 'sunat_provincia', 'sunat_razon_social', 'sunat_sol_pass', 'sunat_sol_user',
+            'sunat_urbanizacion'] as $key) {
+            $rules[$key] = 'nullable|string|max:1000';
+        }
+        $data = $request->validate($rules);
+        $data = array_diff_key($data, array_flip(['company_logo', 'sunat_cert_file', 'yape_qr', 'plin_qr']));
 
         // 1. Guardar textos (Nombre, Timezone, Moneda, config SUNAT, etc.)
         foreach ($data as $key => $value) {
-            if (is_null($value)) continue;
+            if (is_null($value)) {
+                continue;
+            }
             Setting::updateOrCreate(['key' => $key], ['value' => $value]);
         }
 
@@ -45,7 +65,9 @@ class SettingController extends Controller
         if ($request->hasFile('company_logo')) {
             $request->validate(['company_logo' => 'image|max:2048']);
             $oldLogo = Setting::where('key', 'company_logo')->value('value');
-            if ($oldLogo) Storage::disk('public')->delete($oldLogo);
+            if ($oldLogo) {
+                Storage::disk('public')->delete($oldLogo);
+            }
             $path = $request->file('company_logo')->store('settings', 'public');
             Setting::updateOrCreate(['key' => 'company_logo'], ['value' => $path]);
         }
@@ -57,25 +79,25 @@ class SettingController extends Controller
             ]);
 
             $ext = strtolower($request->file('sunat_cert_file')->getClientOriginalExtension());
-            if (!in_array($ext, ['pfx', 'p12'])) {
+            if (! in_array($ext, ['pfx', 'p12'])) {
                 return redirect()->back()->with('error', 'El certificado debe ser un archivo .pfx o .p12');
             }
 
             // Borrar cert anterior si existía y NO es el demo
             $oldCert = Setting::where('key', 'sunat_cert_path')->value('value');
             if ($oldCert
-                && !str_contains($oldCert, 'demo')
+                && ! str_contains($oldCert, 'demo')
                 && Storage::disk('local')->exists($oldCert)) {
                 Storage::disk('local')->delete($oldCert);
             }
 
             // Guardar el nuevo en storage/app/sunat/certs/
-            $filename = 'cert_' . date('Ymd_His') . '.' . $ext;
+            $filename = 'cert_'.date('Ymd_His').'.'.$ext;
             $request->file('sunat_cert_file')->storeAs('sunat/certs', $filename, 'local');
 
             Setting::updateOrCreate(
                 ['key' => 'sunat_cert_path'],
-                ['value' => 'sunat/certs/' . $filename]
+                ['value' => 'sunat/certs/'.$filename]
             );
         }
 
@@ -118,6 +140,7 @@ class SettingController extends Controller
                 ['value' => $path]
             );
         }
+
         return redirect()->back()->with('success', 'Configuración actualizada correctamente.');
     }
 }

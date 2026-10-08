@@ -89,6 +89,14 @@ class Delivery extends Model
         return $query->whereDate('created_at', today());
     }
 
+    public function scopeVisibleOnBoard($query)
+    {
+        return $query->where(function ($query) {
+            $query->whereDate('created_at', today())
+                ->orWhereIn('status', ['pending', 'preparing', 'on_way']);
+        });
+    }
+
     public function scopeActive($query)
     {
         return $query->whereNotIn('status', ['delivered', 'cancelled']);
