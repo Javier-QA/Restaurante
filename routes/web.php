@@ -548,6 +548,13 @@ Route::middleware(['auth'])->group(function () {
             ProductController::class
         );
 
+        Route::delete('/inventory/logs/{inventoryLog}', function (App\Models\InventoryLog $inventoryLog) {
+            $inventoryLog->delete();
+
+            return redirect()->route('inventory.logs')
+                ->with('success', 'Registro del Kardex eliminado. El stock actual no cambió.');
+        })->name('inventory.logs.destroy');
+
         Route::get('/inventory/logs', function () {
 
             $logs = App\Models\InventoryLog::with(
