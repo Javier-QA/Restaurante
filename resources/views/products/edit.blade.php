@@ -562,7 +562,7 @@
                                     @foreach($categories as $cat)
                                         <option value="{{ $cat->id }}"
                                             {{ $product->category_id == $cat->id ? 'selected' : '' }}>
-                                            {{ $cat->name }}
+                                            {{ $cat->name }}{{ !$cat->is_active ? ' (oculta en POS)' : '' }}
                                         </option>
                                     @endforeach
 
@@ -573,6 +573,7 @@
                     </div>
 
 
+                    @include('products.inventory-fields')
                     {{-- Costos --}}
                     <div class="row g-3 mb-4">
 
@@ -948,12 +949,12 @@
                                  id="row-{{ $ingredient->id }}">
 
                                 <div class="recipe-name"
-                                     title="{{ $ingredient->name }}">
-                                    {{ $ingredient->name }}
+                                     title="{{ $ingredient->name }} ({{ $ingredient->unit_display }})">
+                                    {{ $ingredient->name }} ({{ $ingredient->unit_display }})
                                 </div>
 
                                 <input type="number"
-                                       step="0.01"
+                                       step="0.001" min="0"
                                        name="ingredients[{{ $ingredient->id }}]"
                                        value="{{ $ingredient->pivot->quantity }}"
                                        class="form-control recipe-quantity text-center"
@@ -988,14 +989,14 @@
 
                                 @foreach($ingredients as $ing)
                                     <option value="{{ $ing->id }}">
-                                        {{ $ing->name }}
+                                        {{ $ing->name }} ({{ $ing->unit_display }})
                                     </option>
                                 @endforeach
 
                             </select>
 
                             <input type="number"
-                                   step="0.01"
+                                   step="0.001" min="0"
                                    class="form-control recipe-quantity text-center"
                                    placeholder="Cant.">
 

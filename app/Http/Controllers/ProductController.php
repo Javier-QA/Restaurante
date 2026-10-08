@@ -29,7 +29,7 @@ class ProductController extends Controller
 
     public function create()
     {
-        $categories = Category::where('is_active', true)->get();
+        $categories = Category::orderBy('name')->get();
 
         return view('products.create', compact('categories'));
     }
@@ -44,6 +44,8 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
             'cost' => 'nullable|numeric|min:0',
+            'unit' => 'nullable|in:kg,g,lt,ml,und,paq,caja',
+            'minimum_stock' => 'nullable|numeric|min:0|max:99999999999',
             'promotional_price' => 'nullable|numeric|min:0',
             'barcode' => 'nullable|string|max:50|unique:products,barcode', // <--- NUEVO
             'image' => 'nullable|image|max:2048',
@@ -63,6 +65,8 @@ class ProductController extends Controller
         $data['is_chef_recommendation'] = $request->has('is_chef_recommendation');
         $data['is_new'] = $request->has('is_new');
         $data['is_active'] = true;
+        $data['unit'] = $request->input('unit') ?: 'und';
+        $data['minimum_stock'] = $request->input('minimum_stock') ?? 5;
         $data['cost'] = $request->cost ?? 0;
 
         \Illuminate\Support\Facades\DB::transaction(function () use ($request, $data) {
@@ -81,7 +85,7 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        $categories = Category::where('is_active', true)->get();
+        $categories = Category::orderBy('name')->get();
         // Solo productos configurados como insumos.
         // Los productos disponibles para la venta no deben aparecer en la receta.
         $ingredients = Product::where('id', '!=', $product->id)
@@ -103,6 +107,8 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
             'cost' => 'nullable|numeric|min:0',
+            'unit' => 'nullable|in:kg,g,lt,ml,und,paq,caja',
+            'minimum_stock' => 'nullable|numeric|min:0|max:99999999999',
             'promotional_price' => 'nullable|numeric|min:0',
             'barcode' => 'nullable|string|max:50|unique:products,barcode,'.$product->id, // <--- NUEVO
             'image' => 'nullable|image|max:2048',
@@ -117,6 +123,12 @@ class ProductController extends Controller
         }
         $data = array_diff_key($validated, array_flip(['ingredients']));
 
+        // Once assigned, units cannot be relabelled without converting stock and recipes.
+        if ($product->unit && $request->filled('unit') && $request->unit !== $product->unit) {
+            throw \Illuminate\Validation\ValidationException::withMessages(['unit' => 'La unidad ya está asignada. Cree un nuevo insumo para otra unidad; cambiarla alteraría stock, costos y recetas.']);
+        }
+        if (!$request->filled('unit')) { unset($data['unit']); }
+        if (!$request->filled('minimum_stock')) { unset($data['minimum_stock']); }
         $oldImage = $product->image;
         $newImage = null;
         if ($request->hasFile('image')) {

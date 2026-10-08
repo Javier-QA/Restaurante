@@ -19,6 +19,8 @@ class Product extends Model
         'image',
         'category_id',
         'stock',
+        'unit',
+        'minimum_stock',
         'controls_stock',
         'is_active',
         'is_saleable',
@@ -26,6 +28,13 @@ class Product extends Model
         'is_chef_recommendation',
         'is_new',
     ];
+
+    public const UNITS = ['kg' => 'Kilogramo (kg)', 'g' => 'Gramo (g)', 'lt' => 'Litro (lt)', 'ml' => 'Mililitro (ml)', 'und' => 'Unidad (und)', 'paq' => 'Paquete (paq)', 'caja' => 'Caja'];
+
+    public function getUnitDisplayAttribute(): string
+    {
+        return $this->unit ?: 'und';
+    }
 
     protected $casts = ['stock' => 'decimal:3', 'controls_stock' => 'boolean', 'is_saleable' => 'boolean', 'is_active' => 'boolean'];
 

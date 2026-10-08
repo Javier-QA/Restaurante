@@ -155,10 +155,10 @@
                             <td>
                                 @if(is_null($product->stock))
                                     <span class="text-muted small">--</span>
-                                @elseif($product->stock <= 5)
-                                    <span class="badge bg-warning text-dark border border-warning">Bajo: {{ $product->stock_display }}</span>
+                                @elseif($product->stock <= ($product->minimum_stock ?? 5))
+                                    <span class="badge bg-warning text-dark border border-warning">Bajo: {{ $product->stock_display }} {{ $product->unit_display }}</span>
                                 @else
-                                    <span class="badge bg-light text-success border border-success fw-bold">{{ $product->stock_display }}</span>
+                                    <span class="badge bg-light text-success border border-success fw-bold">{{ $product->stock_display }} {{ $product->unit_display }}</span>
                                 @endif
                             </td>
                             <td class="text-center">
@@ -267,7 +267,7 @@
                         </span>
 
                         <strong>
-                            {{ $product->stock_display }}
+                            {{ $product->stock_display }} {{ $product->unit_display }}
                         </strong>
 
                     </div>
@@ -310,7 +310,7 @@
                     <div class="col-md-6">
 
                         <label class="stock-field-label">
-                            Cantidad
+                            Cantidad ({{ $product->unit_display }})
                             <span class="text-danger">*</span>
                         </label>
 

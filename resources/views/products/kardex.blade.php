@@ -628,7 +628,7 @@
                                         ? 'positive'
                                         : ($log->quantity < 0 ? 'negative' : 'neutral') }}">
 
-                                    {{ $log->quantity > 0 ? '+' : '' }}{{ $log->quantity }}
+                                    {{ $log->quantity > 0 ? '+' : '' }}{{ rtrim(rtrim(number_format((float) $log->quantity, 3, '.', ''), '0'), '.') }} {{ $log->product?->unit_display }}
 
                                 </span>
 
@@ -639,7 +639,7 @@
                             <td class="text-center">
 
                                 <span class="inventory-stock">
-                                    {{ $log->new_stock }}
+                                    {{ rtrim(rtrim(number_format((float) $log->new_stock, 3, '.', ''), '0'), '.') }} {{ $log->product?->unit_display }}
                                 </span>
 
                             </td>
