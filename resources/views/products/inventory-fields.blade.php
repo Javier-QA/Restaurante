@@ -28,9 +28,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const wholeUnits = unit.value === 'und';
         form.querySelectorAll('input[name="stock"], input[name="minimum_stock"]').forEach(function (input) {
             input.step = wholeUnits ? '1' : '0.001';
-            if (input.value !== '' && Number.isInteger(Number(input.value))) {
-                input.value = String(Number(input.value));
-            }
             input.setCustomValidity(wholeUnits && input.value !== '' && !Number.isInteger(Number(input.value))
                 ? 'Ingrese un número entero para unidades.' : '');
         });
